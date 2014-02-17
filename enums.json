@@ -1,0 +1,16 @@
+{
+    "options": {
+        "protocol": "http",
+        "hostname": "localhost",
+        "port": 3000
+    }, 
+    "demo": "bin/demo.sh",
+    "apiDoc": "doc/api.md",
+    "requestlogfile": "request.log",
+    "serverlogfile": "server.log",
+    "devMode": true,
+    "document": false,
+    "NOT_MODIFIED": "NOT_MODIFIED",
+    "ifNoneMatch": "If-None-Match",
+    "eTag": "ETag"
+}

@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="page-header">
+
+        <h1>{{ question.title }} <small>Question {{ question.id }}</small></h1>
+        <div class="row">
+            <div class="col-sm-8">
+                <i class="fa fa-bullhorn"></i>
+                {{ question.author }}
+                on {{ question.date }}
+                <br>
+                Edited {{ question.updated }}
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-default btn-large pull-right"><i class="fa fa-exclamation"></i> <strong>Mark as Important</strong> (99)</button>            
+
+            </div>
+        </div>
+
+
+</div>
+
+
+<div class="row">
+    <div class="col-sm-6">
+        <p class="lead">
+            {{ question.text }}
+        </p>
+    </div>
+    <div class="col-sm-6">
+        <div id="map" class="smallmap" style="height: 300px;"></div>
+        <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
+    </div>
+    
+
+    
+</div>
+
+<div class="row">
+    <button class="btn btn-primary btn-large"><i class="fa fa-reply"></i> <strong>Verify</strong></button>
+    
+    
+</div>
+
+<div class="row">
+    <button class="btn btn-success btn-large"><i class="fa fa-check"></i> <strong>True</strong> because...</button>
+    
+    <button class="btn btn-danger btn-large"><i class="fa fa-times"></i> <strong>False</strong> because...</button>   
+</div>
+
+{% for answer in question.answers %}
+    {{ answer.text }}, {{ answer.author }}
+
+{% endfor %}
+
+
+
+
+
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript">
+var map, layer;
+function init(){
+    map = new OpenLayers.Map( 'map');
+    layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
+    map.addLayer(layer);
+    map.setCenter(
+        new OpenLayers.LonLat(-71.147, 42.472).transform(
+            new OpenLayers.Projection("EPSG:4326"),
+            map.getProjectionObject()
+        ), 12
+    ); 
+    
+    // Add Vector marker
+    var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
+    var feature = new OpenLayers.Feature.Vector(
+     new OpenLayers.Geometry.Point(-71.147, 42.472),
+     {some:'data'},
+     {externalGraphic: 'img/marker.png', graphicHeight: 21, graphicWidth: 16});
+    vectorLayer.addFeatures(feature);
+    map.addLayer(vectorLayer);
+};
+init();
+</script>
+
+{% endblock %}
