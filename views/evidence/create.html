@@ -4,23 +4,11 @@
     <form id="create-evidence" role="form" action="{{ question.id }}/answers" method="POST">
         <!-- <input type="hidden" name="_method" value="POST"> -->
         <input type="hidden" id="form-question-type" name="type">
-        <div class="form-group">
-            <label for="form-title">Title</label>
-            <div id="form-title-chars-left" class="pull-right">
-            </div>
-            <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short evidence description">
-        </div>
+        {% include '../form-title.html' %}
         
-        <div class="form-group">
-            <label for="form-image-upload">Image</label>
-            <input type="file" id="form-image-upload" name="image-upload"> &ndash; or &ndash;
-            <input type="text" class="form-control" id="form-image-url" name="image-url" placeholder="URL of image">
-        </div>
+        {% include '../form-image.html' %}
         
-        <div class="form-group">
-            <label for="form-text">Description</label>
-            <textarea class="form-control" id="form-text" name="text" rows="3" placeholder="Full description"></textarea>
-        </div>
+        {% include '../form-text.html' %}
     
         <button type="submit" class="btn btn-primary">Submit Evidence</button>
         <button type="button" id="form-cancel" class="btn btn-default pull-right">Cancel</button>
@@ -32,4 +20,3 @@ document.getElementById('form-cancel').addEventListener('click', function(e) {
     document.getElementById('form-ctr').style.display = 'none';
 });
 </script>
-{% include '../title-chars-left.html' %}
