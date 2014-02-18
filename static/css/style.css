@@ -6,8 +6,6 @@
     border-bottom-style: none;
 }
 
-
-
 .action-buttons {
     margin-top: 1em;
 }
@@ -36,6 +34,11 @@
 
 .action-button-count {
     background-color: #ffffff !important;
+}
+
+.question-image-and-map > div {
+    padding-top: 1em;
+    margin-top: 0;
 }
 
 .question-answers {
