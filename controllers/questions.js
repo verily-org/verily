@@ -104,6 +104,7 @@ exports.get = function (req, res) {
                 targetImage: question.targetImage,
                 date: question.date.toString(),
                 author: question.author,
+                tags: question.tags,
                 updated: question.updated
             }, wrapper = {
                 question: questionTmp

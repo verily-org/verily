@@ -29,6 +29,9 @@ module.exports = function (db, cb) {
         author: {
             type: 'text'
         },
+        tags: {
+            type: 'object'
+        },
         updated: {
             type: 'text'
         }

@@ -17,6 +17,13 @@
                 <i class="fa fa-bullhorn"></i>
                 {{ question.author }}
                 on {{ question.date }}
+                <br>
+                {% if question.tags %}
+                <i class="fa fa-tag"></i>
+                {% endif %}
+                {% for tag in question.tags %}
+                    <span class="label label-primary">{{ tag }}</span>
+                {% endfor %}
                 
             </div>
             <div class="col-sm-offset-3 col-sm-1 action-buttons">
