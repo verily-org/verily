@@ -74,6 +74,7 @@ exports.create = function (model, data, req, cb) {
             now = new Date().getTime();
 
         req.models.Post.create([{
+            title: req.body.title,
             text: req.body.text,
             date: new Date(),
             author: req.body.author,

@@ -112,6 +112,7 @@ exports.get = function (req, res) {
                    console.log('answers');
                    console.log(answers);
                    
+                   // Include answers within question
                    async.each(answers, generic.gen, function (err) {
                        if (!err) {
                            console.log('answers');
@@ -136,9 +137,6 @@ exports.get = function (req, res) {
             });
             
 
-            
-
-            // res.end();
         } else if (err === enums.NOT_MODIFIED) {
             // 304 Not Modified.
             res.status(304);
@@ -174,8 +172,9 @@ exports.head = function (req, res) {
 exports.create = function (req, res) {
     // This is a POST request, so by default, fields go into the body.
 
-    var data = { //only extra column(than post) need to bw written here
-        title: req.body.title
+    // only extra columns (apart from post) need to be written here
+    var data = { 
+
     };
     generic.create(req.models.Question, data, req, function (err, question) {
         if (!err && question) {
@@ -189,7 +188,7 @@ exports.create = function (req, res) {
                     res.json(wrapper);
                     res.end();
                 } else {
-                    //special err: if 404 then it means the create just excuted is invalid.
+                    //special err: if 404 then it means the create just executed is invalid.
                     res.status(500);
                     res.end('Error 500: Server Error');
                     console.r.error(req, 500, err);

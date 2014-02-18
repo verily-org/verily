@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>README</title>
+
+	<meta charset="utf-8">
+	<meta name="format" content="complete">
+  <style type="text/css">
+html {
+    /* the line height value of 1.9 is fixed for a line height multiple of 1.4 in the text view */
+    font: normal 106.2%/1.9 serif;
+}
+
+body {
+    font-family: 'Avenir Next', Helvetica, Georgia, serif;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    overflow:hidden;
+    background-color: #f2f2f2;
+    color: #3c3c3c;
+}
+
+/**
+ *
+    Wrappers
+ *
+ */
+
+#wrapper {
+    position: fixed;
+    width: 99.9%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    font-size: 1.0em;
+}
+
+#wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+    -webkit-transition: all .45s ease-in;
+    position: relative;
+}
+#wrapper::-webkit-scrollbar-button:start:decrement, #wrapper::-webkit-scrollbar-button:end:increment {
+    height: 0px;
+    display: block;
+    background-color: transparent;
+}
+#wrapper::-webkit-scrollbar-track-piece {
+    background-color:
+    transparent;
+    -webkit-border-radius: 6px;
+}
+#wrapper::-webkit-scrollbar-thumb:vertical {
+    height: 50px;
+    background-color: #c8c8c8;
+    -webkit-border-radius: 6px;
+    -webkit-transition: all .45s ease-in;
+}
+
+#content {
+    width: 610px;
+    margin: 0 auto 0 auto;
+    padding: 30px 0 30px 0;
+}
+
+/**
+ *
+    Headings
+ *
+ */
+
+h1, h2, h3, h4, h5, h6 {
+    text-rendering: optimizeLegibility;
+    line-height: 1;
+    margin: 0.5rem 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-rendering: optimizeLegibility;
+    line-height: 1;
+    margin: 0.5rem 0;
+}
+
+h1, 
+h2, 
+h3 { margin-bottom: 1rem; }
+
+h1 { font-size: 2.75rem; }
+h2 { font-size: 2.25rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.00rem; }
+h6 { font-size: 0.85rem; }
+
+/**
+ *
+	Paragraphs
+ *
+ */
+
+p {
+	margin: 0 0 1.5em;
+}
+
+/**
+ *
+    Block quotes
+ *
+ */
+
+blockquote {
+    margin: 0 0 1.5em;
+    width: 96%;
+    padding: 0 10px;
+    border-left: 3px solid #ddd;
+    color: #777;
+}
+
+/**
+ *
+	Code Blocks
+ *
+ */
+
+pre code {
+	word-wrap: normal;
+	white-space: pre-wrap;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    -webkit-border-radius: 0;
+}
+
+pre {
+	white-space: pre-wrap;
+    width: 96%;
+    margin-bottom: 24px;
+    overflow: hidden;
+    padding: 3px 10px;
+    -webkit-border-radius: 3px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+}
+
+code {
+	white-space: nowrap;
+	font-family: monospace;
+    padding: 2px;
+    -webkit-border-radius: 3px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+}
+
+small {
+	font-size: 65%;
+}
+
+/**
+ *
+    Dictionary Definition
+ *
+ */
+
+dt {
+	display: inline;
+    font-weight:bold;
+}
+
+dd {
+	display: block;
+}
+
+/**
+ *
+    Anchors
+ *
+ */
+
+a {
+    color: #308bd8;
+    text-decoration:none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/**
+ *
+    Horizontal rules
+ *
+ */
+
+hr {
+    width: 100%;
+    margin: 3em auto;
+    border: 0;
+    color: #eee;
+    background-color: #ccc;
+    height: 1px;
+    -webkit-box-shadow:0px 1px 0px rgba(255, 255, 255, 0.75);
+}
+
+/**
+ *
+    Lists
+ *
+ */
+
+ol, ul {
+    list-style-position: outside;
+    padding-left: 0;
+    margin-left: 1.5em;
+}
+
+ol li, ul li {
+    text-align: -webkit-match-parent;
+}
+
+li p {
+    margin: 0.5em 0 0.5em;
+}
+
+ol ol, ol ul, ul ul, ul ol {
+    padding-left: 1.5em;
+}
+
+/**
+ *
+    Tables
+ *
+ */
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-spacing: 0;
+}
+
+table th {
+    padding: 3px 10px;
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
+table tr {
+}
+
+table td {
+    padding: 3px 10px;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
+/**
+ *
+    Images
+ *
+ */
+
+img {
+    border: none;
+    display: block;
+    margin: 1em auto;
+    max-width: 100%;
+}
+
+/**
+ *
+    Marks
+ *
+ */
+
+mark {
+    background: #fefec0;
+    padding:1px 3px;
+}
+
+/**
+ *
+    Footnotes
+ *
+ */
+.footnote {
+    font-size: 0.8rem;
+    vertical-align: super;
+}
+.footnotes ol {
+    font-weight: bold;
+}
+.footnotes ol li {
+    text-align: -webkit-match-parent;
+}
+
+.footnotes ol li p {
+    font-weight: normal;
+}
+
+/**
+ *
+    Figures and Captions
+ *
+ */
+caption {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+figure {
+    display: block;
+    text-align: center;
+}
+
+figcaption {
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+/**
+ *
+    Custom classes
+ *
+ */
+
+.shadow {
+    -webkit-box-shadow: 0 2px 4px #999;
+}
+
+.source {
+    text-align: center;
+    font-size: 0.8em;
+    color: #777;
+    margin: -40px auto;
+}
+#wrapper {
+    width: 99.9%;
+}
+#content {
+    width: 610px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Mobile support */
+@media only screen and (max-device-width:1024px) {
+    html {
+        overflow: auto;
+    }
+
+    #wrapper {
+        overflow: auto;
+        position: relative;
+    }
+}@media print {
+/* Printing support.
+ * Override all printing colors to match the Light theme.
+ */
+img, pre, blockquote, table, figure {
+    page-break-inside: avoid;
+}
+body {
+    background-color:#fff;
+}
+#wrapper {
+    position: static;
+    overflow: hidden;
+    color: #000;
+    width: 100%;
+    margin: 0 auto;
+}
+.footnotes {
+    page-break-before: always;
+}
+#content {
+    margin: 0 auto;
+    padding: 0;
+    width: 98%;
+}
+#top-fader, #bottom-fader {
+    display: none;
+}
+hr {
+    color:#ddd;
+    background-color:#ddd;
+    -webkit-box-shadow:0px 1px 0px #ddd;
+}
+pre {
+    background-color:transparent;
+    border: 1px solid #ddd;
+}
+code {
+    background-color:transparent;
+    border: 1px solid #ddd;
+}
+blockquote {
+    border-left: 3px solid #ddd;
+    color: #000;
+}
+ol {
+    /*
+     * Override the list style when printing to ensure list
+     * markers won't get cut.
+     */
+    list-style-position: inside;
+    padding-left: 0;
+    margin-left: 0;
+}
+table {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+table th {
+    background-color:transparent;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+table td {
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+mark {
+    background:transparent;
+    color: #000;
+}
+.source {
+    color: #000;
+}
+}
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="content">
+<h1>Overview</h1>
+
+<p>The web service allows questions to be added, updated and removed. Comments can be added to questions for remarks on the content of the question. Answers can be added to questions in response to a question posed. Comments can also be added to answers for remarks on the content of the answer.</p>
+
+<p>Cache validation is supported through the use of ETags on the server-side and the HTTP header &#8220;If-None-Match&#8221; in client requests to the Web Service.</p>
+
+<h1>Installation</h1>
+
+<p>The following steps aim to provide a brief guide on how to set up the web service on Ubuntu Server LTS 12.04.</p>
+
+<ol>
+<li><p>Install Node.js</p>
+
+<pre><code>sudo apt-get update
+sudo apt-get install build-essential
+sudo apt-get install curl
+echo 'export PATH=$HOME/local/bin:$PATH' &gt;&gt; ~/.bashrc
+. ~/.bashrc
+mkdir ~/local
+mkdir ~/node-latest-install
+cd ~/node-latest-install
+curl http://nodejs.org/dist/node-latest.tar.gz | tar xz --strip-components=1
+./configure --prefix=~/local
+make install
+curl https://npmjs.org/install.sh | sh
+</code></pre></li>
+<li><p>Install and updated required packages with <code>npm update</code></p></li>
+</ol>
+
+<h1>Usage</h1>
+
+<h2>Run</h2>
+
+<p>To run the server with the existing database use:</p>
+
+<p><code>node index</code></p>
+
+<p>When the server has started, in a new shell you can issue HTTP requests, via cURL for example.</p>
+
+<p>On the first run, there will be no existing database, so this is equivalent to running from a clean start.</p>
+
+<h2>Run from clean start</h2>
+
+<p>To run the server with an empty database use:</p>
+
+<p><code>node index -r</code></p>
+
+<p>For the first run, the <code>-r</code> option is not necessary.</p>
+
+<h1>API</h1>
+
+<p>For documentation of the API with endpoints and examples, see <a href="doc/api.html"><code>doc/api.html</code></a> or <a href="doc/api.md"><code>doc/api.md</code></a>.</p>
+
+<h1>Test</h1>
+
+<p>To run the system testing script, ensure the web service server is not running, then execute:</p>
+
+<p><code>npm test</code></p>
+
+<p>This starts the web service server from a clean start and tests questions, question comments, answers and answer comments and the integration of such.</p>
+
+<p>The test script can also be executed in a two-step process with 2 shells:</p>
+
+<pre><code>node index -r
+node test
+</code></pre>
+
+<h2>Shell script</h2>
+
+<p>A shell script, <code>bin/demo.sh</code>, provides a series of cURL commands that request each endpoint of the web service.</p>
+
+<h2>JSLint conformance script</h2>
+
+<p>To test the conformance of the code to JSLint, run <code>bin/jslint-check.sh</code>.
+Before running, ensure you have globally installed JSLint: <code>npm install jslint -g</code>.</p>
+    </div>
+  </div> <!-- End wrapper -->
+</body>
+</html>

@@ -3,6 +3,9 @@
 module.exports = function (db, cb) {
 
     var Post = db.define('post', {
+        title: {
+            type: 'text'
+        },
         text: {
             type: 'text'
         },
@@ -18,9 +21,7 @@ module.exports = function (db, cb) {
             type: 'text'
         }
     }), Question = db.define('question', {
-        title: {
-            type: 'text'
-        }
+
     }), Answer = db.define('answer', {
     }), QuestionComment = db.define('question_comment', {
     }), AnswerComment = db.define('answer_comment', {
