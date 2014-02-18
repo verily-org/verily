@@ -1,11 +1,12 @@
-
-{% if answer.type === 'true' %}
-<div class="panel panel-default question-answer border-true">
-{% else %}
-<div class="panel panel-default question-answer border-false">
-{% endif %}
+<div class="panel panel-default question-answer">
     <div class="panel-heading">
-            <h3 class="panel-title">{{ answer.title }}</h3>
+            <h3 class="panel-title">
+                    {% if answer.type === 'support' %}
+                        <span class="label label-success">Support</span>
+                    {% else %}
+                        <span class="label label-danger">Reject</span>
+                    {% endif %}
+                    {{ answer.title }}</h3>
     </div>
     <div class="panel-body">
 

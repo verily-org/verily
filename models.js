@@ -39,7 +39,7 @@ module.exports = function (db, cb) {
     }), Answer = db.define('answer', {
         type: {
             type: 'enum',
-            values: ['true', 'false']
+            values: ['support', 'reject']
         }
     }), QuestionComment = db.define('question_comment', {
     }), AnswerComment = db.define('answer_comment', {
