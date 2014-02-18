@@ -9,6 +9,18 @@ module.exports = function (db, cb) {
         text: {
             type: 'text'
         },
+        targetLocality: {
+            type: 'text'
+        },
+        targetLat: {
+            type: 'number'
+        },
+        targetLong: {
+            type: 'number'
+        },
+        targetPhoto: {
+            type: 'text'
+        },
         date: {
             type: 'date',
             time: true,
@@ -21,7 +33,9 @@ module.exports = function (db, cb) {
             type: 'text'
         }
     }), Question = db.define('question', {
-
+        viewCount: {
+            type: 'number'
+        }
     }), Answer = db.define('answer', {
         type: {
             type: 'enum',
