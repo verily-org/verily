@@ -23,6 +23,10 @@ module.exports = function (db, cb) {
     }), Question = db.define('question', {
 
     }), Answer = db.define('answer', {
+        type: {
+            type: 'enum',
+            values: ['true', 'false']
+        }
     }), QuestionComment = db.define('question_comment', {
     }), AnswerComment = db.define('answer_comment', {
     }), Rating = db.define('rating', {

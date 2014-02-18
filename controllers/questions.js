@@ -113,7 +113,12 @@ exports.get = function (req, res) {
                    console.log(answers);
                    
                    // Include answers within question
-                   async.each(answers, generic.gen, function (err) {
+                   async.each(answers, function(answer, callback) {
+                       generic.gen(answer, function(cb) {
+                           callback();
+                       });
+                       
+                   }, function (err) {
                        if (!err) {
                            console.log('answers');
                            console.log(answers);

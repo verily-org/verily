@@ -1,6 +1,11 @@
+
+{% if answer.type === 'true' %}
 <div class="panel panel-success question-answer">
+{% else %}
+<div class="panel panel-danger question-answer">
+{% endif %}
     <div class="panel-heading">
-       {{ answer.title }}
+       {{ answer.title }} {{ answer.type }}
     </div>
     <div class="panel-body">
         {{ answer.text }}
