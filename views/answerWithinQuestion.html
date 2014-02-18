@@ -1,14 +1,64 @@
 
 {% if answer.type === 'true' %}
-<div class="panel panel-success question-answer">
+<div class="panel panel-default question-answer true">
 {% else %}
-<div class="panel panel-danger question-answer">
+<div class="panel panel-default question-answer false">
 {% endif %}
     <div class="panel-heading">
-       {{ answer.title }} {{ answer.type }}
+            <h3 class="panel-title">{{ answer.title }}</h3>
     </div>
     <div class="panel-body">
-        {{ answer.text }}
+
+        
+    {{ answer.text }}
+
+
+    <!-- vote row -->
+    <div class="row">
+        
+    <!-- button-vote-up -->
+    <div class="col-xs-6 col-md-4">
+        <div class="input-group action-button-ctr small-action-button">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-large action-button"><i class="fa fa-arrow-up"></i></button>   
+            </span>
+            <span class="input-group-addon action-button-count">
+                2
+            </span>
+        </div>
+    </div>
+    <!-- / button-vote-up -->
+    
+    <!-- button-vote-down -->
+    <div class="col-xs-6 col-md-4">
+        <div class="input-group action-button-ctr small-action-button">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-large action-button"><i class="fa fa-arrow-down"></i></button>   
+            </span>
+            <span class="input-group-addon action-button-count">
+                3
+            </span>
+        </div>
+    </div>
+    <!-- / button-vote-down -->
+    
+    <!-- button-vote-down -->
+    <div class="col-md-4">
+        <div class="input-group action-button-ctr small-action-button">
+            <span class="input-group-btn">
+                <button class="btn btn-default btn-large action-button"><i class="fa fa-comment"></i></button>   
+            </span>
+            <span class="input-group-addon action-button-count">
+                6
+            </span>
+        </div>
+    </div>
+    <!-- / button-vote-down -->
+    
+    
+    </div>
+    <!-- / vote row -->
+        
     </div>
 </div>
 

@@ -6,8 +6,22 @@
     margin-top: 1.0em;
 }
 
-.action-button {
+.action-button-ctr .input-group-btn {
+    text-align: right;
+}
+
+.text-action-button {
     width: 7em;
+}
+
+.action-button,
+.small-action-button {
+    width: 3em;
+}
+
+.question-answer .action-button-ctr {
+    padding-top: 1em;
+    margin-top: 0;
 }
 
 .action-button-count {
@@ -17,6 +31,25 @@
 .question-answers {
     margin-top: 1.0em;
 }
+
+.question-answer {
+    border-left: 7px solid transparent;
+}
+
+.question-answer .panel-heading {
+    background-color: #ffffff;
+}
+
+/* TODO Change to use LESS variables */
+.question-answer.true {
+    border-color: #5cb85c;
+}
+
+.question-answer.false {
+    border-color: #d9534f;  
+}
+
+
 
 .olControlAttribution {
     bottom: 0 !important;
