@@ -76,14 +76,10 @@ exports.create = function (model, data, req, cb) {
         // Tags: tag1, tag2, tag3, ..., tagN
         var tags = null;
         if (req.body.hasOwnProperty('tags')) {
-            console.log(req.body.tags);
             tags = req.body.tags.split(',').map(function(tag) {
                 return tag.trim().toLowerCase();
             });
-        }
-        
-        console.log(tags);
-        
+        }        
 
         req.models.Post.create([{
             title: req.body.title,

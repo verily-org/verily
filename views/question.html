@@ -22,7 +22,7 @@
                 <i class="fa fa-tag"></i>
                 {% endif %}
                 {% for tag in question.tags %}
-                    <span class="label label-primary">{{ tag }}</span>
+                    <a href="/tag/{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
                 {% endfor %}
                 
             </div>
