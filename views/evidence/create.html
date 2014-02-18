@@ -1,24 +1,25 @@
 <div id="form-ctr" class="well" style="display: none;">
     <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
 
-    <form id="create-evidence" role="form">
-        <input type="hidden" id="form-question-type">
+    <form id="create-evidence" role="form" action="{{ question.id }}/answers" method="POST">
+        <!-- <input type="hidden" name="_method" value="POST"> -->
+        <input type="hidden" id="form-question-type" name="type">
         <div class="form-group">
             <label for="form-title">Title</label>
             <div id="form-title-chars-left" class="pull-right">
             </div>
-            <input type="text" class="form-control input-lg" id="form-title" placeholder="Short evidence description">
+            <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short evidence description">
         </div>
         
         <div class="form-group">
             <label for="form-image-upload">Image</label>
-            <input type="file" id="form-image-upload"> &ndash; or &ndash;
-            <input type="text" class="form-control" id="form-image-url" placeholder="URL of image">
+            <input type="file" id="form-image-upload" name="image-upload"> &ndash; or &ndash;
+            <input type="text" class="form-control" id="form-image-url" name="image-url" placeholder="URL of image">
         </div>
         
         <div class="form-group">
             <label for="form-text">Description</label>
-            <textarea class="form-control" id="form-text" rows="3" placeholder="Full description"></textarea>
+            <textarea class="form-control" id="form-text" name="text" rows="3" placeholder="Full description"></textarea>
         </div>
     
         <button type="submit" class="btn btn-primary">Submit Evidence</button>
