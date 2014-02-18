@@ -2,57 +2,113 @@
 
 {% block content %}
 <div class="page-header">
+    <div class="row">
+        <div class="col-sm-8">
+        <h2>{{ question.title }} <small>Question {{ question.id }}</small></h2>
 
-        <h1>{{ question.title }} <small>Question {{ question.id }}</small></h1>
-        <div class="row">
-            <div class="col-sm-8">
+                <p class="lead">
+                    {{ question.text }}
+                </p>
+                
+                <i class="fa fa-map-marker"></i> Southampton
+                <i class="fa fa-crosshairs"></i> <a href="geo:50.930,-1.422">50.930, -1.422</a>
+                <br>
                 <i class="fa fa-bullhorn"></i>
                 {{ question.author }}
                 on {{ question.date }}
-                <br>
-                Edited {{ question.updated }}
+                
             </div>
-            <div class="col-sm-4">
-                <button class="btn btn-default btn-large pull-right"><i class="fa fa-exclamation"></i> <strong>Mark as Important</strong> (99)</button>            
+            <div class="col-sm-offset-3 col-sm-1 action-buttons">
+                <div class="row">
+                    <div class="col-xs-offset-6 col-xs-6">
+                        <div class="pull-right">
 
+                            <!-- button-mark-important -->
+                            <div class="input-group action-button-ctr">
+                                <span class="input-group-btn" style="text-align: right">
+                                    <button class="btn btn-default btn-large action-button"><i class="fa fa-exclamation"></i> <strong>Important</strong></button>   
+                                </span>
+                                <span class="input-group-addon action-button-count">
+                                    99
+                                </span>
+                            </div>
+                            <!-- / button-mark-important -->
+                            
+                            <!-- button-mark-true -->
+                            <div class="input-group action-button-ctr">
+                                <span class="input-group-btn" style="text-align: right">                                    
+                                    <button class="btn btn-success btn-large action-button"><i class="fa fa-check"></i> <strong>True</strong></button>
+                                    
+                                </span>
+                                <span class="input-group-addon action-button-count">
+                                    77
+                                </span>
+                            </div>
+                            <!-- / button-mark-true -->
+                            
+                            <!-- button-mark-false -->
+                            <div class="input-group action-button-ctr">
+                                <span class="input-group-btn" style="text-align: right">                                    
+                                    <button class="btn btn-danger btn-large action-button"><i class="fa fa-times"></i> <strong>False</strong></button>
+                                    
+                                </span>
+                                <span class="input-group-addon action-button-count">
+                                    33
+                                </span>
+                            </div>
+                            <!-- / button-mark-false -->
+                                                    
+                        </div>
+
+                    </div>
+                
+                </div>
             </div>
         </div>
 
+        <!-- small buttons -->
+        <div class="action-button-ctr">
+            <button class="btn btn-default btn-sm"><i class="fa fa-flag"></i> <strong>Flag</strong></button>
+            &lt;Social sharing buttons&gt;
+        </div>
+        
+        <!-- / small buttons -->
 
 </div>
 
 
+
+
+
 <div class="row">
+    {% if question.image %}
     <div class="col-sm-6">
-        <p class="lead">
-            {{ question.text }}
-        </p>
+        <div id="question-image" class="alert alert-info" style="height: 300px;">Question image (if present)</div>
     </div>
     <div class="col-sm-6">
+    {% else %}
+    <div class="col-sm-12">
+    {% endif %}
         <div id="map" class="smallmap" style="height: 300px;"></div>
         <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
-    </div>
-    
-
-    
+    </div>    
 </div>
+
+
 
 <div class="row">
-    <button class="btn btn-primary btn-large"><i class="fa fa-reply"></i> <strong>Verify</strong></button>
+    <!-- <button class="btn btn-primary btn-large"><i class="fa fa-reply"></i> <strong>Verify</strong></button> -->
     
     
 </div>
 
-<div class="row">
-    <button class="btn btn-success btn-large"><i class="fa fa-check"></i> <strong>True</strong> because...</button>
-    
-    <button class="btn btn-danger btn-large"><i class="fa fa-times"></i> <strong>False</strong> because...</button>   
+<div class="row question-answers">
+    {% for answer in question.answers %}
+        <div class="col-sm-4">
+            {% include 'answerWithinQuestion.html' with answer %}
+        </div>   
+    {% endfor %}
 </div>
-
-{% for answer in question.answers %}
-    {{ answer.text }}, {{ answer.author }}
-
-{% endfor %}
 
 
 
@@ -66,7 +122,7 @@ function init(){
     layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
     map.addLayer(layer);
     map.setCenter(
-        new OpenLayers.LonLat(-71.147, 42.472).transform(
+        new OpenLayers.LonLat(-1.422, 50.930).transform(
             new OpenLayers.Projection("EPSG:4326"),
             map.getProjectionObject()
         ), 12

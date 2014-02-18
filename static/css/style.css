@@ -1,5 +1,21 @@
+.action-buttons {
+    margin-top: 1em;
+}
+
+.action-button-ctr {
+    margin-top: 1.0em;
+}
+
+.action-button {
+    width: 7em;
+}
+
 .action-button-count {
     background-color: #ffffff !important;
+}
+
+.question-answers {
+    margin-top: 1.0em;
 }
 
 .olControlAttribution {

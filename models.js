@@ -1,3 +1,5 @@
+// TODO: Move title into Post.
+
 module.exports = function (db, cb) {
 
     var Post = db.define('post', {
