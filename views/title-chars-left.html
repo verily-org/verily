@@ -1,0 +1,24 @@
+<script type="text/javascript">
+    // TODO may want this to be <140 to allow linking of the resource.
+    var maxLength = 140;
+    var title = document.getElementById('form-title');
+    var titleCharsLeft = document.getElementById('form-title-chars-left');
+    var titleCharsLeftInitialClassName = titleCharsLeft.className;
+
+    // Initially display limit of maxLength chars.
+    displayCharsLeft();
+
+    function displayCharsLeft() {
+        var charsLeft = maxLength - title.value.length;
+        titleCharsLeft.innerHTML = charsLeft;
+        if (charsLeft >= 0) {
+            titleCharsLeft.className = titleCharsLeftInitialClassName + ' text-success';
+        } else {
+            titleCharsLeft.className = titleCharsLeftInitialClassName + ' text-danger';
+        }
+    }
+
+    title.addEventListener('keyup', function(e) {
+        displayCharsLeft();
+    });
+</script>

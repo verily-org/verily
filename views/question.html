@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<!-- question -->
 <div class="page-header question border-true">
     <div class="row">
         <div class="col-sm-8">
@@ -37,7 +38,7 @@
                             <!-- button-mark-true -->
                             <div class="input-group action-button-ctr">
                                 <span class="input-group-btn">                                    
-                                    <button class="btn btn-success btn-large text-action-button"><i class="fa fa-check"></i> <strong>Support</strong></button>
+                                    <button class="btn btn-success btn-large text-action-button" id="question-support"><i class="fa fa-check"></i> <strong>Support</strong></button>
                                     
                                 </span>
                                 <span class="input-group-addon action-button-count">
@@ -49,7 +50,7 @@
                             <!-- button-mark-false -->
                             <div class="input-group action-button-ctr">
                                 <span class="input-group-btn">                                    
-                                    <button class="btn btn-danger btn-large text-action-button"><i class="fa fa-times"></i> <strong>Reject</strong></button>
+                                    <button class="btn btn-danger btn-large text-action-button" id="question-reject"><i class="fa fa-times"></i> <strong>Reject</strong></button>
                                     
                                 </span>
                                 <span class="input-group-addon action-button-count">
@@ -75,8 +76,11 @@
         <!-- / small buttons -->
 
 </div>
+<!-- / question -->
 
-
+<!-- create evidence -->
+{% include 'evidence/create.html' %}
+<!-- / create evidence -->
 
 
 
@@ -113,7 +117,38 @@
 
 
 
+<script type="text/javascript">
+// Support/Reject handle
 
+// Hidden field of question type.
+var questionType = document.getElementById('form-question-type');
+
+// Display of question type
+var labelQuestionType = document.getElementById('form-label-question-type');
+var questionTypeClassName = labelQuestionType.className;
+
+document.getElementById('question-support').addEventListener('click', function(e) {
+    questionType.value = 'support';
+    labelQuestionType.innerHTML = 'Support';
+    labelQuestionType.className = questionTypeClassName + ' label-success';
+    displayForm();
+});
+
+document.getElementById('question-reject').addEventListener('click', function(e) {
+    questionType.value = 'reject';
+    labelQuestionType.innerHTML = 'Reject';
+    labelQuestionType.className = questionTypeClassName + ' label-danger';
+    displayForm();
+});
+
+function displayForm() {
+    // Display the form.
+    document.getElementById('form-ctr').style.display = 'block';
+}
+
+
+
+</script>
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
 <script type="text/javascript">
 var map, layer;

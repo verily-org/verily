@@ -67,6 +67,10 @@
     border-left-color: #d9534f;  
 }
 
+#form-title-chars-left {
+    font-weight: bold;
+}
+
 
 
 .olControlAttribution {

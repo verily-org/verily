@@ -1,0 +1,34 @@
+<div id="form-ctr" class="well" style="display: none;">
+    <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
+
+    <form id="create-evidence" role="form">
+        <input type="hidden" id="form-question-type">
+        <div class="form-group">
+            <label for="form-title">Title</label>
+            <div id="form-title-chars-left" class="pull-right">
+            </div>
+            <input type="text" class="form-control input-lg" id="form-title" placeholder="Short evidence description">
+        </div>
+        
+        <div class="form-group">
+            <label for="form-image-upload">Image</label>
+            <input type="file" id="form-image-upload"> &ndash; or &ndash;
+            <input type="text" class="form-control" id="form-image-url" placeholder="URL of image">
+        </div>
+        
+        <div class="form-group">
+            <label for="form-text">Description</label>
+            <textarea class="form-control" id="form-text" rows="3" placeholder="Full description"></textarea>
+        </div>
+    
+        <button type="submit" class="btn btn-primary">Submit Evidence</button>
+        <button type="button" id="form-cancel" class="btn btn-default pull-right">Cancel</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+document.getElementById('form-cancel').addEventListener('click', function(e) {
+    document.getElementById('form-ctr').style.display = 'none';
+});
+</script>
+{% include '../title-chars-left.html' %}
