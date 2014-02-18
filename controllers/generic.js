@@ -76,6 +76,7 @@ exports.create = function (model, data, req, cb) {
         req.models.Post.create([{
             title: req.body.title,
             text: req.body.text,
+            targetImage: req.body.targetImage,
             date: new Date(),
             author: req.body.author,
             updated: now

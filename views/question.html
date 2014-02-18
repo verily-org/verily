@@ -1,10 +1,10 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="page-header">
+<div class="page-header question border-true">
     <div class="row">
         <div class="col-sm-8">
-        <h2>{{ question.title }} <small>Question {{ question.id }}</small></h2>
+        <h2>{{ question.title }}</h2>
 
                 <p class="lead">
                     {{ question.text }}
@@ -81,7 +81,7 @@
 
 
 <div class="row">
-    {% if question.image %}
+    {% if question.targetImage %}
     <div class="col-sm-6">
         <img src="http://www.southampton.ac.uk/images/inline/choose_southampton.jpg" class="img-responsive">
     </div>

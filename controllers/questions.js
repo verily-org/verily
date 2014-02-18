@@ -98,6 +98,10 @@ exports.get = function (req, res) {
                 title: question.title,
                 id: question.id,
                 text: question.text,
+                targetLocality: question.targetLocality,
+                targetLat: question.targetLat,
+                targetLong: question.targetLong,
+                targetImage: question.targetImage,
                 date: question.date.toString(),
                 author: question.author,
                 updated: question.updated

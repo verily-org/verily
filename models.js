@@ -18,7 +18,7 @@ module.exports = function (db, cb) {
         targetLong: {
             type: 'number'
         },
-        targetPhoto: {
+        targetImage: {
             type: 'text'
         },
         date: {

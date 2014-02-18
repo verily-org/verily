@@ -1,3 +1,13 @@
+
+.question.page-header {
+    border-left-width: 0.75em;
+    border-left-style: solid;
+    padding-left: 1em;
+    border-bottom-style: none;
+}
+
+
+
 .action-buttons {
     margin-top: 1em;
 }
@@ -33,20 +43,21 @@
 }
 
 .question-answer {
-    border-left: 7px solid transparent;
+    border-left: 5px solid transparent;
 }
 
 .question-answer .panel-heading {
     background-color: #ffffff;
 }
 
+
 /* TODO Change to use LESS variables */
-.question-answer.true {
-    border-color: #5cb85c;
+.border-true {
+    border-left-color: #5cb85c;
 }
 
-.question-answer.false {
-    border-color: #d9534f;  
+.border-false {
+    border-left-color: #d9534f;  
 }
 
 
