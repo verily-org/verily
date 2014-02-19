@@ -11,15 +11,15 @@
                     {{ question.text }}
                 </p>
                 
-                <i class="fa fa-map-marker"></i> Southampton
-                <i class="fa fa-crosshairs"></i> <a href="geo:50.930,-1.422">50.930, -1.422</a>
+                <i class="fa fa-map-marker fa-fw"></i><span class="sr-only">Locality</span>&nbsp;<span id="question-locality">Southampton</span>
+                <i class="fa fa-crosshairs fa-fw"></i> <span class="sr-only">Lat Long</span> <a href="geo:50.930,-1.422"><span id="question-target-lat">50.930</span>, <span id="question-target-long">-1.422</span></a>
                 <br>
-                <i class="fa fa-bullhorn"></i>
+                <i class="fa fa-bullhorn fa-fw"></i>
                 {{ question.author }}
                 on {{ question.date }}
                 <br>
                 {% if question.tags %}
-                <i class="fa fa-tag"></i>
+                <i class="fa fa-tag fa-fw"></i>
                 {% endif %}
                 {% for tag in question.tags %}
                     <a href="/tag/{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
