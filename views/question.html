@@ -150,7 +150,12 @@ document.getElementById('question-reject').addEventListener('click', function(e)
 
 function displayForm() {
     // Display the form.
-    document.getElementById('form-ctr').style.display = 'block';
+    var formCtr = document.getElementById('form-ctr')
+    formCtr.style.display = 'block';
+    var formTitle = document.getElementById('form-title');
+    formTitle.focus();
+    //formCtr.scrollIntoView();
+    
 }
 
 

@@ -1,3 +1,6 @@
+input[type=file] {
+    max-width: 250px;
+}
 
 .question.page-header {
     border-left-width: 0.75em;
@@ -43,6 +46,14 @@
 
 .question-answers {
     margin-top: 1.0em;
+}
+
+.form-control.plain {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .question-answer {
