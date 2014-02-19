@@ -7,10 +7,23 @@
 
 .action-buttons {
     margin-top: 1em;
+    padding-left: 0;
 }
 
+/* TODO Change 15px to the LESS padding from bootstrap .col-xx-nn */
 .action-button-ctr {
     margin-top: 1.0em;
+    float: left !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+/*.action-buttons > .row div:first-child {
+    padding-left: 0 !important;
+}*/
+
+.additional-button-ctr {
+    margin-top: 1em;
 }
 
 .action-button-ctr .input-group-btn {
@@ -19,6 +32,17 @@
 
 .text-action-button {
     width: 7em;
+}
+
+/* TODO Use LESS variables */
+@media (max-width: 768px) {
+    .text-action-button {
+        width: 3em;
+    }
+    
+    .action-buttons {
+        padding-left: 1em;
+    }
 }
 
 .action-button,
@@ -33,6 +57,8 @@
 
 .action-button-count {
     background-color: #ffffff !important;
+    padding: 0 !important;
+    min-width: 3em !important;
 }
 
 .question-image-and-map > div {

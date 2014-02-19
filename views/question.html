@@ -4,7 +4,7 @@
 <!-- question -->
 <div class="page-header question border-true">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-9">
         <h2>{{ question.title }}</h2>
 
                 <p class="lead">
@@ -26,63 +26,68 @@
                 {% endfor %}
                 
             </div>
-            <div class="col-sm-offset-3 col-sm-1 action-buttons">
+            <div class="col-xs-12 col-sm-3 action-buttons">
                 <div class="row">
-                    <div class="col-xs-offset-6 col-xs-6">
-                        <div class="pull-right">
 
-                            <!-- button-mark-important -->
-                            <div class="input-group action-button-ctr">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default btn-large text-action-button"><i class="fa fa-exclamation"></i> <strong>Important</strong></button>   
-                                </span>
-                                <span class="input-group-addon action-button-count">
-                                    99
-                                </span>
-                            </div>
-                            <!-- / button-mark-important -->
-                            
-                            <!-- button-mark-true -->
-                            <div class="input-group action-button-ctr">
-                                <span class="input-group-btn">                                    
-                                    <button class="btn btn-success btn-large text-action-button" id="question-support"><i class="fa fa-check"></i> <strong>Support</strong></button>
-                                    
-                                </span>
-                                <span class="input-group-addon action-button-count">
-                                    77
-                                </span>
-                            </div>
-                            <!-- / button-mark-true -->
-                            
-                            <!-- button-mark-false -->
-                            <div class="input-group action-button-ctr">
-                                <span class="input-group-btn">                                    
-                                    <button class="btn btn-danger btn-large text-action-button" id="question-reject"><i class="fa fa-times"></i> <strong>Reject</strong></button>
-                                    
-                                </span>
-                                <span class="input-group-addon action-button-count">
-                                    33
-                                </span>
-                            </div>
-                            <!-- / button-mark-false -->
-                                                    
-                        </div>
-
+                    <!-- button-mark-important -->
+                    <div class="col-xs-3 col-sm-12 input-group action-button-ctr">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default btn-large text-action-button"><i class="fa fa-exclamation"></i> <strong class="hidden-xs">Important</strong></button>   
+                        </span>
+                        <span class="action-button-count input-group-addon">
+                            99
+                        </span>
                     </div>
-                
-                </div>
-            </div>
-        </div>
+                    <!-- / button-mark-important -->
+                    
 
+                    
+                    <!-- button-mark-true -->
+                    <div class="col-xs-3 col-sm-12 input-group action-button-ctr">
+                        <span class="input-group-btn">                                    
+                            <button class="btn btn-success btn-large text-action-button" id="question-support"><i class="fa fa-check"></i> <strong class="hidden-xs">Support</strong></button>
+                            
+                        </span>
+                        <span class="input-group-addon action-button-count">
+                            777
+                        </span>
+                    </div>
+                    <!-- / button-mark-true -->
+
+                    
+                    <!-- button-mark-false -->
+                    <div class="col-xs-3 col-sm-12  input-group action-button-ctr">
+                        <span class="input-group-btn">                                    
+                            <button class="btn btn-danger btn-large text-action-button" id="question-reject"><i class="fa fa-times"></i> <strong class="hidden-xs">Reject</strong></button>
+                            
+                        </span>
+                        <span class="input-group-addon action-button-count">
+                            3333
+                        </span>
+                    </div>
+                    <!-- / button-mark-false -->
+                            
+                </div>
+                
+                <!-- / action buttons row -->
+                                                    
+            </div>
+            <!-- / action-buttons -->
+            
+            
+            
+        </div>
+        <!-- / question header row -->
+        
         <!-- small buttons -->
-        <div class="action-button-ctr">
+        <div class="additional-button-ctr">
             <button class="btn btn-default btn-sm"><i class="fa fa-flag"></i> <strong>Flag</strong></button>
             &lt;Social sharing buttons&gt;
         </div>
-        
         <!-- / small buttons -->
-
-</div>
+        
+        
+    </div>
 <!-- / question -->
 
 <!-- create evidence -->
