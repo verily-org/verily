@@ -1,4 +1,4 @@
-<div id="form-ctr" class="well" style="display: none;">
+<div id="form-ctr" class="well form" style="display: none;">
     <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
 
     <form id="create-evidence" role="form" action="{{ question.id }}/answers" method="POST" enctype="multipart/form-data">
@@ -13,9 +13,11 @@
         {% include '../form-locality.html' %}
         
         {% include '../form-latlong.html' %}
+        
+        {% include '../form-tags.html' %}
     
         <button type="submit" class="btn btn-primary">Submit Evidence</button>
-        <button type="button" id="form-cancel" class="btn btn-default pull-right">Cancel</button>
+        <input type="reset" id="form-cancel" class="btn btn-default pull-right" value="Cancel">
     </form>
 </div>
 

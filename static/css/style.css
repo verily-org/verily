@@ -44,6 +44,10 @@
     margin-top: 1.0em;
 }
 
+.well.form {
+    padding-top: 0;
+}
+
 .form-control.plain {
     background-color: transparent;
     border: none;
