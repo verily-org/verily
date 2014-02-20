@@ -14,6 +14,19 @@
     float: right;
 }
 
+.mini.action-button-ctr {
+    margin-left: 15px;
+    float: none;
+}
+
+.mini.action-button-ctr:first-child {
+
+}
+
+.mini.action-button-ctr:last-child {
+    margin-right: 15px;
+}
+
 .additional-button-ctr {
     margin-top: 1em;
 }
@@ -41,8 +54,7 @@
     }
 }
 
-.action-button,
-.small-action-button {
+.mini-action-button {
     width: 3em;
 }
 
@@ -55,7 +67,11 @@
 .action-button-count {
     background-color: #ffffff !important;
     color: #428bca;
-    min-width: 4.25em !important;
+    min-width: 4.25em;
+}
+
+.mini .action-button-count {
+    min-width: 2em;
 }
 
 .question-image-and-map > div {
