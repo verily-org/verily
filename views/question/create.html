@@ -1,23 +1,25 @@
-{% set type = 'evidence' %}
+{% set type = 'question' %}
 
-<div id="form-ctr" class="well form" style="display: none;">
-    <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
+{% extends '../layout.html' %}
 
-    <form id="create-evidence" role="form" action="{{ question.id }}/answers" method="POST" enctype="multipart/form-data">
+{% block content %}
+
+<div id="form-ctr" class="form">
+    <h3><span class="fa fa-plus"></span><span class="sr-only">Add</span>&nbsp;Question</h3>
+
+    <form id="create-question" role="form" action="/question" method="POST" enctype="multipart/form-data">
         <!-- <input type="hidden" name="_method" value="POST"> -->
         <input type="hidden" id="form-question-type" name="type">
 
         {% include '../generic/create.html' %}
     
-        <button type="submit" class="btn btn-primary">Submit Evidence</button>
-        <input type="reset" id="form-cancel" class="btn btn-default pull-right" value="Cancel">
+        <button type="submit" class="btn btn-primary">Submit Question</button>
+        <a href="/question" class="btn btn-default pull-right">Cancel</a>
     </form>
 </div>
 
 <script type="text/javascript">
-document.getElementById('form-cancel').addEventListener('click', function(e) {
-    document.getElementById('form-ctr').style.display = 'none';
-});
+
 
 // Same-as behaviour to duplicate fields from question.
 document.getElementById('btn-same-locality').addEventListener('click', function(e) {
@@ -30,3 +32,5 @@ document.getElementById('btn-same-latlong').addEventListener('click', function(e
 });
 
 </script>
+
+{% endblock %}

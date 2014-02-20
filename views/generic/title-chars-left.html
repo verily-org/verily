@@ -10,7 +10,10 @@
 
     function displayCharsLeft() {
         var charsLeft = maxLength - title.value.length;
-        titleCharsLeft.innerHTML = charsLeft;
+        var titleCharsLeftContent = titleCharsLeft.getElementsByClassName('value')[0];
+        
+        titleCharsLeftContent.innerHTML = charsLeft;
+        titleCharsLeftContent.title = 'Characters remaining';
         if (charsLeft >= 0) {
             titleCharsLeft.className = titleCharsLeftInitialClassName + ' text-success';
         } else {

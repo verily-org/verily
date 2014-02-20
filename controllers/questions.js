@@ -84,6 +84,16 @@ exports.all = function (req, res) {
     });
 };
 
+// View to add question
+exports.create = function (req, res) {
+    res.status(200);
+    res.render('question/create', {
+        page: {
+            title: 'Add question'
+        }
+    });
+}
+
 // Get a specific question.
 exports.get = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
@@ -182,7 +192,7 @@ exports.head = function (req, res) {
 };
 
 // Adds a question and responds with the created question.
-exports.create = function (req, res) {
+exports.new = function (req, res) {
     // This is a POST request, so by default, fields go into the body.
 
     // only extra columns (apart from post) need to be written here
