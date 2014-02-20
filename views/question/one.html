@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends '../layout.html' %}
 
 {% block content %}
 <!-- question -->
@@ -74,7 +74,7 @@
 <!-- / question -->
 
 <!-- create evidence -->
-{% include 'evidence/create.html' %}
+{% include '../evidence/create.html' %}
 <!-- / create evidence -->
 
 
@@ -104,7 +104,7 @@
 <div class="row question-answers">
     {% for answer in question.answers %}
         <div class="col-sm-4">
-            {% include 'answerWithinQuestion.html' with answer %}
+            {% include '../evidence/one-embed.html' with answer %}
         </div>   
     {% endfor %}
 </div>

@@ -137,7 +137,7 @@ exports.get = function (req, res) {
                            console.log(wrapper);
 
 
-                           res.render('question', {
+                           res.render('question/one', {
                                question: questionTmp
                            });
                            
