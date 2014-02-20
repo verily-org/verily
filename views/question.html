@@ -22,7 +22,7 @@
                 <i class="fa fa-tag fa-fw"></i>
                 {% endif %}
                 {% for tag in question.tags %}
-                    <a href="/tag/{{ tag }}"><span class="label label-primary">{{ tag }}</span></a>
+                    <a href="/tag/{{ tag }}"><span class="label label-primary tag">{{ tag }}</span></a>
                 {% endfor %}
                 
             </div>
@@ -31,21 +31,21 @@
                     
                     <!-- button-mark-true -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-success btn-large text-action-button" id="question-support"><i class="fa fa-check" id="icon-support"></i> <strong class="hidden-xs">Support</strong></button>
+                        <button class="btn btn-success btn-large text-action-button" id="question-support" title="Support"><i class="fa fa-check" id="icon-support"></i> <strong class="hidden-xs">Support</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">777</a>
                     </div>
                     <!-- / button-mark-true -->
                     
                     <!-- button-mark-false -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-danger btn-large text-action-button" id="question-reject"><i class="fa fa-times" id="icon-reject"></i> <strong class="hidden-xs">Reject</strong></button>
+                        <button class="btn btn-danger btn-large text-action-button" id="question-reject" title="Reject"><i class="fa fa-times" id="icon-reject"></i> <strong class="hidden-xs">Reject</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">3333</a>
                     </div>
                     <!-- / button-mark-false -->
                     
                     <!-- button-mark-important -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-default btn-large text-action-button"><i class="fa fa-exclamation"></i> <strong class="hidden-xs">Important</strong></button>
+                        <button class="btn btn-default btn-large text-action-button" title="Mark as important"><i class="fa fa-exclamation"></i> <strong class="hidden-xs">Important</strong></button>
                         <a href="#" class="btn btn-default action-button-count">99</a>
                     </div>
                     <!-- / button-mark-important -->

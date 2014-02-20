@@ -4,17 +4,8 @@
     <form id="create-evidence" role="form" action="{{ question.id }}/answers" method="POST" enctype="multipart/form-data">
         <!-- <input type="hidden" name="_method" value="POST"> -->
         <input type="hidden" id="form-question-type" name="type">
-        {% include '../form-title.html' %}
-        
-        {% include '../form-image.html' %}
-        
-        {% include '../form-text.html' %}
-        
-        {% include '../form-locality.html' %}
-        
-        {% include '../form-latlong.html' %}
-        
-        {% include '../form-tags.html' %}
+
+        {% include '../generic/create.html' %}
     
         <button type="submit" class="btn btn-primary">Submit Evidence</button>
         <input type="reset" id="form-cancel" class="btn btn-default pull-right" value="Cancel">

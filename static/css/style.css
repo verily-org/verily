@@ -80,6 +80,10 @@
     min-width: 2em;
 }
 
+.tag {
+    font-weight: normal;
+}
+
 .question-image-and-map > div {
     padding-top: 1em;
     margin-top: 0;
