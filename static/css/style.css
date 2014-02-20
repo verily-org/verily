@@ -70,6 +70,12 @@
     min-width: 4.25em;
 }
 
+/* Buttons with a background colour need better borders */
+.action-button-count.back-coloured {
+    margin-left: 0 !important;
+    border-left: none;
+}
+
 .mini .action-button-count {
     min-width: 2em;
 }
