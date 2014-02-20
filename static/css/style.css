@@ -7,41 +7,37 @@
 
 .action-buttons {
     margin-top: 1em;
-    padding-left: 0;
 }
 
-/* TODO Change 15px to the LESS padding from bootstrap .col-xx-nn */
 .action-button-ctr {
-    margin-top: 1.0em;
-    float: left !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+    margin-top: 1em;
+    float: right;
 }
-
-/*.action-buttons > .row div:first-child {
-    padding-left: 0 !important;
-}*/
 
 .additional-button-ctr {
     margin-top: 1em;
-}
-
-.action-button-ctr .input-group-btn {
-    text-align: right;
 }
 
 .text-action-button {
     width: 7em;
 }
 
-/* TODO Use LESS variables */
+/* TODO Use LESS variables for 768px and margins (15px) */
 @media (max-width: 768px) {
-    .text-action-button {
-        width: 3em;
-    }
     
     .action-buttons {
-        padding-left: 1em;
+        margin-top: 1em;
+        padding-left: 15px;
+    }
+    
+    .action-button-ctr {
+        margin-left: 15px;
+        float: none;
+    }
+    
+    
+    .text-action-button {
+        width: 3em;
     }
 }
 
@@ -55,10 +51,11 @@
     margin-top: 0;
 }
 
+/* TODO Use LESS variables */
 .action-button-count {
     background-color: #ffffff !important;
-    padding: 0 !important;
-    min-width: 3em !important;
+    color: #428bca;
+    min-width: 4.25em !important;
 }
 
 .question-image-and-map > div {
