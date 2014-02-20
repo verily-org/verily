@@ -31,14 +31,14 @@
                     
                     <!-- button-mark-true -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-success btn-large text-action-button" id="question-support"><i class="fa fa-check"></i> <strong class="hidden-xs">Support</strong></button>
+                        <button class="btn btn-success btn-large text-action-button" id="question-support"><i class="fa fa-check" id="icon-support"></i> <strong class="hidden-xs">Support</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">777</a>
                     </div>
                     <!-- / button-mark-true -->
                     
                     <!-- button-mark-false -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-danger btn-large text-action-button" id="question-reject"><i class="fa fa-times"></i> <strong class="hidden-xs">Reject</strong></button>
+                        <button class="btn btn-danger btn-large text-action-button" id="question-reject"><i class="fa fa-times" id="icon-reject"></i> <strong class="hidden-xs">Reject</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">3333</a>
                     </div>
                     <!-- / button-mark-false -->
@@ -122,16 +122,38 @@ var questionType = document.getElementById('form-question-type');
 var labelQuestionType = document.getElementById('form-label-question-type');
 var questionTypeClassName = labelQuestionType.className;
 
+// Remove all children from an element
+function resetElement(target) {
+    while (target.firstChild) {
+        labelQuestionType.removeChild(target.firstChild);
+    }
+}
+
 document.getElementById('question-support').addEventListener('click', function(e) {
     questionType.value = 'support';
-    labelQuestionType.innerHTML = 'Support';
+    
+    var supportIcon = document.createElement('i');
+    supportIcon.className = 'fa fa-check';
+    var content = document.createTextNode(' Support');
+    
+    resetElement(labelQuestionType);
+    labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+    labelQuestionType.insertBefore(supportIcon, content);    
     labelQuestionType.className = questionTypeClassName + ' label-success';
     displayForm();
 });
 
 document.getElementById('question-reject').addEventListener('click', function(e) {
     questionType.value = 'reject';
-    labelQuestionType.innerHTML = 'Reject';
+    
+    var rejectIcon = document.createElement('i');
+    rejectIcon.className = 'fa fa-times';
+    var content = document.createTextNode(' Reject');
+
+    resetElement(labelQuestionType);
+    labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+    labelQuestionType.insertBefore(rejectIcon, content);
+       
     labelQuestionType.className = questionTypeClassName + ' label-danger';
     displayForm();
 });
