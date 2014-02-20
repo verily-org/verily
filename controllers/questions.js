@@ -138,7 +138,10 @@ exports.get = function (req, res) {
 
 
                            res.render('question/one', {
-                               question: questionTmp
+                               question: questionTmp,
+                               page: {
+                                   title: question.title
+                               }
                            });
                            
                        }
