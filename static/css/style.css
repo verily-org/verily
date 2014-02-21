@@ -52,6 +52,10 @@
     .text-action-button {
         width: 3em;
     }
+    
+    .form-control.collapse-with-margin {
+        margin-top: 5px;
+    }
 }
 
 .mini-action-button {
