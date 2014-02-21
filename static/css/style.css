@@ -14,9 +14,13 @@
     margin-top: 1em;
 }
 
+.action-buttons .row {
+    margin-right: 0;
+}
+
 .action-button-ctr {
     margin-top: 1em;
-    float: right;
+    float: right
 }
 
 .mini.action-button-ctr {
@@ -112,6 +116,10 @@
     box-shadow: none;
     padding-left: 0;
     padding-right: 0;
+}
+
+.has-feedback .form-control-feedback.with-input-lg {
+    top: 31px;
 }
 
 #form-image-upload-ctr {

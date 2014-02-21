@@ -9,3 +9,110 @@
 {% include '../generic/form-latlong.html' %}
 
 {% include '../generic/form-tags.html' %}
+
+<script type="text/javascript">
+// On form submit, validate fields on client side.
+document.addEventListener('DOMContentLoaded', function(event) {
+    var defaultFormGroupClassName = 'form-group';
+    var form = document.forms[0];
+    var submitButton = document.getElementById('submit');
+
+
+
+    // maxTitleLength defined in generic/title-chars-left.html
+    // @return boolean: true for valid
+    var validateFormTitle = function() {
+        var error;
+        
+        var elem = document.getElementById('form-title');
+        var elemParent = elem.parentNode;
+        
+        var label;
+        label = elemParent.getElementsByTagName('label')[0];
+        
+        // Set the initial value to the innerHTML of the label,
+        // if it hasn't been set yet.
+        if (!label.dataset.hasOwnProperty('initial')) {
+            label.dataset.initial = label.innerHTML;
+        }
+        
+        var icon = elemParent.getElementsByClassName('icon')[0];
+        
+        // Reset form-group elements in the case of errors in multiple requests.
+        if (label.innerHTML !== label.dataset.initial) {
+            label.innerHTML = label.dataset.initial;
+            elemParent.className = defaultFormGroupClassName;
+            if (icon) {
+                elemParent.removeChild(icon);
+            }
+            
+        }
+        
+        if (elem.value.length === 0) {
+            error = 'need one!'
+        } else if (elem.value.length > maxTitleLength) {
+            error = 'too long!'
+        }
+        
+        if (error) {
+            elemParent.className = defaultFormGroupClassName + ' has-error has-feedback';
+            
+            // Add the error message.
+            label.innerHTML = label.dataset.initial + ' &ndash; ' + error;
+            
+            // Add the icon.
+            if (!icon) {
+                icon = document.createElement('span');
+                icon.className = 'icon fa fa-times form-control-feedback with-input-lg';
+            }
+            elemParent.insertBefore(icon, elem.nextSibling);
+            
+            return false;
+        } else {
+            // Valid   
+            return true;
+        }
+    };
+    
+    var validateFunctions = [
+        validateFormTitle
+    ]
+
+    function validate(e) {
+        var valid = true;
+        
+        // stop acts as `break` but continues validation to
+        // show all errors to the user.
+        var stop = false;
+        
+        for (var i = 0; i < validateFunctions.length; i++) {
+            if (!validateFunctions[i]() && !stop) {
+                // Validation for this field returned errors
+                // and we have not found a previous error
+                // -- we have not stopped setting the valid variable yet.
+                valid = false;
+                stop = true;
+            };
+            
+            console.log('valid: ' + valid + '; stop: ' + stop);
+        }
+        
+        
+        if (valid) {
+            // Valid, submit form to endpoint
+            return;
+        } else {
+            // Not valid, don't submit form.
+            e.preventDefault();
+        }
+    }
+
+    form.addEventListener('submit', function(e) {
+        validate(e);
+    });
+    
+    document.getElementById('form-title').addEventListener('keyup', function(e) {
+        validateFormTitle();
+    });
+});
+</script>
