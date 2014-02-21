@@ -2,7 +2,7 @@
     <label for="form-title">Title</label>
     <div id="form-title-chars-left" class="pull-right"><span class="sr-only">Characters remaining:</span><span class="value"></span>
     </div>
-    <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short {{ type }} description">
+    <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short {{ type }} description" value="{{ post.title }}">
 </div>
 
 {% include 'title-chars-left.html' %}

@@ -94,22 +94,34 @@ exports.create = function (req, res) {
     });
 }
 
-// View to edit question
+// View to edit a question
 exports.edit = function (req, res) {
-    res.status(200);
-    res.render('question/edit', {
-        page: {
-            title: 'Edit question'
+    
+    getQuestion(req, function(err, question) {
+        if (err) {
+            // Error!
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            // No errors.            
+            res.status(200);
+            
+            // Goes into post object because
+            // all fields are in Post and this allows
+            // a generic form.
+            res.render('question/edit', {
+                post: question,
+                page: {
+                    title: 'Edit question'
+                }
+            });
         }
     });
 }
 
-// Get a specific question.
-exports.get = function (req, res) {
-    //get(req.models.Question, req.params.question_id, res, 200);
-
+// Used by get, edit functions etc.
+var getQuestion = function (req, callback) {
     // ETag support.
-    var reqIfNoneMatch = req.get(enums.ifNoneMatch);
+    var reqIfNoneMatch = req.get(enums.ifNoneMatch) || null;
 
     generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
@@ -149,21 +161,11 @@ exports.get = function (req, res) {
                            console.log(answers);
                            questionTmp.answers = answers;
                            
-                           // Set the ETag header.
-                           res.set(enums.eTag, questionTmp.updated);
-                           res.status(200);
                            //res.json(wrapper);
             
                            console.log(wrapper);
-
-
-                           res.render('question/one', {
-                               question: questionTmp,
-                               page: {
-                                   title: question.title
-                               }
-                           });
                            
+                           callback(err, questionTmp);
                        }
                    });
                } 
@@ -171,13 +173,43 @@ exports.get = function (req, res) {
             
 
         } else if (err === enums.NOT_MODIFIED) {
-            // 304 Not Modified.
-            res.status(304);
-            res.end();
+            callback(err);
         } else {
-            generic.genericErrorHandler(req, res, err);
+            callback(err);
         }
 
+    });  
+};
+
+// Get a specific question.
+exports.get = function (req, res) {
+    //get(req.models.Question, req.params.question_id, res, 200);
+
+    getQuestion(req, function(err, question) {
+        if (err) {
+            // Error!
+            if (err === enums.NOT_MODIFIED) {
+                // 304 Not Modified.
+                res.status(304);
+                res.end();
+            } else {
+                generic.genericErrorHandler(req, res, err);
+            }
+        } else {
+            // No errors.
+            
+            // Set the ETag header.
+            res.set(enums.eTag, question.updated);
+            
+            res.status(200);
+            
+            res.render('question/one', {
+                question: question,
+                page: {
+                    title: question.title
+                }
+            });
+        }
     });
 };
 
