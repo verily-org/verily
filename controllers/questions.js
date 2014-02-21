@@ -76,8 +76,9 @@ exports.all = function (req, res) {
                     var wrapper = {
                         questions: questions
                     };
-                    res.json(wrapper);
-                    res.end();
+                    res.render('question/index', {
+                        questions: questions
+                    });
                 }
             });
         }

@@ -21,3 +21,9 @@
 .olControlAttribution {
     bottom: 0 !important;
 }
+.item-top-margin {
+    margin-top: 1.0em;
+}
+.btn-group-left-margin {
+    margin-left: 3.0em;
+}
