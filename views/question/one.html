@@ -1,5 +1,14 @@
 {% extends '../layout.html' %}
 
+{% block breadcrumb %}
+<li>
+    <a href="/crisis/example" title="Crisis">Example Crisis</a>
+</li>
+<li>
+    <a href="/question/{{ question.id }}" title="Question">{{ question.title }}</a>
+</li>
+{% endblock %}
+
 {% block content %}
 <!-- question -->
 <div class="page-header question border-true">

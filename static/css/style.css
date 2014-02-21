@@ -1,3 +1,8 @@
+.breadcrumb {
+    background-color: transparent;
+    padding-left: 0;
+}
+
 .question.page-header {
     border-left-width: 0.75em;
     border-left-style: solid;
