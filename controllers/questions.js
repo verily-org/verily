@@ -94,6 +94,16 @@ exports.create = function (req, res) {
     });
 }
 
+// View to edit question
+exports.edit = function (req, res) {
+    res.status(200);
+    res.render('question/edit', {
+        page: {
+            title: 'Edit question'
+        }
+    });
+}
+
 // Get a specific question.
 exports.get = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
