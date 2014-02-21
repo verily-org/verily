@@ -85,12 +85,44 @@ exports.all = function (req, res) {
     });
 };
 
-// Get a specific question.
-exports.get = function (req, res) {
-    //get(req.models.Question, req.params.question_id, res, 200);
+// View to add question
+exports.create = function (req, res) {
+    res.status(200);
+    res.render('question/create', {
+        page: {
+            title: 'Add question'
+        }
+    });
+}
 
+// View to edit a question
+exports.edit = function (req, res) {
+    
+    getQuestion(req, function(err, question) {
+        if (err) {
+            // Error!
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            // No errors.            
+            res.status(200);
+            
+            // Goes into post object because
+            // all fields are in Post and this allows
+            // a generic form.
+            res.render('question/edit', {
+                post: question,
+                page: {
+                    title: 'Edit question'
+                }
+            });
+        }
+    });
+}
+
+// Used by get, edit functions etc.
+var getQuestion = function (req, callback) {
     // ETag support.
-    var reqIfNoneMatch = req.get(enums.ifNoneMatch);
+    var reqIfNoneMatch = req.get(enums.ifNoneMatch) || null;
 
     generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
@@ -99,8 +131,13 @@ exports.get = function (req, res) {
                 title: question.title,
                 id: question.id,
                 text: question.text,
+                targetLocality: question.targetLocality,
+                targetLat: question.targetLat,
+                targetLong: question.targetLong,
+                targetImage: question.targetImage,
                 date: question.date.toString(),
                 author: question.author,
+                tags: question.tags,
                 updated: question.updated
             }, wrapper = {
                 question: questionTmp
@@ -113,41 +150,67 @@ exports.get = function (req, res) {
                    console.log('answers');
                    console.log(answers);
                    
-                   async.each(answers, generic.gen, function (err) {
+                   // Include answers within question
+                   async.each(answers, function(answer, callback) {
+                       generic.gen(answer, function(cb) {
+                           callback();
+                       });
+                       
+                   }, function (err) {
                        if (!err) {
                            console.log('answers');
                            console.log(answers);
                            questionTmp.answers = answers;
                            
-                           // Set the ETag header.
-                           res.set(enums.eTag, questionTmp.updated);
-                           res.status(200);
                            //res.json(wrapper);
             
                            console.log(wrapper);
-
-
-                           res.render('question', {
-                               question: questionTmp
-                           });
                            
+                           callback(err, questionTmp);
                        }
                    });
                } 
             });
             
 
-            
-
-            // res.end();
         } else if (err === enums.NOT_MODIFIED) {
-            // 304 Not Modified.
-            res.status(304);
-            res.end();
+            callback(err);
         } else {
-            generic.genericErrorHandler(req, res, err);
+            callback(err);
         }
 
+    });  
+};
+
+// Get a specific question.
+exports.get = function (req, res) {
+    //get(req.models.Question, req.params.question_id, res, 200);
+
+    getQuestion(req, function(err, question) {
+        if (err) {
+            // Error!
+            if (err === enums.NOT_MODIFIED) {
+                // 304 Not Modified.
+                res.status(304);
+                res.end();
+            } else {
+                generic.genericErrorHandler(req, res, err);
+            }
+        } else {
+            // No errors.
+            
+            // Set the ETag header.
+            res.set(enums.eTag, question.updated);
+            
+            res.status(200);
+            
+            res.render('question/one', {
+                question: question,
+                page: {
+                    title: question.title
+                }
+            });
+        }
     });
 };
 
@@ -172,11 +235,12 @@ exports.head = function (req, res) {
 };
 
 // Adds a question and responds with the created question.
-exports.create = function (req, res) {
+exports.new = function (req, res) {
     // This is a POST request, so by default, fields go into the body.
 
-    var data = { //only extra column(than post) need to bw written here
-        title: req.body.title
+    // only extra columns (apart from post) need to be written here
+    var data = { 
+
     };
     generic.create(req.models.Question, data, req, function (err, question) {
         if (!err && question) {
@@ -190,7 +254,7 @@ exports.create = function (req, res) {
                     res.json(wrapper);
                     res.end();
                 } else {
-                    //special err: if 404 then it means the create just excuted is invalid.
+                    //special err: if 404 then it means the create just executed is invalid.
                     res.status(500);
                     res.end('Error 500: Server Error');
                     console.r.error(req, 500, err);

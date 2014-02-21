@@ -1,0 +1,35 @@
+<div class="form-group">
+    <label>Image</label>
+    <br>
+    <label class="radio-inline">
+        <input type="radio" id="form-select-image-upload" name="form-select-image" value="upload" checked>
+        <i class="fa fa-upload"></i> Upload
+    </label>
+    <label class="radio-inline">
+        <input type="radio" id="form-select-image-link" name="form-select-image" value="link">
+        <i class="fa fa-link"></i> Link
+    </label>
+    
+    <div id="form-image-upload-ctr" class="form-control">
+        <input type="file" accept="image/*" id="form-image-upload" name="targetImageUpload">
+    </div>
+
+    <div id="form-image-link-ctr" style="display: none;">
+        <span class="sr-only">URL of image</span>
+        <input type="text" class="form-control" id="form-image-url" name="targetImageUrl" placeholder="URL of image">
+    </div>
+    
+
+</div>
+
+<script type="text/javascript">
+document.getElementById('form-select-image-upload').addEventListener('click', function(e) {
+   document.getElementById('form-image-upload-ctr').style.display = 'block';
+   document.getElementById('form-image-link-ctr').style.display = 'none'; 
+});
+
+document.getElementById('form-select-image-link').addEventListener('click', function(e) {
+   document.getElementById('form-image-link-ctr').style.display = 'block'; 
+   document.getElementById('form-image-upload-ctr').style.display = 'none'; 
+});
+</script>

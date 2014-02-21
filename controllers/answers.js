@@ -16,6 +16,8 @@ exports.get = function (req, res) {
                 if (!err && answer) {
                     var newanswer = {
                         id: answer.id,
+                        type: answer.type,
+                        title: answer.title,
                         text: answer.text,
                         date: answer.date,
                         author: answer.author,
@@ -124,9 +126,12 @@ exports.create = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             //question exists
-            generic.create(req.models.Answer, {}, req, function (err, answer) {
+            generic.create(req.models.Answer, {
+                type: req.body.type
+            }, req, function (err, answer) {
                 if (!err && answer) {
                     answer.setQuestion(question, function (err) {
+                        // TODO: Change this so that it redirects to created answer.
                         generic.get(req.models.Answer, answer.id, undefined, function (err, answer2) {
                             if (!err && answer2) {
                                 var answerTmp = {

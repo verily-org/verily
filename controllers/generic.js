@@ -72,11 +72,22 @@ exports.create = function (model, data, req, cb) {
         // We only add one item, so use items[0].
         var item = items[0],
             now = new Date().getTime();
+           
+        // Tags: tag1, tag2, tag3, ..., tagN
+        var tags = null;
+        if (req.body.hasOwnProperty('tags')) {
+            tags = req.body.tags.split(',').map(function(tag) {
+                return tag.trim().toLowerCase();
+            });
+        }        
 
         req.models.Post.create([{
+            title: req.body.title,
             text: req.body.text,
+            targetImage: req.body.targetImage,
             date: new Date(),
             author: req.body.author,
+            tags: tags,
             updated: now
         }], function (err, items) {
             if (err) {

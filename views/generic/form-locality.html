@@ -1,0 +1,8 @@
+<div class="form-group">
+    <label for="form-locality"><i class="fa fa-map-marker"></i> Locality</label>
+    {% if type === 'evidence' %}
+    <button id="btn-same-locality" type="button" class="btn btn-link btn-sm btn-same-as">Same as question</button>
+    {% endif %}
+    <span class="sr-only">Place</span>
+    <input type="text" class="form-control" id="form-locality" name="targetLocality" placeholder="Place" value="{{ post.targetLocality }}">
+</div>

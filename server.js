@@ -22,7 +22,7 @@ module.exports = function (suppressLogs) {
 
     // Following line replaced to avoid warnings –
     // see https://github.com/senchalabs/connect/wiki/Connect-3.0
-    // app.use(express.bodyParser());
+    app.use(express.bodyParser());
 
     app.use(connect.urlencoded());
     app.use(connect.json());

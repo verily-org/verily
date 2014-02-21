@@ -1,0 +1,15 @@
+<div class="form-group">
+    <label><i class="fa fa-crosshairs"></i> Lat Long</label>
+    {% if type === 'evidence' %}
+    <button id="btn-same-latlong" type="button" class="btn btn-link btn-sm btn-same-as">Same as question</button>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-6">
+            <span class="sr-only">Latitude in decimal degrees (e.g. 50.930)</span><input type="text" class="form-control" id="form-target-lat" name="targetLat" placeholder="Latitude in decimal degrees (e.g. 50.930)" value="{{ post.targetLat }}">
+        </div>
+        <div class="col-sm-6">
+            <span class="sr-only">Longitude in decimal degrees (e.g. -1.422)</span><input type="text" class="form-control collapse-with-margin" id="form-target-long" name="targetLong" placeholder="Longitude in decimal degrees (e.g. -1.422)" value="{{ post.targetLong }}">
+        </div>
+    </div>
+
+</div>

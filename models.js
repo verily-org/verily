@@ -3,7 +3,22 @@
 module.exports = function (db, cb) {
 
     var Post = db.define('post', {
+        title: {
+            type: 'text'
+        },
         text: {
+            type: 'text'
+        },
+        targetLocality: {
+            type: 'text'
+        },
+        targetLat: {
+            type: 'number'
+        },
+        targetLong: {
+            type: 'number'
+        },
+        targetImage: {
             type: 'text'
         },
         date: {
@@ -14,14 +29,21 @@ module.exports = function (db, cb) {
         author: {
             type: 'text'
         },
+        tags: {
+            type: 'object'
+        },
         updated: {
             type: 'text'
         }
     }), Question = db.define('question', {
-        title: {
-            type: 'text'
+        viewCount: {
+            type: 'number'
         }
     }), Answer = db.define('answer', {
+        type: {
+            type: 'enum',
+            values: ['support', 'reject']
+        }
     }), QuestionComment = db.define('question_comment', {
     }), AnswerComment = db.define('answer_comment', {
     }), Rating = db.define('rating', {
