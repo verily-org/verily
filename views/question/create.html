@@ -18,19 +18,4 @@
     </form>
 </div>
 
-<script type="text/javascript">
-
-
-// Same-as behaviour to duplicate fields from question.
-document.getElementById('btn-same-locality').addEventListener('click', function(e) {
-    document.getElementById('form-locality').value = document.getElementById('question-locality').innerHTML;
-});
-
-document.getElementById('btn-same-latlong').addEventListener('click', function(e) {
-    document.getElementById('form-target-lat').value = document.getElementById('question-target-lat').innerHTML;
-    document.getElementById('form-target-long').value = document.getElementById('question-target-long').innerHTML;
-});
-
-</script>
-
 {% endblock %}
