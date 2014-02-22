@@ -1,5 +1,55 @@
 <div class="form-group">
     <label for="form-tags"><i class="fa fa-tag"></i> Tags</label>
     <span class="sr-only">Keywords separated by commas</span>
+    <span id="form-tags-added"></span>
     <input type="text" class="form-control" id="form-tags" name="tags" placeholder="Comma-separated keywords" value="{{ post.tags }}">
 </div>
+
+<script type="text/javascript">
+var formTags = document.getElementById('form-tags');
+var formTagsAdded = document.getElementById('form-tags-added');
+formTags.addEventListener('keyup', function(e) {
+    displayTags();
+});
+
+document.addEventListener('DOMContentLoaded', function(e) {
+    displayTags();
+})
+
+var displayTags = function() {
+    var tags = common.tagize(formTags.value);
+        
+    // Reset area to insert tags.
+    while (formTagsAdded.firstChild) {
+        formTagsAdded.removeChild(formTagsAdded.firstChild);
+    }
+
+    if (tags && tags.length !== 0) {
+        
+        for (var i = 0; i < tags.length; i++) {
+            
+            var anchor = document.createElement('a');
+            anchor.href = '#';
+            anchor.className = 'tag';
+        
+            var span = document.createElement('span');
+            span.className = 'label label-primary tag';
+        
+            var text = document.createTextNode(tags[i]);
+        
+            // Insert text into span (null means it will insert at end).
+            span.insertBefore(text, null);
+        
+            // Insert span into anchor
+            anchor.insertBefore(span, null);
+        
+            // Insert anchor into formTags element.
+            formTagsAdded.insertBefore(anchor, null);
+        }
+        
+
+    }
+
+}
+    
+</script>

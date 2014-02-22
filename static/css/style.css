@@ -1,3 +1,7 @@
+#content {
+    margin-bottom: 1em;
+}
+
 .breadcrumb {
     background-color: transparent;
     padding-left: 0;
@@ -151,6 +155,15 @@
 
 #form-title-chars-left {
     font-weight: bold;
+}
+
+.form-group a.tag {
+    margin-left: 0.5em;
+}
+
+.form-group a.tag .label {
+    display: inline-block;
+/*    font-size: 100%*/
 }
 
 
