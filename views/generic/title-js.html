@@ -1,7 +1,4 @@
-<script type="text/javascript">
-    // TODO may want this to be <140 to allow linking of the resource.
-    var maxTitleLength = 140;
-    
+<script type="text/javascript">    
     var title = document.getElementById('form-title');    
     var titleCharsLeft = document.getElementById('form-title-chars-left');
     var titleCharsLeftInitialClassName = titleCharsLeft.className;
@@ -10,7 +7,7 @@
     displayCharsLeft();
 
     function displayCharsLeft() {
-        var charsLeft = maxTitleLength - title.value.length;
+        var charsLeft = common.maxTitleLength - title.value.length;
         var titleCharsLeftContent = titleCharsLeft.getElementsByClassName('value')[0];
         
         titleCharsLeftContent.innerHTML = charsLeft;

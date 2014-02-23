@@ -1,8 +1,6 @@
-<select class="form-control collapse-with-margin" id="form-occurred-mm" name="targetOccurredMM">
-    <option>M</option>
+<select class="form-control collapse-with-margin form-occurred" id="form-occurred-minute" name="targetOccurredMinute">
+    <option>{{ minuteDefault }}</option>
     {# parameters for getAllFromRange: 0, 59, 'padding' #}
     {% set minutes = 0|getAllFromRange(59, 'padding') %}
-    {% for minute in minutes %}
-        <option>{{ minute }}</option>
-    {% endfor %}
+    {% for minute in minutes %}<option>{{ minute }}</option>{% endfor %}
 </select>

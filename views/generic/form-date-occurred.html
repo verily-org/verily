@@ -1,9 +1,17 @@
-<div class="form-group">
-    <label><i class="fa fa-calendar-o"></i> Date and time occurred</label>
-    <span class="sr-only">Date and time occurred:</span>
+{% set dayDefault = null|getDayDefault %}
+{% set monthDefault = null|getMonthDefault  %}
+{% set yearDefault = null|getYearDefault  %}
+{% set hourDefault = null|getHourDefault %}
+{% set minuteDefault = null|getMinuteDefault %}
+{% set secondDefault = null|getSecondDefault %}
+
+<div class="form-group" id="form-occurred-group">
+    <label class="control-label"><i class="fa fa-calendar-o"></i> Date and time occurred in <abbr title="Coordinated Universal Time" class="initialism">UTC</abbr></label>
+    <span class="sr-only">Date and time occurred in UTC:</span>
+    <button id="btn-occurred-now" type="button" class="btn btn-link btn-sm btn-occurred-now">Now</button>
     
     <div class="row">
-        <div class="col-sm-5">
+        <div class="col-sm-6">
             <div class="row">
                 <div class="col-xs-4">
                     {% include 'form-day.html' %}
@@ -18,7 +26,7 @@
         
         </div>
         
-        <div class="col-sm-offset-1 col-sm-6">
+        <div class="col-sm-6">
             <div class="row">
                 <div class="col-xs-4 col-trim-padding">
                     {% include 'form-hour.html' %}

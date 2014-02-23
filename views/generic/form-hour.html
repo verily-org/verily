@@ -1,8 +1,6 @@
-<select class="form-control collapse-with-margin" id="form-occurred-hh" name="targetOccurredHH">
-    <option>H</option>
+<select class="form-control collapse-with-margin form-occurred" id="form-occurred-hour" name="targetOccurredHour">
+    <option>{{ hourDefault }}</option>
     {# parameters for getAllFromRange: 0, 23, 'padding' #}
     {% set hours = 0|getAllFromRange(23, 'padding') %}
-    {% for hour in hours %}
-        <option>{{ hour }}</option>
-    {% endfor %}
+    {% for hour in hours %}<option>{{ hour }}</option>{% endfor %}
 </select>
