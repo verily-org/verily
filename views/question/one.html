@@ -20,26 +20,30 @@
                     {{ question.text }}
                 </p>
                 
-                {% if question.targetDate %}
+                {% if question.targetDateTimeOccurred %}
                 <p class="metadata">
-                    <span class="fa-stack">
-                        <i class="fa fa-calendar-o fa-stack-2x" aria-hidden="true"></i>
-                        <span class="fa-stack-1x calendar-day" aria-hidden="true">{{ question.targetDate|date('d') }}</span>
-                        <span class="sr-only">Occurred:</span>
-                        <span class="fa-stack-1x date-adj-calendar">{{ question.targetDate }}</span>
-                    </span>
+                    <i class="fa fa-clock-o fa-lg fa-fw"></i>
+                    <span class="sr-only">Occurred:</span>
+                    <span class="">{{ question.relativeTargetDateTimeOccurred }}</span>
+                    <span class="text-muted">
+                        &middot;
+                    {{ question.targetDateTimeOccurred|date('D, d M Y H:i:s') }}
+                     <abbr title="Coordinated Universal Time" class="initialism">
+                         <a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
+                     </abbr>
+                     </span>
                 </p>
                 {% endif %}
 
 
                 <p class="metadata">
-                    <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">Southampton</span>
-                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:50.930,-1.422"><span id="question-target-lat">50.930</span>, <span id="question-target-long">-1.422</span></a>
+                    <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ question.targetLocality }}</span>
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.targetLat }},{{ question.targetLong }}"><span id="question-target-lat">{{ question.targetLat }}</span>, <span id="question-target-long">{{ question.targetLong}}</span></a>
                 </p>
 
                 <p class="metadata">
                     <i class="fa fa-bullhorn fa-lg fa-fw"></i>
-                    <abbr title="{{ question.date.toLocaleString() }}">{{ question.relativeCreatedDate }}</abbr>
+                    <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
                     by {{ question.author }}
                 </p>
 

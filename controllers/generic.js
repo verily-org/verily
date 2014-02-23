@@ -63,65 +63,80 @@ exports.gen = function (item, callback) {
 // to the created post.
 // Calls back with the created instance of model.
 exports.create = function (model, data, req, cb) {
-
-    model.create([data], function (err, items) {
-        if (err) {
-            cb(err, null);
-        }
-        // items = array of inserted items 
-        // After the item has been created.
-        // We only add one item, so use items[0].
-        var item = items[0],
-            now = new Date().getTime();
+    
+    common.validateDateTimeOccurred(req.body.targetDateTimeOccurred, null, null, function(error, targetDateTimeOccurred) {
+        if (!error && targetDateTimeOccurred) {
+            
+            // Create the model item.
+            model.create([data], function (err, items) {
+                if (err) {
+                    cb(err, null);
+                }
+                // items = array of inserted items 
+                // After the item has been created.
+                // We only add one item, so use items[0].
+                var item = items[0];
            
-        // Tags: tag1, tag2, tag3, ..., tagN
-        var tags = null;
-        if (req.body.hasOwnProperty('tags')) {
-            tags = common.tagize(req.body.tags);
-        }
-
-        req.models.Post.create([{
-            title: req.body.title,
-            text: req.body.text,
-            targetImage: req.body.targetImage,
-            targetLocality: req.body.targetLocality,
-            targetLat: req.body.targetLat,
-            targetLong: req.body.targetLong,
-            date: new Date(),
-            author: req.body.author,
-            tags: tags,
-            updated: now
-        }], function (err, items) {
-            if (err) {
-                cb(err, null);
-            }
-
-            var post = items[0];
-            post.save(function (err) {
-                if (err) {
-                    cb(err, null);
+                // Tags: tag1, tag2, tag3, ..., tagN
+                var tags = null;
+                if (req.body.hasOwnProperty('tags')) {
+                    tags = common.tagize(req.body.tags);
                 }
-            });
+        
+                // We want to store the created and updated date
+                // in UTC -- Date.now() returns current time in milliseconds since 1970 in UTC.
+                var now = new Date(Date.now());
+        
 
-            // After the post has been created,
-            // add the association to its subclass – item.
-            // We only add one post, so use items[0].
-            item.setPost(post, function (err) {
-                if (err) {
-                    cb(err, null);
-                }
 
-                item.save(function (err) {
+                req.models.Post.create([{
+                    title: req.body.title,
+                    text: req.body.text,
+                    targetImage: req.body.targetImage,
+                    targetLocality: req.body.targetLocality,
+                    targetLat: req.body.targetLat,
+                    targetLong: req.body.targetLong,
+                    targetDateTimeOccurred: targetDateTimeOccurred,
+                    date: now,
+                    author: req.body.author,
+                    tags: tags,
+                    updated: now
+                }], function (err, items) {
                     if (err) {
                         cb(err, null);
                     }
 
-                    // Call back with the created instance of model.
-                    cb(null, item);
+                    var post = items[0];
+                    post.save(function (err) {
+                        if (err) {
+                            cb(err, null);
+                        }
+                    });
+
+                    // After the post has been created,
+                    // add the association to its subclass – item.
+                    // We only add one post, so use items[0].
+                    item.setPost(post, function (err) {
+                        if (err) {
+                            cb(err, null);
+                        }
+
+                        item.save(function (err) {
+                            if (err) {
+                                cb(err, null);
+                            }
+
+                            // Call back with the created instance of model.
+                            cb(null, item);
+                        });
+                    });
                 });
             });
-        });
+        }
     });
+    
+
+
 };
 
 // Removes quotes from a string

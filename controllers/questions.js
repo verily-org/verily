@@ -130,7 +130,8 @@ var getQuestion = function (req, callback) {
     generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
             
-            var relativeCreatedDate = utils.date.relativeTime(question.date);
+            var relativeCreatedDate = utils.date.relativeTime(question.date, {abbreviated: true});
+            var relativeTargetDateTimeOccurred = utils.date.relativeTime(question.targetDateTimeOccurred, {abbreviated: true});
             
             var questionTmp = {
                 title: question.title,
@@ -140,6 +141,8 @@ var getQuestion = function (req, callback) {
                 targetLat: question.targetLat,
                 targetLong: question.targetLong,
                 targetImage: question.targetImage,
+                targetDateTimeOccurred: question.targetDateTimeOccurred,
+                relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
                 date: question.date,
                 relativeCreatedDate: relativeCreatedDate,
                 author: question.author,

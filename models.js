@@ -1,7 +1,6 @@
-// TODO: Move title into Post.
-
 module.exports = function (db, cb) {
 
+    //  TODO: Ensure on migrration to MongoDB that default value is set to current timestamp equivalent or that it isn't the cause of an error
     var Post = db.define('post', {
         title: {
             type: 'text'
@@ -21,6 +20,11 @@ module.exports = function (db, cb) {
         targetImage: {
             type: 'text'
         },
+        targetDateTimeOccurred: {
+            type: 'date',
+            time: true,
+            defaultValue: 'CURRENT_TIMESTAMP'
+        },
         date: {
             type: 'date',
             time: true,
@@ -33,7 +37,9 @@ module.exports = function (db, cb) {
             type: 'object'
         },
         updated: {
-            type: 'text'
+            type: 'date',
+            time: true,
+            defaultValue: 'CURRENT_TIMESTAMP'
         }
     }), Question = db.define('question', {
         viewCount: {

@@ -2,6 +2,15 @@
     margin-bottom: 1em;
 }
 
+/* TODO: Use LESS variables */
+.text-muted a {
+    color: #999;
+}
+
+.fa-fw {
+    width: 1em;
+}
+
 .col-trim-padding {
 
 }
@@ -28,7 +37,7 @@ p.metadata {
 .date-adj-calendar {
     top: 3px;
     line-height: 2em;
-    width: 20em;
+    width: 18em;
     text-align: left;
     margin-left: 2.5em;
 }
@@ -78,7 +87,7 @@ p.metadata {
 @media (max-width: 768px) {
     
     .action-buttons {
-        margin-top: 1em;
+        margin-top: 0;
         padding-left: 15px;
     }
     

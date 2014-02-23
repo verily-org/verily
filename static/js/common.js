@@ -104,7 +104,8 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
         hour !== common.hourDefault() ||
         minute !== common.minuteDefault() ||
         second !== common.secondDefault()) {
-            // There is at least one field not set to its default (placeholder), so:
+            // There is at least one field not set to its default (placeholder), so
+            // try to construct a date object.
             
             day = parseInt(day);
             month = parseInt(month);
