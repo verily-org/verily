@@ -2,9 +2,35 @@
     margin-bottom: 1em;
 }
 
+.col-trim-padding {
+
+}
+
+.freesize-row div.pull-left {
+    padding-left: 15px;
+}
+
 .breadcrumb {
     background-color: transparent;
     padding-left: 0;
+}
+
+p.metadata {
+    margin-bottom: 7px;
+}
+
+
+
+.calendar-day {
+    top: 3px;
+}
+
+.date-adj-calendar {
+    top: 3px;
+    line-height: 2em;
+    width: 20em;
+    text-align: left;
+    margin-left: 2.5em;
 }
 
 .question.page-header {
@@ -99,6 +125,7 @@
 
 .tag {
     font-weight: normal;
+    font-size: 100%;
 }
 
 .question-image-and-map > div {
@@ -118,6 +145,7 @@
     background-color: transparent;
     border: none;
     box-shadow: none;
+    webkit-box-shadow: none;
     padding-left: 0;
     padding-right: 0;
 }

@@ -1,0 +1,8 @@
+<select class="form-control collapse-with-margin" id="form-occurred-ss" name="targetOccurredSS">
+    <option>S</option>
+    {# parameters for getAllFromRange: 0, 59, 'padding' #}
+    {% set seconds = 0|getAllFromRange(59, 'padding') %}
+    {% for second in seconds %}
+        <option>{{ second }}</option>
+    {% endfor %}
+</select>

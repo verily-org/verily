@@ -78,12 +78,15 @@ exports.create = function (model, data, req, cb) {
         var tags = null;
         if (req.body.hasOwnProperty('tags')) {
             tags = common.tagize(req.body.tags);
-        }        
+        }
 
         req.models.Post.create([{
             title: req.body.title,
             text: req.body.text,
             targetImage: req.body.targetImage,
+            targetLocality: req.body.targetLocality,
+            targetLat: req.body.targetLat,
+            targetLong: req.body.targetLong,
             date: new Date(),
             author: req.body.author,
             tags: tags,
@@ -165,6 +168,11 @@ exports.update = function (model, id, req, cb) {
         var itemNew = {},
             postNew = {},
             i = {};
+            
+        // Tags: tag1, tag2, tag3, ..., tagN
+        if (req.body.hasOwnProperty('tags')) {
+            req.body.tags = common.tagize(req.body.tags);
+        }
 
         for (i in req.body) {
             if (req.body.hasOwnProperty(i)) {

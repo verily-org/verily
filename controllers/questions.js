@@ -2,6 +2,7 @@ var generic = require('./generic');
 var enums = require('../enums');
 var swig = require('swig');
 var async = require('async');
+var utils = require('utilities');
 
 // Enables discovery of questions – this is the questions spotlight.
 exports.index = function (req, res) {
@@ -110,6 +111,9 @@ exports.edit = function (req, res) {
             // a generic form.
             res.render('question/edit', {
                 post: question,
+                question: {
+                    id: question.id
+                },
                 page: {
                     title: 'Edit question'
                 }
@@ -126,6 +130,8 @@ var getQuestion = function (req, callback) {
     generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
             
+            var relativeCreatedDate = utils.date.relativeTime(question.date);
+            
             var questionTmp = {
                 title: question.title,
                 id: question.id,
@@ -134,7 +140,8 @@ var getQuestion = function (req, callback) {
                 targetLat: question.targetLat,
                 targetLong: question.targetLong,
                 targetImage: question.targetImage,
-                date: question.date.toString(),
+                date: question.date,
+                relativeCreatedDate: relativeCreatedDate,
                 author: question.author,
                 tags: question.tags,
                 updated: question.updated
