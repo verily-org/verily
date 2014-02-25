@@ -1,0 +1,27 @@
+{% set type = 'user' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<div id="form-reg" class="form">
+    <h3><span class="fa fa-plus"></span><span class="sr-only">Register</span>&nbsp;User</h3>
+
+    <form id="register" role="form" action="/user" method="POST" enctype="multipart/form-data">
+        <!-- <input type="hidden" name="_method" value="POST">
+        <input type="hidden" id="form-question-type" name="type"> -->
+
+		{% if message %}
+			<div> {{message}} </div>
+		{% endif %}
+		
+        Email: <input type="text" class="form-control input-lg" id="form-email" name="email" placeholder="Email address" >
+		Password: <input type="password" class="form-control input-lg" id="form-password" name="password" placeholder="Input your password" >
+		Verify Password: <input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="Input your password again" >
+    
+        <button type="submit" class="btn btn-primary">Register</button>
+        <a href="/question" class="btn btn-default pull-right">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}

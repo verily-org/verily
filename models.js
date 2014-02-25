@@ -1,3 +1,5 @@
+var bcrypt   = require('bcrypt-nodejs');
+
 module.exports = function (db, cb) {
 
     //  TODO: Ensure on migrration to MongoDB that default value is set to current timestamp equivalent or that it isn't the cause of an error
@@ -65,6 +67,35 @@ module.exports = function (db, cb) {
         author: {
             type: 'text'
         },
+    }), User = db.define('user', {
+        email: {
+            type: 'text'
+        },
+        password: {
+            type: 'text'
+        }
+    }, {
+        methods: {
+            validPassword: function (pass) {
+                return bcrypt.compareSync(pass, this.password); 
+            }, 
+            generateHash: function (pass) {
+                return bcrypt.hashSync(pass, bcrypt.genSaltSync(8), null);
+            }
+        }
+    }), UserFacebook = db.define('userFacebook', {
+        id: {
+            type: 'number'
+        },
+        token: {
+            type: 'text'
+        },
+        email: {
+            type: 'text'
+        },
+        name: {
+            type: 'text'
+        }
     });
 
     Answer.hasOne('question', Question, {
@@ -88,6 +119,10 @@ module.exports = function (db, cb) {
         reverse: 'comments'
     });
     AnswerComment.hasOne('post', Post);
+
+    Post.hasOne('user', User, {
+        reverse: 'posts'
+    });
 
     if (cb) {
         cb();
