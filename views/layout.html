@@ -23,6 +23,9 @@
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery.js"></script>
         
+        <!-- Common JS -->
+        <script type="text/javascript" src="/static/js/common.js"></script>
+        
         <!-- Latest compiled and minified Bootstrap JavaScript -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         
@@ -53,11 +56,15 @@
         </nav>
         
         <main role="main" id="content" class="container">
+            <ol class="breadcrumb">
+                <!-- <li>
+                    <a href="/" title="Home">Home</a>
+                </li> -->
+                {% block breadcrumb %}{% endblock %}
+            </ol>
             {% block content %}{% endblock %}
         </main>
-        
     </body>
-    
 </html>
             
         

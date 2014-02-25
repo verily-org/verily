@@ -1,3 +1,47 @@
+#content {
+    margin-bottom: 1em;
+}
+
+/* TODO: Use LESS variables */
+.text-muted a {
+    color: #999;
+}
+
+.fa-fw {
+    width: 1em;
+}
+
+.col-trim-padding {
+
+}
+
+.freesize-row div.pull-left {
+    padding-left: 15px;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding-left: 0;
+}
+
+p.metadata {
+    margin-bottom: 7px;
+}
+
+
+
+.calendar-day {
+    top: 3px;
+}
+
+.date-adj-calendar {
+    top: 3px;
+    line-height: 2em;
+    width: 18em;
+    text-align: left;
+    margin-left: 2.5em;
+}
+
 .question.page-header {
     border-left-width: 0.75em;
     border-left-style: solid;
@@ -9,9 +53,13 @@
     margin-top: 1em;
 }
 
+.action-buttons .row {
+    margin-right: 0;
+}
+
 .action-button-ctr {
     margin-top: 1em;
-    float: right;
+    float: right
 }
 
 .mini.action-button-ctr {
@@ -39,7 +87,7 @@
 @media (max-width: 768px) {
     
     .action-buttons {
-        margin-top: 1em;
+        margin-top: 0;
         padding-left: 15px;
     }
     
@@ -86,6 +134,7 @@
 
 .tag {
     font-weight: normal;
+    font-size: 100%;
 }
 
 .question-image-and-map > div {
@@ -105,8 +154,13 @@
     background-color: transparent;
     border: none;
     box-shadow: none;
+    webkit-box-shadow: none;
     padding-left: 0;
     padding-right: 0;
+}
+
+.has-feedback .form-control-feedback.with-input-lg {
+    top: 31px;
 }
 
 #form-image-upload-ctr {
@@ -138,6 +192,15 @@
 
 #form-title-chars-left {
     font-weight: bold;
+}
+
+.form-group a.tag {
+    margin-left: 0.5em;
+}
+
+.form-group a.tag .label {
+    display: inline-block;
+/*    font-size: 100%*/
 }
 
 

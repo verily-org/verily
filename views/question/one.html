@@ -1,5 +1,14 @@
 {% extends '../layout.html' %}
 
+{% block breadcrumb %}
+<li>
+    <a href="/crisis/example" title="Crisis">Example Crisis</a>
+</li>
+<li>
+    <a href="/question/{{ question.id }}" title="Question">{{ question.title }}</a>
+</li>
+{% endblock %}
+
 {% block content %}
 <!-- question -->
 <div class="page-header question border-true">
@@ -11,19 +20,41 @@
                     {{ question.text }}
                 </p>
                 
-                <i class="fa fa-map-marker fa-fw"></i><span class="sr-only">Locality</span>&nbsp;<span id="question-locality">Southampton</span>
-                <i class="fa fa-crosshairs fa-fw"></i> <span class="sr-only">Lat Long</span> <a href="geo:50.930,-1.422"><span id="question-target-lat">50.930</span>, <span id="question-target-long">-1.422</span></a>
-                <br>
-                <i class="fa fa-bullhorn fa-fw"></i>
-                {{ question.author }}
-                on {{ question.date }}
-                <br>
-                {% if question.tags %}
-                <i class="fa fa-tag fa-fw"></i>
+                {% if question.targetDateTimeOccurred %}
+                <p class="metadata">
+                    <i class="fa fa-clock-o fa-lg fa-fw"></i>
+                    <span class="sr-only">Occurred:</span>
+                    <span class="">{{ question.relativeTargetDateTimeOccurred }}</span>
+                    <span class="text-muted">
+                        &middot;
+                    {{ question.targetDateTimeOccurred|date('D, d M Y H:i:s') }}
+                     <abbr title="Coordinated Universal Time" class="initialism">
+                         <a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
+                     </abbr>
+                     </span>
+                </p>
                 {% endif %}
-                {% for tag in question.tags %}
-                    <a href="/tag/{{ tag }}"><span class="label label-primary tag">{{ tag }}</span></a>
-                {% endfor %}
+
+
+                <p class="metadata">
+                    <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ question.targetLocality }}</span>
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.targetLat }},{{ question.targetLong }}"><span id="question-target-lat">{{ question.targetLat }}</span>, <span id="question-target-long">{{ question.targetLong}}</span></a>
+                </p>
+
+                <p class="metadata">
+                    <i class="fa fa-bullhorn fa-lg fa-fw"></i>
+                    <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
+                    by {{ question.author }}
+                </p>
+
+                {% if question.tags and question.tags.length !== 0 %}
+                <p class="metadata">
+                    <i class="fa fa-tag fa-lg fa-fw"></i>
+                        {% for tag in question.tags %}
+                            <a href="/tag/{{ tag }}"><span class="label label-primary tag">{{ tag }}</span></a>
+                        {% endfor %}
+                </p>
+                {% endif %}
                 
             </div>
             <div class="col-xs-12 col-sm-3 action-buttons">
@@ -31,21 +62,21 @@
                     
                     <!-- button-mark-true -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-success btn-large text-action-button" id="question-support" title="Support"><i class="fa fa-check" id="icon-support"></i> <strong class="hidden-xs">Support</strong></button>
+                        <button class="btn btn-success btn-large text-action-button" id="question-support" title="Support"><i class="fa fa-check" id="icon-support"></i> <span class="sr-only">Support</span><strong class="hidden-xs">Support</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">777</a>
                     </div>
                     <!-- / button-mark-true -->
                     
                     <!-- button-mark-false -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-danger btn-large text-action-button" id="question-reject" title="Reject"><i class="fa fa-times" id="icon-reject"></i> <strong class="hidden-xs">Reject</strong></button>
+                        <button class="btn btn-danger btn-large text-action-button" id="question-reject" title="Reject"><i class="fa fa-times" id="icon-reject"></i> <span class="sr-only">Reject</span><strong class="hidden-xs">Reject</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">3333</a>
                     </div>
                     <!-- / button-mark-false -->
                     
                     <!-- button-mark-important -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-default btn-large text-action-button" title="Mark as important"><i class="fa fa-exclamation"></i> <strong class="hidden-xs">Important</strong></button>
+                        <button class="btn btn-default btn-large text-action-button" title="Mark as important"><i class="fa fa-exclamation"></i> <span class="sr-only">Important</span><strong class="hidden-xs">Important</strong></button>
                         <a href="#" class="btn btn-default action-button-count">99</a>
                     </div>
                     <!-- / button-mark-important -->

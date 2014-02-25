@@ -7,6 +7,7 @@ module.exports = function (suppressLogs) {
         emitter = require('./event-emitter')(),
         swig = require('swig'),
 
+        swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         router = require('./routing/router'),
         log = require('./log'),
@@ -40,6 +41,9 @@ module.exports = function (suppressLogs) {
     swig.setDefaults({ cache: false });
     // NOTE: You should always cache templates in a production environment.
     // Don't leave both of these to `false` in production!
+    
+    // Set up swig helpers for compilation/rendering pages.
+    swigHelpers(swig);
     
     // Static file handling
     // app.use(express.static(__dirname + '/static'));

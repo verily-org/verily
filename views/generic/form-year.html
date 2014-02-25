@@ -1,0 +1,9 @@
+<select class="form-control collapse-with-margin form-occurred" id="form-occurred-year" name="targetDateTimeOccurred">
+    <option>{{ yearDefault }}</option>
+    
+    {# Quite a complex way of getting some years into the dropdown, but it ensures that it is generic and modular, and so it is not necessary to set the range of years from the controller. It should be something retrieved in view rendering. Decided to not use client-side JS so that if JS is not available or disabled in browser, we still get years. #}
+    {# Necessary to use `null` before getYears because it is accessing a filter #}
+    
+    {% set years = null|getYears %}
+    {% for year in years %}<option>{{ year }}</option>{% endfor %}
+</select>
