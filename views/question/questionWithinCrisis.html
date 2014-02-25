@@ -1,9 +1,36 @@
-<div class="panel panel-success question-answer">
-    <div class="panel-heading">
-        Title {{ question.title }}
+<div class="panel panel-default">
+    <div class="panel-info small" title="Locality">
+        {{ question.targetLocality | default('Not specified') }}
     </div>
-    <div class="panel-body">
-        {{ question.text }}
+    <div class="clearfix">
+        <div class="panel-heading col-sm-9">
+            <h3 class="text-center">
+                <a href="question/{{ question.id }}" style="color:black">{{ question.title }}</a><br/>
+                <small>by abdul (member since X)</small>
+            </h3>
+        </div>
+        <div class="col-sm-3 text-center pull-right">
+            <div class="text-muted item-top-margin" title="Marked as important"><i class="fa fa-exclamation"></i> 2</div>
+            <div class="text-muted item-top-margin" title="People who saw it"><i class="fa fa-eye"></i> 36</div>
+            <div class="text-muted item-top-margin" title="Evidence for"><i class="fa fa-plus"></i> 3</div>
+            <div class="text-muted item-top-margin" title="Evidence against"><i class="fa fa-minus"></i> 2</div>
+        </div>
+        <div class="panel-body">
+            {% if question.targetImage %}
+                <img src="{{ question.targetImage }}" />
+            {% else %}
+                {{ question.text }}
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel-footer">
+        {% if question.tags.length == 0 %}
+            <span class="label label-default">No tags</span>
+        {% else %}
+            {% for tag in question.tags %}
+                <a href="#" class="label label-primary">{{ tag }}</a>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
 

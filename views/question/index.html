@@ -15,7 +15,7 @@
                         Hurricane Sandy was the deadliest and most destructive hurricane of the 2012 Atlantic hurricane season, as well as the second- costiest hurricante in United States history.
                     </p>
                 </div>
-                <a class="btn btn-primary">Make a Verification Request</a>
+                <a class="btn btn-primary">Ask a question</a>
                 <!-- small buttons -->
                 <div class="btn-group btn-group-left-margin">
                     <button class="btn btn-default btn-sm"><i class="fa fa-share"></i> <strong>Share</strong></button>
@@ -27,10 +27,10 @@
                 </div>
             </div>
             <div class="col-sm-2 text-center">
-                <a class="btn btn-default" style="padding:5px 20px 5px 20px"><i class="fa fa-star"></i> 2</a>
-                <div class="text-muted item-top-margin"><i class="fa fa-eye"></i> 36</div>
-                <div class="text-muted item-top-margin"><i class="fa fa-tasks"></i> 10</div>
-                <div class="text-muted item-top-margin"><i class="fa fa-clock-o"></i> 6 days ago</div>
+                <a class="btn btn-default" style="padding:5px 20px 5px 20px" title="Mark as important"><i class="fa fa-exclamation"></i> 2</a>
+                <div class="text-muted item-top-margin" title="People who saw it"><i class="fa fa-eye"></i> 36</div>
+                <div class="text-muted item-top-margin" title="Questions asked"><i class="fa fa-tasks"></i> 10</div>
+                <div class="text-muted item-top-margin" title="Date created"><i class="fa fa-clock-o"></i> 6 days ago</div>
             </div>
         </div>
     </div>
@@ -39,14 +39,20 @@
 
 
 <div class="row">
-    <!-- <button class="btn btn-primary btn-large"><i class="fa fa-reply"></i> <strong>Verify</strong></button> -->
-    
+    <div class="pull-right">
+        <label for="select_filter_questions">View questions:</label>
+        <select id="select_filter_questions">
+            <option>Active (most active first)</option>
+            <option>Active (most recent first)</option>
+        </select>
+
+    </div>
     
 </div>
 
 <div class="row question-answers">
-    {% for question in questions %}
-        <div class="col-sm-4">
+    {% for question in questions | reverse %}
+        <div class="col-sm-4" style="max-height:350px">
             {% include 'questionWithinCrisis.html' with question %}
         </div>   
     {% endfor %}
