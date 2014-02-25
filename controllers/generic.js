@@ -95,7 +95,7 @@ exports.create = function (model, data, req, cb) {
                     targetLat: req.body.targetLat,
                     targetLong: req.body.targetLong,
                     date: now,
-                    author: req.body.author,
+                    author: req.user.email,
                     tags: tags,
                     updated: now
                 }
@@ -110,11 +110,14 @@ exports.create = function (model, data, req, cb) {
                     }
 
                     var post = items[0];
-                    post.save(function (err) {
-                        if (err) {
-                            cb(err, null);
-                        }
+                    post.setUser(req.user, function (err) {
+                        post.save(function (err) {
+                            if (err) {
+                                cb(err, null);
+                            }
+                        });
                     });
+                    
 
                     // After the post has been created,
                     // add the association to its subclass – item.
