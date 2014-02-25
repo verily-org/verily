@@ -4,6 +4,8 @@ var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
 
+var common = require('../static/js/common');
+
 // Enables discovery of questions – this is the questions spotlight.
 exports.index = function (req, res) {
     req.models.Question.find({}, 10, function (err, questions) {
@@ -133,7 +135,12 @@ var getQuestion = function (req, callback) {
         if (!err && question) {
             
             var relativeCreatedDate = utils.date.relativeTime(question.date, {abbreviated: true});
-            var relativeTargetDateTimeOccurred = utils.date.relativeTime(question.targetDateTimeOccurred, {abbreviated: true});
+            
+            var relativeTargetDateTimeOccurred;
+            
+            if (question.targetDateTimeOccurred) {
+                relativeTargetDateTimeOccurred = utils.date.relativeTime(question.targetDateTimeOccurred, {abbreviated: true});
+            }
             
             var questionTmp = {
                 title: question.title,
@@ -260,9 +267,14 @@ exports.new = function (req, res) {
                     var wrapper = {
                         question: question2
                     };
-                    res.status(201);
-                    res.set(enums.eTag, question2.updated);
-                    res.json(wrapper);
+                    // res.status(201);
+                    //res.set(enums.eTag, question2.updated);
+                    
+                    // var redirect = common.formAbsoluteURI('/question/' + question2.id);
+                    
+                    
+                    res.redirect('/question/' + question2.id);
+                    //res.json(wrapper);
                     res.end();
                 } else {
                     //special err: if 404 then it means the create just executed is invalid.
@@ -285,7 +297,10 @@ exports.update = function (req, res) {
             generic.update(req.models.Question, req.params.question_id, req, function (err) {
                 if (!err) {
                     //204 no content
-                    res.status(204);
+                    // res.status(204);
+                    
+                    res.redirect('/question/' + req.params.question_id);
+                    
                     res.end();
                 } else {
                     generic.genericErrorHandler(req, res, err);

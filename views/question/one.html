@@ -36,10 +36,17 @@
                 {% endif %}
 
 
+                {% if question.targetLocality or question.targetLat %}
                 <p class="metadata">
+                    {% if question.targetLocality %}
                     <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ question.targetLocality }}</span>
+                    {% endif %}
+                    
+                    {% if question.targetLat and question.targetLong %}
                     <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.targetLat }},{{ question.targetLong }}"><span id="question-target-lat">{{ question.targetLat }}</span>, <span id="question-target-long">{{ question.targetLong}}</span></a>
+                    {% endif %}
                 </p>
+                {% endif %}
 
                 <p class="metadata">
                     <i class="fa fa-bullhorn fa-lg fa-fw"></i>

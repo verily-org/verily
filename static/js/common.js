@@ -1,10 +1,32 @@
 // Node.js / browser support
+var isNodeJS = false;
 if (typeof exports === 'undefined') {
     exports = {};
 }
 
+if (typeof module !== 'undefined') {
+    isNodeJS = true;
+}
+
 // Common namespace for browsers
 var common = {};
+
+
+var formAbsoluteURI = exports.formAbsoluteURI = common.formAbsoluteURI = function(path, options) {
+    if (isNodeJS) {
+        var url = require('url');
+        
+        if (!options) {
+            options = require('../../enums.json').options;
+        }
+        
+        if (path) {
+            options.pathname = path;
+        }
+        
+        return url.format(options);
+    }
+}
 
 var tagize = exports.tagize = common.tagize = function(string) {
     return splitIntoTags(string).map(normalizeTag);
@@ -87,7 +109,7 @@ var validateFormTitle = exports.validateFormTitle = common.validateFormTitle = f
 // Used at client and server side.
 var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validateDateTimeOccurred = function(value, elemsParent, elemsIsArray, callback) {
     var error = null;
-    var date = new Date();
+    var date = null;
     
     // We are dealing with an array of values (dd, mm, yyyy, h, m, s)
     var day = value[0];
@@ -116,6 +138,7 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
             
             // Try to construct a date object out of these fields' values.
             // var date = new Date(year, month, day, hour, minute, second);
+            date = new Date();
             date.setUTCFullYear(year);
             date.setUTCMonth(month - 1);
             date.setUTCDate(day);

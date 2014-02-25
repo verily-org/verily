@@ -65,7 +65,7 @@ exports.gen = function (item, callback) {
 exports.create = function (model, data, req, cb) {
     
     common.validateDateTimeOccurred(req.body.targetDateTimeOccurred, null, null, function(error, targetDateTimeOccurred) {
-        if (!error && targetDateTimeOccurred) {
+        if (!error) {
             
             // Create the model item.
             model.create([data], function (err, items) {
@@ -86,22 +86,25 @@ exports.create = function (model, data, req, cb) {
                 // We want to store the created and updated date
                 // in UTC -- Date.now() returns current time in milliseconds since 1970 in UTC.
                 var now = new Date(Date.now());
-        
-
-
-                req.models.Post.create([{
+                
+                var postData = {
                     title: req.body.title,
                     text: req.body.text,
                     targetImage: req.body.targetImage,
                     targetLocality: req.body.targetLocality,
                     targetLat: req.body.targetLat,
                     targetLong: req.body.targetLong,
-                    targetDateTimeOccurred: targetDateTimeOccurred,
                     date: now,
                     author: req.body.author,
                     tags: tags,
                     updated: now
-                }], function (err, items) {
+                }
+                
+                postData.targetDateTimeOccurred = targetDateTimeOccurred;
+        
+
+
+                req.models.Post.create([postData], function (err, items) {
                     if (err) {
                         cb(err, null);
                     }
@@ -178,53 +181,70 @@ exports.get = function (model, id, reqIfNoneMatch, cb) {
 };
 
 exports.update = function (model, id, req, cb) {
-    model.get(id, function (err, item) {
-
-        var itemNew = {},
-            postNew = {},
-            i = {};
+    
+    common.validateDateTimeOccurred(req.body.targetDateTimeOccurred, null, null, function(error, targetDateTimeOccurred) {
+        if (!error) {
             
-        // Tags: tag1, tag2, tag3, ..., tagN
-        if (req.body.hasOwnProperty('tags')) {
-            req.body.tags = common.tagize(req.body.tags);
-        }
-
-        for (i in req.body) {
-            if (req.body.hasOwnProperty(i)) {
-                if (model.allProperties.hasOwnProperty(i)) {
-                    // Post property has been included in request, update item.
-                    itemNew[i] = req.body[i];
-                }
-
-                if (req.models.Post.allProperties.hasOwnProperty(i)) {
-                    // Item property has been included in request, update Post.
-                    postNew[i] = req.body[i];
-                }
+            // Set req.body.targetDateTimeOccurred to constructed Date object.
+            if (targetDateTimeOccurred) {
+                req.body.targetDateTimeOccurred = targetDateTimeOccurred;
+            } else {
+                delete req.body.targetDateTimeOccurred;
             }
+            
+            
+            model.get(id, function (err, item) {
 
-        }
-        if (itemNew) {
-            // Update item.
-            item.save(itemNew, function (err) {
-                if (err) {
-                    throw err;
+                var itemNew = {},
+                    postNew = {},
+                    i = {};
+            
+                // Tags: tag1, tag2, tag3, ..., tagN
+                if (req.body.hasOwnProperty('tags')) {
+                    req.body.tags = common.tagize(req.body.tags);
+                }
+
+                for (i in req.body) {
+                    if (req.body.hasOwnProperty(i)) {
+                        if (model.allProperties.hasOwnProperty(i)) {
+                            // Post property has been included in request, update item.
+                            itemNew[i] = req.body[i];
+                        }
+
+                        if (req.models.Post.allProperties.hasOwnProperty(i)) {
+                            // Item property has been included in request, update Post.
+                            postNew[i] = req.body[i];
+                        }
+                    }
+
+                }
+                if (itemNew) {
+                    // Update item.
+                    item.save(itemNew, function (err) {
+                        if (err) {
+                            throw err;
+                        }
+                    });
+                }
+                if (postNew) {
+                    // Update post.
+                    req.models.Post.get(item.post_id, function (err, post) {
+                        var now = new Date().getTime();
+                        post.updated = now;
+                        post.save(postNew, function (err) {
+                            if (err) {
+                                throw err;
+                            }
+                            // Update successful.
+                            cb(null);
+                        });
+                    });
                 }
             });
+    
+    
         }
-        if (postNew) {
-            // Update post.
-            req.models.Post.get(item.post_id, function (err, post) {
-                var now = new Date().getTime();
-                post.updated = now;
-                post.save(postNew, function (err) {
-                    if (err) {
-                        throw err;
-                    }
-                    // Update successful.
-                    cb(null);
-                });
-            });
-        }
+
     });
 };
 
