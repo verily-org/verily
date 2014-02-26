@@ -1,7 +1,26 @@
 {
-  "name": "vly",
-  "version": "0.0.1",
+  "name": "verily",
+  "version": "0.0.0",
   "private": true,
+  "author": "",
+  "contributors": [
+      {
+          "name": "Alex Greenland"
+      },
+      {
+          "name": "Luis Arenal Mijares"
+      },
+      {
+          "name": "He Shan"
+      },
+      {
+          "name": "Lu Zhu"
+      },
+      {
+          "name": "Wang Xiaoting"
+      }
+  ],
+  "license": "MIT",
   "description": "",
   "main": "index.js",
   "dependencies": {
@@ -20,7 +39,5 @@
   "scripts": {
     "start": "node index",
     "test": "node test-runner"
-  },
-  "author": "",
-  "license": "MIT"
+  }
 }
