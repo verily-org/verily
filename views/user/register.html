@@ -12,12 +12,29 @@
         <input type="hidden" id="form-question-type" name="type"> -->
 
 		{% if message %}
-			<div> {{message}} </div>
+			<div class="alert alert-danger"> {{message}} </div>
 		{% endif %}
 		
-        Email: <input type="text" class="form-control input-lg" id="form-email" name="email" placeholder="Email address" >
-		Password: <input type="password" class="form-control input-lg" id="form-password" name="password" placeholder="Input your password" >
-		Verify Password: <input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="Input your password again" >
+        Email: <input type="text" class="form-control input-lg" id="form-email" name="email" placeholder="* Email address" >
+		Name: <input type="text" class="form-control input-lg" id="form-name" name="name" placeholder="* Name" >
+		Choose a role: <div class="row">
+						<div class="col-lg-6">
+							<div class="input-group">
+								<span class="input-group-addon">
+									<input type="radio" name="role" value="editor">
+								</span>
+								<span>Editor</span>
+							</div>
+							<div class="input-group">
+								<span class="input-group-addon">
+									<input type="radio" name="role" value="simple">
+								</span>	
+								<span>Simple User</span>
+							</div>
+						</div>
+						</div>
+		Password: <input type="password" class="form-control input-lg" id="form-password" name="password" placeholder="* Input your password" >
+		Verify Password: <input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="* Input your password again" >
     
         <button type="submit" class="btn btn-primary">Register</button>
         <a href="/question" class="btn btn-default pull-right">Cancel</a>

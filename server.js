@@ -9,6 +9,7 @@ module.exports = function (suppressLogs) {
         passport = require('passport'),
         flash = require('connect-flash'),
 
+        roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         router = require('./routing/router'),
@@ -92,7 +93,8 @@ module.exports = function (suppressLogs) {
                 models.QuestionComment = db.models.question_comment;
                 models.AnswerComment = db.models.answer_comment;
                 models.User = db.models.user;
-                models.UserFacebook = db.models.userFacebook;
+                models.Local = db.models.local;
+                models.Facebook = db.models.facebook;
 
                 // Post is the base class.
                 // Questions, answers and comments are types of Post.
@@ -113,6 +115,7 @@ module.exports = function (suppressLogs) {
     app.use(express.session({ secret: 'cat' }, {maxAge: new Date(Date.now() + 3600000)}));
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(roles.user.middleware());
     app.use(flash());
     app.use(app.router);
 

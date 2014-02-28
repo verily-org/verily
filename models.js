@@ -67,7 +67,7 @@ module.exports = function (db, cb) {
         author: {
             type: 'text'
         },
-    }), User = db.define('user', {
+    }), Local = db.define('local', {
         email: {
             type: 'text'
         },
@@ -83,7 +83,7 @@ module.exports = function (db, cb) {
                 return bcrypt.hashSync(pass, bcrypt.genSaltSync(8), null);
             }
         }
-    }), UserFacebook = db.define('userFacebook', {
+    }), Facebook = db.define('facebook', {
         id: {
             type: 'number'
         },
@@ -96,6 +96,14 @@ module.exports = function (db, cb) {
         name: {
             type: 'text'
         }
+    }), User = db.define('user', {
+            name: {
+                type: 'text'
+            },
+            role: {
+                type: 'enum',
+                values: ['editor', 'simple']
+            } 
     });
 
     Answer.hasOne('question', Question, {
@@ -122,6 +130,13 @@ module.exports = function (db, cb) {
 
     Post.hasOne('user', User, {
         reverse: 'posts'
+    });
+
+    User.hasOne('local', Local, {
+        reverse: 'users'
+    });
+    User.hasOne('facebook', Facebook, {
+        reverse: 'user'
     });
 
     if (cb) {

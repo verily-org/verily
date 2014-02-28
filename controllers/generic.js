@@ -95,7 +95,7 @@ exports.create = function (model, data, req, cb) {
                     targetLat: req.body.targetLat,
                     targetLong: req.body.targetLong,
                     date: now,
-                    author: req.user.email,
+                    author: req.user.name,
                     tags: tags,
                     updated: now
                 }
@@ -273,4 +273,12 @@ exports.removeOne = function (item, req, cb) {
             cb(err);
         }
     });
+};
+
+
+exports.getUserAccounts = function (user, cb) {
+    if (user.local_id) {
+        user.getLocal();
+    }
+
 };

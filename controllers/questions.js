@@ -6,6 +6,8 @@ var utils = require('utilities');
 
 var common = require('../static/js/common');
 
+var role = require('../lib/roles').user;
+
 // Enables discovery of questions – this is the questions spotlight.
 exports.index = function (req, res) {
     req.models.Question.find({}, 10, function (err, questions) {
@@ -80,8 +82,10 @@ exports.all = function (req, res) {
                     var wrapper = {
                         questions: questions
                     };
+                    if (req.user){var username = req.user.name; }
                     res.render('question/index', {
-                        questions: questions
+                        questions: questions,
+                        user: username
                     });
                 }
             });
@@ -90,14 +94,20 @@ exports.all = function (req, res) {
 };
 
 // View to add question
-exports.create = function (req, res) {
+var createQuestion = function (req, res) {
     res.status(200);
+    if (req.user){var username = req.user.name; }
     res.render('question/create', {
         page: {
             title: 'Add question'
-        }
+        },
+        user: username
     });
 }
+
+var checkRole = role.can('create question');
+
+exports.create = [checkRole, createQuestion];
 
 // View to edit a question
 exports.edit = function (req, res) {
@@ -113,6 +123,7 @@ exports.edit = function (req, res) {
             // Goes into post object because
             // all fields are in Post and this allows
             // a generic form.
+            if (req.user){var username = req.user.name; }
             res.render('question/edit', {
                 post: question,
                 question: {
@@ -120,7 +131,8 @@ exports.edit = function (req, res) {
                 },
                 page: {
                     title: 'Edit question'
-                }
+                },
+                user: username
             });
         }
     });
@@ -221,12 +233,13 @@ exports.get = function (req, res) {
             res.set(enums.eTag, question.updated);
             
             res.status(200);
-            
+            if (req.user){var username = req.user.name; }
             res.render('question/one', {
                 question: question,
                 page: {
                     title: question.title
-                }
+                },
+                user: username
             });
         }
     });

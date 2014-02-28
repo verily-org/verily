@@ -5,18 +5,14 @@ var async = require('async');
 var passport = require('passport');
 require('../lib/passport')(passport);
 
-exports.all = function (req, res) {
+exports.profile = function (req, res) {
     if (req.user) {
-        req.models.User.get(req.user.id, function (err, user) {
-            if (err) {return next(err); }
-            res.json(user);
+        req.user.getLocal(function (err, local) {
+            if (err) {throw err; }
+            res.json(local);
         });
     } else {
-        req.models.User.find({}, {}, function (err, items) {
-            if (err) {return next(err); }
-            if (items.length === 0) {res.statusCode = 204; }
-            res.json(items);
-        });
+    
     }
 };
 //Posts a new user
@@ -47,10 +43,15 @@ exports.loginView = function (req, res) {
 };
 
 exports.login = passport.authenticate('local-login', {
-    successRedirect : '/user', // redirect to the secure profile section
+    successRedirect : '/question', // redirect to the secure profile section
     failureRedirect : '/login', // redirect back to the signup page if there is an error
     failureFlash : true // allow flash messages
 });
+
+exports.logout = function (req, res) {
+    req.logout();
+    res.redirect('/question');
+};
 
 exports.facebookRedirect = passport.authenticate('facebook', {
     scope: 'email'
