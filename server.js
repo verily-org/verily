@@ -6,6 +6,8 @@ module.exports = function (suppressLogs) {
         app = express(),
         emitter = require('./event-emitter')(),
         swig = require('swig'),
+        passport = require('passport'),
+        flash = require('connect-flash'),
 
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
@@ -20,6 +22,7 @@ module.exports = function (suppressLogs) {
     controllers.question_comments = require('./controllers/question_comments');
     controllers.answers = require('./controllers/answers');
     controllers.answer_comments = require('./controllers/answer_comments');
+    controllers.users = require('./controllers/users');
 
     // Following line replaced to avoid warnings –
     // see https://github.com/senchalabs/connect/wiki/Connect-3.0
@@ -88,6 +91,8 @@ module.exports = function (suppressLogs) {
                 models.Answer = db.models.answer;
                 models.QuestionComment = db.models.question_comment;
                 models.AnswerComment = db.models.answer_comment;
+                models.User = db.models.user;
+                models.UserFacebook = db.models.userFacebook;
 
                 // Post is the base class.
                 // Questions, answers and comments are types of Post.
@@ -102,6 +107,14 @@ module.exports = function (suppressLogs) {
             next();
         }
     }));
+
+    app.use(express.cookieParser());
+    app.use(express.bodyParser());
+    app.use(express.session({ secret: 'cat' }, {maxAge: new Date(Date.now() + 3600000)}));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(flash());
+    app.use(app.router);
 
     app.listen(enums.options.port, enums.options.hostname);
 
