@@ -112,7 +112,7 @@ exports.create = [checkRole, createQuestion];
 // View to edit a question
 exports.edit = function (req, res) {
     
-    getQuestion(req, function(err, question) {
+    getQuestion(req, false, function(err, question) {
         if (err) {
             // Error!
             generic.genericErrorHandler(req, res, err);
@@ -139,7 +139,7 @@ exports.edit = function (req, res) {
 }
 
 // Used by get, edit functions etc.
-var getQuestion = function (req, callback) {
+var getQuestion = function (req, addView, callback) {
     // ETag support.
     var reqIfNoneMatch = req.get(enums.ifNoneMatch) || null;
 
@@ -153,7 +153,10 @@ var getQuestion = function (req, callback) {
             if (question.targetDateTimeOccurred) {
                 relativeTargetDateTimeOccurred = utils.date.relativeTime(question.targetDateTimeOccurred, {abbreviated: true});
             }
-            
+            if(addView){
+                question.addViewCount();
+            }
+
             var questionTmp = {
                 title: question.title,
                 id: question.id,
@@ -168,6 +171,9 @@ var getQuestion = function (req, callback) {
                 relativeCreatedDate: relativeCreatedDate,
                 author: question.author,
                 tags: question.tags,
+                viewCount: question.viewCount,
+                rejectedAnswerCount: 0,
+                supportedAnswerCount: 0,
                 updated: question.updated
             }, wrapper = {
                 question: questionTmp
@@ -175,10 +181,12 @@ var getQuestion = function (req, callback) {
             
             question.getAnswers(function (err, answers) {
                if (!err && answers) {
+                   questionTmp.rejectedAnswerCount = question.getRejectedAnswerCount();
+                   questionTmp.supportedAnswerCount = question.getSupportedAnswerCount();
                    // Answers present.
                    
-                   console.log('answers');
-                   console.log(answers);
+//                   console.log('answers');
+//                   console.log(answers);
                    
                    // Include answers within question
                    async.each(answers, function(answer, callback) {
@@ -188,13 +196,13 @@ var getQuestion = function (req, callback) {
                        
                    }, function (err) {
                        if (!err) {
-                           console.log('answers');
-                           console.log(answers);
+//                           console.log('answers');
+//                           console.log(answers);
                            questionTmp.answers = answers;
                            
                            //res.json(wrapper);
             
-                           console.log(wrapper);
+//                           console.log(wrapper);
                            
                            callback(err, questionTmp);
                        }
@@ -216,7 +224,7 @@ var getQuestion = function (req, callback) {
 exports.get = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
 
-    getQuestion(req, function(err, question) {
+    getQuestion(req, true, function(err, question) {
         if (err) {
             // Error!
             if (err === enums.NOT_MODIFIED) {
