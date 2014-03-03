@@ -47,7 +47,33 @@ module.exports = function (db, cb) {
         viewCount: {
             type: 'number'
         }
-    }), Answer = db.define('answer', {
+    },
+        {
+            methods: {
+                addViewCount: function(){
+                    this.viewCount++;
+                    this.save();
+                },
+                getSupportedAnswerCount: function(){
+                    //If the answers are loaded returns amount of them of type Support, else not loaded returns 0!
+                    if(typeof this.answers != "undefined"){
+                        return this.answers.filter(function(a){return a.type == "support"}).length;
+                    }
+                    else{
+                        return 0;
+                    }
+                },
+                getRejectedAnswerCount: function(){
+                    //If the answers are loaded returns amount of them of type Reject, else not loaded returns 0!
+                    if(typeof this.answers != "undefined"){
+                        return this.answers.filter(function(a){return a.type == "reject"}).length;
+                    }
+                    else{
+                        return 0;
+                    }
+                }
+            }
+        }), Answer = db.define('answer', {
         type: {
             type: 'enum',
             values: ['support', 'reject']
