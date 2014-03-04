@@ -74,7 +74,6 @@ exports.all = function (req, res) {
         } else {
             // Questions with Post data included in each question.  
             async.each(questions, generic.gen, function (err) {
-                    console.log(questions);
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
