@@ -182,6 +182,7 @@ var getQuestion = function (req, addView, callback) {
                if (!err && answers) {
                    questionTmp.rejectedAnswerCount = question.getRejectedAnswerCount();
                    questionTmp.supportedAnswerCount = question.getSupportedAnswerCount();
+                   questionTmp.importanceCount = question.post.getImportanceCount();
                    // Answers present.
                    
 //                   console.log('answers');
@@ -330,6 +331,27 @@ exports.update = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
 
+    });
+
+};
+
+// Update question
+exports.markImportant = function (req, res) {
+
+    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+        if (!err && question) {
+                require('./ratings').importance(req, question.post, function(err, rating){
+                    if(!err){
+                        res.redirect('/question/' + req.params.question_id);
+
+                        res.end();
+                    } else {
+                        generic.genericErrorHandler(req, res, err);
+                    }
+                });
+        } else {
+            generic.genericErrorHandler(req, res, err);
+        }
     });
 
 };

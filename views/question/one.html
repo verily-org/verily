@@ -83,8 +83,8 @@
                     
                     <!-- button-mark-important -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-default btn-large text-action-button" title="Mark as important"><i class="fa fa-exclamation"></i> <span class="sr-only">Important</span><strong class="hidden-xs">Important</strong></button>
-                        <a href="#" class="btn btn-default action-button-count">99</a>
+                        <a href="/question/{{ question.id }}/markImportant" class="btn btn-default btn-large text-action-button" title="Mark as important"><i class="fa fa-exclamation"></i> <span class="sr-only">Important</span><strong class="hidden-xs">Important</strong></a>
+                        <a href="#" class="btn btn-default action-button-count">{{ question.importanceCount }}</a>
                     </div>
                     <!-- / button-mark-important -->
                             

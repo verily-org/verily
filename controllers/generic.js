@@ -56,6 +56,7 @@ exports.gen = function (item, callback) {
         join(item, post);
         item.upvoteCount = post.getUpvoteCount();
         item.downvoteCount = post.getDownvoteCount();
+        item.importanceCount = post.getImportanceCount();
         callback();
     });
 };
@@ -173,6 +174,7 @@ exports.get = function (model, id, reqIfNoneMatch, cb) {
                         // Client does not have latest version:
                         // resource has changed.
                         join(item, post);
+                        item.post = post;
                         cb(null, item);
                     }
                 } else {
