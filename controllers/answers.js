@@ -131,7 +131,7 @@ exports.create = function (req, res) {
             }, req, function (err, answer) {
                 if (!err && answer) {
                     answer.setQuestion(question, function (err) {
-                        // TODO: Change this so that it redirects to created answer.
+                        // TODO: Change this so that it redirects to1 created answer.
                         generic.get(req.models.Answer, answer.id, undefined, function (err, answer2) {
                             if (!err && answer2) {
                                 var answerTmp = {
@@ -143,9 +143,8 @@ exports.create = function (req, res) {
                                 }, wrapper = {
                                     answer: answerTmp
                                 };
-                                res.status(201);
-                                res.set(enums.eTag, answer2.updated);
-                                res.json(wrapper);
+                                res.redirect('/question/' + answer2.question_id);
+                                //res.json(wrapper);
                                 res.end();
                             } else {
                                 generic.genericErrorHandler(req, res, err);
@@ -219,6 +218,56 @@ exports.remove = function (req, res) {
                             }
                         });
                         // answers are deleted.
+                    });
+                } else {
+                    generic.genericErrorHandler(req, res, err);
+                }
+            });
+        } else {
+            generic.genericErrorHandler(req, res, err);
+        }
+    });
+};
+exports.upvote = function (req, res) {
+    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+        if (!err && question) {
+            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+                if (!err && answer) {
+                    answer.getPost(function(err, post){
+                        require('./ratings').upvote(req, post, function(err, rating){
+                            if(!err){
+                                console.log('error: ' + err);
+                                console.log('type: '+ rating.type);
+                                res.status(204);
+                                res.end();
+                            } else {
+                                generic.genericErrorHandler(req, res, err);
+                            }
+                        });
+                    });
+                } else {
+                    generic.genericErrorHandler(req, res, err);
+                }
+            });
+        } else {
+            generic.genericErrorHandler(req, res, err);
+        }
+    });
+};
+exports.downvote = function (req, res) {
+    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+        if (!err && question) {
+            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+                if (!err && answer) {
+                    answer.getPost(function(err, post){
+                        require('./ratings').downvote(req, post, function(err, rating){
+                            if(!err){
+                                res.status(204);
+                                res.end();
+                            } else {
+                                generic.genericErrorHandler(req, res, err);
+                            }
+                        });
                     });
                 } else {
                     generic.genericErrorHandler(req, res, err);

@@ -44,11 +44,54 @@ module.exports = function (db, cb) {
             time: true,
             defaultValue: 'CURRENT_TIMESTAMP'
         }
-    }), Question = db.define('question', {
+    },
+        {
+            methods: {
+                getUpvoteCount: function(){
+                    return this.ratings.filter(function(rating){return rating.isUpvote()}).length;
+                },
+                getDownvoteCount: function(){
+                    return this.ratings.filter(function(rating){return rating.isDownvote()}).length;
+                },
+                getImportanceCount: function(){
+                    return this.ratings.filter(function(rating){return rating.isImportance()}).length;
+                },
+                isDownvotedOrUpvotedBy: function(user){
+                    var thisUser = this.user;
+                    return this.ratings.filter(function(rating){return (thisUser == rating.user) && rating.isUpvote() || rating.isDownvote()}).length > 0;
+                },
+            }
+        }), Question = db.define('question', {
         viewCount: {
             type: 'number'
         }
-    }), Answer = db.define('answer', {
+    },
+        {
+            methods: {
+                addViewCount: function(){
+                    this.viewCount++;
+                    this.save();
+                },
+                getSupportedAnswerCount: function(){
+                    //If the answers are loaded returns amount of them of type Support, else not loaded returns 0!
+                    if(typeof this.answers != "undefined"){
+                        return this.answers.filter(function(a){return a.type == "support"}).length;
+                    }
+                    else{
+                        return 0;
+                    }
+                },
+                getRejectedAnswerCount: function(){
+                    //If the answers are loaded returns amount of them of type Reject, else not loaded returns 0!
+                    if(typeof this.answers != "undefined"){
+                        return this.answers.filter(function(a){return a.type == "reject"}).length;
+                    }
+                    else{
+                        return 0;
+                    }
+                }
+            }
+        }), Answer = db.define('answer', {
         type: {
             type: 'enum',
             values: ['support', 'reject']
@@ -68,7 +111,21 @@ module.exports = function (db, cb) {
         author: {
             type: 'text'
         },
-    }), Local = db.define('local', {
+    },
+        {
+            methods: {
+                isUpvote: function(){
+                    return this.type == 'upvote';
+                },
+                isDownvote: function(){
+                    return this.type == 'downvote';
+                },
+                isImportance: function(){
+                    return this.type == 'importance';
+                },
+            }
+        }
+    ), Local = db.define('local', {
         email: {
             type: 'text'
         },
@@ -112,8 +169,10 @@ module.exports = function (db, cb) {
     Answer.hasOne('question', Question, {
         reverse: 'answers'
     });
-    
-    Post.hasOne('rating', Rating);
+
+    Rating.hasOne('post', Post, {reverse: 'ratings', autoFetch: true});
+
+    Rating.hasOne('user', User, {reverse: 'ratings'});
     
     Question.hasOne('post', Post);
 

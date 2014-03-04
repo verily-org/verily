@@ -54,6 +54,8 @@ var join = exports.join;
 exports.gen = function (item, callback) {
     item.getPost(function (err, post) {
         join(item, post);
+        item.upvoteCount = post.getUpvoteCount();
+        item.downvoteCount = post.getDownvoteCount();
         callback();
     });
 };
