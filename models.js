@@ -93,7 +93,21 @@ module.exports = function (db, cb) {
         author: {
             type: 'text'
         },
-    }), Local = db.define('local', {
+    },
+        {
+            methods: {
+                isUpvote: function(){
+                    return this.type == 'upvote';
+                },
+                isDownvote: function(){
+                    return this.type == 'downvote';
+                },
+                isImportance: function(){
+                    return this.type == 'importance';
+                },
+            }
+        }
+    ), Local = db.define('local', {
         email: {
             type: 'text'
         },
@@ -135,8 +149,10 @@ module.exports = function (db, cb) {
     Answer.hasOne('question', Question, {
         reverse: 'answers'
     });
-    
-    Post.hasOne('rating', Rating);
+
+    Rating.hasOne('post', Post, {reverse: 'ratings'});
+
+    Rating.hasOne('user', User, {reverse: 'ratings'});
     
     Question.hasOne('post', Post);
 
