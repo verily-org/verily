@@ -43,7 +43,24 @@ module.exports = function (db, cb) {
             time: true,
             defaultValue: 'CURRENT_TIMESTAMP'
         }
-    }), Question = db.define('question', {
+    },
+        {
+            methods: {
+                getUpvoteCount: function(){
+                    return this.ratings.filter(function(rating){return rating.isUpvote()}).length;
+                },
+                getDownvoteCount: function(){
+                    return this.ratings.filter(function(rating){return rating.isDownvote()}).length;
+                },
+                getImportanceCount: function(){
+                    return this.ratings.filter(function(rating){return rating.isImportance()}).length;
+                },
+                isDownvotedOrUpvotedBy: function(user){
+                    var thisUser = this.user;
+                    return this.ratings.filter(function(rating){return (thisUser == rating.user) && rating.isUpvote() || rating.isDownvote()}).length > 0;
+                },
+            }
+        }), Question = db.define('question', {
         viewCount: {
             type: 'number'
         }
@@ -150,7 +167,7 @@ module.exports = function (db, cb) {
         reverse: 'answers'
     });
 
-    Rating.hasOne('post', Post, {reverse: 'ratings'});
+    Rating.hasOne('post', Post, {reverse: 'ratings', autoFetch: true});
 
     Rating.hasOne('user', User, {reverse: 'ratings'});
     
