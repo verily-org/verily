@@ -36,7 +36,8 @@ module.exports = function (suppressLogs) {
     
     // To allow use of all HTTP methods in the browser through use of _method variable
     app.use(express.methodOverride());
-    
+
+    app.set('port', process.env.PORT || 3000);
     app.engine('html', swig.renderFile);
     app.set('view engine', 'html');
     app.set('views', __dirname + '/views');
