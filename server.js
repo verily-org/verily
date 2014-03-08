@@ -12,7 +12,7 @@ module.exports = function (suppressLogs) {
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
-        //router = require('./routing/router'),
+        router = require('./routing/router'),
         log = require('./log'),
         controllers = {},
         db_url;
@@ -38,6 +38,7 @@ module.exports = function (suppressLogs) {
     app.use(express.methodOverride());
 
     app.set('port', process.env.PORT || 3000);
+    
     app.engine('html', swig.renderFile);
     app.set('view engine', 'html');
     app.set('views', __dirname + '/views');
@@ -137,7 +138,7 @@ module.exports = function (suppressLogs) {
 //    }
 //
 //    // Configure the routes.
-//    router(app, controllers);
+    router(app, controllers);
     http.createServer(app).listen(app.get('port'), function(){
         console.log('Express server listening on port ' + app.get('port'));
     });
