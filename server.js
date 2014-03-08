@@ -61,16 +61,14 @@ module.exports = function (suppressLogs) {
     app.use(connect.limit('5kb'));
 
     // Overwrite demo.sh at the start of execution because it is appended to.
-    if (enums.document) {
-        fs.writeFile(enums.demo, '#!/bin/bash\n\n', function (err) {
-            if (err) {
-                throw err;
-            }
-        });
-    }
+    //if (enums.document) {
+    //    fs.writeFile(enums.demo, '#!/bin/bash\n\n', function (err) {
+    //        if (err) {
+    //            throw err;
+    //        }
+    //    });
+    //}
 
-    db_url = "sqlite://app.db";
-    
     if (process.env.DATABASE_URL === undefined) {
     	db_url = "sqlite://app.db";
     } else {
@@ -131,7 +129,7 @@ module.exports = function (suppressLogs) {
     app.use(flash());
     app.use(app.router);
 
-    app.listen(enums.options.port, enums.options.hostname);
+    app.listen();
 
     if (!suppressLogs) {
         console.logger.info('Server started on ' + enums.options.hostname + ':' + enums.options.port);
@@ -140,8 +138,8 @@ module.exports = function (suppressLogs) {
     // Configure the routes.
     router(app, controllers);
 
-    process.on('SIGINT', function () {
-        console.logger.info('Server stopped.');
-        process.exit(1);
-    });
+    //process.on('SIGINT', function () {
+    //    console.logger.info('Server stopped.');
+    //    process.exit(1);
+    //});
 };
