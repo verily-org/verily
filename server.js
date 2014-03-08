@@ -14,7 +14,8 @@ module.exports = function (suppressLogs) {
         enums = require('./enums'),
         router = require('./routing/router'),
         log = require('./log'),
-        controllers = {};
+        controllers = {},
+        db_url;
 
     //initial log functions.
     log.init(enums);
@@ -68,8 +69,17 @@ module.exports = function (suppressLogs) {
         });
     }
 
+    db_url = "sqlite://app.db";
+    
+    if (process.env.DATABASE_URL === undefined) {
+    	db_url = "sqlite://app.db";
+    } else {
+    	//console.log('db:', process.env.DATABASE_URL);
+    	db_url = "postgres://" + process.env.DATABASE_URL;
+    }
+    
     // Set up the ORM to SQLite.
-    app.use(orm.express("sqlite://app.db", {
+    app.use(orm.express(db_url, {
         define: function (db, models, next) {
 
             // Instance.cache is an important setting.
