@@ -129,14 +129,17 @@ module.exports = function (suppressLogs) {
     app.use(flash());
     app.use(app.router);
 
-    app.listen();
-
-    if (!suppressLogs) {
-        console.logger.info('Server started on ' + enums.options.hostname + ':' + enums.options.port);
-    }
-
-    // Configure the routes.
-    router(app, controllers);
+//    app.listen();
+//
+//    if (!suppressLogs) {
+//        console.logger.info('Server started on ' + enums.options.hostname + ':' + enums.options.port);
+//    }
+//
+//    // Configure the routes.
+//    router(app, controllers);
+    http.createServer(app).listen(app.get('port'), function(){
+        console.log('Express server listening on port ' + app.get('port'));
+    });
 
     //process.on('SIGINT', function () {
     //    console.logger.info('Server stopped.');
