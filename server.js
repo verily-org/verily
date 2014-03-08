@@ -1,5 +1,5 @@
 module.exports = function (suppressLogs) {
-    var fs = require('fs'),
+    var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
         orm = require('orm'),
@@ -8,11 +8,11 @@ module.exports = function (suppressLogs) {
         swig = require('swig'),
         passport = require('passport'),
         flash = require('connect-flash'),
-
+        http = require('http'),
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
-        router = require('./routing/router'),
+        //router = require('./routing/router'),
         log = require('./log'),
         controllers = {},
         db_url;
