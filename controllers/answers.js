@@ -3,6 +3,7 @@ var generic = require('./generic');
 var enums = require('../enums');
 
 var async = require('async');
+var role = require('../lib/roles').user;
 
 // Get a specific answer
 exports.get = function (req, res) {
@@ -122,7 +123,7 @@ exports.all = function (req, res) { // this function finds all answers of an spe
 };
 
 // Create an answer and add it to a question.
-exports.create = function (req, res) {
+var createAnswer = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             //question exists
@@ -164,6 +165,12 @@ exports.create = function (req, res) {
         }
     });
 };
+
+var checkRole = role.can('create answer');
+
+exports.create = [checkRole, createAnswer];
+
+
 
 // Update answer
 exports.update = function (req, res) {

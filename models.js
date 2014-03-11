@@ -1,4 +1,5 @@
-var bcrypt   = require('bcrypt-nodejs');
+var bcrypt   = require('bcrypt-nodejs'),
+    orm = require('orm');
 
 module.exports = function (db, cb) {
 
@@ -155,13 +156,15 @@ module.exports = function (db, cb) {
         }
     }), User = db.define('user', {
             name: {
-                type: 'text'
+                type: 'text',
             },
             role: {
                 type: 'enum',
                 values: ['editor', 'simple']
             } 
-    });
+    },{validations: {
+        name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
+    }});
 
     Answer.hasOne('question', Question, {
         reverse: 'answers'

@@ -1,5 +1,6 @@
+// test
 module.exports = function (suppressLogs) {
-    var fs = require('fs'),
+    var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
         orm = require('orm'),
@@ -8,13 +9,14 @@ module.exports = function (suppressLogs) {
         swig = require('swig'),
         passport = require('passport'),
         flash = require('connect-flash'),
-
+        http = require('http'),
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         router = require('./routing/router'),
         log = require('./log'),
-        controllers = {};
+        controllers = {},
+        db_url;
 
     //initial log functions.
     log.init(enums);
@@ -35,6 +37,8 @@ module.exports = function (suppressLogs) {
     
     // To allow use of all HTTP methods in the browser through use of _method variable
     app.use(express.methodOverride());
+
+    app.set('port', process.env.PORT || 3000);
     
     app.engine('html', swig.renderFile);
     app.set('view engine', 'html');
@@ -60,16 +64,23 @@ module.exports = function (suppressLogs) {
     app.use(connect.limit('5kb'));
 
     // Overwrite demo.sh at the start of execution because it is appended to.
-    if (enums.document) {
-        fs.writeFile(enums.demo, '#!/bin/bash\n\n', function (err) {
-            if (err) {
-                throw err;
-            }
-        });
-    }
+    //if (enums.document) {
+    //    fs.writeFile(enums.demo, '#!/bin/bash\n\n', function (err) {
+    //        if (err) {
+    //            throw err;
+    //        }
+    //    });
+    //}
 
+    if (process.env.DATABASE_URL === undefined) {
+    	db_url = "sqlite://app.db";
+    } else {
+    	//console.log('db:', process.env.DATABASE_URL);
+    	db_url = "postgres://" + process.env.DATABASE_URL;
+    }
+    
     // Set up the ORM to SQLite.
-    app.use(orm.express("sqlite://app.db", {
+    app.use(orm.express(db_url, {
         define: function (db, models, next) {
 
             // Instance.cache is an important setting.
@@ -121,17 +132,20 @@ module.exports = function (suppressLogs) {
     app.use(flash());
     app.use(app.router);
 
-    app.listen(enums.options.port, enums.options.hostname);
-
-    if (!suppressLogs) {
-        console.logger.info('Server started on ' + enums.options.hostname + ':' + enums.options.port);
-    }
-
-    // Configure the routes.
+//    app.listen();
+//
+//    if (!suppressLogs) {
+//        console.logger.info('Server started on ' + enums.options.hostname + ':' + enums.options.port);
+//    }
+//
+//    // Configure the routes.
     router(app, controllers);
-
-    process.on('SIGINT', function () {
-        console.logger.info('Server stopped.');
-        process.exit(1);
+    http.createServer(app).listen(app.get('port'), function(){
+        console.log('Express server listening on port ' + app.get('port'));
     });
+
+    //process.on('SIGINT', function () {
+    //    console.logger.info('Server stopped.');
+    //    process.exit(1);
+    //});
 };
