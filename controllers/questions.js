@@ -83,6 +83,7 @@ exports.all = function (req, res) {
                     };
                     if (req.user){var username = req.user.name; }
                     res.render('question/index', {
+
                         questions: questions,
                         user: username
                     });
@@ -235,7 +236,7 @@ exports.get = function (req, res) {
             }
         } else {
             // No errors.
-            
+            console.log(question.answers.length);
             // Set the ETag header.
             res.set(enums.eTag, question.updated);
             
@@ -243,6 +244,7 @@ exports.get = function (req, res) {
             if (req.user){var username = req.user.name; }
             res.render('question/one', {
                 question: question,
+                answers: question.answers,
                 page: {
                     title: question.title
                 },

@@ -142,18 +142,17 @@
 
 <div class="row">
     <!-- <button class="btn btn-primary btn-large"><i class="fa fa-reply"></i> <strong>Verify</strong></button> -->
-    
-    
 </div>
 
+{% if answers %}
 <div class="row question-answers">
-    {% for answer in question.answers %}
+	{% for answer in answers %}   
         <div class="col-sm-4">
             {% include '../evidence/one-embed.html' with answer %}
         </div>   
     {% endfor %}
 </div>
-
+{% endif %}
 
 
 
