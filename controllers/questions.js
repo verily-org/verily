@@ -238,10 +238,11 @@ exports.get = function (req, res) {
             // No errors.
             
             // Set the ETag header.
-            res.set(enums.eTag, question.updated);
+            //res.set(enums.eTag, question.updated);
             
             res.status(200);
             if (req.user){var username = req.user.name; }
+            console.log('rating:' +JSON.stringify(question.answers));
             res.render('question/one', {
                 question: question,
                 page: {
@@ -260,7 +261,8 @@ exports.head = function (req, res) {
 
     generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
-            res.set(enums.eTag, question.updated);
+//         Used for caching:
+//            res.set(enums.eTag, question.updated);
             res.end();
             req.destroy();
         } else if (err === enums.NOT_MODIFIED) {

@@ -165,18 +165,19 @@ exports.get = function (model, id, reqIfNoneMatch, cb) {
             // Add the post fields to the output.
             item.getPost(function (err, post) {
                 if (!err && post) {
+//                    Used for caching
                     // If reqIfNoneMatch is present, compare with it.
-                    if (reqIfNoneMatch && post.updated === cutQuotes(reqIfNoneMatch)) {
-                        // Client has latest version:
-                        // resource has NOT changed
-                        cb(enums.NOT_MODIFIED);
-                    } else {
+//                    if (reqIfNoneMatch && post.updated === cutQuotes(reqIfNoneMatch)) {
+//                        // Client has latest version:
+//                        // resource has NOT changed
+//                        cb(enums.NOT_MODIFIED);
+//                    } else {
                         // Client does not have latest version:
                         // resource has changed.
                         join(item, post);
                         item.post = post;
                         cb(null, item);
-                    }
+//                    }
                 } else {
                     cb({}, null);
                 }
