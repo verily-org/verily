@@ -74,7 +74,7 @@ module.exports = function (db, cb) {
                 },
                 getSupportedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Support, else not loaded returns 0!
-                    if(typeof this.answers != "undefined"){
+                    if(this.answers != undefined){
                         return this.answers.filter(function(a){return a.type == "support"}).length;
                     }
                     else{
@@ -83,7 +83,7 @@ module.exports = function (db, cb) {
                 },
                 getRejectedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Reject, else not loaded returns 0!
-                    if(typeof this.answers != "undefined"){
+                    if(this.answers != undefined){
                         return this.answers.filter(function(a){return a.type == "reject"}).length;
                     }
                     else{

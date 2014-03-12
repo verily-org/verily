@@ -26,7 +26,8 @@ exports.get = function (req, res) {
                     }, wrapper = {
                         answer: newanswer
                     };
-                    res.set(enums.eTag, answer.updated);
+//                    Used for caching
+//                    res.set(enums.eTag, answer.updated);
                     res.json(wrapper);
                     res.end();
                 } else if (err === enums.NOT_MODIFIED) {
@@ -52,7 +53,8 @@ exports.head = function (req, res) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, reqIfNoneMatch, function (err, answer) {
                 if (!err && answer) {
-                    res.set(enums.eTag, answer.updated);
+//                    Used for caching:
+//                    res.set(enums.eTag, answer.updated);
                     res.end();
                     req.destroy();
                 } else {
@@ -270,6 +272,7 @@ exports.downvote = function (req, res) {
                         require('./ratings').downvote(req, post, function(err, rating){
                             if(!err){
                                 res.status(204);
+                                res.redirect('/question/' + answer.question_id);
                                 res.end();
                             } else {
                                 generic.genericErrorHandler(req, res, err);

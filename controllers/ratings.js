@@ -29,23 +29,24 @@ exports.upvote = function (req, post, cb) {
 };
 
 exports.importance = function (req, post, cb) {
-    var upvote_string = "importance";
+    var importance_string = "importance";
     var user = req.user;
 
-    addOrUpdateRating(req, post, upvote_string, function(err, rating){
+    addOrUpdateRating(req, post, importance_string, function(err, rating){
         return cb(err, rating);
     });
 };
 var getExistingRating = function(ratingModel, user, post, type, cb){
     var search_criteria = {};
     if(user != null){
-        search_criteria = {type: ["upvote" , "downvote"], user: user, post: post};
+        search_criteria = { user: user, post: post};
     }
     else{
         //todo add mecanism to save unique votes from non users or give feedback to sing in (before)
-        search_criteria = {type: ["upvote" , "downvote"], post: post};
+        search_criteria = {post: post};
     }
     if(type == "upvote" || type == "downvote"){
+        search_criteria.type = ["upvote" , "downvote"];
         ratingModel.find(search_criteria, function(err, ratings){
             var single_rating =  ratings[0];//ratings.filter(function(rating){return rating.isUpvote() || rating.isDownvote()});
             if(!err && single_rating != undefined){
@@ -57,6 +58,7 @@ var getExistingRating = function(ratingModel, user, post, type, cb){
         });
     }
     else if(type == "importance"){
+        search_criteria.type = "importance";
         ratingModel.find(search_criteria, function(err, ratings){
             var single_rating = ratings[0];
             if(!err && single_rating != undefined){

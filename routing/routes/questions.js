@@ -12,6 +12,9 @@ exports.route = function (app, controllers, doc) {
     // Create question API endpoint
     route('post', '/question', 'new', 'New; New question');
 
+    // View to edit question
+    route('get', specific + '/markImportant', 'markImportant', 'Mark as Important');
+
     route('get', '/question', 'all', 'Get All; Get all questions');
 
     route('get', specific, 'get', 'Get; Get question with specific ID');

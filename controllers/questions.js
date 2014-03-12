@@ -182,6 +182,7 @@ var getQuestion = function (req, addView, callback) {
                if (!err && answers) {
                    questionTmp.rejectedAnswerCount = question.getRejectedAnswerCount();
                    questionTmp.supportedAnswerCount = question.getSupportedAnswerCount();
+                   questionTmp.importanceCount = question.post.getImportanceCount();
                    // Answers present.
                    
 //                   console.log('answers');
@@ -237,10 +238,11 @@ exports.get = function (req, res) {
             // No errors.
             
             // Set the ETag header.
-            res.set(enums.eTag, question.updated);
+            //res.set(enums.eTag, question.updated);
             
             res.status(200);
             if (req.user){var username = req.user.name; }
+            console.log('rating:' +JSON.stringify(question.answers));
             res.render('question/one', {
                 question: question,
                 page: {
@@ -259,7 +261,8 @@ exports.head = function (req, res) {
 
     generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
-            res.set(enums.eTag, question.updated);
+//         Used for caching:
+//            res.set(enums.eTag, question.updated);
             res.end();
             req.destroy();
         } else if (err === enums.NOT_MODIFIED) {
@@ -330,6 +333,27 @@ exports.update = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
 
+    });
+
+};
+
+// Update question
+exports.markImportant = function (req, res) {
+
+    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+        if (!err && question) {
+                require('./ratings').importance(req, question.post, function(err, rating){
+                    if(!err){
+                        res.redirect('/question/' + req.params.question_id);
+
+                        res.end();
+                    } else {
+                        generic.genericErrorHandler(req, res, err);
+                    }
+                });
+        } else {
+            generic.genericErrorHandler(req, res, err);
+        }
     });
 
 };
