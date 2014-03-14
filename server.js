@@ -16,6 +16,7 @@ module.exports = function (suppressLogs) {
         router = require('./routing/router'),
         log = require('./log'),
         controllers = {},
+        heroku,
         db_url;
 
     //initial log functions.
@@ -72,12 +73,16 @@ module.exports = function (suppressLogs) {
     //    });
     //}
 
-    if (process.env.DATABASE_URL === undefined) {
-    	db_url = "sqlite://app.db";
+    heroku = (process.env.HEROKU_POSTGRESQL_CYAN_URL !== undefined);
+    heroku = false;
+    //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
+    //console.log('process.env',process.env);
+    if (heroku){
+    	db_url = process.env.HEROKU_POSTGRESQL_CYAN_URL;
     } else {
-    	//console.log('db:', process.env.DATABASE_URL);
-    	db_url = "postgres://" + process.env.DATABASE_URL;
+    	db_url = "sqlite://app.db";
     }
+    console.log('db_url:', db_url);
     
     // Set up the ORM to SQLite.
     app.use(orm.express(db_url, {
