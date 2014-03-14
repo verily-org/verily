@@ -2,6 +2,14 @@ var utils = require('utilities');
 var common = require('../static/js/common');
 
 module.exports = function(swig) {
+    swig.setFilter('isUpvotedBy', function( answer, user) {
+        var isUpvoted =answer.post.isUpvotedBy(user);
+        return isUpvoted;
+    });
+    swig.setFilter('isDownvotedBy', function( answer, user) {
+        var isDownvoted =answer.post.isDownvotedBy(user);
+        return isDownvoted;
+    });
     swig.setFilter('relativeTime', function(input, abbreviated) {
         utils.date.relativeTime(input);
     });

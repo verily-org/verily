@@ -56,10 +56,14 @@ module.exports = function (db, cb) {
                 getImportanceCount: function(){
                     return this.ratings.filter(function(rating){return rating.isImportance()}).length;
                 },
-                isDownvotedOrUpvotedBy: function(user){
-                    var thisUser = this.user;
-                    return this.ratings.filter(function(rating){return (thisUser == rating.user) && rating.isUpvote() || rating.isDownvote()}).length > 0;
+                isUpvotedBy: function(user){
+                    var ratings = this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isUpvote()});
+
+                    return ratings.length > 0;
                 },
+                isDownvotedBy: function(user){
+                    return this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isDownvote()}).length > 0;
+                }
             }
         }), Question = db.define('question', {
         viewCount: {
@@ -170,23 +174,24 @@ module.exports = function (db, cb) {
         reverse: 'answers'
     });
 
+    Question.hasOne('post', Post, {reverse: 'questions', autoFetch: true});
+
+    Answer.hasOne('post', Post, {reverse: 'answers', autoFetch: true});
+
     Rating.hasOne('post', Post, {reverse: 'ratings', autoFetch: true});
 
     Rating.hasOne('user', User, {reverse: 'ratings'});
-    
-    Question.hasOne('post', Post);
-
-
-    Answer.hasOne('post', Post);
 
 
     QuestionComment.hasOne('question', Question, {
-        reverse: 'comments'
+        reverse: 'comments',
+        autoFetch: true
     });
     QuestionComment.hasOne('post', Post);
 
     AnswerComment.hasOne('answer', Answer, {
-        reverse: 'comments'
+        reverse: 'comments',
+        autoFetch: true
     });
     AnswerComment.hasOne('post', Post);
 

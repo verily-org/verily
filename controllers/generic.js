@@ -51,15 +51,6 @@ exports.join = function (item, post) {
 };
 var join = exports.join;
 
-exports.gen = function (item, callback) {
-    item.getPost(function (err, post) {
-        join(item, post);
-        item.upvoteCount = post.getUpvoteCount();
-        item.downvoteCount = post.getDownvoteCount();
-        item.importanceCount = post.getImportanceCount();
-        callback();
-    });
-};
 
 
 // Creates an instance of model, creates a Post and links the model instance
@@ -174,9 +165,14 @@ exports.get = function (model, id, reqIfNoneMatch, cb) {
 //                    } else {
                         // Client does not have latest version:
                         // resource has changed.
-                        join(item, post);
-                        item.post = post;
-                        cb(null, item);
+                    exports.load_post_ratings_count(item, function(err){
+                        if(err){
+                            cb(err, null);
+                        }
+                        else{
+                            cb(null, item);
+                        }
+                    });
 //                    }
                 } else {
                     cb({}, null);
@@ -279,7 +275,53 @@ exports.removeOne = function (item, req, cb) {
         }
     });
 };
-
+exports.load_question_extra_fields = function(question, callback){
+    if(question.answers == undefined){
+        question.getAnswers(function(err, answers){
+            if (!err && answers) {
+                question.rejectedAnswerCount = question.getRejectedAnswerCount();
+                question.supportedAnswerCount = question.getSupportedAnswerCount();
+                if(question.post.ratings == undefined){
+                    question.getPost(function(err, post){
+                        if (!err && answers) {
+                            question.importanceCount = question.post.getImportanceCount();
+                            callback();
+                        }
+                        else{
+                            callback(err);
+                        }
+                    });
+                }
+                else{
+                    question.importanceCount = question.post.getImportanceCount();
+                    callback();
+                }
+            }
+            else{
+                callback(err);
+            }
+        });
+    }
+    else{
+        question.rejectedAnswerCount = question.getRejectedAnswerCount();
+        question.supportedAnswerCount = question.getSupportedAnswerCount();
+        question.importanceCount = question.post.getImportanceCount();
+        callback();
+    }
+}
+exports.load_post_ratings_count = function(item, callback){
+    item.post.getRatings(function(err, ratings){
+        if (!err && ratings) {
+            item.post.upvoteCount = item.post.getUpvoteCount();
+            item.post.downvoteCount = item.post.getDownvoteCount();
+            item.post.importanceCount = item.post.getImportanceCount();
+            callback();
+        }
+        else{
+            callback(err);
+        }
+    });
+}
 
 exports.getUserAccounts = function (user, cb) {
     if (user.local_id) {

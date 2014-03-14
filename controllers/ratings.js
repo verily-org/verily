@@ -11,28 +11,26 @@ var role = require('../lib/roles').user;
 //get rating types = ratingModel.allProperties.type.values
 
 exports.downvote = function (req, post, cb) {
-    var downvote_string = "downvote";
+    var type_string = "downvote";
     var user = req.user;
 
-    addOrUpdateRating(req, post, downvote_string, function(err, rating){
+    addOrUpdateRating(req, post, type_string, function(err, rating){
         return cb(err, rating);
     });
 };
 
 exports.upvote = function (req, post, cb) {
-    var upvote_string = "upvote";
-    var user = req.user;
+    var type_string = "upvote";
 
-    addOrUpdateRating(req, post, upvote_string, function(err, rating){
+    addOrUpdateRating(req, post, type_string, function(err, rating){
         return cb(err, rating);
     });
 };
 
 exports.importance = function (req, post, cb) {
-    var importance_string = "importance";
-    var user = req.user;
+    var type_string = "importance";
 
-    addOrUpdateRating(req, post, importance_string, function(err, rating){
+    addOrUpdateRating(req, post, type_string, function(err, rating){
         return cb(err, rating);
     });
 };
@@ -46,6 +44,7 @@ var getExistingRating = function(ratingModel, user, post, type, cb){
         search_criteria = {post: post};
     }
     if(type == "upvote" || type == "downvote"){
+        //Look for both upvotes and downvotes to check if the user has already voted
         search_criteria.type = ["upvote" , "downvote"];
         ratingModel.find(search_criteria, function(err, ratings){
             var single_rating =  ratings[0];//ratings.filter(function(rating){return rating.isUpvote() || rating.isDownvote()});

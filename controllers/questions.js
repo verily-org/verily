@@ -22,23 +22,7 @@ exports.index = function (req, res) {
             var indexGen = function indexGen(q, callback) {
                 q.getAnswers(function (err, answers) {
                     if (!err && answers) {
-                        async.each(answers, generic.gen, function (err) {
-                            if (!err) {
-                                q.getPost(function (err, post) {
-                                    if (!err) {
-                                        generic.join(q, post);
-                                        callback();
-                                    } else {
-                                        generic.genericErrorHandler(req, res, err);
-                                        throw err;
-                                    }
-                                });
-                                q.answers = answers;
-                            } else {
-                                generic.genericErrorHandler(req, res, err);
-                                throw err;
-                            }
-                        });
+                        callback();
                     } else if (err.code !== 2 || answers) { //special consideration,because no answer for a question is normal
                         generic.genericErrorHandler(req, res, err);
                         throw err;
@@ -72,8 +56,8 @@ exports.all = function (req, res) {
             }
             generic.genericErrorHandler(req, res, err);
         } else {
-            // Questions with Post data included in each question.  
-            async.each(questions, generic.gen, function (err) {
+            // Questions with Post data included in each question.
+            async.each(questions, generic.load_question_extra_fields, function (err) {
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
@@ -81,10 +65,10 @@ exports.all = function (req, res) {
                     var wrapper = {
                         questions: questions
                     };
-                    if (req.user){var username = req.user.name; }
+                    if (req.user){var user = req.user; }
                     res.render('question/index', {
                         questions: questions,
-                        user: username
+                        user: user
                     });
                 }
             });
@@ -95,12 +79,12 @@ exports.all = function (req, res) {
 // View to add question
 var createQuestion = function (req, res) {
     res.status(200);
-    if (req.user){var username = req.user.name; }
+    if (req.user){var user = req.user; }
     res.render('question/create', {
         page: {
             title: 'Add question'
         },
-        user: username
+        user: user
     });
 }
 
@@ -145,69 +129,65 @@ var getQuestion = function (req, addView, callback) {
     generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
             
-            var relativeCreatedDate = utils.date.relativeTime(question.date, {abbreviated: true});
+            var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
             
             var relativeTargetDateTimeOccurred;
             
             if (question.targetDateTimeOccurred) {
-                relativeTargetDateTimeOccurred = utils.date.relativeTime(question.targetDateTimeOccurred, {abbreviated: true});
+                relativeTargetDateTimeOccurred = utils.date.relativeTime(question.post.targetDateTimeOccurred, {abbreviated: true});
             }
             if(addView){
                 question.addViewCount();
             }
-
-            var questionTmp = {
-                title: question.title,
-                id: question.id,
-                text: question.text,
-                targetLocality: question.targetLocality,
-                targetLat: question.targetLat,
-                targetLong: question.targetLong,
-                targetImage: question.targetImage,
-                targetDateTimeOccurred: question.targetDateTimeOccurred,
-                relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
-                date: question.date,
-                relativeCreatedDate: relativeCreatedDate,
-                author: question.author,
-                tags: question.tags,
-                viewCount: question.viewCount,
-                rejectedAnswerCount: 0,
-                supportedAnswerCount: 0,
-                updated: question.updated
-            }, wrapper = {
-                question: questionTmp
-            };
             
             question.getAnswers(function (err, answers) {
                if (!err && answers) {
-                   questionTmp.rejectedAnswerCount = question.getRejectedAnswerCount();
-                   questionTmp.supportedAnswerCount = question.getSupportedAnswerCount();
-                   questionTmp.importanceCount = question.post.getImportanceCount();
-                   // Answers present.
-                   
+                   generic.load_question_extra_fields(question, function(err){
+                       if (!err ) {
+                           var questionTmp = {
+                               title: question.post.title,
+                               id: question.id,
+                               text: question.post.text,
+                               targetLocality: question.post.targetLocality,
+                               targetLat: question.post.targetLat,
+                               targetLong: question.post.targetLong,
+                               targetImage: question.post.targetImage,
+                               targetDateTimeOccurred: question.post.targetDateTimeOccurred,
+                               relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
+                               date: question.post.date,
+                               relativeCreatedDate: relativeCreatedDate,
+                               author: question.post.author,
+                               tags: question.post.tags,
+                               viewCount: question.post.viewCount,
+                               rejectedAnswerCount: question.rejectedAnswerCount,
+                               supportedAnswerCount: question.supportedAnswerCount,
+                               updated: question.post.updated,
+                               importanceCount: question.importanceCount,
+                               post: question.post
+                           }, wrapper = {
+                               question: questionTmp
+                           };
+
+                           // Answers present.
+
 //                   console.log('answers');
 //                   console.log(answers);
-                   
-                   // Include answers within question
-                   async.each(answers, function(answer, callback) {
-                       generic.gen(answer, function(cb) {
-                           callback();
-                       });
-                       
-                   }, function (err) {
-                       if (!err) {
-//                           console.log('answers');
-//                           console.log(answers);
-                           questionTmp.answers = answers;
-                           
-                           //res.json(wrapper);
-            
-//                           console.log(wrapper);
-                           
-                           callback(err, questionTmp);
+                           async.each(answers, generic.load_post_ratings_count, function (err) {
+                               if (err) {
+                                   callback(err);
+                               } else {
+                                   questionTmp.answers = answers;
+                                   callback(err, questionTmp);
+                               }
+                           });
+                       } else {
+                           callback(err);
                        }
-                   });
-               } 
+
+                    });
+               } else {
+                   callback(err);
+               }
             });
             
 
@@ -241,14 +221,13 @@ exports.get = function (req, res) {
             //res.set(enums.eTag, question.updated);
             
             res.status(200);
-            if (req.user){var username = req.user.name; }
-            console.log('rating:' +JSON.stringify(question.answers));
+            if (req.user){var user = req.user; }
             res.render('question/one', {
                 question: question,
                 page: {
                     title: question.title
                 },
-                user: username
+                user: user
             });
         }
     });

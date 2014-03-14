@@ -1,4 +1,5 @@
 {% extends '../layout.html' %}
+{% import '../macros/_answers.html' as answers_macro %}
 
 {% block breadcrumb %}
 <li>
@@ -39,11 +40,11 @@
                 {% if question.targetLocality or question.targetLat %}
                 <p class="metadata">
                     {% if question.targetLocality %}
-                    <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ question.targetLocality }}</span>
+                    <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ question.post.targetLocality }}</span>
                     {% endif %}
                     
                     {% if question.targetLat and question.targetLong %}
-                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.targetLat }},{{ question.targetLong }}"><span id="question-target-lat">{{ question.targetLat }}</span>, <span id="question-target-long">{{ question.targetLong}}</span></a>
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetLat }},{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat }}</span>, <span id="question-target-long">{{ question.targetLong}}</span></a>
                     {% endif %}
                 </p>
                 {% endif %}
@@ -125,7 +126,7 @@
 
 
 <div class="row question-image-and-map">
-    {% if question.targetImage %}
+    {% if question.post.targetImage %}
     <div class="col-sm-6">
         <img src="http://www.southampton.ac.uk/images/inline/choose_southampton.jpg" class="img-responsive">
     </div>
@@ -147,11 +148,7 @@
 </div>
 
 <div class="row question-answers">
-    {% for answer in question.answers %}
-        <div class="col-sm-4">
-            {% include '../evidence/one-embed.html' with answer %}
-        </div>   
-    {% endfor %}
+    {{ answers_macro.answers_embeded(question.answers) }}
 </div>
 
 

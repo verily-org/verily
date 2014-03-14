@@ -1,0 +1,90 @@
+{% macro answers_embeded(answers) %}
+
+    <script type="text/javascript">
+        $(function(){
+            $(".btn_downvote").click(function(){
+                var button = $(this);
+                $.post('/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
+                        function(data){
+                            var answer = data;
+                            update_votes(answer, button);
+                        }).fail(function(){
+                            //Give feedback to user
+                            //console.log('fail');
+
+                        });
+            })
+        });
+        $(function(){
+            $(".btn_upvote").click(function(){
+                var button = $(this);
+                $.post('/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
+                        function(data){
+                            var answer = data;
+                            update_votes(answer, button);
+                        }).fail(function(){
+                            //Give feedback to user
+                            //console.log('fail');
+
+                        });
+            });
+        });
+        var update_votes = function(answer, element){
+            element.parents('.answer-buttons').find('.upvote_count').html(answer.post.upvoteCount);
+            element.parents('.answer-buttons').find('.downvote_count').html(answer.post.downvoteCount);
+            element.parents('.answer-buttons').find('.btn_downvote').removeClass('active').attr('disabled', false);
+            element.parents('.answer-buttons').find('.btn_upvote').removeClass('active').attr('disabled', false);
+            element.addClass('active').attr('disabled', true);
+        }
+    </script>
+    {% for answer in answers %}
+        <div class="col-sm-4">
+            <div class="panel panel-default question-answer">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        {% if answer.type === 'support' %}
+                            <span class="label label-success">Support</span>
+                        {% else %}
+                            <span class="label label-danger">Reject</span>
+                        {% endif %}
+                        {{ answer.post.title }}</h3>
+                </div>
+                <div class="panel-body">
+
+
+                    {{ answer.post.text }}
+
+
+                    <!-- vote row -->
+                    <div class="row answer-buttons">
+
+                        <!-- button-vote-up -->
+                        {% set answer_upvoted = answer | isUpvotedBy(user) %}
+                        <div class="mini action-button-ctr btn-group">
+                            <button data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_upvote {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
+                            <a href="#" class="btn btn-default action-button-count upvote_count">{{ answer.post.upvoteCount }}</a>
+                        </div>
+                        <!-- / button-vote-up -->
+
+                        <!-- button-vote-down -->
+                        <div class="mini action-button-ctr btn-group">
+                            {% set answer_downvoted = answer | isDownvotedBy(user) %}
+                            <button data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_downvote {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
+                            <a href="#" class="btn btn-default action-button-count downvote_count answer_number_{{ answer.id }}">{{ answer.post.downvoteCount }}</a>
+                        </div>
+                        <!-- / button-vote-down -->
+
+                        <!-- button-comment -->
+                        <div class="mini action-button-ctr btn-group">
+                            <button class="btn btn-default btn-large mini-action-button" title="Comment"><i class="fa fa-comment"></i></button>
+                            <a href="#" class="btn btn-default action-button-count">9999</a>
+                        </div>
+                        <!-- / button-comment -->
+                    </div>
+                    <!-- / vote row -->
+
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endmacro %}

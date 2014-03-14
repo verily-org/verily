@@ -77,7 +77,7 @@ exports.allEver = function (req, res) { // this function finds all answers in db
         if (err || !Answers || Answers.length === 0) {
             generic.genericErrorHandler(req, res, err);
         } else {
-            async.each(Answers, generic.gen, function (err) {
+            async.each(Answers, generic.load_post_ratings_count, function (err) {
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
@@ -104,7 +104,7 @@ exports.all = function (req, res) { // this function finds all answers of an spe
                     err.code = 2;
                     generic.genericErrorHandler(req, res, err);
                 } else {
-                    async.each(answers, generic.gen, function (err) {
+                    async.each(answers, generic.load_post_ratings_count, function (err) {
                         if (err) {
                             generic.genericErrorHandler(req, res, err);
                         } else {
@@ -219,8 +219,8 @@ exports.remove = function (req, res) {
                         //start to delete answers
                         generic.removeOne(answer, req, function (err) {
                             if (!err) {
-                                res.status(204);
-                                res.end();
+                                res.status(200);
+                                res.json(answer);
                             } else {
                                 generic.genericErrorHandler(req, res, err);
                                 throw err;
@@ -242,13 +242,11 @@ exports.upvote = function (req, res) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
                 if (!err && answer) {
-                    answer.getPost(function(err, post){
-                        require('./ratings').upvote(req, post, function(err, rating){
+                    require('./ratings').upvote(req, answer.post, function(err, rating){
+                        generic.load_post_ratings_count(answer, function(){
                             if(!err){
-                                console.log('error: ' + err);
-                                console.log('type: '+ rating.type);
-                                res.status(204);
-                                res.end();
+                                res.status(200);
+                                res.json(answer);
                             } else {
                                 generic.genericErrorHandler(req, res, err);
                             }
@@ -270,13 +268,14 @@ exports.downvote = function (req, res) {
                 if (!err && answer) {
                     answer.getPost(function(err, post){
                         require('./ratings').downvote(req, post, function(err, rating){
-                            if(!err){
-                                res.status(204);
-                                res.redirect('/question/' + answer.question_id);
-                                res.end();
-                            } else {
-                                generic.genericErrorHandler(req, res, err);
-                            }
+                            generic.load_post_ratings_count(answer, function(){
+                                if(!err){
+                                    res.status(200);
+                                    res.json(answer);
+                                } else {
+                                    generic.genericErrorHandler(req, res, err);
+                                }
+                            });
                         });
                     });
                 } else {

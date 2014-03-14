@@ -9,9 +9,9 @@ exports.route = function (app, controllers, doc) {
 
     route('post', specificQuestion + '/answers', 'create', 'Create; Add new answer to question');
 
-    route('get', specific + '/upvote', 'upvote', 'Upvote; Upvote answer');
+    route('post', specific + '/upvote', 'upvote', 'Upvote; Upvote answer');
 
-    route('get', specific + '/downvote', 'downvote', 'Downvote; Downvote answer');
+    route('post', specific + '/downvote', 'downvote', 'Downvote; Downvote answer');
 
     route('get', specificQuestion + '/answers', 'all', 'Get all answers for a specific question; Get all answers for a specific question');
 

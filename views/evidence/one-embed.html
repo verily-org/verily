@@ -19,16 +19,14 @@
         
     <!-- button-vote-up -->
     <div class="mini action-button-ctr btn-group">
-        <a href="/question/{{ answer.question_id }}/answer/{{ answer.id }}/upvote" class="btn btn-default btn-large mini-action-button" title="Upvote"><i class="fa fa-arrow-up"></i></a>
+        <button data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_upvote" title="Upvote"><i class="fa fa-arrow-up"></i></button>
         <a href="#" class="btn btn-default action-button-count">{{ answer.upvoteCount }}</a>
     </div>
     <!-- / button-vote-up -->
-        
 
-    
     <!-- button-vote-down -->
     <div class="mini action-button-ctr btn-group">
-        <a href="/question/{{ answer.question_id }}/answer/{{ answer.id }}/downvote" class="btn btn-default btn-large mini-action-button btn_downvote" title="Downvote"><i class="fa fa-arrow-down"></i></a>
+        <button data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_downvote" title="Downvote"><i class="fa fa-arrow-down"></i></button>
         <a href="#" class="btn btn-default action-button-count">{{ answer.downvoteCount }}</a>
     </div>
     <!-- / button-vote-down -->
@@ -46,11 +44,4 @@
         
     </div>
 </div>
-<script type="text/javascript">
-    $(function(){
-        $(".btn_downvote").click(function(){
-
-        });
-    });
-</script>
 
