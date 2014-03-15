@@ -168,7 +168,8 @@ module.exports = function (db, cb) {
             } 
     },{validations: {
         name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
-    }});
+    }}), Crisis = db.define('crisis', {
+    });
 
     Answer.hasOne('question', Question, {
         reverse: 'answers'
@@ -194,6 +195,11 @@ module.exports = function (db, cb) {
         autoFetch: true
     });
     AnswerComment.hasOne('post', Post);
+
+    Crisis.hasOne('post', Post);
+    Question.hasOne('crisis', Crisis, {
+        reverse: 'questions'
+    });
 
     Post.hasOne('user', User, {
         reverse: 'posts'

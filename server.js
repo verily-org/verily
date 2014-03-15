@@ -28,6 +28,7 @@ module.exports = function (suppressLogs) {
     controllers.answer_comments = require('./controllers/answer_comments');
     controllers.users = require('./controllers/users');
     controllers.ratings = require('./controllers/ratings');
+    controllers.crises = require('./controllers/crises');
 
     // Following line replaced to avoid warnings –
     // see https://github.com/senchalabs/connect/wiki/Connect-3.0
@@ -104,6 +105,7 @@ module.exports = function (suppressLogs) {
                     console.logger.error(err);
                 }
 
+                models.Crisis = db.models.crisis;
                 models.Post = db.models.post;
                 models.Question = db.models.question;
                 models.Answer = db.models.answer;
