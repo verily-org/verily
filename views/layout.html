@@ -46,16 +46,16 @@
                 </div>
                 <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li><a href="/question">Questions</a></li>
-                        <li><a href="/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
-						{% if user %}
-							<li><a href="/user">{{user.name}}</a></li>
-							<li><a href="/logout">Logout</a></li>
-						{% else %}
-							<li><a href="/login">Login</a></li>
-							<li><a href="/register">Register</a></li>
-						{% endif %}
-					</ul>
+                        <li><a href="/crisis/{{ crisis.id }}/question">Questions</a></li>
+                        <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
+                        {% if user %}
+                            <li><a href="/user">{{user.name}}</a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        {% else %}
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Register</a></li>
+                        {% endif %}
+                    </ul>
 
                 </div>
 

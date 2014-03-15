@@ -7,7 +7,7 @@
 <div id="form-ctr" class="form">
     <h3><span class="fa fa-plus"></span><span class="sr-only">Add</span>&nbsp;Question</h3>
 
-    <form id="create-question" role="form" action="/question" method="POST" enctype="multipart/form-data">
+    <form id="create-question" role="form" action="/crisis/{{ crisis.id }}/question" method="POST" enctype="multipart/form-data">
         <!-- <input type="hidden" name="_method" value="POST"> -->
         <input type="hidden" id="form-question-type" name="type">
 

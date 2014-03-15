@@ -1,10 +1,10 @@
-{% macro answers_embeded(answers) %}
+{% macro answers_embeded(answers, crisis_id) %}
 
     <script type="text/javascript">
         $(function(){
             $(".btn_downvote").click(function(){
                 var button = $(this);
-                $.post('/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
+                $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
                         function(data){
                             var answer = data;
                             update_votes(answer, button);
@@ -18,7 +18,8 @@
         $(function(){
             $(".btn_upvote").click(function(){
                 var button = $(this);
-                $.post('/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
+				console.log(button.attr('data-crisis-id'));
+                $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
                         function(data){
                             var answer = data;
                             update_votes(answer, button);
@@ -61,7 +62,7 @@
                         <!-- button-vote-up -->
                         {% set answer_upvoted = answer | isUpvotedBy(user) %}
                         <div class="mini action-button-ctr btn-group">
-                            <button data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_upvote {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
+                            <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_upvote {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
                             <a href="#" class="btn btn-default action-button-count upvote_count">{{ answer.post.upvoteCount }}</a>
                         </div>
                         <!-- / button-vote-up -->
@@ -69,7 +70,7 @@
                         <!-- button-vote-down -->
                         <div class="mini action-button-ctr btn-group">
                             {% set answer_downvoted = answer | isDownvotedBy(user) %}
-                            <button data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_downvote {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
+                            <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ answer.question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_downvote {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
                             <a href="#" class="btn btn-default action-button-count downvote_count answer_number_{{ answer.id }}">{{ answer.post.downvoteCount }}</a>
                         </div>
                         <!-- / button-vote-down -->

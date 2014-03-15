@@ -8,13 +8,13 @@
         <div class="col-sm-9">
             <div class="col-sm-10">
                 <div style="height: 250px;">
-                    <h2>Crisis # 1 <br/><small>by jquinine (member since X)</small></h2>
+                    <h2>{{ crisis.post.title }} <br/><small>by {{ crisis.post.author }}</small></h2>
 
                     <p class="lead text-center">
-                        Hurricane Sandy was the deadliest and most destructive hurricane of the 2012 Atlantic hurricane season, as well as the second- costiest hurricante in United States history.
+                     	{{ crisis.post.text }}
                     </p>
                 </div>
-                <a class="btn btn-primary">Ask a question</a>
+                <a class="btn btn-primary" href="/crisis/{{ crisis.id }}/question/create">Ask a question</a>
                 <!-- small buttons -->
                 <div class="btn-group btn-group-left-margin">
                     <button class="btn btn-default btn-sm"><i class="fa fa-share"></i> <strong>Share</strong></button>
