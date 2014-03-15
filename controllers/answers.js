@@ -126,6 +126,7 @@ exports.all = function (req, res) { // this function finds all answers of an spe
 
 // Create an answer and add it to a question.
 var createAnswer = function (req, res) {
+    var crisis_id = req.params.crisis_id;
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             //question exists
@@ -146,7 +147,7 @@ var createAnswer = function (req, res) {
                                 }, wrapper = {
                                     answer: answerTmp
                                 };
-                                res.redirect('/question/' + answer2.question_id);
+                                res.redirect('/crisis/'+ crisis_id +'/question/' + answer2.question_id);
                                 //res.json(wrapper);
                                 res.end();
                             } else {

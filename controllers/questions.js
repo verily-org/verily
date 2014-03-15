@@ -48,31 +48,31 @@ exports.index = function (req, res) {
 
 // Get all questions.
 exports.all = function (req, res) {
-    req.models.Question.find({}, function (err, questions) {
-        if (err || !questions || questions.length === 0) {
-            if (!questions || questions.length === 0) {
-                err = {};
-                err.code = 2;
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        crisis.getQuestions({}, function (err, questions) {
+            if (err) {
+                generic.genericErrorHandler(req, res, err);
+            } else {
+                // Questions with Post data included in each question.
+                async.each(questions, generic.load_question_extra_fields, function (err) {
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);
+                    } else {
+                        // Wrap up the questions in a 'questions' property.
+                        var wrapper = {
+                            questions: questions
+                        };
+                        if (req.user){var user = req.user; }
+                        res.render('question/index', {
+                            crisis: crisis,
+                            questions: questions,
+                            user: user
+                        });
+                    }
+                });
             }
-            generic.genericErrorHandler(req, res, err);
-        } else {
-            // Questions with Post data included in each question.
-            async.each(questions, generic.load_question_extra_fields, function (err) {
-                if (err) {
-                    generic.genericErrorHandler(req, res, err);
-                } else {
-                    // Wrap up the questions in a 'questions' property.
-                    var wrapper = {
-                        questions: questions
-                    };
-                    if (req.user){var user = req.user; }
-                    res.render('question/index', {
-                        questions: questions,
-                        user: user
-                    });
-                }
-            });
-        }
+        });
     });
 };
 
@@ -80,11 +80,15 @@ exports.all = function (req, res) {
 var createQuestion = function (req, res) {
     res.status(200);
     if (req.user){var user = req.user; }
-    res.render('question/create', {
-        page: {
-            title: 'Add question'
-        },
-        user: user
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        res.render('question/create', {
+            page: {
+                title: 'Add question'
+            },
+            crisis: crisis,
+            user: user
+        });
     });
 }
 
@@ -203,36 +207,38 @@ var getQuestion = function (req, addView, callback) {
 // Get a specific question.
 exports.get = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
-
-    getQuestion(req, true, function(err, question) {
-        if (err) {
-            // Error!
-            if (err === enums.NOT_MODIFIED) {
-                // 304 Not Modified.
-                res.status(304);
-                res.end();
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        getQuestion(req, true, function(err, question) {
+            if (err) {
+                // Error!
+                if (err === enums.NOT_MODIFIED) {
+                    // 304 Not Modified.
+                    res.status(304);
+                    res.end();
+                } else {
+                    generic.genericErrorHandler(req, res, err);
+                }
             } else {
-                generic.genericErrorHandler(req, res, err);
+                // No errors.
+                
+                // Set the ETag header.
+                //res.set(enums.eTag, question.updated);
+                
+                res.status(200);
+                if (req.user){var user = req.user; }
+                res.render('question/one', {
+                    crisis: crisis,
+                    question: question,
+                    page: {
+                        title: question.title
+                    },
+                    user: user
+                });
             }
-        } else {
-            // No errors.
-            
-            // Set the ETag header.
-            //res.set(enums.eTag, question.updated);
-            
-            res.status(200);
-            if (req.user){var user = req.user; }
-            res.render('question/one', {
-                question: question,
-                page: {
-                    title: question.title
-                },
-                user: user
-            });
-        }
+        });
     });
 };
-
 exports.head = function (req, res) {
 
     // ETag support.
@@ -262,32 +268,37 @@ exports.new = function (req, res) {
     var data = { 
 
     };
-    generic.create(req.models.Question, data, req, function (err, question) {
-        if (!err && question) {
-            generic.get(req.models.Question, question.id, undefined, function (err, question2) {
-                if (!err && question2) {
-                    var wrapper = {
-                        question: question2
-                    };
-                    // res.status(201);
-                    //res.set(enums.eTag, question2.updated);
-                    
-                    // var redirect = common.formAbsoluteURI('/question/' + question2.id);
-                    
-                    
-                    res.redirect('/question/' + question2.id);
-                    //res.json(wrapper);
-                    res.end();
-                } else {
-                    //special err: if 404 then it means the create just executed is invalid.
-                    res.status(500);
-                    res.end('Error 500: Server Error');
-                    console.r.error(req, 500, err);
-                }
-            });
-        } else {
-            generic.genericErrorHandler(req, res, err);
-        }
+    var crisis_id = req.params.crisis_id;
+    generic.get(req.models.Crisis, crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        generic.create(req.models.Question, data, req, function (err, question) {
+            if (!err && question) {
+                question.setCrisis(crisis, function (err) {
+                    if (err) throw err;
+                    generic.get(req.models.Question, question.id, undefined, function (err, question2) {
+                        if (!err && question2) {
+                            var wrapper = {
+                                question: question2
+                            };
+                            // res.status(201);
+                            //res.set(enums.eTag, question2.updated);
+                            
+                            // var redirect = common.formAbsoluteURI('/question/' + question2.id);
+                            res.redirect('/crisis/' + crisis_id + '/question/' + question2.id);
+                            //res.json(wrapper);
+                            res.end();                   
+                        } else {
+                            //special err: if 404 then it means the create just executed is invalid.
+                            res.status(500);
+                            res.end('Error 500: Server Error');
+                            console.r.error(req, 500, err);
+                        }
+                    });                    
+                });    
+            } else {
+                generic.genericErrorHandler(req, res, err);
+            }
+        });
     });
 };
 
