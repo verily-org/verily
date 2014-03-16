@@ -11,12 +11,12 @@ var role = require('../lib/roles').user;
 // View to create crisis
 var createCrisis = function (req, res) {
     res.status(200);
-    if (req.user){var username = req.user.name; }
+    if (req.user){var user = req.user; }
     res.render('crises/create', {
         page: {
             title: 'Add Crisis'
         },
-        user: username
+        user: user
     });
 }
 
@@ -38,6 +38,28 @@ exports.new = function (req, res) {
             res.end();
         } else {
             generic.genericErrorHandler(req, res, err);
+        }
+    });
+
+};
+
+
+//get 10 last crises
+exports.index = function (req, res) {
+    req.models.Crisis.find({}, function (err, crises) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            res.status(200);
+            if (req.user){var user = req.user; }
+            //res.json(crises);
+            res.render('crises/index', {
+                page: {
+                    title: 'Verily'
+                },
+                crises: crises,
+                user: user
+            });
         }
     });
 

@@ -17,7 +17,7 @@ exports.profile = function (req, res) {
 };
 //Posts a new user
 exports.register = passport.authenticate('local-register', {
-    successRedirect : '/question', // redirect to the secure profile section
+    successRedirect : '/', // redirect to the secure profile section
     failureRedirect : '/register', // redirect back to the signup page if there is an error
     failureFlash : true // allow flash messages
 });
@@ -43,14 +43,14 @@ exports.loginView = function (req, res) {
 };
 
 exports.login = passport.authenticate('local-login', {
-    successRedirect : '/question', // redirect to the secure profile section
+    successRedirect : '/', // redirect to the secure profile section
     failureRedirect : '/login', // redirect back to the signup page if there is an error
     failureFlash : true // allow flash messages
 });
 
 exports.logout = function (req, res) {
     req.logout();
-    res.redirect('/question');
+    res.redirect('/');
 };
 
 exports.facebookRedirect = passport.authenticate('facebook', {

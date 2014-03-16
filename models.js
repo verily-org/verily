@@ -196,7 +196,7 @@ module.exports = function (db, cb) {
     });
     AnswerComment.hasOne('post', Post);
 
-    Crisis.hasOne('post', Post);
+    Crisis.hasOne('post', Post, {reverse: 'crises', autoFetch: true});
     Question.hasOne('crisis', Crisis, {
         reverse: 'questions'
     });
