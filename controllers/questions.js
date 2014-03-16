@@ -98,30 +98,33 @@ exports.create = [checkRole, createQuestion];
 
 // View to edit a question
 exports.edit = function (req, res) {
-    
-    getQuestion(req, false, function(err, question) {
-        if (err) {
-            // Error!
-            generic.genericErrorHandler(req, res, err);
-        } else {
-            // No errors.            
-            res.status(200);
-            
-            // Goes into post object because
-            // all fields are in Post and this allows
-            // a generic form.
-            if (req.user){var username = req.user.name; }
-            res.render('question/edit', {
-                post: question,
-                question: {
-                    id: question.id
-                },
-                page: {
-                    title: 'Edit question'
-                },
-                user: username
-            });
-        }
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        getQuestion(req, false, function(err, question) {
+            if (err) {
+                // Error!
+                generic.genericErrorHandler(req, res, err);
+            } else {
+                // No errors.            
+                res.status(200);
+                
+                // Goes into post object because
+                // all fields are in Post and this allows
+                // a generic form.
+                if (req.user){var user = req.user; }
+                res.render('question/edit', {
+                    crisis: crisis,
+                    post: question,
+                    question: {
+                        id: question.id
+                    },
+                    page: {
+                        title: 'Edit question'
+                    },
+                    user: user
+                });
+            }
+        });
     });
 }
 
@@ -304,7 +307,7 @@ exports.new = function (req, res) {
 
 // Update question
 exports.update = function (req, res) {
-
+    var crisis_id = req.params.crisis_id;
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.update(req.models.Question, req.params.question_id, req, function (err) {
@@ -312,7 +315,7 @@ exports.update = function (req, res) {
                     //204 no content
                     // res.status(204);
                     
-                    res.redirect('/question/' + req.params.question_id);
+                    res.redirect('/crisis/' + crisis_id + '/question/' + req.params.question_id);
                     
                     res.end();
                 } else {

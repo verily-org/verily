@@ -7,7 +7,7 @@
 <div id="form-ctr" class="form">
     <h3><span class="fa fa-edit"></span><span class="sr-only">Edit</span>&nbsp;Question</h3>
 
-    <form id="create-question" role="form" action="/question/{{ question.id }}" method="POST" enctype="multipart/form-data">
+    <form id="create-question" role="form" action="/crisis/{{ crisis.id }}/question/{{ question.id }}" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" id="form-question-type" name="type">
 
