@@ -70,14 +70,14 @@
                     
                     <!-- button-mark-true -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-success btn-large text-action-button" id="question-support" title="Support"><i class="fa fa-check" id="icon-support"></i> <span class="sr-only">Support</span><strong class="hidden-xs">Support</strong></button>
+                        <button class="btn btn-success btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-support" title="Support"><i class="fa fa-check" id="icon-support"></i> <span class="sr-only">Support</span><strong class="hidden-xs">Support</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a>
                     </div>
                     <!-- / button-mark-true -->
                     
                     <!-- button-mark-false -->
                     <div class="action-button-ctr btn-group">
-                        <button class="btn btn-danger btn-large text-action-button" id="question-reject" title="Reject"><i class="fa fa-times" id="icon-reject"></i> <span class="sr-only">Reject</span><strong class="hidden-xs">Reject</strong></button>
+                        <button class="btn btn-danger btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-reject" title="Reject"><i class="fa fa-times" id="icon-reject"></i> <span class="sr-only">Reject</span><strong class="hidden-xs">Reject</strong></button>
                         <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a>
                     </div>
                     <!-- / button-mark-false -->
@@ -170,35 +170,37 @@ function resetElement(target) {
         labelQuestionType.removeChild(target.firstChild);
     }
 }
+$(function(){
+    $('#question-support').click(function(){
+        questionType.value = 'support';
 
-document.getElementById('question-support').addEventListener('click', function(e) {
-    questionType.value = 'support';
-    
-    var supportIcon = document.createElement('i');
-    supportIcon.className = 'fa fa-check';
-    var content = document.createTextNode(' Support');
-    
-    resetElement(labelQuestionType);
-    labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
-    labelQuestionType.insertBefore(supportIcon, content);    
-    labelQuestionType.className = questionTypeClassName + ' label-success';
-    displayForm();
+        var supportIcon = document.createElement('i');
+        supportIcon.className = 'fa fa-check';
+        var content = document.createTextNode(' Support');
+
+        resetElement(labelQuestionType);
+        labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+        labelQuestionType.insertBefore(supportIcon, content);
+        labelQuestionType.className = questionTypeClassName + ' label-success';
+        displayForm();
+
+    });
+    $('#question-reject').click(function(){
+        questionType.value = 'reject';
+
+        var rejectIcon = document.createElement('i');
+        rejectIcon.className = 'fa fa-times';
+        var content = document.createTextNode(' Reject');
+
+        resetElement(labelQuestionType);
+        labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+        labelQuestionType.insertBefore(rejectIcon, content);
+
+        labelQuestionType.className = questionTypeClassName + ' label-danger';
+        displayForm();
+    });
 });
 
-document.getElementById('question-reject').addEventListener('click', function(e) {
-    questionType.value = 'reject';
-    
-    var rejectIcon = document.createElement('i');
-    rejectIcon.className = 'fa fa-times';
-    var content = document.createTextNode(' Reject');
-
-    resetElement(labelQuestionType);
-    labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
-    labelQuestionType.insertBefore(rejectIcon, content);
-       
-    labelQuestionType.className = questionTypeClassName + ' label-danger';
-    displayForm();
-});
 
 function displayForm() {
     // Display the form.

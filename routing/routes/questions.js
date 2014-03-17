@@ -1,11 +1,11 @@
 // Specific question has this path fragment.
+
 var specificCrisis = require('./crises').specific;
 exports.specific = specificCrisis + '/question/:question_id';
 var specific = exports.specific;
 
 exports.route = function (app, controllers, doc) {
     var route = require('../route')(app, controllers, doc, __filename);
-
 
     //View all the questions
     route('get','/question', 'all', 'Get All; Get all questions');

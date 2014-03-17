@@ -1,6 +1,6 @@
 <div class="panel panel-default">
     <div class="panel-info small" title="Locality">
-        {{ question.targetLocality | default('Not specified') }}
+        {{ question.post.targetLocality | default('<span class="label label-default">Not specified</span>') }}
     </div>
     <div class="clearfix">
         <div class="panel-heading col-sm-9">
