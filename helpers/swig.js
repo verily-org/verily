@@ -3,7 +3,7 @@ var common = require('../static/js/common');
 
 module.exports = function(swig) {
     swig.setFilter('isUpvotedBy', function( answer, user) {
-        var isUpvoted =answer.post.isUpvotedBy(user);
+        var isUpvoted = answer.post.isUpvotedBy(user);
         return isUpvoted;
     });
     swig.setFilter('isDownvotedBy', function( answer, user) {

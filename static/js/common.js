@@ -181,4 +181,3 @@ var minuteDefault = exports.minuteDefault = common.minuteDefault = function() {
 var secondDefault = exports.secondDefault = common.secondDefault = function() {
     return "Seconds";
 }
-

@@ -48,31 +48,22 @@ exports.index = function (req, res) {
 
 // Get all questions.
 exports.all = function (req, res) {
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
-        if (err) throw err;
-        crisis.getQuestions({}, function (err, questions) {
-            if (err) {
-                generic.genericErrorHandler(req, res, err);
-            } else {
-                // Questions with Post data included in each question.
-                async.each(questions, generic.load_question_extra_fields, function (err) {
-                    if (err) {
-                        generic.genericErrorHandler(req, res, err);
-                    } else {
-                        // Wrap up the questions in a 'questions' property.
-                        var wrapper = {
-                            questions: questions
-                        };
-                        if (req.user){var user = req.user; }
-                        res.render('question/index', {
-                            crisis: crisis,
-                            questions: questions,
-                            user: user
-                        });
-                    }
-                });
-            }
-        });
+
+    req.models.Question.find({}, function (err, questions) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            res.status(200);
+            if (req.user){var user = req.user; }
+            //res.json(crisis);
+            res.render('question/index', {
+                page: {
+                    title: 'Verily questions'
+                },
+                questions: questions,
+                user: user
+            });
+        }
     });
 };
 

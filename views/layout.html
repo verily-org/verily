@@ -48,7 +48,7 @@
                     <ul class="nav navbar-nav">
                     
                     	{% if crisis %}
-                            <li><a href="/crisis/{{ crisis.id }}/question">Questions</a></li>
+                            <li><a href="/question">Questions</a></li>
                             {% if userCan('create question') %}
                             <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
                             {% endif %}

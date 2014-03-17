@@ -12,7 +12,7 @@ exports.route = function (app, controllers, doc) {
     // View to edit crisis
     route('get', specific + '/markImportant', 'markImportant', 'Mark as Important');
 
-    route('get', '/crisis', 'all', 'Get All; Get all crises');
+    route('get', '/crisis', 'all', 'Get All; Get all crisis');
 
     route('get', specific, 'get', 'Get; Get crisis with specific ID');
     
@@ -24,5 +24,5 @@ exports.route = function (app, controllers, doc) {
 
     route('delete', specific, 'remove', 'Delete; Delete crisis');
 
-    route('get', '/', 'index', 'Index; Spotlight: returns up to 10 crises');
+    route('get', '/', 'index', 'Index; Spotlight: returns up to 10 crisis');
 };

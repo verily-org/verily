@@ -24,7 +24,7 @@
     </div>
         {% for crisis in crises | reverse %}
             <div class="col-sm-2" >
-                <a href="/crisis/{{ crisis.id }}/question"><h4><u>{{ crisis.post.title }}</u></h4></a>
+                <a href="/crisis/{{ crisis.id }}"><h4><u>{{ crisis.post.title }}</u></h4></a>
             </div>   
         {% endfor %}
     

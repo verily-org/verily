@@ -5,8 +5,10 @@ var specific = exports.specific;
 
 exports.route = function (app, controllers, doc) {
     var route = require('../route')(app, controllers, doc, __filename);
-    
-    
+
+
+    //View all the questions
+    route('get','/question', 'all', 'Get All; Get all questions');
     // View to create question
     route('get', specificCrisis + '/question/create', 'create', 'Create View; View to create question');
     
@@ -15,8 +17,6 @@ exports.route = function (app, controllers, doc) {
 
     // View to edit question
     route('get', specific + '/markImportant', 'markImportant', 'Mark as Important');
-
-    route('get', specificCrisis + '/question', 'all', 'Get All; Get all questions');
 
     route('get', specific, 'get', 'Get; Get question with specific ID');
     
