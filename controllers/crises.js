@@ -44,15 +44,15 @@ exports.new = function (req, res) {
 };
 
 
-//get 10 last crisis
+//get 10 last crises
 exports.index = function (req, res) {
-    req.models.Crisis.find({}, function (err, crises) {
+    req.models.Crisis.find({}, 10,function (err, crises) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {
             res.status(200);
             if (req.user){var user = req.user; }
-            //res.json(crisis);
+            //res.json(crises);
             res.render('crisis/index', {
                 page: {
                     title: 'Verily'
