@@ -37,25 +37,30 @@
     </head>
     <body>
 
-    <div id="login-register" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal">×</a>
-                    <h3>User required</h3>
-                </div>
-                <div class="modal-body">
-                    <p class="confirmer-modal-question">
-                        To continue with this action, please <a href="/login">Login</a> or quickly
-                        <a href="/register">Register</a>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn" data-dismiss="modal">cancel</a>
+        <div id="login-register" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3>User required</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p class="confirmer-modal-question">
+                            To continue with this action, please <a href="/login">Login</a> or quickly
+                            <a href="/register">Register</a>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn" data-dismiss="modal">cancel</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div id="alert-window" style="display:none" class="alert alert-warning alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4 class="alert-title"></h4>
+            <span class="alert-message"></span>
+        </div>
         <a href="#content" class="sr-only">Skip to main content</a>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">

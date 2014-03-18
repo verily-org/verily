@@ -67,30 +67,52 @@ exports.index = function (req, res) {
 //get a specific crisis
 exports.get = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
-        if (err) throw err;
-        crisis.getQuestions({}, function (err, questions) {
-            if (err) {
-                generic.genericErrorHandler(req, res, err);
-            } else {
-                // Questions with Post data included in each question.
-                async.each(questions, generic.load_question_extra_fields, function (err) {
-                    if (err) {
-                        generic.genericErrorHandler(req, res, err);
+        if (!err){
+            crisis.getQuestions({}, function (err, questions) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                } else {
+                    // Questions with Post data included in each question.
+                    async.each(questions, generic.load_question_extra_fields, function (err) {
+                        if (err) {
+                            generic.genericErrorHandler(req, res, err);
+                        } else {
+                            crisis.post.addViewCount();
+                            generic.load_crisis_extra_fields(crisis, function(err){
+                                if (req.user){var user = req.user; }
+                                res.render('crisis/one', {
+                                    crisis: crisis,
+                                    questions: questions,
+                                    user: user
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            generic.genericErrorHandler(req, res, err);
+        }
+    });
+};
+// Mark crisis as Important
+exports.markImportant = function (req, res) {
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (!err && crisis) {
+            require('./ratings').importance(req, crisis.post, function(err, rating){
+                generic.load_crisis_extra_fields(crisis, function(){
+                    if(!err){
+                        res.status(200);
+                        res.json(crisis);
                     } else {
-                        // Wrap up the questions in a 'questions' property.
-                        var wrapper = {
-                            questions: questions
-                        };
-                        if (req.user){var user = req.user; }
-                        res.render('crisis/one', {
-                            crisis: crisis,
-                            questions: questions,
-                            user: user
-                        });
+                        generic.genericErrorHandler(req, res, err);
                     }
                 });
-            }
-        });
+            });
+        } else {
+            generic.genericErrorHandler(req, res, err);
+        }
     });
 
 };

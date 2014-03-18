@@ -10,7 +10,7 @@ exports.route = function (app, controllers, doc) {
     route('post', '/crisis', 'new', 'New; New crisis');
 
     // View to edit crisis
-    route('get', specific + '/markImportant', 'markImportant', 'Mark as Important');
+    route('post', specific + '/markImportant', 'markImportant', 'Mark as Important');
 
     route('get', '/crisis', 'all', 'Get All; Get all crisis');
 

@@ -214,3 +214,11 @@ p.metadata {
 .btn-group-left-margin {
     margin-left: 3.0em;
 }
+#alert-window{
+    position:absolute;
+    min-height:100px;
+    width:400px;
+    top:5px;
+    right:50px;
+    z-index:10000;
+}

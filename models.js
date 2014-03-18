@@ -43,7 +43,10 @@ module.exports = function (db, cb) {
             type: 'date',
             time: true,
             defaultValue: 'CURRENT_TIMESTAMP'
-        }
+        },
+            viewCount: {
+                type: 'number'
+            }
     },
         {
             methods: {
@@ -62,20 +65,21 @@ module.exports = function (db, cb) {
                     return ratings.length > 0;
                 },
                 isDownvotedBy: function(user){
-                    return this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isDownvote()}).length > 0;
-                }
-            }
-        }), Question = db.define('question', {
-        viewCount: {
-            type: 'number'
-        }
-    },
-        {
-            methods: {
+                    return this.ratings.filter(function(rating){return (user.id === rating.user_id) && rating.isDownvote()}).length > 0;
+                },
+                isMarkedImportantBy: function(user){
+                    return this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isImportance()}).length > 0;
+                },
                 addViewCount: function(){
                     this.viewCount++;
                     this.save();
-                },
+                }
+            }
+        }), Question = db.define('question', {
+
+    },
+        {
+            methods: {
                 getSupportedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Support, else not loaded returns 0!
                     if(this.answers != undefined){

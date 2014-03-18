@@ -1,5 +1,6 @@
 var enums = require('../enums');
 var common = require('../static/js/common');
+var utils = require('utilities');
 
 exports.genericErrorHandler = function (req, res, err) {
     if (!err) {
@@ -275,6 +276,18 @@ exports.removeOne = function (item, req, cb) {
         }
     });
 };
+exports.load_crisis_extra_fields = function(crisis, callback){
+    crisis.relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: false});
+    crisis.getPost(function(err, post){
+        if (!err && post) {
+            crisis.importanceCount = crisis.post.getImportanceCount();
+            callback();
+        }
+        else{
+            callback(err);
+        }
+    });
+}
 exports.load_question_extra_fields = function(question, callback){
     if(question.answers == undefined){
         question.getAnswers(function(err, answers){

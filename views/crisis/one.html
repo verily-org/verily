@@ -1,5 +1,13 @@
 {% extends '../layout.html' %}
 
+{% block breadcrumb %}
+    <li>
+        <a href="/" title="Home">Home</a>
+    </li>
+    <li>
+        {{ crisis.post.title }}
+    </li>
+{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-sm-3">
@@ -26,10 +34,17 @@
                 </div>
             </div>
             <div class="col-sm-2 text-center">
-                <a class="btn btn-default" style="padding:5px 20px 5px 20px" title="Mark as important"><i class="fa fa-exclamation"></i> 2</a>
-                <div class="text-muted item-top-margin" title="People who saw it"><i class="fa fa-eye"></i> 36</div>
-                <div class="text-muted item-top-margin" title="Questions asked"><i class="fa fa-tasks"></i> 10</div>
-                <div class="text-muted item-top-margin" title="Date created"><i class="fa fa-clock-o"></i> 6 days ago</div>
+                {% set crisis_markedImportant = crisis.post | isMarkedImportantBy(user) %}
+                <button data-crisis-id="{{ crisis.id }}"
+                        data-question-id="{{ answer.question_id }}"
+                        data-answer-id="{{ answer.id }}"
+                        class="btn btn-default btn-large btn_markImportant {% if !user %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
+                        title="Mark as important">
+                    <i class="fa fa-exclamation"></i> {{ crisis.importanceCount }}
+                </button>
+                 <div class="text-muted item-top-margin" title="People who saw it"><i class="fa fa-eye"></i> {{ crisis.post.viewCount }}</div>
+                <div class="text-muted item-top-margin" title="Questions asked"><i class="fa fa-tasks"></i> {{ crisis.questions.length }}</div>
+                <div class="text-muted item-top-margin" title="Date created"><i class="fa fa-clock-o"></i> {{ crisis.relativeCreatedDate }}</div>
             </div>
         </div>
     </div>
@@ -82,6 +97,22 @@ function init(){
     map.addLayer(vectorLayer);
 };
 init();
+    $(function(){
+        $(".btn_markImportant").click(function(){
+            var button = $(this);
+            $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',
+                    function(data){
+                        var crisis = data;
+                        update_markedImportant(crisis, button);
+                    }).fail(function(){
+                        show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
+                    });
+        });
+    });
+    var update_markedImportant = function(crisis, element){
+        element.html('<i class="fa fa-exclamation"></i> '+crisis.importanceCount);
+        element.addClass('active').addClass('disabled');
+    }
 </script>
 
 {% endblock %}

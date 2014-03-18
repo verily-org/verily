@@ -135,7 +135,7 @@ var getQuestion = function (req, addView, callback) {
                 relativeTargetDateTimeOccurred = utils.date.relativeTime(question.post.targetDateTimeOccurred, {abbreviated: true});
             }
             if(addView){
-                question.addViewCount();
+                question.post.addViewCount();
             }
             
             question.getAnswers(function (err, answers) {
@@ -321,14 +321,14 @@ exports.update = function (req, res) {
 
 };
 
-// Update question
+// Mark question as Importante
 exports.markImportant = function (req, res) {
 
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
                 require('./ratings').importance(req, question.post, function(err, rating){
                     if(!err){
-                        res.redirect('/question/' + req.params.question_id);
+                        res.redirect('/crisis/'+question.crisis_id+'/question/' + req.params.question_id);
 
                         res.end();
                     } else {

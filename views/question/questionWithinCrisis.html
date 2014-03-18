@@ -5,13 +5,13 @@
     <div class="clearfix">
         <div class="panel-heading col-sm-9">
             <h3 class="text-center">
-                <a href="/crisis/{{ crisis.id }}/question/{{ question.id }}" style="color:black">{{ question.post.title }}</a><br/>
+                <a href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}" style="color:black">{{ question.post.title }}</a><br/>
                 <small>by {{ question.post.author }}</small>
             </h3>
         </div>
         <div class="col-sm-3 text-center pull-right">
             <div class="text-muted item-top-margin" title="Marked as important"><i class="fa fa-exclamation"></i> {{ question.importanceCount }}</div>
-            <div class="text-muted item-top-margin" title="People who saw it"><i class="fa fa-eye"></i> {{ question.viewCount }}</div>
+            <div class="text-muted item-top-margin" title="People who saw it"><i class="fa fa-eye"></i> {{ question.post.viewCount }}</div>
             <div class="text-muted item-top-margin" title="Evidence for"><i class="fa fa-plus"></i> {{ question.supportedAnswerCount }}</div>
             <div class="text-muted item-top-margin" title="Evidence against"><i class="fa fa-minus"></i> {{ question.rejectedAnswerCount }}</div>
         </div>

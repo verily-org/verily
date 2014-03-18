@@ -1,5 +1,4 @@
 {% macro answers_embeded(answers, crisis_id) %}
-
     <script type="text/javascript">
         $(function(){
             $(".btn_downvote").click(function(){
@@ -9,11 +8,9 @@
                             var answer = data;
                             update_votes(answer, button);
                         }).fail(function(){
-                            //Give feedback to user
-                            //console.log('fail');
-
+                            show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
                         });
-            })
+            });
             $(".btn_upvote").click(function(){
                 var button = $(this);
                 $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
@@ -21,9 +18,7 @@
                             var answer = data;
                             update_votes(answer, button);
                         }).fail(function(){
-                            //Give feedback to user
-                            //console.log('fail');
-
+                            show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
                         });
             });
         });
