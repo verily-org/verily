@@ -25,13 +25,11 @@ module.exports = function (db, cb) {
         },
         targetDateTimeOccurred: {
             type: 'date',
-            time: true,
-            defaultValue: 'CURRENT_TIMESTAMP'
+            time: true
         },
         date: {
             type: 'date',
-            time: true,
-            defaultValue: 'CURRENT_TIMESTAMP'
+            time: true
         },
         author: {
             type: 'text'
@@ -41,8 +39,7 @@ module.exports = function (db, cb) {
         },
         updated: {
             type: 'date',
-            time: true,
-            defaultValue: 'CURRENT_TIMESTAMP'
+            time: true
         },
             viewCount: {
                 type: 'number'
@@ -113,8 +110,7 @@ module.exports = function (db, cb) {
         },
         date: {
             type: 'date',
-            time: true,
-            defaultValue: 'CURRENT_TIMESTAMP'
+            time: true
         },
         author: {
             type: 'text'
@@ -134,12 +130,8 @@ module.exports = function (db, cb) {
             }
         }
     ), Local = db.define('local', {
-        email: {
-            type: 'text'
-        },
-        password: {
-            type: 'text'
-        }
+        email: String,
+        password: String
     }, {
         methods: {
             validPassword: function (pass) {

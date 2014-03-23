@@ -74,14 +74,15 @@ module.exports = function (suppressLogs) {
     //    });
     //}
 
-    heroku = (process.env.HEROKU_POSTGRESQL_CYAN_URL !== undefined);
+    heroku = (process.env.HEROKU_POSTGRESQL_VIOLET_URL !== undefined);
     heroku = false;
     //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
     //console.log('process.env',process.env);
     if (heroku){
-    	db_url = process.env.HEROKU_POSTGRESQL_CYAN_URL;
+    	db_url = process.env.HEROKU_POSTGRESQL_VIOLET_URL;
     } else {
     	db_url = "sqlite://app.db";
+        
     }
     console.log('db_url:', db_url);
     
@@ -115,6 +116,17 @@ module.exports = function (suppressLogs) {
                 models.User = db.models.user;
                 models.Local = db.models.local;
                 models.Facebook = db.models.facebook;
+
+                models.Local.sync(function () {console.log("Local synced")});
+                models.QuestionComment.sync(function () {console.log("QuestionComment synced")});
+                models.AnswerComment.sync(function () {console.log("AnswerComment synced")});
+                models.Crisis.sync(function () {console.log("Crisis synced")});
+                models.Post.sync(function () {console.log("Post synced")});
+                models.User.sync(function () {console.log("User synced")});
+                models.Question.sync(function () {console.log("Question synced")});
+                models.Answer.sync(function () {console.log("Answer synced")});
+                models.Rating.sync(function () {console.log("Rating synced")});
+                models.Facebook.sync(function () {console.log("Facebook synced")});
 
                 // Post is the base class.
                 // Questions, answers and comments are types of Post.
