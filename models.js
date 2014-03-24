@@ -205,7 +205,7 @@ module.exports = function (db, cb) {
         reverse: 'users'
     });
     User.hasOne('facebook', Facebook, {
-        reverse: 'user'
+        reverse: 'users', autoFetch: true
     });
 
     if (cb) {
