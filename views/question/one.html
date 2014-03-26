@@ -86,8 +86,16 @@
                     <!-- / button-mark-false -->
                     
                     <!-- button-mark-important -->
+        {% set questionMarkedImportant = question.post | isMarkedImportantBy(user) %}
                     <div class="action-button-ctr btn-group">
-                        <a href="/question/{{ question.id }}/markImportant" class="btn btn-default btn-large text-action-button" title="Mark as important"><i class="fa fa-exclamation"></i> <span class="sr-only">Important</span><strong class="hidden-xs">Important</strong></a>
+                        <button data-crisis-id="{{ crisis.id }}"
+                                data-question-id="{{ question.id }}"
+                                class="btn btn-default btn-large text-action-button btn_markImportant
+                                {% if !user %} user-required-action{% endif %}
+                                {% if questionMarkedImportant %}disabled{% endif %}"
+                                title="Mark as important"><i class="fa fa-exclamation">
+                                </i> <span class="sr-only">Important</span><strong class="hidden-xs">Important</strong>
+                        </button>
                         <a href="#" class="btn btn-default action-button-count">{{ question.importanceCount }}</a>
                     </div>
                     <!-- / button-mark-important -->
@@ -202,9 +210,23 @@ $(function(){
         labelQuestionType.className = questionTypeClassName + ' label-danger';
         displayForm();
     });
+    $(".btn_markImportant").click(function(){
+        var button = $(this);
+        $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id')+'/markImportant',
+                function(data){
+                    var question = data;
+                    update_markedImportant(question, button);
+                }).fail(function(){
+                    show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
+                });
+    });
 });
 
 
+var update_markedImportant = function(crisis, element){
+    element.html('<i class="fa fa-exclamation"></i> '+crisis.importanceCount);
+    element.addClass('active').addClass('disabled');
+}
 function displayForm() {
     // Display the form.
     var formCtr = document.getElementById('form-ctr')
