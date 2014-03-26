@@ -20,7 +20,7 @@ var createCrisis = function (req, res) {
     });
 }
 
-var checkRole = role.can('create crisis');
+var checkRole = role.can('edit crisis');
 
 exports.create = [checkRole, createCrisis];
 
@@ -114,5 +114,31 @@ exports.markImportant = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
     });
-
 };
+
+// View to edit a crisis
+var editCrisis = function (req, res) {
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+            // No errors.
+            res.status(200);
+
+            // Goes into post object because
+            // all fields are in Post and this allows
+            // a generic form.
+            if (req.user){var user = req.user; }
+            res.render('crisis/edit', {
+                crisis: crisis,
+                post: crisis.post,
+                page: {
+                    title: 'Edit crisis'
+                },
+                user: user
+        });
+    });
+}
+
+
+var checkRole = role.can('edit crisis');
+
+exports.edit = [checkRole, editCrisis];

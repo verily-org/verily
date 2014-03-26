@@ -88,7 +88,7 @@ var checkRole = role.can('create question');
 exports.create = [checkRole, createQuestion];
 
 // View to edit a question
-exports.edit = function (req, res) {
+var editQuestion = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         getQuestion(req, false, function(err, question) {
@@ -118,6 +118,10 @@ exports.edit = function (req, res) {
         });
     });
 }
+
+var checkRole = role.can('edit question');
+
+exports.edit = [checkRole, editQuestion];
 
 // Used by get, edit functions etc.
 var getQuestion = function (req, addView, callback) {

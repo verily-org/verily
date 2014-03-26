@@ -224,7 +224,7 @@ $(function(){
 
 
 var update_markedImportant = function(crisis, element){
-    element.html('<i class="fa fa-exclamation"></i> '+crisis.importanceCount);
+    element.next().html(crisis.importanceCount);
     element.addClass('active').addClass('disabled');
 }
 function displayForm() {

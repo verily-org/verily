@@ -1,0 +1,21 @@
+{% set type = 'crisis' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<div id="form-ctr" class="form">
+    <h3><span class="fa fa-edit"></span><span class="sr-only">Edit</span>&nbsp;Crisis</h3>
+
+    <form id="create-crisis" role="form" action="/crisis/{{ crisis.id }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" id="form-question-type" name="type">
+
+        {% include '../post/form.html' %}
+    
+        <button type="submit" class="btn btn-primary">Update Crisis</button>
+        <a href="/question" class="btn btn-default pull-right">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}

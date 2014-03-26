@@ -164,7 +164,14 @@ module.exports = function (db, cb) {
             } 
     },{validations: {
         name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
-    }}), Crisis = db.define('crisis', {
+    }},
+        {
+            methods: {
+                isEditor: function(){
+                    return this.role === 'editor'
+                }
+            }
+        }), Crisis = db.define('crisis', {
     });
 
     Answer.hasOne('question', Question, {
