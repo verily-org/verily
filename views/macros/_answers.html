@@ -1,26 +1,29 @@
 {% macro answers_embeded(answers, crisis_id) %}
     <script type="text/javascript">
         $(function(){
-            $(".btn_downvote").click(function(){
-                var button = $(this);
-                $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
-                        function(data){
-                            var answer = data;
-                            update_votes(answer, button);
-                        }).fail(function(){
-                            show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
-                        });
-            });
-            $(".btn_upvote").click(function(){
-                var button = $(this);
-                $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
-                        function(data){
-                            var answer = data;
-                            update_votes(answer, button);
-                        }).fail(function(){
-                            show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
-                        });
-            });
+            {% if user %}
+                $(".btn_downvote").click(function(){
+                    var button = $(this);
+                    $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
+                            function(data){
+                                var answer = data;
+                                update_votes(answer, button);
+                            }).fail(function(){
+                                show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
+                            });
+                });
+                $(".btn_upvote").click(function(){
+                    var button = $(this);
+                    $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
+                            function(data){
+                                var answer = data;
+                                update_votes(answer, button);
+                            }).fail(function(){
+                                show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
+                            });
+                });
+            
+            {% endif %}
         });
         var update_votes = function(answer, element){
             element.parents('.answer-buttons').find('.upvote_count').html(answer.post.upvoteCount);
@@ -33,20 +36,49 @@
     {% for answer in answers %}
         <div class="col-sm-4">
             <div class="panel panel-default question-answer">
+                <div class="question-answer-bar {% if answer.type === 'support' %}label-success{% else %}label-danger{% endif %}">
+                    {% if answer.type === 'support' %}
+                        <span class="text-success metric true">
+                            <i class="fa fa-check"></i>
+                        </span>
+                    {% else %}
+                        <span class="text-danger metric false">
+                            <i class="fa fa-times"></i>
+                        </span>
+
+                    {% endif %}
+                </div>
                 <div class="panel-heading">
-                    <h3 class="panel-title">
-                        {% if answer.type === 'support' %}
-                            <span class="label label-success">Support</span>
-                        {% else %}
-                            <span class="label label-danger">Reject</span>
+                        {% if answer.post.targetLocality %}
+                            <div class="">
+                               <i class="fa fa-map-marker"></i>
+                               <span class="sr-only">Locality:</span>
+                               <span id="answer-locality">{{ answer.post.targetLocality }}</span>
+                            </div>
                         {% endif %}
-                        {{ answer.post.title }}</h3>
+
+                    <h3 class="panel-title">
+                        {{ answer.post.title }}
+                    </h3>
+
+
                 </div>
                 <div class="panel-body">
 
 
                     {{ answer.post.text }}
-
+                    
+                    {% if answer.post.targetImage %}
+                        <div class="row">
+                            <img src="{{ answer.post.targetImage }}" class="img-responsive center-block answer-image">
+                        </div>
+                    {% endif %}
+                    
+                        <div class="">
+                            <i class="fa fa-bullhorn"></i>
+                            <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
+                            by {{ question.author }}
+                        </div>
 
                     <!-- vote row -->
                     <div class="row answer-buttons">

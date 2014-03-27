@@ -117,15 +117,15 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
     var year = value[2];
     var hour = value[3];
     var minute = value[4];
-    var second = value[5];
+    // var second = value[5];
             
     // If they didn't select a date at all, that's fine -- the date is optional.
     if (day !== common.dayDefault() ||
         month !== common.monthDefault() ||
         year !== common.yearDefault() ||
         hour !== common.hourDefault() ||
-        minute !== common.minuteDefault() ||
-        second !== common.secondDefault()) {
+        minute !== common.minuteDefault()) {
+        // second !== common.secondDefault()) {
             // There is at least one field not set to its default (placeholder), so
             // try to construct a date object.
             
@@ -134,7 +134,7 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
             year = parseInt(year);
             hour = parseInt(hour);
             minute = parseInt(minute);
-            second = parseInt(second);
+            // second = parseInt(second);
             
             // Try to construct a date object out of these fields' values.
             // var date = new Date(year, month, day, hour, minute, second);
@@ -144,9 +144,10 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
             date.setUTCDate(day);
             date.setUTCHours(hour);
             date.setUTCMinutes(minute);
-            date.setUTCSeconds(second);
+            // date.setUTCSeconds(second);
                     
-            if (isNaN(date.getTime()) || date.getUTCDate() !== day || date.getUTCMonth() + 1 !== month || date.getUTCFullYear() !== year || date.getUTCHours() !== hour || date.getUTCMinutes() !== minute || date.getUTCSeconds() !== second) {
+            if (isNaN(date.getTime()) || date.getUTCDate() !== day || date.getUTCMonth() + 1 !== month || date.getUTCFullYear() !== year || date.getUTCHours() !== hour || date.getUTCMinutes() !== minute) {
+             // date.getUTCSeconds() !== second) {
                 // Invalid date.
                 error = 'not valid!';
             }
@@ -155,8 +156,9 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
     callback(error, date);
 };
 
-// TODO may want this to be <140 to allow linking of the resource.
-var maxTitleLength = exports.maxTitleLength = common.maxTitleLength = 140;
+// 117 characters to allow linking of the resource.
+// Ref: https://blog.twitter.com/2012/upcoming-tco-changes
+var maxTitleLength = exports.maxTitleLength = common.maxTitleLength = 117;
 
 var dayDefault = exports.dayDefault = common.dayDefault = function() {
     return "Day";

@@ -20,7 +20,7 @@ var createCrisis = function (req, res) {
     });
 }
 
-var checkRole = role.can('create crisis');
+var checkRole = role.can('create a crisis');
 
 exports.create = [checkRole, createCrisis];
 
@@ -55,7 +55,7 @@ exports.index = function (req, res) {
             //res.json(crises);
             res.render('crisis/index', {
                 page: {
-                    title: 'Verily'
+
                 },
                 crises: crises,
                 user: user
@@ -83,7 +83,10 @@ exports.get = function (req, res) {
                                 res.render('crisis/one', {
                                     crisis: crisis,
                                     questions: questions,
-                                    user: user
+                                    user: user,
+                                    page: {
+                                        title: crisis.post.title
+                                    }
                                 });
                             });
                         }

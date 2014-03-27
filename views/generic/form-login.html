@@ -1,0 +1,49 @@
+<form class="login-form" role="form" action="/login" method="POST">
+    <!-- <input type="hidden" name="_method" value="POST">
+    <input type="hidden" id="form-question-type" name="type"> -->
+
+		<div class="alert alert-danger login-alert" style="display: {% if !message or message.length === 0 %}none;{% else %}block{% endif %}">
+            {{ message }}
+        </div>
+
+    <div class="form-group">
+        <input type="text" class="form-control input-lg form-email" name="email" placeholder="Email" tabindex="1">
+    </div>
+
+    <div class="form-group">
+		<input type="password" class="form-control input-lg form-password" name="password" placeholder="Password" tabindex="2">
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg pull-right centre-when-viewport-narrowed" id="login-button">Login</button>
+</form>
+
+<script type="text/javascript">
+
+var loginForm = $('.login-form');
+
+loginForm.on('submit', function(e) {    
+    var valid = true;
+    var message;
+    
+    var formSubmitted = $(e.currentTarget);
+    
+    var loginAlert = formSubmitted.find('.login-alert')
+    
+    if (formSubmitted.find('.form-email').val() === '' || formSubmitted.find('.form-password').val() === '') {
+        valid = false;
+        message = 'Enter your login details.';
+    }
+    
+    if (valid) {
+        // Whole form is valid, submit form to endpoint
+        return;
+    } else {
+        // The form is not valid, don't submit form.
+        e.preventDefault();
+        loginAlert.text(message);
+        loginAlert.css('display', 'block');
+        
+    }
+})
+
+</script>

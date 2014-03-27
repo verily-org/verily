@@ -169,7 +169,7 @@ var createAnswer = function (req, res) {
     });
 };
 
-var checkRole = role.can('create answer');
+var checkRole = role.can('create an answer');
 
 exports.create = [checkRole, createAnswer];
 

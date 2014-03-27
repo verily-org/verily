@@ -3,7 +3,7 @@
 <div id="form-ctr" class="well form" style="display: none;">
     <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
 
-    <form id="create-evidence" role="form" action="/crisis/{{ crisis.id }}/question/{{ question.id }}/answers" method="POST" enctype="multipart/form-data">
+    <form id="create-evidence" class="post-form" role="form" action="/crisis/{{ crisis.id }}/question/{{ question.id }}/answers" method="POST" enctype="multipart/form-data">
         <!-- <input type="hidden" name="_method" value="POST"> -->
         <input type="hidden" id="form-question-type" name="type">
 
@@ -21,12 +21,20 @@ document.getElementById('form-cancel').addEventListener('click', function(e) {
 
 // Same-as behaviour to duplicate fields from question.
 document.getElementById('btn-same-locality').addEventListener('click', function(e) {
-    document.getElementById('form-locality').value = document.getElementById('question-locality').innerHTML;
+    var questionLocality = document.getElementById('question-locality');
+    if (questionLocality && questionLocality.innerHTML && questionLocality.innerHTML.length !== 0) {
+        document.getElementById('form-locality').value = questionLocality.innerHTML;
+    }
+    
 });
 
-document.getElementById('btn-same-latlong').addEventListener('click', function(e) {
-    document.getElementById('form-target-lat').value = document.getElementById('question-target-lat').innerHTML;
-    document.getElementById('form-target-long').value = document.getElementById('question-target-long').innerHTML;
-});
+var sameLatLongButton = document.getElementById('btn-same-latlong');
+if (sameLatLongButton) {
+    sameLatLongButton.addEventListener('click', function(e) {
+        document.getElementById('form-target-lat').value = document.getElementById('question-target-lat').innerHTML;
+        document.getElementById('form-target-long').value = document.getElementById('question-target-long').innerHTML;
+    });
+}
+
 
 </script>

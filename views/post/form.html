@@ -2,11 +2,13 @@
 
 {% include '../generic/form-image.html' %}
 
+{% include '../generic/form-video.html' %}
+
 {% include '../generic/form-text.html' %}
 
 {% include '../generic/form-locality.html' %}
 
-{% include '../generic/form-latlong.html' %}
+{# include '../generic/form-latlong.html' #}
 
 {% include '../generic/form-date-occurred.html' %}
 
@@ -16,7 +18,7 @@
 // On form submit, validate fields on client side.
 document.addEventListener('DOMContentLoaded', function(event) {
     var defaultFormGroupClassName = 'form-group';
-    var form = document.forms[0];
+    var form = document.getElementsByClassName('post-form')[0];
     var submitButton = document.getElementById('submit');
     
     var formTitle = document.getElementById('form-title');

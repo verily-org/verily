@@ -1,6 +1,11 @@
+var fs = require('fs');
+var path = require('path');
 var enums = require('../enums');
+var config = require('../config');
 var common = require('../static/js/common');
 var utils = require('utilities');
+
+var crypto = require('crypto');
 
 exports.genericErrorHandler = function (req, res, err) {
     if (!err) {
@@ -81,57 +86,89 @@ exports.create = function (model, data, req, cb) {
                 // We want to store the created and updated date
                 // in UTC -- Date.now() returns current time in milliseconds since 1970 in UTC.
                 var now = new Date(Date.now());
-                
-                var postData = {
-                    title: req.body.title,
-                    text: req.body.text,
-                    targetImage: req.body.targetImage,
-                    targetLocality: req.body.targetLocality,
-                    targetLat: req.body.targetLat,
-                    targetLong: req.body.targetLong,
-                    date: now,
-                    author: req.user.name,
-                    tags: tags,
-                    updated: now
-                }
-                
-                postData.targetDateTimeOccurred = targetDateTimeOccurred;
-        
-
-
-                req.models.Post.create([postData], function (err, items) {
-                    if (err) {
-                        cb(err, null);
-                    }
-
-                    var post = items[0];
-                    post.setUser(req.user, function (err) {
-                        post.save(function (err) {
+                                
+                if (req.body.formSelectImage === 'link' && req.body.targetImageUrl) {
+                    imageHandled(req.body.targetImageUrl);
+                } else if (req.body.formSelectImage === 'upload' && req.files && req.files.targetImageUpload && req.files.targetImageUpload.name !== '' && req.files.targetImageUpload.size !== 0) {
+                    crypto.randomBytes(8, function(err, buffer) {
+                        var random = buffer.toString('hex');
+                        
+                        var imageId = now.getTime() + random;
+                    
+                        var targetImagePath = '/static/images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
+                        
+                        fs.rename(req.files.targetImageUpload.path, config.project_dir + targetImagePath, function(err) {
                             if (err) {
                                 cb(err, null);
                             }
+                            imageHandled(targetImagePath);
+                        
                         });
+                        
                     });
-                    
+                } else {
+                    // No image specified.
+                    imageHandled(undefined);
+                }
+                
+                // After image handling completed.
+                function imageHandled(targetImagePath) {
+                    // Do the Post stuff.
+                
+                    var postData = {
+                        title: req.body.title,
+                        text: req.body.text,
+                        targetImage: targetImagePath,
+                        targetYoutubeVideoId: req.body.targetYoutubeVideoId,
+                        targetLocality: req.body.targetLocality,
+                        targetLat: req.body.targetLat,
+                        targetLong: req.body.targetLong,
+                        date: now,
+                        author: req.user.name,
+                        tags: tags,
+                        updated: now
+                    }
+        
+                    postData.targetDateTimeOccurred = targetDateTimeOccurred;
 
-                    // After the post has been created,
-                    // add the association to its subclass – item.
-                    // We only add one post, so use items[0].
-                    item.setPost(post, function (err) {
+
+
+                    req.models.Post.create([postData], function (err, items) {
                         if (err) {
                             cb(err, null);
                         }
 
-                        item.save(function (err) {
+                        var post = items[0];
+                        post.setUser(req.user, function (err) {
+                            post.save(function (err) {
+                                if (err) {
+                                    cb(err, null);
+                                }
+                            });
+                        });
+            
+
+                        // After the post has been created,
+                        // add the association to its subclass – item.
+                        // We only add one post, so use items[0].
+                        item.setPost(post, function (err) {
                             if (err) {
                                 cb(err, null);
                             }
 
-                            // Call back with the created instance of model.
-                            cb(null, item);
+                            item.save(function (err) {
+                                if (err) {
+                                    cb(err, null);
+                                }
+
+                                // Call back with the created instance of model.
+                                cb(null, item);
+                            });
                         });
                     });
-                });
+                }
+                
+
             });
         }
     });
@@ -276,8 +313,29 @@ exports.removeOne = function (item, req, cb) {
         }
     });
 };
-exports.load_crisis_extra_fields = function(crisis, callback){
-    crisis.relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: false});
+
+exports.relativeTime = function(target) {
+    // If more than 30 days have passed, don't bother doing relative time.
+    var returner = null;
+    
+    if (target) {
+        var now = new Date(Date.now());
+        var diff = utils.date.diff(target, now, utils.date.dateParts.DAY);
+    
+        if (diff <= 30) {
+            returner = utils.date.relativeTime(target, {abbreviated: true});
+        }            
+    }
+    
+    return returner;
+}
+
+
+exports.load_crisis_extra_fields = function(crisis, callback){    
+    crisis.relativeCreatedDate = exports.relativeTime(crisis.post.date);
+        
+    crisis.relativeTargetDateTimeOccurred = exports.relativeTime(crisis.post.targetDateTimeOccurred);
+    
     crisis.getPost(function(err, post){
         if (!err && post) {
             crisis.importanceCount = crisis.post.getImportanceCount();

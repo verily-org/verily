@@ -23,3 +23,5 @@ Icon
 .Trashes
 
 # / OS X Gitignore
+static/images/submissions
+static/images/submissions-pre

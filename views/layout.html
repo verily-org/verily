@@ -36,22 +36,33 @@
         
     </head>
     <body>
-
-        <div id="login-register" class="modal fade">
+        <div id="login-register" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <a class="close" data-dismiss="modal">×</a>
-                        <h3>User required</h3>
-                    </div>
                     <div class="modal-body">
-                        <p class="confirmer-modal-question">
-                            To continue with this action, please <a href="/login">Login</a> or quickly
-                            <a href="/register">Register</a>
-                        </p>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Login
+                                </p>
+                                
+                                {% include 'generic/form-login.html' %}
+                                
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Signup
+                                </p>
+                                
+                                {% include 'generic/form-signup.html' %}
+                                
+                            </div>
+                            
+                            
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <a class="btn" data-dismiss="modal">cancel</a>
+                        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -76,18 +87,24 @@
                 <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                     
+                        {% if userCan('create a crisis') %}
+                            <li><a href="/crisis/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Crisis</a></li>
+                        {% endif %}
                     	{% if crisis %}
                             <li><a href="/question">Questions</a></li>
-                            {% if userCan('create question') %}
-                            <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
+                            {% if userCan('create a question') %}
+                                <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
                             {% endif %}
                         {% endif %}
+
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
                         {% if user %}
                             <li><a href="/user">{{user.name}}</a></li>
                             <li><a href="/logout">Logout</a></li>
                         {% else %}
                             <li><a href="/login">Login</a></li>
-                            <li><a href="/register">Register</a></li>
+                            <li><a href="/register">Signup</a></li>
                         {% endif %}
                     </ul>
 
@@ -97,12 +114,12 @@
 
         </nav>
         <main role="main" id="content" class="container">
-            <ol class="breadcrumb">
+            <!-- <ol class="breadcrumb"> -->
                 <!-- <li>
                     <a href="/" title="Home">Home</a>
                 </li> -->
-                {% block breadcrumb %}{% endblock %}
-            </ol>
+                <!-- {% block breadcrumb %}{% endblock %} -->
+            <!-- </ol> -->
             {% block content %}{% endblock %}
         </main>
     </body>

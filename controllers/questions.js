@@ -83,7 +83,7 @@ var createQuestion = function (req, res) {
     });
 }
 
-var checkRole = role.can('create question');
+var checkRole = role.can('create a question');
 
 exports.create = [checkRole, createQuestion];
 
@@ -129,11 +129,9 @@ var getQuestion = function (req, addView, callback) {
             
             var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
             
-            var relativeTargetDateTimeOccurred;
+            var relativeTargetDateTimeOccurred = generic.relativeTime(question.post.targetDateTimeOccurred);
+    
             
-            if (question.targetDateTimeOccurred) {
-                relativeTargetDateTimeOccurred = utils.date.relativeTime(question.post.targetDateTimeOccurred, {abbreviated: true});
-            }
             if(addView){
                 question.post.addViewCount();
             }
@@ -150,6 +148,7 @@ var getQuestion = function (req, addView, callback) {
                                targetLat: question.post.targetLat,
                                targetLong: question.post.targetLong,
                                targetImage: question.post.targetImage,
+                               targetYoutubeVideoId: question.post.targetYoutubeVideoId,
                                targetDateTimeOccurred: question.post.targetDateTimeOccurred,
                                relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
                                date: question.post.date,

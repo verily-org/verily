@@ -9,45 +9,155 @@
     </li>
 {% endblock %}
 {% block content %}
-    <div class="row">
-        <div class="col-sm-3">
-            <div id="map" class="smallmap" style="height: 300px;"></div>
-        </div>
-        <div class="col-sm-9">
-            <div class="col-sm-10">
-                <div style="min-height: 250px;">
-                    <h2>{{ crisis.post.title }} <br/><small>by {{ crisis.post.author }}</small></h2>
 
-                    <p class="lead text-center">
-                     	{{ crisis.post.text }}
-                    </p>
+<div class="page-header">
+    <div class="row">
+        <div class="col-sm-5">
+            <h2 class="question-title">
+                {{ crisis.post.title }}
+            </h2>
+
+                <p class="lead">
+                    {{ crisis.post.text }}
+                </p>
+                
+                {% if crisis.post.targetDateTimeOccurred %}
+                <p class="metadata">
+                    <i class="fa fa-clock-o fa-lg fa-fw"></i>
+                    <span class="sr-only">Occurred:</span>
+                    <span class="">{{ crisis.relativeTargetDateTimeOccurred }}</span>
+                    <span class="text-muted">
+                        &middot;
+                    {{ crisis.post.targetDateTimeOccurred|date('D, d M Y H:i:s') }}
+                     <abbr title="Coordinated Universal Time" class="initialism">
+                         <a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
+                     </abbr>
+                     </span>
+                </p>
+                {% endif %}
+
+
+                {% if crisis.post.targetLocality or crisis.post.targetLat %}
+                <p class="metadata">
+                    {% if crisis.post.targetLocality %}
+                    <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ crisis.post.targetLocality }}</span>
+                    {% endif %}
+                    
+                    {% if crisis.post.targetLat and crisis.post.targetLong %}
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ crisis.post.targetLat }},{{ crisis.post.targetLong }}"><span id="crisis-target-lat">{{ crisis.post.targetLat }}</span>, <span id="crisis-target-long">{{ crisis.post.targetLong}}</span></a>
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                <p class="metadata">
+                    <i class="fa fa-bullhorn fa-lg fa-fw"></i>
+                    <span class=""><abbr title="{{ crisis.post.date.toUTCString() }}">{{ crisis.relativeCreatedDate }}</abbr></span>
+                    by {{ crisis.post.author }}
+                </p>
+
+                {% if crisis.post.tags and crisis.post.tags.length !== 0 %}
+                <p class="metadata">
+                    <i class="fa fa-tag fa-lg fa-fw"></i>
+                        {% for tag in crisis.post.tags %}
+                            <a href="/tag/{{ tag }}"><span class="label label-primary tag">{{ tag }}</span></a>
+                        {% endfor %}
+                </p>
+                {% endif %}
+                
+                <p class="metadata">
+                <span class="inline-metadata" title="Views"><i class="fa fa-lg fa-eye"></i> {{ crisis.post.viewCount }} views</span>
+                <span class="inline-metadata" title="Questions asked"><i class="fa fa-lg fa-tasks"></i> {{ crisis.questions.length }}</span>
+                </p>
+                
+                <div class="action-buttons">
+                    <div class="row">
+                        
+                        <div class="action-button-ctr btn-group">
+                            <a class="btn btn-primary crisis-ask-question" href="/crisis/{{ crisis.id }}/question/create">Make Verification Request</a>
+                        </div>
+
+                        <!-- button-mark-important -->
+                        <div class="action-button-ctr btn-group">
+                            {% set crisis_markedImportant = crisis.post | isMarkedImportantBy(user) %}
+                            <button data-crisis-id="{{ crisis.id }}"
+                                    data-question-id="{{ answer.question_id }}"
+                                    data-answer-id="{{ answer.id }}"
+                                    class="mark-important-crisis-btn btn btn-default btn-large text-action-button {% if !user %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
+                                    title="Mark as important">
+                                        <i class="fa fa-exclamation"></i>
+                                        <span class="sr-only">Important</span></a>
+                            </button>
+                            <a href="#" class="btn btn-default action-button-count">{{ crisis.importanceCount }}</a>
+                        </div>
+                        <!-- / button-mark-important -->
+                        
+
+                    
+                                                    
+                    </div>
+                    <!-- / action buttons row -->
+
+                                                    
                 </div>
-                <a class="btn btn-primary" href="/crisis/{{ crisis.id }}/question/create">Ask a question</a>
-                <!-- small buttons -->
-                <div class="btn-group btn-group-left-margin">
-                    <button class="btn btn-default btn-sm"><i class="fa fa-share"></i> <strong>Share</strong></button>
-                    <button class="btn btn-default btn-sm"><i class="fa fa-flag"></i> <strong>Flag</strong></button>
-                </div>
-                <div class="btn-group btn-group-left-margin">
-                    <a class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
-                    <a class="btn btn-default btn-sm"><i class="fa fa-list-alt"></i> <strong>History</strong></a>
-                </div>
+                <!-- / action-buttons -->
+                
+
+                
             </div>
-            <div class="col-sm-2 text-center">
-                {% set crisis_markedImportant = crisis.post | isMarkedImportantBy(user) %}
-                <button data-crisis-id="{{ crisis.id }}"
-                        data-question-id="{{ answer.question_id }}"
-                        data-answer-id="{{ answer.id }}"
-                        class="btn btn-default btn-large btn_markImportant {% if !user %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
-                        title="Mark as important">
-                    <i class="fa fa-exclamation"></i> {{ crisis.importanceCount }}
-                </button>
-                 <div class="text-muted item-top-margin" title="People who saw it"><i class="fa fa-eye"></i> {{ crisis.post.viewCount }}</div>
-                <div class="text-muted item-top-margin" title="Questions asked"><i class="fa fa-tasks"></i> {{ crisis.questions.length }}</div>
-                <div class="text-muted item-top-margin" title="Date created"><i class="fa fa-clock-o"></i> {{ crisis.relativeCreatedDate }}</div>
+            
+            
+            <div class="col-sm-7 question-image-and-map-ctr">
+                <div class="row">
+                    {% if crisis.post.targetImage %}
+                    <div class="col col-sm-6">
+                        <img src="{{ crisis.post.targetImage }}" class="img-responsive">
+                    </div>
+                    <div class="col col-sm-6">
+                    {% else %}
+                    <div class="col col-sm-12">
+                    {% endif %}
+                        <div id="map" class="smallmap" style="height: 200px;"></div>
+                        <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
+                    </div>    
+                </div>
+                <!-- / .row -->
+            </div>
+            <!-- / .question-image-and-map-ctr -->
+            
+            
+        </div>
+        <!-- / question header row -->
+        
+        <!-- Twitter Tweet button -->
+        <a href="https://twitter.com/share" class="twitter-share-button btn-group" data-size="large">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        <!-- / Twitter Tweet button -->
+                
+        <!-- small buttons -->
+        <div class="btn-group">
+            <div class="additional-button-ctr">
+                <a href="/crisis/{{ crisis.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
             </div>
         </div>
+        
+        <div class="btn-group">
+            <div class="additional-button-ctr">
+                <button class="btn btn-default btn-sm" style="display: none;"><i class="fa fa-flag"></i> <strong>Flag</strong></button>
+            </div>
+        </div>
+        <!-- / small buttons -->
+        
+
+        
+                
+        
     </div>
+    
+</div>
+<!-- / .page-header -->
+
+
+
 
 
 
@@ -56,18 +166,65 @@
         <label for="select_filter_questions">View questions:</label>
         <select id="select_filter_questions">
             <option>Active (most active first)</option>
-            <option>Active (most recent first)</option>
+            <option>Recent (most recent first)</option>
         </select>
 
     </div>
     
 </div>
 
-<div class="row question-answers">
+<div class="row question-answers crisis-questions">
     {% for question in questions | reverse %}
-        <div class="col-sm-4" style="max-height:350px">
-            {% include '../question/questionWithinCrisis.html' with question %}
-        </div>   
+        <div class="col-sm-4">
+            <div class="panel panel-default question-answer crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
+                    <div class="panel-heading">
+                            {% if question.post.targetLocality %}
+                                <div class="">
+                                   <i class="fa fa-map-marker"></i>
+                                   <span class="sr-only">Locality:</span>
+                                   <span id="question-locality">{{ question.post.targetLocality }}</span>
+                                </div>
+                            {% endif %}
+
+                        <h3 class="panel-title">
+                            <a href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
+                                {{ question.post.title }}
+                            </a>
+                        </h3>
+                        <div class="crisis-question-metrics">
+                            <span class="label label-default metric crisis-question-metric important" title="Marked as important"><i class="fa fa-exclamation"></i> {{ question.importanceCount }}</span>
+
+                            <span class="label label-success metric crisis-question-metric true" title="Answers that state this is true"><i class="fa fa-check text-success"></i> {{ question.supportedAnswerCount }}</span>
+
+                            <span class="label label-danger metric crisis-question-metric false" title="Answers that state this is false"><i class="fa fa-times text-danger"></i> {{ question.rejectedAnswerCount }}</span>
+                        </div>
+
+                    </div>
+                    <div class="panel-body">
+
+
+                        {{ question.post.text }}
+                    
+                        {% if question.post.targetImage %}
+                            <div class="row">
+                                <img src="{{ question.post.targetImage }}" class="img-responsive center-block">
+                            </div>
+                        {% endif %}
+                    
+                            <div class="">
+                                <i class="fa fa-bullhorn"></i>
+                                <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
+                                by {{ question.post.author }}
+                            </div>
+
+                    </div>
+                </div>
+
+            
+            
+            
+        </div>
+        <!-- / .col-sm-4 -->
     {% endfor %}
 </div>
 
@@ -98,7 +255,7 @@ function init(){
 };
 init();
     $(function(){
-        $(".btn_markImportant").click(function(){
+        $(".mark-important-crisis-btn").click(function(){
             var button = $(this);
             $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',
                     function(data){
@@ -110,7 +267,7 @@ init();
         });
     });
     var update_markedImportant = function(crisis, element){
-        element.html('<i class="fa fa-exclamation"></i> '+crisis.importanceCount);
+        element.next('a.action-button-count').text(crisis.importanceCount);
         element.addClass('active').addClass('disabled');
     }
 </script>

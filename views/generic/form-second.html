@@ -1,5 +1,5 @@
-<select class="form-control collapse-with-margin form-occurred" id="form-occurred-second" name="targetDateTimeOccurred">
-    <option>{{ secondDefault }}</option>
+<select class="form-control collapse-with-margin form-occurred" id="form-occurred-second" name="targetDateTimeOccurred" style="display: none;">
+    <!-- <option>{{ secondDefault }}</option> -->
     {# parameters for getAllFromRange: 0, 59, 'padding' #}
     {% set seconds = 0|getAllFromRange(59, 'padding') %}
     {% for second in seconds %}<option>{{ second }}</option>{% endfor %}

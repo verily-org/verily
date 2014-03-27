@@ -7,6 +7,7 @@ exports.route = function (app, controllers, doc) {
     route('get', '/login', 'loginView', 'login view');
     route('post', '/login', 'login', 'login user');
     route('get', '/logout', 'logout', 'logout user');
+    route('get', '/logout-done', 'logoutDone', 'logout completed');
     
     route('post', '/user', 'register', 'New; New user');
 

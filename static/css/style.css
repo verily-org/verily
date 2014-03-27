@@ -80,15 +80,16 @@ p.metadata {
 }
 
 .text-action-button {
-    width: 7em;
+/*    width: 7em;*/
+    width: 3em;
 }
 
 /* TODO Use LESS variables for 768px and margins (15px) */
-@media (max-width: 768px) {
+
     
     .action-buttons {
         margin-top: 0;
-        padding-left: 15px;
+/*        padding-left: 15px;*/
     }
     
     .action-button-ctr {
@@ -96,15 +97,19 @@ p.metadata {
         float: none;
     }
     
-    
-    .text-action-button {
-        width: 3em;
-    }
+/*    
+    @media (max-width: 768px) {
+        .text-action-button {
+            width: 3em;
+        }
+    }*/
     
     .form-control.collapse-with-margin {
         margin-top: 5px;
     }
-}
+
+
+
 
 .mini-action-button {
     width: 3em;
@@ -114,6 +119,60 @@ p.metadata {
     padding-top: 1em;
     margin-top: 0;
 }
+
+@media (max-width: 768px) {
+    .question-image-and-map-ctr .col {
+        margin-top: 1em !important;
+    }
+    
+    .nav.navbar-nav.pull-right {
+        float: left !important;
+    }
+    
+    .centre-when-viewport-narrowed {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        float: none !important;
+    }
+    
+    .login-aside-button {
+        margin-top: 2em !important;
+    }
+    
+    .login-aside-button:first-child {
+        margin-top: 3em !important;
+    }
+}
+
+.login-aside-button {
+    margin-top: 1em;
+}
+
+.login-aside-button:first-child {
+    margin-top: 0;
+}
+
+.answer-image {
+    
+}
+
+.crisis-question-metrics {
+    font-size: 1.5em;
+}
+
+.crisis-question-metric.important {
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid #ededed;
+}
+
+.metric.false i {
+    color: #803230;
+}
+
+
 
 /* TODO Use LESS variables */
 .action-button-count {
@@ -137,14 +196,25 @@ p.metadata {
     font-size: 100%;
 }
 
-.question-image-and-map > div {
-    padding-top: 1em;
+.question-image-and-map-ctr {
     margin-top: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.question-image-and-map > div {
+/*    padding-top: 1em;*/
+/*    margin-top: 0;*/
 }
 
 .question-answers {
-    margin-top: 1.0em;
+    margin-top: 1em;
 }
+
+.text-muted code {
+    color: #999999;
+}
+
 
 .well.form {
     padding-top: 0;
@@ -168,6 +238,11 @@ p.metadata {
     
 }
 
+.video {
+    margin-top: 1em;
+    text-align: right;
+}
+
 .question-answer {
 /*    border-left: 5px solid transparent;*/
 }
@@ -180,6 +255,20 @@ p.metadata {
     background-color: #ffffff;
 }
 
+.question-answer-bar {
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+}
+
+.question-answer-bar > span {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.question-answer .panel-title {
+    font-size: 1.75em;
+}
 
 /* TODO Change to use LESS variables */
 .border-true {
@@ -188,6 +277,41 @@ p.metadata {
 
 .border-false {
     border-left-color: #d9534f;  
+}
+
+.border-not-available {
+    border-left-color: #ededed;
+}
+
+.crisis-ask-question {
+/*    margin-top: 1em;*/
+}
+
+.crisis-question-border {
+    border-left-width: 0.75em;
+    border-left-style: solid;
+}
+
+
+
+.metadata .inline-metadata {
+    margin-left: 1em;
+}
+
+.metadata .inline-metadata:first-child {
+    margin-left: 0 !important;
+}
+
+
+.breadcrumb {
+    margin-top: -20px;
+    padding-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.question-title {
+    margin-top: 0;
 }
 
 #form-title-chars-left {
@@ -221,4 +345,9 @@ p.metadata {
     top:5px;
     right:50px;
     z-index:10000;
+}
+
+
+.twitter-share-button {
+    margin-top: 11px;
 }

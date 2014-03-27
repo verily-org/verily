@@ -23,6 +23,9 @@ module.exports = function (db, cb) {
         targetImage: {
             type: 'text'
         },
+        targetYoutubeVideoId: {
+            type: 'text'
+        },
         targetDateTimeOccurred: {
             type: 'date',
             time: true

@@ -1,0 +1,20 @@
+{% extends '../layout.html' %}
+
+{% block content %}
+
+{% if action %}
+	<div class="alert alert-danger">
+        You don't have permission to {{action}}
+    </div>
+{% endif %}
+
+{% if !user %}
+
+    <p class="lead">
+       Login 
+    </p>
+    {% include '../generic/form-login.html' %}
+
+{% endif %}
+
+{% endblock %}

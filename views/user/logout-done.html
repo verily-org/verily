@@ -1,0 +1,24 @@
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-6">
+        <p class="lead">
+           You have logged out.
+        </p>
+    </div>
+    <div class="col-sm-6">
+        <p class="lead">
+            Log in again
+        </p>
+        
+       {% include '../generic/form-login.html' %} 
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

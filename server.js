@@ -30,9 +30,7 @@ module.exports = function (suppressLogs) {
     controllers.ratings = require('./controllers/ratings');
     controllers.crises = require('./controllers/crises');
 
-    // Following line replaced to avoid warnings –
-    // see https://github.com/senchalabs/connect/wiki/Connect-3.0
-    app.use(express.bodyParser());
+
 
     app.use(connect.urlencoded());
     app.use(connect.json());
@@ -40,7 +38,7 @@ module.exports = function (suppressLogs) {
     // To allow use of all HTTP methods in the browser through use of _method variable
     app.use(express.methodOverride());
 
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || enums.options.port);
     
     app.engine('html', swig.renderFile);
     app.set('view engine', 'html');
@@ -63,7 +61,8 @@ module.exports = function (suppressLogs) {
 
 
     //prevent big package and return 413 error
-    app.use(connect.limit('5kb'));
+    // app.use(connect.limit('5kb'));
+    app.use(connect.limit('5mb'));
 
     // Overwrite demo.sh at the start of execution because it is appended to.
     //if (enums.document) {
@@ -143,7 +142,9 @@ module.exports = function (suppressLogs) {
     }));
 
     app.use(express.cookieParser());
-    app.use(express.bodyParser());
+    app.use(express.bodyParser({
+        uploadDir: __dirname + '/static/images/submissions-pre'
+    }));
     app.use(express.session({ secret: 'cat' }, {maxAge: new Date(Date.now() + 3600000)}));
     app.use(passport.initialize());
     app.use(passport.session());
