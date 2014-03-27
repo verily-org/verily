@@ -2,6 +2,7 @@ var emitter = require('./event-emitter')();
 var reporter = require('nodeunit').reporters.default;
 var formatting = require('nodeunit/bin/nodeunit.json');
 
+//
 // Using nodeunit/bin/nodeunit.json formatting
 // Bold
 function b(s) {
