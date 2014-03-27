@@ -88,7 +88,7 @@ var checkRole = role.can('create a question');
 exports.create = [checkRole, createQuestion];
 
 // View to edit a question
-exports.edit = function (req, res) {
+var editQuestion = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         getQuestion(req, false, function(err, question) {
@@ -118,6 +118,10 @@ exports.edit = function (req, res) {
         });
     });
 }
+
+var checkRole = role.can('edit question');
+
+exports.edit = [checkRole, editQuestion];
 
 // Used by get, edit functions etc.
 var getQuestion = function (req, addView, callback) {
@@ -326,13 +330,15 @@ exports.markImportant = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
                 require('./ratings').importance(req, question.post, function(err, rating){
-                    if(!err){
-                        res.redirect('/crisis/'+question.crisis_id+'/question/' + req.params.question_id);
+                    generic.load_crisis_extra_fields(question, function(){
+                        if(!err){
 
-                        res.end();
-                    } else {
-                        generic.genericErrorHandler(req, res, err);
-                    }
+                            res.status(200);
+                            res.json(question);
+                        } else {
+                            generic.genericErrorHandler(req, res, err);
+                        }
+                    });
                 });
         } else {
             generic.genericErrorHandler(req, res, err);
