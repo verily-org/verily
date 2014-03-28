@@ -7,14 +7,10 @@ $(function(){
         console.log(e);
         
         var fragment = $(e.currentTarget).data('fragment');
-        
         history.pushState('', document.title, window.location.pathname + '?action=' + fragment);
         
         $('#login-register').modal('show');
-        // $(this).on('click');
-        // $(this).unbind('click');
-        // this.removeEventListener('click');
-        // e.preventDefault();
+        e.stopImmediatePropagation();
     });
 });
 
@@ -27,7 +23,6 @@ function show_alert_message(type, milliseconds, title, text){
     $('#alert-window').find('.alert-title').html(title);
     $('#alert-window').find('.alert-message').html(text);
     if(milliseconds){
-        console.log(milliseconds);
         setTimeout("$('#alert-window').hide('slow')", milliseconds);
     }
 }
