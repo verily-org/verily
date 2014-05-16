@@ -90,6 +90,6 @@ exports.facebookRedirect = passport.authenticate('facebook', {
 });
 
 exports.facebookAuthenticate = passport.authenticate('facebook', {
-    successRedirect : '/user', // redirect to the secure profile section
+    successRedirect : 'back', // redirect to the secure profile section
     failureRedirect : '/login', // redirect back to the signup page if there is an error
 });
