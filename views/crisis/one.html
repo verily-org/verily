@@ -72,9 +72,11 @@
                 <div class="action-buttons">
                     <div class="row">
                         
+                        {% if user and user.role === 'editor' %}
                         <div class="action-button-ctr btn-group">
                             <a class="btn btn-primary crisis-ask-question" href="/crisis/{{ crisis.id }}/question/create">Make Verification Request</a>
                         </div>
+                        {% endif %}
 
                         <!-- button-mark-important -->
                         <div class="action-button-ctr btn-group">
@@ -84,7 +86,7 @@
                                     data-answer-id="{{ answer.id }}"
                                     class="mark-important-crisis-btn btn btn-default btn-large text-action-button {% if !user %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
                                     title="Mark as important">
-                                        <i class="fa fa-exclamation"></i>
+                                        <i class="fa fa-star"></i>
                                         <span class="sr-only">Important</span></a>
                             </button>
                             <a href="#" class="btn btn-default action-button-count">{{ crisis.importanceCount }}</a>
@@ -192,11 +194,11 @@
                             </a>
                         </h3>
                         <div class="crisis-question-metrics">
-                            <span class="label label-default metric crisis-question-metric important" title="Marked as important"><i class="fa fa-exclamation"></i> {{ question.importanceCount }}</span>
+                            <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> {{ question.importanceCount }}</span>
 
-                            <span class="label label-success metric crisis-question-metric true" title="Answers that state this is true"><i class="fa fa-check text-success"></i> {{ question.supportedAnswerCount }}</span>
+                            <span class="label metric crisis-question-metric" title="Answers that state this is true"><i class="fa fa-check success"></i> <span class="success">{{ question.supportedAnswerCount }}</span></span>
 
-                            <span class="label label-danger metric crisis-question-metric false" title="Answers that state this is false"><i class="fa fa-times text-danger"></i> {{ question.rejectedAnswerCount }}</span>
+                            <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">{{ question.rejectedAnswerCount }}</span></span>
                         </div>
 
                     </div>

@@ -80,6 +80,12 @@ exports.get = function (req, res) {
                             crisis.post.addViewCount();
                             generic.load_crisis_extra_fields(crisis, function(err){
                                 if (req.user){var user = req.user; }
+                                console.log('user');
+                                console.log(user);
+                                if (user) {
+                                    console.log(user.role);
+                                }
+                                
                                 res.render('crisis/one', {
                                     crisis: crisis,
                                     questions: questions,

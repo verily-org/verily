@@ -164,10 +164,24 @@ p.metadata {
     font-size: 1.5em;
 }
 
+.crisis-question-metric {
+    padding-left: 0;
+    padding-right: 5px;
+}
+
+.success {
+    color: #5cb85c;
+}
+
+.danger {
+    color: #d2322d;
+}
+
 .crisis-question-metric.important {
     background-color: transparent;
     color: #000000;
-    border: 1px solid #ededed;
+/*    border: 1px solid #ededed;*/
+
 }
 
 .metric.false i {
