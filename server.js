@@ -73,12 +73,12 @@ module.exports = function (suppressLogs) {
     //    });
     //}
 
-    heroku = (process.env.HEROKU_POSTGRESQL_VIOLET_URL !== undefined);
-    heroku = false;
+    heroku = (process.env.HEROKU_POSTGRESQL_BLACK_URL !== undefined);
+    //heroku = false;
     //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
     //console.log('process.env',process.env);
     if (heroku){
-    	db_url = process.env.HEROKU_POSTGRESQL_VIOLET_URL;
+    	db_url = process.env.HEROKU_POSTGRESQL_BLACK_URL;
     } else {
     	db_url = "sqlite://app.db";
         
