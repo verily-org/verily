@@ -212,6 +212,7 @@ function create_comment(req, cb){
     }
     req.models.Comment.create([commentData], function (err, items) {
         if (err) {
+            console.log(err);
             cb(err, null);
             return;
         }

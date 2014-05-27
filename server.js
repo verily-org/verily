@@ -125,6 +125,7 @@ module.exports = function (suppressLogs) {
                 models.User.sync(function () {console.log("User synced")});
                 models.Question.sync(function () {console.log("Question synced")});
                 models.Answer.sync(function () {console.log("Answer synced")});
+                models.Comment.sync(function () {console.log("Comment synced")});
                 models.Rating.sync(function () {console.log("Rating synced")});
                 models.Facebook.sync(function () {console.log("Facebook synced")});
 
