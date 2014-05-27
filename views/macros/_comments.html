@@ -6,12 +6,16 @@
 {% endmacro %}
 
 {% macro make_comment(comment) %}
-    <div class="row">
+    <div>
         <div class="panel panel-default question-answer">
-            <div class="panel-heading" style="font-weight: bold">{{ comment.comment.user.name }} <span style="color:gray">{{ comment.comment.date|relativeTime }} ago</span></div>
+            <div class="panel-heading">
+                <i class="fa fa-bullhorn"></i>
+                {{ comment.comment.user.name }} 
+                <span class="text-muted pull-right">{{ comment.comment.date|relativeTime }}</span>
+            </div>
 
 
-            <div class="panel-body" style="padding-left: 30px;">{{ comment.comment.text }}</div>
+            <div class="panel-body" style="">{{ comment.comment.text }}</div>
         </div>
     </div>
 {% endmacro %}

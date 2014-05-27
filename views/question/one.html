@@ -5,13 +5,14 @@
 <!-- question -->
 
 
-<div class="page-header question {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
+<div class="page-header">
     <div class="row">
         <div class="col-sm-5">
             <div>
                 <a href="/crisis/{{ crisis.id }}" title="Crisis">
-                    <i class="fa fa-fw fa-dot-circle-o"></i>{{ crisis.post.title }}
+                    <i class="fa fa-fw fa-dot-circle-o fa-breadcrumb"></i>{{ crisis.post.title }}
                 </a>
+                <span class="text-muted">/</span>
             </div>
             <h2 class="question-title">{{ question.title }}</h2>
 
@@ -65,34 +66,7 @@
                 <div class="action-buttons">
                     <div class="row">
                     
-                        <!-- button-mark-true -->
-                        <div class="action-button-ctr btn-group">
-                            <button class="btn btn-success btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> <span class="sr-only">True</span></button>
-                            <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a>
-                        </div>
-                        <!-- / button-mark-true -->
-                    
-                        <!-- button-mark-false -->
-                        <div class="action-button-ctr btn-group">
-                            <button class="btn btn-danger btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> <span class="sr-only">False</span></button>
-                            <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a>
-                        </div>
-                        <!-- / button-mark-false -->
-                    
-                        <!-- button-mark-important -->
-                        {% set questionMarkedImportant = question.post | isMarkedImportantBy(user) %}
-                        <div class="action-button-ctr btn-group">
-                            <button data-crisis-id="{{ crisis.id }}"
-                                    data-question-id="{{ question.id }}"
-                                    class="btn btn-default btn-large text-action-button btn_markImportant
-                                    {% if !user %} user-required-action{% endif %}
-                                    {% if questionMarkedImportant %}disabled{% endif %}"
-                                    title="Mark as important"><i class="fa fa-star">
-                                    </i> <span class="sr-only">Important</span>
-                            </button>
-                            <a href="#" class="btn btn-default action-button-count">{{ question.importanceCount }}</a>
-                        </div>
-                        <!-- / button-mark-important -->
+
                                                     
                     </div>
                 
@@ -126,6 +100,35 @@
             
         </div>
         <!-- / question header row -->
+        
+        <!-- button-mark-true -->
+        <div class="action-button-ctr btn-group">
+            <button class="btn btn-success btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> <span class="hidden-xs">True because&hellip;</span> <span class="sr-only">True because&hellip;</span></button>
+            {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a> #}
+        </div>
+        <!-- / button-mark-true -->
+    
+        <!-- button-mark-false -->
+        <div class="action-button-ctr btn-group">
+            <button class="btn btn-danger btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> <span class="hidden-xs">False because&hellip;</span> <span class="sr-only">False because&hellip;</span></button>
+            {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a> #}
+        </div>
+        <!-- / button-mark-false -->
+    
+        <!-- button-mark-important -->
+        {% set questionMarkedImportant = question.post | isMarkedImportantBy(user) %}
+        <div class="action-button-ctr btn-group">
+            <button data-crisis-id="{{ crisis.id }}"
+                    data-question-id="{{ question.id }}"
+                    class="btn btn-default btn-large text-action-button btn_markImportant
+                    {% if !user %} user-required-action{% endif %}
+                    {% if questionMarkedImportant %}disabled{% endif %}"
+                    title="Mark as important"><i class="fa fa-star">
+                    </i> <span class="hidden-xs">Important</span> <span class="sr-only">Important</span>
+            </button>
+            <a href="#" class="btn btn-default action-button-count">{{ question.importanceCount }}</a>
+        </div>
+        <!-- / button-mark-important -->
         
         <!-- Twitter Tweet button -->
         <a href="https://twitter.com/share" class="twitter-share-button btn-group" data-size="large">Tweet</a>
@@ -173,6 +176,7 @@
     
 </div>
 
+<h3>Responses</h3>
 <div class="row question-answers">
     {{ answers_macro.answers_embeded(question.answers, crisis.id) }}
 </div>

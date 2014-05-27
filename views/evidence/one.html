@@ -6,25 +6,25 @@
 <!-- question -->
 
 
-<div class="page-header question {% if answer.isSupport() %}border-true{% else %}border-false{% endif %}">
+<div class="page-header">
 
-    <div class="text-right" style="font-size: 20px">
-        </span>
-        {% if answer.isSupport() %}
-            <span class="label label-success">Evidence for:</span>  <a href="/crisis/{{ crisis.id }}/question/{{ answer.question_id }}" title="Verification Request">{{ question.post.title | cropString(40) }}</a>
-        {% else %}
-            <span class="label label-danger">Evidence against:</span>  <a href="/crisis/{{ crisis.id }}/question/{{ answer.question_id }}" title="Verification Request">{{ question.post.title | cropString(40) }}</a>
-        {% endif %}
-    </div>
     <div class="row">
         <div class="col-sm-10">
             <div>
                 <a href="/crisis/{{ crisis.id }}" title="Crisis">
-                    <i class="fa fa-fw fa-dot-circle-o"></i>{{ crisis.post.title }}
-                </a> >>
+                    <i class="fa fa-fw fa-dot-circle-o"></i> {{ crisis.post.title }}
+                </a> <span class="text-muted">/</span>
                 <a href="/crisis/{{ crisis.id }}/question/{{ answer.question_id }}" title="Verification Request">
                     <i class="fa fa-fw fa-question-circle"></i> {{ question.post.title | cropString(40) }}
                 </a>
+                <span class="text-muted">/</span>
+                    {% if answer.isSupport() %}
+                        <i class="fa fa-check success"></i>
+                        <span class="success">True because</span>
+                    {% else %}
+                        <i class="fa fa-times danger"></i>
+                        <span class="danger">False because</span>
+                    {% endif %}
             </div>
             <h2 class="question-title">{{ answer.post.title }}</h2>
 
@@ -108,7 +108,7 @@
     <!-- / video -->
         
 </div>
-<div class="evidence-content ">
+<div class="evidence-content">
     {% if answer.post.targetImage %}
         <div class="row">
             <img src="{{ answer.post.targetImage }}" class="img-responsive center-block answer-image">
@@ -130,7 +130,7 @@
     <div class="comments-content">
         <h3>{{ answer.comments | length }} comments</h3>
 
-        <div class="row answer-comments">
+        <div class="answer-comments">
             {{ comments_macro.comments_embeded(answer.comments) }}
         </div>
     </div>

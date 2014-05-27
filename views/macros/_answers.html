@@ -43,12 +43,14 @@
             <div class="panel panel-default question-answer">
                 <div class="question-answer-bar {% if answer.type === 'support' %}label-success{% else %}label-danger{% endif %}">
                     {% if answer.type === 'support' %}
-                        <span class="text-success metric true">
+                        <span class="metric">
                             <i class="fa fa-check"></i>
+                            <span class="">True because
                         </span>
                     {% else %}
-                        <span class="text-danger metric false">
+                        <span class="metric">
                             <i class="fa fa-times"></i>
+                            <span class="">False because
                         </span>
 
                     {% endif %}

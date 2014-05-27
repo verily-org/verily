@@ -28,6 +28,14 @@ p.metadata {
     margin-bottom: 7px;
 }
 
+.small-caps {
+    font-variant: small-caps;
+}
+
+fa.breadcrumb {
+    margin-right: 0.5em;
+}
+
 
 
 .calendar-day {
@@ -81,7 +89,19 @@ p.metadata {
 
 .text-action-button {
 /*    width: 7em;*/
-    width: 3em;
+    min-width: 4em;
+    font-weight: 800;
+}
+
+.text-action-button * {
+}
+
+.text-action-button.btn-success {
+    border-color: #398439;
+}
+
+.text-action-button.btn-danger {
+    border-color: #ac2925;
 }
 
 /* TODO Use LESS variables for 768px and margins (15px) */
@@ -93,7 +113,8 @@ p.metadata {
     }
     
     .action-button-ctr {
-        margin-left: 15px;
+/*        margin-left: 15px;*/
+        margin-right: 15px;
         float: none;
     }
     
@@ -194,7 +215,7 @@ p.metadata {
 .action-button-count {
     background-color: #ffffff !important;
     color: #428bca;
-    min-width: 4.25em;
+/*    min-width: 4.25em;*/
 }
 
 /* Buttons with a background colour need better borders */
@@ -290,6 +311,10 @@ p.metadata {
 .question-answer-bar {
     margin: 0;
     padding: 0;
+    color: #ffffff;
+}
+
+.question-answer-bar .metric {
     color: #ffffff;
 }
 
