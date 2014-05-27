@@ -67,6 +67,7 @@ exports.index = function (req, res) {
 //get a specific crisis
 exports.get = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        
         if (!err){
             crisis.getQuestions({}, function (err, questions) {
                 if (err) {
@@ -85,6 +86,15 @@ exports.get = function (req, res) {
                                 if (user) {
                                     console.log(user.role);
                                 }
+                                
+                                // For each question, add relative created date.
+                                questions.forEach(function(question) {
+                                    var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
+                                    question.relativeCreatedDate = relativeCreatedDate;
+                                })
+                                
+                                var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
+                                crisis.relativeCreatedDate = relativeCreatedDate;
                                 
                                 res.render('crisis/one', {
                                     crisis: crisis,
