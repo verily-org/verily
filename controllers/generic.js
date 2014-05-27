@@ -381,6 +381,7 @@ exports.load_question_extra_fields = function(question, callback){
     }
 }
 exports.load_post_ratings_count = function(item, callback){
+    //item.post.getUser(function(a,d){});
     item.post.getRatings(function(err, ratings){
         if (!err && ratings) {
             item.post.upvoteCount = item.post.getUpvoteCount();

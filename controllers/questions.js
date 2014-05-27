@@ -171,8 +171,6 @@ var getQuestion = function (req, addView, callback) {
 
                            // Answers present.
 
-//                   console.log('answers');
-//                   console.log(answers);
                            async.each(answers, generic.load_post_ratings_count, function (err) {
                                if (err) {
                                    callback(err);
@@ -344,7 +342,6 @@ exports.markImportant = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
     });
-
 };
 
 // Delete question

@@ -154,8 +154,10 @@ p.metadata {
     margin-top: 0;
 }
 
-.answer-image {
-    
+.evidence-content {
+    margin-left:30px;
+    width:90%;
+    margin-bottom:30px;
 }
 
 .crisis-question-metrics {
@@ -241,6 +243,22 @@ p.metadata {
 .video {
     margin-top: 1em;
     text-align: right;
+}
+
+
+.video-answers {
+    text-align: center;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    height: 0;
+}
+.video-answers iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .question-answer {
@@ -346,8 +364,10 @@ p.metadata {
     right:50px;
     z-index:10000;
 }
-
-
 .twitter-share-button {
     margin-top: 11px;
+}
+
+.comments-content{
+    margin-top:20px;
 }

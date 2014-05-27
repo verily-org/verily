@@ -15,7 +15,7 @@ module.exports = function(swig) {
         return isDownvoted;
     });
     swig.setFilter('relativeTime', function(input, abbreviated) {
-        utils.date.relativeTime(input);
+        return utils.date.relativeTime(input, {abbreviated: true});
     });
     
     swig.setFilter('getMaxTitleLength', function() {
@@ -49,8 +49,26 @@ module.exports = function(swig) {
     swig.setFilter('getMinuteDefault', function() {
         return common.minuteDefault();
     });
-    
+
     swig.setFilter('getSecondDefault', function() {
         return common.secondDefault();
+    });
+
+    swig.setFilter('length', function(array) {
+        return array.length;
+    });
+
+    swig.setFilter('cropString', function(string, limit) {
+        if(string.length > limit){
+            var i = limit-1;
+            while(i < string.length){
+                if(string[i] == ' '){
+                    return string.substring(0, i) + '...';
+                    break;
+                }
+                i++;
+            }
+        }
+        return string;
     });
 };

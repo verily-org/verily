@@ -11,33 +11,37 @@ exports.get = function (req, res) {
     // ETag support.
     var reqIfNoneMatch = req.get(enums.ifNoneMatch);
 
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
-        if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, reqIfNoneMatch, function (err, answer) {
-                if (!err && answer) {
-                    var newanswer = {
-                        id: answer.id,
-                        type: answer.type,
-                        title: answer.title,
-                        text: answer.text,
-                        date: answer.date,
-                        author: answer.author,
-                        updated: answer.updated
-                    }, wrapper = {
-                        answer: newanswer
-                    };
-//                    Used for caching
-//                    res.set(enums.eTag, answer.updated);
-                    res.json(wrapper);
-                    res.end();
-                } else if (err === enums.NOT_MODIFIED) {
-                    // 304 Not Modified.
-                    res.status(304);
-                    res.end();
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (!err && crisis) {
+            generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+                if (!err && question) {
+                    generic.get(req.models.Answer, req.params.answer_id, reqIfNoneMatch, function (err, answer) {
+                        if (!err && answer) {
+        //                    Used for caching
+        //                    res.set(enums.eTag, answer.updated);
+                            if (req.user){var user = req.user; }
+                            answer.getComments(function(err){
+                                //Sort comments in reverse chronological order
+                                answer.comments.sort(function(a,b){return b.comment.date - a.comment.date });
+                                res.render('evidence/one', {
+                                    crisis: crisis,
+                                    question: question,
+                                    answer: answer,
+                                    page: {
+                                        title: answer.post.title
+                                    },
+                                    user: user
+                                });
+                            });
+                        }else {
+                            generic.genericErrorHandler(req, res, err);
+                        }
+                    });
                 } else {
                     generic.genericErrorHandler(req, res, err);
                 }
             });
+
         } else {
             generic.genericErrorHandler(req, res, err);
         }

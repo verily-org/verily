@@ -265,6 +265,10 @@ function initActionButtons() {
                 });
     });
 
+    $('.btn_comment').click(function(){
+        window.location = "/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/"+$(this).data("answer-id")+"?action=comment";
+    });
+
 }
 
     $(function(){

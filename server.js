@@ -109,6 +109,7 @@ module.exports = function (suppressLogs) {
                 models.Post = db.models.post;
                 models.Question = db.models.question;
                 models.Answer = db.models.answer;
+                models.Comment = db.models.comment;
                 models.QuestionComment = db.models.question_comment;
                 models.AnswerComment = db.models.answer_comment;
                 models.Rating = db.models.rating;

@@ -1,0 +1,17 @@
+
+{% macro comments_embeded(comments) %}
+    {% for comment in comments %}
+        {{ make_comment(comment) }}
+    {% endfor %}
+{% endmacro %}
+
+{% macro make_comment(comment) %}
+    <div class="row">
+        <div class="panel panel-default question-answer">
+            <div class="panel-heading" style="font-weight: bold">{{ comment.comment.user.name }} <span style="color:gray">{{ comment.comment.date|relativeTime }} ago</span></div>
+
+
+            <div class="panel-body" style="padding-left: 30px;">{{ comment.comment.text }}</div>
+        </div>
+    </div>
+{% endmacro %}
