@@ -92,12 +92,6 @@
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
     <!-- / Twitter Tweet button -->
 
-    <!-- small buttons -->
-    <div class="btn-group">
-        <div class="additional-button-ctr">
-            <a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/{{ answer.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
-        </div>
-    </div>
 
     <div class="btn-group">
         <div class="additional-button-ctr">
@@ -123,10 +117,10 @@
 
 <!-- / Evidence  -->
 
-<!-- create comment -->
-{% include '../evidence/comment.html' %}
 <!-- / create comment -->
 
+    <!-- create comment -->
+    {% include 'comment.html' %}
     <div class="comments-content">
         <h3>{{ answer.comments | length }} comments</h3>
 
@@ -148,25 +142,19 @@ function resetElement(target) {
 }
 $(function(){
     $('.btn_comment').click(function(){
-        displayForm();
+        focusForm();
     });
 })
-document.getElementById('form-cancel').addEventListener('click', function(e) {
-    document.getElementById('form-ctr').style.display = 'none';
-});
-function displayForm() {
-    // Display the form.
-    var formCtr = document.getElementById('form-ctr')
-    formCtr.style.display = 'block';
+
+function focusForm() {
     var formText = document.getElementById('form-text');
     formText.focus();
-
-    
 }
 
+
 if (window.location.search.indexOf('action=comment') !== -1) {
-    // Show the 'this is true' box.
-    displayForm();
+    // focus comment box
+    focusForm();
 }
 
 </script>

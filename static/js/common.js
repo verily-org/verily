@@ -106,6 +106,16 @@ var validateFormTitle = exports.validateFormTitle = common.validateFormTitle = f
     callback(error, value);
 };
 
+var validateComment = exports.validateComment = common.validateComment = function(value, callback) {
+    var error = null;
+
+    if (value.length <= 3) {
+        error = 'write some more!';
+    }
+
+    callback(error, value);
+};
+
 // Used at client and server side.
 var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validateDateTimeOccurred = function(value, elemsParent, elemsIsArray, callback) {
     var error = null;

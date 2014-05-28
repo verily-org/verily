@@ -405,8 +405,13 @@ fa.breadcrumb {
 }
 .twitter-share-button {
     margin-top: 11px;
+    height:31px;
 }
 
 .comments-content{
     margin-top:20px;
+}
+
+#widget{
+    padding-bottom: 20px !important;
 }

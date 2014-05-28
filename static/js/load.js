@@ -7,10 +7,16 @@ $(function(){
         console.log(e);
         
         var fragment = $(e.currentTarget).data('fragment');
-        history.pushState('', document.title, window.location.pathname + '?action=' + fragment);
+        if(fragment != undefined){
+            history.pushState('', document.title, window.location.pathname + '?action=' + fragment);
+        }
+        else{
+            history.pushState('', document.title, window.location.pathname);
+        }
         
         $('#login-register').modal('show');
         e.stopImmediatePropagation();
+        return false;
     });
 });
 

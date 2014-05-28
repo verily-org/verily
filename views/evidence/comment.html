@@ -1,14 +1,39 @@
 {% set type = 'comment' %}
 
-<div id="form-ctr" class="well form" style="display: none;">
+<div id="form-ctr" class="well form">
     <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
 
     <form id="create-answer-comment" class="post-form" role="form" action="/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/{{ answer.id }}/comments" method="POST" enctype="multipart/form-data">
 
         {% include '../post/comment_form.html' %}
     
-        <button id="submit" type="submit" class="btn btn-primary">Submit Comment</button>
-        <input type="reset" id="form-cancel" class="btn btn-default pull-right" value="Cancel">
+        <button id="submit" type="submit" class="btn btn-sm btn-primary {% if !user %} user-required-action{% endif %}">Submit Comment</button>
     </form>
 </div>
+
+<script type="text/javascript">
+    $(function(){
+        var label = $('#form-text').prev();
+        var originalHtml = label.html();
+       $('#create-answer-comment').submit( function(e){
+            validateComment($('#form-text').val(), function(error, value){
+                if(error){
+                    label.html(originalHtml + ' &ndash; ' + error);
+                    $('#form-text').parent('div').addClass('has-error has-feedback');
+                    e.preventDefault();
+                    return false;
+                }
+            });
+       });
+
+        document.getElementById('form-text').addEventListener('keyup', function(e) {
+            validateComment($('#form-text').val(), function(error, value){
+                if(!error){
+                    label.html(originalHtml);
+                    $('#form-text').parent('div').removeClass('has-error has-feedback');
+                }
+            });
+        });
+    });
+</script>
 
