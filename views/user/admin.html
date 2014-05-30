@@ -104,9 +104,7 @@
 		<div class="col-sm-2">
 			<select multiple class="form-control" name="admin" size="10" multiple="multiple" id='admin' style="width: 165px">
 				{% for admin_user in admins %}
-					{% if admin_user == 'Admin' %}
-						<option value="{{ admin_user }}" disabled>{{ admin_user }}</option>
-					{% endif %}
+						<option value="{{ admin_user }}" {% if admin_user == 'Admin' %} disabled {% endif %}>{{ admin_user }}</option>
 				{% endfor %}
 			</select>
 		</div>
