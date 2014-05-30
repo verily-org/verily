@@ -1,0 +1,131 @@
+{% set type = 'user' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<script type="text/javascript" src="/static/js/setUsers.js"></script>
+<script type="text/javascript" src="/static/js/search.js"></script>
+
+<form action="/admin" method="POST" onsubmit="finalPlace('.', 'basic', 'basics', 'editor', 'editors', 'admin', 'admins');">
+	<input type="hidden" name="basics" id="basics">
+	<input type="hidden" name="editors" id="editors">
+	<input type="hidden" name="admins" id="admins">
+
+
+<div class="container" style="padding-bottom:10px;">
+	<div class="row" style="padding-bottom:10px;">
+		<div class="col-sm-2">
+			<span class="label label-info">Basic Users</span>
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-2">
+			<span class="label label-info">Editors</span>
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-2">
+			<span class="label label-info">Administrators</span>
+		</div>
+	</div>
+
+	<div class="row" style="padding-bottom:10px;">
+		<div class="col-sm-2">
+			<input type="text" id="seachBasic" class="form-control" placeholder="Search Basic User" onkeyup="search(this.value, 'basic')">
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-2">
+			<input type="text" id="searchEditor" class="form-control" placeholder="Search Editor" onkeyup="search(this.value, 'editor')">
+		</div>
+		<div class="col-sm-1">
+			
+		</div>
+		<div class="col-sm-2">
+			<input type="text" id="searchAdmin" class="form-control" placeholder="Search Administrator" onkeyup="search(this.value, 'admin')">
+		</div>	
+	</div>
+
+	<div class="row">
+		<div class="col-sm-2">
+			<select multiple class="form-control" name="basic" size="10" multiple="multiple" id='basic' style="width: 165px">
+				{% for basic_user in basics %}
+					<option value="{{ basic_user }}">{{ basic_user }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-sm-1">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-1">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.basic, this.form.editor);" >
+							<span class="glyphicon glyphicon-arrow-right"></span>
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-1">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.editor, this.form.basic);" >
+							<span class="glyphicon glyphicon-arrow-left"></span>
+						</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-2">
+			<select multiple class="form-control" name="editor" size="10" multiple="multiple" id='editor' style="width: 165px">
+				{% for editor_user in editors %}
+					<option value="{{ editor_user }}">{{ editor_user }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-sm-1">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-1">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.editor, this.form.admin);" >
+							<span class="glyphicon glyphicon-arrow-right"></span>
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-1">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.admin, this.form.editor);" >
+							<span class="glyphicon glyphicon-arrow-left"></span>
+						</button>	
+					</div>
+				</div>
+			</div>	
+		</div>
+		<div class="col-sm-2">
+			<select multiple class="form-control" name="admin" size="10" multiple="multiple" id='admin' style="width: 165px">
+				{% for admin_user in admins %}
+					{% if admin_user == 'Admin' %}
+						<option value="{{ admin_user }}" disabled>{{ admin_user }}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+		</div>
+	</div>	
+</div>
+
+
+<div class="row">
+	<div class="col-sm-2">
+		<div class="container">
+			<button type="submit" class="btn btn-primary btn-lg centre-when-viewport-narrowed">Submit</button>
+		</div>
+	</div>
+	{% if submitMessage %}
+		<div class="col-sm-4">
+				<div class="alert alert-success">{{ submitMessage }}</div>
+		</div>
+	{% endif %}
+</div>
+</form>
+
+{% endblock %}
