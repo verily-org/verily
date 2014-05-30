@@ -102,6 +102,9 @@
                         {% if user %}
                             <li><a href="/user">{{user.name}}</a></li>
                             <li><a href="/logout">Logout</a></li>
+							{% if userCan('assign roles') %}
+								<li><a href="/admin">Assign Roles</a></li>
+							{% endif %}
                         {% else %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>

@@ -136,6 +136,7 @@ module.exports = function (suppressLogs) {
                     emitter.emit('model-synced');
                     if (!suppressLogs) {
                         console.logger.info("Model synchronised");
+                        createAdmin(db.models.user, db.models.local);
                     }
                 });
             });
@@ -170,4 +171,36 @@ module.exports = function (suppressLogs) {
     //    console.logger.info('Server stopped.');
     //    process.exit(1);
     //});
+
+    var createAdmin = function (User, Local) {
+        User.exists({name: 'Admin'}, function (err, exists) {
+            if (err) {throw err;}
+            if (!exists) {
+                User.create([{
+                    name: 'Admin',
+                    role: 'admin'
+                }], function (err, u_created) {
+                    if (err) {throw err;}
+                    var admin = u_created[0];
+                    Local.create([{
+                        email: 'Admin'
+                    }], function (err, l_created) {
+                        if (err) {throw err;}
+                        var local = l_created[0];
+                        local.password = local.generateHash('1234');
+                        local.save(function (err) {
+                            if (err) {throw err;}
+                            admin.setLocal(local, function (err) {
+                                if (err) {throw err;}
+                                console.log('Admin user has been created.');
+                            });
+                        });
+                    });
+                });
+            } else {
+                console.log('Admin user already exists.');
+            }
+        });
+    }
+
 };
