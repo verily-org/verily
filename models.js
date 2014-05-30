@@ -190,7 +190,7 @@ module.exports = function (db, cb) {
             },
             role: {
                 type: 'enum',
-                values: ['editor', 'basic', 'admin']
+                values: ['editor', 'simple', 'admin']
             }
     },{validations: {
         name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],

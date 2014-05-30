@@ -110,7 +110,7 @@ var getRoles = function (model, cb) {
             for (var i = 0; i < users.length; i++) {
                 role = users[i].role;
                 switch (role) {
-                    case 'basic':
+                    case 'simple':
                         basics.push(users[i].name);
                         break;
                     case 'editor':
@@ -172,8 +172,8 @@ var setRoles = function (req, res) {
             model.find({name: item}, function (err, result) {
                 var user = result[0];
                 if (user) {
-                    if (user.role !== 'basic') {
-                        user.role = 'basic';
+                    if (user.role !== 'simple') {
+                        user.role = 'simple';
                         user.save(function (err) {
                             if (err) {
                                 generic.genericErrorHandler(req, res, err); 
