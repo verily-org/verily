@@ -3,6 +3,7 @@ var enums = require('../enums');
 var swig = require('swig');
 var async = require('async');
 var passport = require('passport');
+var role = require('../lib/roles').user;
 require('../lib/passport')(passport);
 
 exports.profile = function (req, res) {
@@ -93,3 +94,226 @@ exports.facebookAuthenticate = passport.authenticate('facebook', {
     successRedirect : 'back', // redirect to the secure profile section
     failureRedirect : '/login', // redirect back to the signup page if there is an error
 });
+
+var isAdmin = role.can('assign roles');
+
+var getRoles = function (model, cb) {
+    var basics = [];
+    var editors = [];
+    var admins = [];
+    var role;
+
+    model.find({}, 'name', function (err, users) {
+        if (err) {
+            cb(err, null, null, null);
+        } else {
+            for (var i = 0; i < users.length; i++) {
+                role = users[i].role;
+                switch (role) {
+                    case 'simple':
+                        basics.push(users[i].name);
+                        break;
+                    case 'editor':
+                        editors.push(users[i].name);
+                        break;
+                    case 'admin':
+                        admins.push(users[i].name);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            cb(null, basics, editors, admins);
+        }
+    });   
+};
+
+var adminPage = function (req, res) {
+    getRoles(req.models.User, function (err, basics, editors, admins) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err); 
+        } else {
+            res.render('user/admin', {
+                page: {
+                    title: 'Administrator'
+                },
+                //user: req.user,
+                basics: basics,
+                editors: editors,
+                admins: admins
+            });   
+        }
+    });
+};
+
+exports.getAdminPage = [isAdmin, adminPage];
+
+
+
+var setRoles = function (req, res) {
+    var basics = req.body.basics.split(".");
+    var editors = req.body.editors.split(".");
+    var admins = req.body.admins.split(".");
+    var model = req.models.User;
+
+
+    if (basics.indexOf('Admin') !== -1 || editors.indexOf('Admin') !== -1) {
+        res.render('user/admin', {
+            page: {
+                title: 'Administrator'
+            },
+            basics: basics,
+            editors: editors,
+            admins: admins,
+            submitMessage: 'You cannot move the Admin user to another column!'
+        });  
+    } else {
+        var setBasic = function (item, callback) {
+            model.find({name: item}, function (err, result) {
+                var user = result[0];
+                if (user) {
+                    if (user.role !== 'simple') {
+                        user.role = 'simple';
+                        user.save(function (err) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err); 
+                                callback(err);
+                            }
+                            callback();
+                        });
+                    } else {callback(); }
+                } else {callback(); }
+                
+            });  
+        };
+
+        var setEditor = function (item, callback) {
+            model.find({name: item}, function (err, result) {
+                var user = result[0];
+                if (user) {
+                    if (user.role !== 'editor') {
+                        user.role = 'editor';
+                        user.save(function (err) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err);
+                                callback(err);
+                            }
+                            callback();
+                        });
+                    } else { callback(); }
+                } else {callback(); }
+                
+            });  
+        };
+
+        var setAdmin = function (item, callback) {
+            model.find({name: item}, function (err, result) {
+                var user = result[0];
+                if (user) {
+                    if (user.role !== 'admin') {
+                        user.role = 'admin';
+                        user.save(function (err) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err);
+                                callback(err);
+                            }
+                            callback();
+                        });
+                    } else {
+                        callback();
+                    }
+                } else {
+                    callback();
+                }
+                
+            });  
+        };
+
+        async.each(basics, setBasic, function (err) {
+            if (err) {generic.genericErrorHandler(req, res, err); }
+            async.each(editors, setEditor, function (err) {
+                if (err) {generic.genericErrorHandler(req, res, err); }
+                async.each(admins, setAdmin, function (err) {
+                    if (err) {generic.genericErrorHandler(req, res, err); }
+                    getRoles(req.models.User, function (err, basics, editors, admins) {
+                        if (err) {
+                            generic.genericErrorHandler(req, res, err); 
+                        } else {
+                            res.render('user/admin', {
+                                page: {
+                                    title: 'Administrator'
+                                },
+                                //user: req.user,
+                                basics: basics,
+                                editors: editors,
+                                admins: admins,
+                                submitMessage: 'Your changes have been submitted!'
+                            });   
+                        }
+                    });
+                });
+            });
+        });
+    }
+};
+
+exports.changeRoles = [isAdmin, setRoles];
+
+
+exports.passChangeView = function (req, res) {
+    if (req.user) {
+        res.render('user/change-pass', {
+            page: {
+                title: 'Change Password'
+            }
+        });    
+    } else {
+        res.redirect('/login');
+    }
+};
+
+exports.passChange = function (req, res) {
+    if (req.user) {
+        var user = req.user,
+        oldPassword = req.body.old_password,
+        newPassword = req.body.new_password,
+        confirmPassword = req.body.confirm_password;
+        var message = '';
+
+        if (newPassword !== confirmPassword) {
+            res.render('user/change-pass', {
+                page: {
+                    title: 'Change Password'
+                }, message: 'The new passwords do not match!'
+            });    
+        } else {
+            user.getLocal(function (err, local) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                }
+                if (!local.validPassword(oldPassword)) {
+                    res.render('user/change-pass', {
+                        page: {
+                            title: 'Change Password'
+                        }, message: 'The password is wrong.'
+                    });    
+                } else {
+                    local.password = local.generateHash(newPassword);
+                    local.save(function (err) {
+                        if (err) {
+                            generic.genericErrorHandler(req, res, err);
+                        } 
+                        res.render('user/change-pass', {
+                            page: {
+                                title: 'Change Password'
+                            }, messageCorrect: 'Your password has been changed!'
+                        });
+                    });
+                }
+            });    
+        }       
+    } else {
+        res.redirect('/login');
+    }
+
+};
