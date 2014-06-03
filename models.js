@@ -26,6 +26,9 @@ module.exports = function (db, cb) {
         targetYoutubeVideoId: {
             type: 'text'
         },
+        targetVideoUrl: {
+            type: 'text'
+        },
         targetDateTimeOccurred: {
             type: 'date',
             time: true
@@ -202,7 +205,6 @@ module.exports = function (db, cb) {
                 },
                 //Currently not being used but can be used for a better maintainability
                 getDisplayName: function(){
-                    console.log('asdasd');
                     return this.name;
                 }
             }

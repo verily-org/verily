@@ -1,4 +1,5 @@
 {% extends '../layout.html' %}
+{% import '../macros/_generic.html' as generic_macro %}
 
 {% block breadcrumb %}
     <li>
@@ -206,8 +207,19 @@
 
 
                         {{ question.post.text }}
-                    
-                        {% if question.post.targetImage %}
+
+
+
+                        {% if question.post.targetVideoUrl %}
+                            <div id="video-wrapper-{{ question.post.id }}" class="video-wrapper video-wrapper-ajax"
+                                 data-video-url="{{ question.post.targetVideoUrl }}">
+                                <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+                                <div class="video-container" style="display: none"></div>
+                                <div class="video-error-message alert alert-warning" style="display: none">
+                                    Video link: <a href="{{ question.post.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.post.targetVideoUrl }}</a>.
+                                </div>
+                            </div>
+                        {% elseif question.post.targetImage %}
                             <div class="row">
                                 <img src="{{ question.post.targetImage }}" class="img-responsive center-block">
                             </div>
@@ -230,7 +242,7 @@
     {% endfor %}
 </div>
 
-
+{{ generic_macro.video_html_script() }}
 
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
 <script type="text/javascript">

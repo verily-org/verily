@@ -119,7 +119,7 @@ exports.create = function (model, data, req, cb) {
                         title: req.body.title,
                         text: req.body.text,
                         targetImage: targetImagePath,
-                        targetYoutubeVideoId: req.body.targetYoutubeVideoId,
+                        targetVideoUrl: req.body.targetVideoUrl,
                         targetLocality: req.body.targetLocality,
                         targetLat: req.body.targetLat,
                         targetLong: req.body.targetLong,

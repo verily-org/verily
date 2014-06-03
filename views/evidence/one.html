@@ -109,8 +109,17 @@
         </div>
     {% endif %}
     {% if answer.post.targetYoutubeVideoId %}
-        <div class="video-answers">
+        <div class="video-container">
             <iframe width="323" height="200" src="//www.youtube.com/embed/{{ answer.post.targetYoutubeVideoId }}?rel=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+    {% endif %}
+    {% if answer.post.targetVideoHtml %}
+        <div class="video-container">
+            {{ answer.post.targetVideoHtml | raw }}
+        </div>
+    {% elseif answer.post.VideoUrlNotEmbeddable %}
+        <div class="video-error-message alert alert-warning text-center" >
+            Video link: <br/><a href="{{ answer.post.VideoUrlNotEmbeddable }}" target="_blank">{{ answer.post.VideoUrlNotEmbeddable }}</a>
         </div>
     {% endif %}
 </div>

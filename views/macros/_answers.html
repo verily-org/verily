@@ -1,3 +1,4 @@
+
 {% macro vote_script() %}
 
     <script type="text/javascript">
@@ -27,7 +28,6 @@
             {% endif %}
         });
         var update_votes = function(answer, element){
-            console.log("hello update");
             element.parents('.answer-buttons').find('.upvote_count').html(answer.post.upvoteCount);
             element.parents('.answer-buttons').find('.downvote_count').html(answer.post.downvoteCount);
             element.parents('.answer-buttons').find('.btn_downvote').removeClass('active').removeClass('disabled');
@@ -37,6 +37,7 @@
     </script>
 {% endmacro %}
 {% macro answers_embeded(answers, crisis_id) %}
+    {% import '_generic.html' as generic_macros %}
     {{ vote_script() }}
     {% for answer in answers %}
         <div class="col-sm-4">
@@ -82,8 +83,19 @@
                     {% endif %}
 
                     {% if answer.post.targetYoutubeVideoId %}
-                        <div class="video-answers">
+                        <div class="video-container">
                             <iframe width="323" height="200" src="//www.youtube.com/embed/{{ answer.post.targetYoutubeVideoId }}?rel=0" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    {% endif %}
+
+                    {% if answer.post.targetVideoUrl %}
+                        <div id="video-wrapper-{{ answer.post.id }}" class="video-wrapper video-wrapper-ajax"
+                             data-video-url="{{ answer.post.targetVideoUrl }}">
+                            <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+                            <div class="video-container" style="display: none"></div>
+                            <div class="video-error-message alert alert-warning" style="display: none">
+                                Video link: <a target="_blank"></a>.
+                            </div>
                         </div>
                     {% endif %}
                     
@@ -104,6 +116,7 @@
             </div>
         </div>
     {% endfor %}
+    {{ generic_macros.video_html_script() }}
 {% endmacro %}
 {% macro evidence_actions(crisis_id, question_id, answer) %}
 <div class="answer-buttons">

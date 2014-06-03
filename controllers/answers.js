@@ -1,6 +1,7 @@
 // Controller for Answer.
 var generic = require('./generic');
 var enums = require('../enums');
+var oembed = require('oembed');
 
 var async = require('async');
 var role = require('../lib/roles').user;
@@ -17,21 +18,24 @@ exports.get = function (req, res) {
                 if (!err && question) {
                     generic.get(req.models.Answer, req.params.answer_id, reqIfNoneMatch, function (err, answer) {
                         if (!err && answer) {
-        //                    Used for caching
-        //                    res.set(enums.eTag, answer.updated);
                             if (req.user){var user = req.user; }
                             answer.getComments(function(err){
-                                //Sort comments in reverse chronological order
-                                answer.comments.sort(function(a,b){return b.comment.date - a.comment.date });
-                                res.render('evidence/one', {
-                                    crisis: crisis,
-                                    question: question,
-                                    answer: answer,
-                                    page: {
-                                        title: answer.post.title
-                                    },
-                                    user: user
-                                });
+                                if(answer.post.targetVideoUrl){
+
+                                    oembed.fetch(answer.post.targetVideoUrl, {}, function(err, result){
+
+                                        if(!err){
+                                            answer.post.targetVideoHtml = result.html;
+                                        }else{
+                                            answer.post.VideoUrlNotEmbeddable = answer.post.targetVideoUrl;
+                                        }
+
+                                        oneAnswerResponse(res, crisis, question, answer, user);
+                                    });
+                                }
+                                else{
+                                    oneAnswerResponse(res, crisis, question, answer, user);
+                                }
                             });
                         }else {
                             generic.genericErrorHandler(req, res, err);
@@ -47,6 +51,19 @@ exports.get = function (req, res) {
         }
     });
 };
+function oneAnswerResponse(res, crisis, question, answer, user){
+    //Sort comments in reverse chronological order
+    answer.comments.sort(function(a,b){return b.comment.date - a.comment.date });
+    res.render('evidence/one', {
+        crisis: crisis,
+        question: question,
+        answer: answer,
+        page: {
+            title: answer.post.title
+        },
+        user: user
+    });
+}
 
 exports.head = function (req, res) {
 
@@ -289,6 +306,18 @@ exports.downvote = function (req, res) {
             });
         } else {
             generic.genericErrorHandler(req, res, err);
+        }
+    });
+};
+exports.getVideoHtml = function (req, res) {
+    oembed.fetch(req.body.videoUrl, {}, function(err, result){
+
+        if(!err){
+            res.status(200);
+            res.json(result);
+        }else{
+            res.status(200);
+            res.json(err);
         }
     });
 };

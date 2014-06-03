@@ -3,6 +3,7 @@ var enums = require('../enums');
 var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
+var oembed = require('oembed');
 
 var common = require('../static/js/common');
 
@@ -153,6 +154,7 @@ var getQuestion = function (req, addView, callback) {
                                targetLong: question.post.targetLong,
                                targetImage: question.post.targetImage,
                                targetYoutubeVideoId: question.post.targetYoutubeVideoId,
+                               targetYoutubeVideoUrl: question.post.targetYoutubeVideoUrl,
                                targetDateTimeOccurred: question.post.targetDateTimeOccurred,
                                relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
                                date: question.post.date,
@@ -219,21 +221,38 @@ exports.get = function (req, res) {
                 
                 // Set the ETag header.
                 //res.set(enums.eTag, question.updated);
-                
-                res.status(200);
                 if (req.user){var user = req.user; }
-                res.render('question/one', {
-                    crisis: crisis,
-                    question: question,
-                    page: {
-                        title: question.title
-                    },
-                    user: user
-                });
+                if(question.post.targetVideoUrl){
+                    oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
+
+                        if(!err){
+                            question.post.targetVideoHtml = result.html;
+                        }else{
+                            question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
+                        }
+
+
+                        oneQuestionResponse(res, crisis, question, user);
+                    });
+                }
+                else{
+                    oneQuestionResponse(res, crisis, question, user);
+                }
             }
         });
     });
 };
+function oneQuestionResponse(res, crisis, question, user){
+    res.status(200);
+    res.render('question/one', {
+        crisis: crisis,
+        question: question,
+        page: {
+            title: question.title
+        },
+        user: user
+    });
+}
 exports.head = function (req, res) {
 
     // ETag support.

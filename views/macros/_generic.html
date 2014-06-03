@@ -1,0 +1,52 @@
+{% macro video_html_script() %}
+
+    <script type="text/javascript">
+        //This script will get each video-wrapper class in the DOM and using its data-video-url attribute
+        //will try to retrieve the html of the video and display it
+        $(function(){
+            $('.video-wrapper-ajax').each(function(){
+                getVideoAjax($(this).data('video-url'), this);
+            });
+        });
+
+    </script>
+    {{ video_html_ajax_functions() }}
+{% endmacro %}
+
+{% macro video_html_ajax_functions() %}
+
+    <script type="text/javascript">
+        //Using ajax, this functions are used to retrieve the html needed to display a video from a URL
+        //The video_wrapper must be parent of divs with classes fa-spin, video-container and video-error-message
+        function getVideoAjax(target_url, video_wrapper){
+            $(video_wrapper).show();
+            $(video_wrapper).find('.video-spinner').show();
+            $(video_wrapper).find('.video-container').hide();
+            $(video_wrapper).find('.video-error-message').hide();
+            $.post('/getVideoHtml', {videoUrl: target_url},
+                    function(result){
+                        if(result.html){
+                            var video_html = result.html;
+
+                            update_container(video_html, $(video_wrapper));
+                        }
+                        else{
+                            video_error_message(target_url, $(video_wrapper));
+                        }
+                    }).fail(function(){
+                        video_error_message( target_url, $(video_wrapper));
+                    });
+        }
+        var update_container = function(video_html, video_wrapper){
+            video_wrapper.find('.video-spinner').hide();
+            video_wrapper.find('.video-container').show();
+            video_wrapper.find('.video-container').html(video_html);
+        }
+        var video_error_message = function( target_url, video_wrapper){
+            video_wrapper.find('.video-spinner').hide();
+            video_wrapper.find('.video-container').hide();
+            video_wrapper.find('.video-error-message a').html(target_url).attr('href', target_url);
+            video_wrapper.find('.video-error-message').show();
+        }
+    </script>
+{% endmacro %}

@@ -5,7 +5,7 @@
 <!-- question -->
 
 
-<div class="page-header">
+<div class="page-header clearfix">
     <div class="row">
         <div class="col-sm-5">
             <div>
@@ -148,16 +148,19 @@
             </div>
         </div>
         <!-- / small buttons -->
-        
 
-        
-        
         <!-- video -->
-        {% if question.post.targetYoutubeVideoId %}
-        <div class="video">
-        <iframe width="323" height="200" src="//www.youtube.com/embed/{{ question.post.targetYoutubeVideoId }}?rel=0" frameborder="0" allowfullscreen></iframe>
-        </div>
+    <div class="video" >
+        {% if question.post.targetVideoHtml %}
+            <div class="video-container">
+                {{ question.post.targetVideoHtml | raw }}
+            </div>
+        {% elseif question.post.VideoUrlNotEmbeddable %}
+            <div class="video-error-message alert alert-warning" >
+                Video link: <br/><a href="{{ question.post.VideoUrlNotEmbeddable }}" target="_blank">{{ question.post.VideoUrlNotEmbeddable }}</a>
+            </div>
         {% endif %}
+    </div>
         <!-- / video -->
         
         
@@ -176,7 +179,7 @@
     
 </div>
 
-<h3>Responses</h3>
+<h3>{{ question.answers | length }} Responses</h3>
 <div class="row question-answers">
     {{ answers_macro.answers_embeded(question.answers, crisis.id) }}
 </div>

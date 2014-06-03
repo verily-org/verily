@@ -1,14 +1,61 @@
-<div class="form-group">
-    <label>YouTube Video</label>. You need to have a licence to embed the video
+{% import '../macros/_generic.html' as generic_macros %}
+<div class="form-group clearfix">
+    <label class="control-label">Video</label>. You need to have a licence to embed the video
     <br>
     <span class="text-muted">
-        Enter the Video ID, e.g. <code>8aNiTigvut0</code> for <a href="http://www.youtube.com/watch?v=8aNiTigvut0">http://www.youtube.com/watch?v=8aNiTigvut0</a>
+        Note: if the video is not a valid Youtube or Vimeo video, a link will be displayed
     </span>
 
-    <div id="form-video-link-ctr">
-        <span class="sr-only">YouTube Video ID</span>
-        <input type="text" class="form-control" id="form-video-youtube-id" name="targetYoutubeVideoId" placeholder="YouTube Video ID">
+    <div id="form-video-link-ctr" class="form-video-link-ctr">
+        <span class="sr-only">Video URL</span>
+        <input type="text" class="form-control" id="form-video-url" name="targetVideoUrl" placeholder="Video URL">
+        <div class="btn btn-primary btn-video-validate">Validate</div>
     </div>
-    
+    <div class="video video-wrapper" style="display:none;">
+        <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+        <div class="video-container"></div>
+        <div class="video-error-message" style="display: none">
+            Video not found, the following message will be displayed:
+            <div class="alert alert-warning">
+                Video link: <a target="_blank"></a>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            var video_ctr = $('#form-video-link-ctr');
+            var label = video_ctr.prev().prev().prev();
+            var originalHtml = label.html();
+            $('.btn-video-validate').click(function(){
+                var video_wrapper = $(this).parent('div.form-video-link-ctr').next('div.video-wrapper');
+                var url_text = $('#form-video-url').val();
+                if(url_text.length < 3){
+                    showError(label, video_ctr, originalHtml, 'provide a URL!');
+                    return;
+                }
+                validateURL(url_text, function(error, value){
+                    if(error){
+                        showError(label, video_ctr, originalHtml, error);
+                        return;
+                    }
+                    else{
+                        hideError(label, video_ctr, originalHtml);
+                        getVideoAjax(url_text, video_wrapper);
+                    }
+                });
+
+            });
+        });
+        function showError(label, control, originalHtml, error){
+            label.html(originalHtml + ' &ndash; ' + error);
+            control.parent('div').addClass('has-error has-feedback');
+        }
+        function hideError(label, control, originalHtml){
+            label.html(originalHtml);
+            control.parent('div').removeClass('has-error has-feedback');
+        }
+
+    </script>
+    {{ generic_macros.video_html_ajax_functions() }}
 
 </div>
