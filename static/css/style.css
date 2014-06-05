@@ -166,7 +166,7 @@ fa.breadcrumb {
         margin-top: 3em !important;
     }
     .video{
-        width: 100% !important;;
+        widows: 100% !important;;
     }
 }
 
@@ -279,7 +279,6 @@ fa.breadcrumb {
 .video {
     margin-top: 1em;
     width:50%;
-    float: right
 }
 
 .video-wrapper {
