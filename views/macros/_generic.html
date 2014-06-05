@@ -50,3 +50,24 @@
         }
     </script>
 {% endmacro %}
+
+{% macro rearrange_children_script() %}
+
+<script type="text/javascript">
+    var rearrange_children = function(parent, sort_function){
+//        parent.fadeOut('fast', function(){
+        var children = [];
+        parent.children('div').each(function(){
+            children.push(this);
+            $(this).remove();
+        });
+        children.sort(sort_function);
+
+        for (var i in children) {
+            parent.append(children[i]);
+        }
+//            parent.fadeIn('slow');
+//        });
+    }
+</script>
+{% endmacro %}

@@ -356,6 +356,7 @@ exports.load_question_extra_fields = function(question, callback){
                     question.getPost(function(err, post){
                         if (!err && answers) {
                             question.importanceCount = question.post.getImportanceCount();
+                            question.popularityCoefficient = getQuestionPopularityCoefficient(question);
                             callback();
                         }
                         else{
@@ -377,8 +378,20 @@ exports.load_question_extra_fields = function(question, callback){
         question.rejectedAnswerCount = question.getRejectedAnswerCount();
         question.supportedAnswerCount = question.getSupportedAnswerCount();
         question.importanceCount = question.post.getImportanceCount();
+        question.popularityCoefficient = getQuestionPopularityCoefficient(question);
         callback();
     }
+}
+exports.load_answers_extra_fields = function(answer, callback){
+    //item.post.getUser(function(a,d){});
+    this.load_post_ratings_count(answer, function(err){
+        if(!err){
+            answer.popularityCoefficient = getAnswerPopularityCoefficient(answer);
+        }
+        else{
+            callback(err);
+        }
+    });
 }
 exports.load_post_ratings_count = function(item, callback){
     //item.post.getUser(function(a,d){});
@@ -401,3 +414,13 @@ exports.getUserAccounts = function (user, cb) {
     }
 
 };
+
+function getQuestionPopularityCoefficient(question){
+    var popularityCoefficient = question.importanceCount + question.rejectedAnswerCount + question.supportedAnswerCount;
+    return popularityCoefficient;
+}
+
+function getAnswerPopularityCoefficient(answer){
+    var popularityCoefficient = answer.upvoteCount + answer.downvoteCount + answer.importanceCount + answer.comments.length;
+    return popularityCoefficient;
+}
