@@ -8,7 +8,7 @@
 
     <div id="form-video-link-ctr" class="form-video-link-ctr">
         <span class="sr-only">Video URL</span>
-        <input type="text" class="form-control" id="form-video-url" name="targetVideoUrl" placeholder="Video URL">
+        <input type="text" class="form-control" id="form-video-url" name="targetVideoUrl" placeholder="Video URL" value="{{ post.targetVideoUrl | default('') }}">
         <div class="btn btn-primary btn-video-validate">Validate</div>
     </div>
     <div class="video video-wrapper" style="display:none;">

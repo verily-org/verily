@@ -106,7 +106,7 @@ var editQuestion = function (req, res) {
                 if (req.user){var user = req.user; }
                 res.render('question/edit', {
                     crisis: crisis,
-                    post: question,
+                    post: question.post,
                     question: {
                         id: question.id
                     },
@@ -317,7 +317,7 @@ exports.new = function (req, res) {
 };
 
 // Update question
-exports.update = function (req, res) {
+var update = function (req, res) {
     var crisis_id = req.params.crisis_id;
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
@@ -340,6 +340,11 @@ exports.update = function (req, res) {
     });
 
 };
+
+
+var checkRole = role.can('edit question');
+
+exports.update = [checkRole, update];
 
 // Mark question as Importante
 exports.markImportant = function (req, res) {

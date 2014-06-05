@@ -24,7 +24,7 @@ exports.route = function (app, controllers, doc) {
     route('get', specific + '/edit', 'edit', 'Edit View; View to edit question');
 
     // API endpoint to update question
-    route('put', specific, 'update', 'Update; Update question');
+    route('post', specific, 'update', 'Update; Update question');
 
     route('delete', specific, 'remove', 'Delete; Delete question');
 
