@@ -382,24 +382,26 @@ exports.load_question_extra_fields = function(question, callback){
         callback();
     }
 }
-exports.load_answers_extra_fields = function(answer, callback){
-    //item.post.getUser(function(a,d){});
-    this.load_post_ratings_count(answer, function(err){
-        if(!err){
-            answer.popularityCoefficient = getAnswerPopularityCoefficient(answer);
-        }
-        else{
-            callback(err);
-        }
-    });
-}
-exports.load_post_ratings_count = function(item, callback){
+var load_post_ratings_count_function = function(item, callback){
     //item.post.getUser(function(a,d){});
     item.post.getRatings(function(err, ratings){
         if (!err && ratings) {
             item.post.upvoteCount = item.post.getUpvoteCount();
             item.post.downvoteCount = item.post.getDownvoteCount();
             item.post.importanceCount = item.post.getImportanceCount();
+            callback();
+        }
+        else{
+            callback(err);
+        }
+    });
+}
+exports.load_post_ratings_count = load_post_ratings_count_function;
+exports.load_answers_extra_fields = function(answer, callback){
+    //item.post.getUser(function(a,d){});
+    load_post_ratings_count_function(answer, function(err){
+        if(!err){
+            answer.popularityCoefficient = getAnswerPopularityCoefficient(answer);
             callback();
         }
         else{
@@ -421,6 +423,6 @@ function getQuestionPopularityCoefficient(question){
 }
 
 function getAnswerPopularityCoefficient(answer){
-    var popularityCoefficient = answer.upvoteCount + answer.downvoteCount + answer.importanceCount + answer.comments.length;
+    var popularityCoefficient = answer.post.upvoteCount + answer.post.downvoteCount + answer.post.importanceCount + answer.comments.length;
     return popularityCoefficient;
 }

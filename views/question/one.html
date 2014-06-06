@@ -1,5 +1,6 @@
 {% extends '../layout.html' %}
 {% import '../macros/_answers.html' as answers_macro %}
+{% import '../macros/_generic.html' as generic_macro %}
 
 {% block content %}
 <!-- question -->
@@ -167,6 +168,7 @@
     </div>
 <!-- / question -->
 
+
 <!-- create evidence -->
 {% include '../evidence/create.html' %}
 <!-- / create evidence -->
@@ -180,13 +182,25 @@
 </div>
 
 <h3>{{ question.answers | length }} Responses</h3>
+    <div class="row">
+        <div class="pull-right">
+            <label for="select_filter_evidence">View evidence:</label>
+            <select id="select_filter_evidence">
+                <option value="Recent">Recent (most recent first)</option>
+                <option value="Popular">Popular (most popular first)</option>
+                <option value="Upvote">Upvotes</option>
+            </select>
+
+        </div>
+
+    </div>
 <div class="row question-answers">
     {{ answers_macro.answers_embeded(question.answers, crisis.id) }}
 </div>
 
 
 
-
+{{ generic_macro.rearrange_children_script() }}
 <script type="text/javascript">
 // Support/Reject handle
 
@@ -272,9 +286,7 @@ function initActionButtons() {
                 });
     });
 
-    $('.btn_comment').click(function(){
-        window.location = "/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/"+$(this).data("answer-id")+"?action=comment";
-    });
+
 
 }
 
@@ -284,6 +296,33 @@ function initActionButtons() {
         {% else %}
             // $('.action-button-ctr .btn').tooltip();
         {% endif %}
+
+        $('#select_filter_evidence').change(function(){
+            if($('#select_filter_evidence').val() == "Recent"){
+                rearrange_children($('.question-answers'), function(a,b){
+                    return new Date($(b).data('date')) - new Date($(a).data('date'));
+                });
+
+            }
+            else if($('#select_filter_evidence').val() == "Popular"){
+                rearrange_children($('.question-answers'), function(a,b){
+                    return $(b).data('popularity') - $(a).data('popularity') ;
+                });
+            }
+            else if($('#select_filter_evidence').val() == "Upvote"){
+                rearrange_children($('.question-answers'), function(a,b){
+                    return $(b).data('upvotes') - $(a).data('upvotes') ;
+                });
+            }
+
+        });
+        if($('#select_filter_evidence').prop("selectedIndex") != 0){
+            //trigger change if the initial selected index is not 0
+            $('#select_filter_evidence').change();
+        }
+        $("div").on('click', '.btn_comment', function(){
+            window.location = "/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/"+$(this).data("answer-id")+"?action=comment";
+        });
     });
 
 

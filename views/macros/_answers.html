@@ -4,7 +4,7 @@
     <script type="text/javascript">
         $(function(){
             {% if user %}
-            $(".btn_downvote").click(function(){
+            $("div").on('click', '.btn_downvote', function(){
                 var button = $(this);
                 $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
                         function(data){
@@ -14,7 +14,7 @@
                             show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
                         });
             });
-            $(".btn_upvote").click(function(){
+            $("div").on('click', '.btn_upvote', function(){
                 var button = $(this);
                 $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
                         function(data){
@@ -28,6 +28,8 @@
             {% endif %}
         });
         var update_votes = function(answer, element){
+            element.parents('.answer-wrapper').attr('data-upvotes', answer.post.upvoteCount);
+            element.parents('.answer-wrapper').attr('data-popularity', answer.popularityCoefficient);
             element.parents('.answer-buttons').find('.upvote_count').html(answer.post.upvoteCount);
             element.parents('.answer-buttons').find('.downvote_count').html(answer.post.downvoteCount);
             element.parents('.answer-buttons').find('.btn_downvote').removeClass('active').removeClass('disabled');
@@ -39,8 +41,8 @@
 {% macro answers_embeded(answers, crisis_id) %}
     {% import '_generic.html' as generic_macros %}
     {{ vote_script() }}
-    {% for answer in answers %}
-        <div class="col-sm-4">
+    {% for answer in answers | reverse %}
+        <div class="col-sm-4 answer-wrapper" data-date="{{ answer.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ answer.popularityCoefficient }}" data-upvotes="{{ answer.post.upvoteCount }}">
             <div class="panel panel-default question-answer">
                 <div class="question-answer-bar {% if answer.type === 'support' %}label-success{% else %}label-danger{% endif %}">
                     {% if answer.type === 'support' %}

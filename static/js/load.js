@@ -3,8 +3,7 @@
 $(function(){
     // For: buttons and links which action requires a user
     // Prevents action and show a modal instead
-    $('.user-required-action').click(function (e) {
-        console.log(e);
+    $('div').on('click','.user-required-action', function (e) {
         
         var fragment = $(e.currentTarget).data('fragment');
         if(fragment != undefined){

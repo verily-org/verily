@@ -265,7 +265,7 @@ exports.upvote = function (req, res) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
                 if (!err && answer) {
                     require('./ratings').upvote(req, answer.post, function(err, rating){
-                        generic.load_post_ratings_count(answer, function(){
+                        generic.load_answers_extra_fields(answer, function(){
                             if(!err){
                                 res.status(200);
                                 res.json(answer);
@@ -290,7 +290,7 @@ exports.downvote = function (req, res) {
                 if (!err && answer) {
                     answer.getPost(function(err, post){
                         require('./ratings').downvote(req, post, function(err, rating){
-                            generic.load_post_ratings_count(answer, function(){
+                            generic.load_answers_extra_fields(answer, function(){
                                 if(!err){
                                     res.status(200);
                                     res.json(answer);

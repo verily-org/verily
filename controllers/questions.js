@@ -173,7 +173,7 @@ var getQuestion = function (req, addView, callback) {
 
                            // Answers present.
 
-                           async.each(answers, generic.load_post_ratings_count, function (err) {
+                           async.each(answers, generic.load_answers_extra_fields, function (err) {
                                if (err) {
                                    callback(err);
                                } else {
