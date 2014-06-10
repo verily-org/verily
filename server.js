@@ -149,10 +149,11 @@ module.exports = function (suppressLogs) {
         uploadDir: __dirname + '/static/images/submissions-pre'
     }));
     app.use(express.session({ secret: 'cat' }, {maxAge: new Date(Date.now() + 3600000)}));
+    app.use(flash());
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(roles.user.middleware());
-    app.use(flash());
+    
     app.use(app.router);
 
 //    app.listen();
