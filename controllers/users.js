@@ -358,7 +358,7 @@ exports.forgot = function (req, res) {
                 }
 
                 local.resetPasswordToken = token;
-                local.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+                local.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
 
                 local.save(function(err) {
                     done(err, token, local);
