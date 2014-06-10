@@ -163,8 +163,12 @@ module.exports = function (db, cb) {
             }
         }
     ), Local = db.define('local', {
-        email: String,
-        password: String,
+        email: {
+            type: 'text'
+        },
+        password: {
+            type: 'text'
+        },
         resetPasswordToken: {
             type: 'text'
         },
