@@ -5,11 +5,11 @@ async = require('async'),
 passport = require('passport'),
 role = require('../lib/roles').user,
 nodemailer = require('nodemailer'),
-crypto = require('crypto');
+crypto = require('crypto'),
+config = require('../lib/auth');
 require('../lib/passport')(passport);
 
-var mailuser = process.env.SENDGRID_USERNAME;
-var mailpassword = process.env.SENDGRID_PASSWORD;
+var smtpTransport = config.mailer;
 
 var validatePassword = function (password) {
     var re = /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$/;
@@ -331,12 +331,13 @@ exports.forgotView = function (req, res) {
     res.render('user/forgot', {
         page: {
             title: 'Forgotten Password'
-        }
+        }, 
+        error: req.flash('error'),
+        info: req.flash('info')
     });
 };
 
 exports.forgot = function (req, res) {
-
     async.waterfall([
         function(done) {
             crypto.randomBytes(20, function(err, buf) {
@@ -349,11 +350,8 @@ exports.forgot = function (req, res) {
                 var local = locals[0];
                 if (local === undefined) {
                     var error = 'No account with that email address exists.';
-                    res.render('user/forgot', {
-                        page: {
-                            title: 'Forgotten Password'
-                        }, error: error
-                    });
+                    req.flash('error', error);
+                    res.redirect('/forgot'); 
                     return;
                 }
 
@@ -366,13 +364,6 @@ exports.forgot = function (req, res) {
             });
         },
         function(token, local, done) {
-            var smtpTransport = nodemailer.createTransport('SMTP', {
-                service: 'SendGrid',
-                auth: {
-                    user: mailuser,
-                    pass: mailpassword
-                }
-            });
             var mailOptions = {
                 to: local.email,
                 from: 'passwordreset@verily.com',
@@ -383,17 +374,23 @@ exports.forgot = function (req, res) {
                     'If you did not request this, please ignore this email and your password will remain unchanged.\n'
             };
             smtpTransport.sendMail(mailOptions, function(err) {
+                if (err) {
+                    req.flash('error', 'The email could not be sent.');
+                    res.redirect('/forgot'); 
+                    return;
+                }
                 done(err, local, 'done');
             });
         }
         ], function(err, local) {
-            if (err) console.log(err);
+            if (err) {
+                req.flash('info', 'There has been an error');
+                res.redirect('/forgot');
+                return; 
+            };
             var info = 'An e-mail has been sent to ' + local.email + ' with further instructions.';
-            res.render('user/forgot', {
-                page: {
-                    title: 'Forgotten Password'
-                }, info: info
-            }); 
+            req.flash('info', info);
+            res.redirect('/forgot'); 
     });
 };
 
@@ -413,7 +410,9 @@ exports.resetView = function (req, res) {
         res.render('user/reset', {
             page: {
                 title: 'Reset Password'
-            }, token: token
+            }, 
+            token: token,
+            error: req.flash('error')
         });
     });
 };
@@ -428,58 +427,34 @@ exports.reset = function (req, res) {
                 var local = locals[0];
                 if (local === undefined || local.resetPasswordExpires < Date.now()) {
                     var error = 'Password reset token is invalid or has expired.';
-                    res.render('user/forgot', {
-                        page: {
-                            title: 'Forgotten Password'
-                        }, 
-                        error: error,
-                        token: token
-                    });
+                    req.flash('error', error);
+                    res.redirect('/reset/'+token);
                     return;
                 }
 
                 if (password !== confirm) {
                     var error = 'Passwords do not match.';
-                    res.render('user/forgot', {
-                        page: {
-                            title: 'Forgotten Password'
-                        },
-                        error: error,
-                        token:token
-                    });
+                    req.flash('error', error);
+                    res.redirect('/reset/'+token);
                     return;   
                 }
 
                 if (!validatePassword(password)) {
                     var error = 'Password must contain at least one letter, at least one number, no special characters and be longer than six charaters.';
-                    res.render('user/reset', {
-                        page: {
-                            title: 'Forgotten Password'
-                        },
-                        error: error,
-                        token:token
-                    });
+                    req.flash('error', error);
+                    res.redirect('/reset/'+token);
                     return;   
                 }
 
                 local.password = local.generateHash(password);
                 local.resetPasswordToken = undefined;
                 local.resetPasswordExpires = undefined;
-
                 local.save(function(err) {
                     done(err, local);
-                    //res.redirect('/login');
                 });
             });
         },
         function(local, done) {
-            var smtpTransport = nodemailer.createTransport('SMTP', {
-                service: 'SendGrid',
-                auth: {
-                    user: mailuser,
-                    pass: mailpassword
-                }
-            });
             var mailOptions = {
                 to: local.email,
                 from: 'passwordreset@verily.com',
@@ -489,15 +464,31 @@ exports.reset = function (req, res) {
             };
             smtpTransport.sendMail(mailOptions, function(err) {
                 req.flash('success', 'Success! Your password has been changed.');
-                done(err);
+                done(err, local);
             });
         }
-    ], function(err) {
-        res.render('user/forgot', {
-            page: {
-                title: 'Forgotten Password'
-            }, 
-            info: 'Your password has been changed!'
-        });
+    ], function(err, local) {
+        if (err) {
+            req.flash('error', 'Your password did not change.');
+            res.redirect('/reset/'+token);
+        } else {
+            local.getUsers(function (err, users) {
+                if (err) {
+                    req.flash('error', 'Your password did not change.');
+                    res.redirect('/reset/'+token); 
+                } else {
+                    var user = users[0];
+                    req.logIn(user, function (err) {
+                        if (err) {
+                            req.flash('error', 'Your password did not change.');
+                            res.redirect('/reset/'+token); 
+                        } else {
+                            res.redirect('/');
+                        }
+                    });    
+                }
+                
+            });
+        }
     });
 };
