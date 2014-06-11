@@ -269,7 +269,6 @@ var setRoles = function (req, res) {
 
 exports.changeRoles = [isAdmin, setRoles];
 
-
 exports.passChangeView = function (req, res) {
     if (req.user) {
         res.render('user/change-pass', {
@@ -328,167 +327,183 @@ exports.passChange = function (req, res) {
 };
 
 exports.forgotView = function (req, res) {
-    res.render('user/forgot', {
-        page: {
-            title: 'Forgotten Password'
-        }, 
-        error: req.flash('error'),
-        info: req.flash('info')
-    });
+    if (!req.user) {    
+        res.render('user/forgot', {
+            page: {
+                title: 'Forgotten Password'
+            }, 
+            error: req.flash('error'),
+            info: req.flash('info')
+        });
+    } else {
+        res.redirect('/changePass');
+    }
 };
 
 exports.forgot = function (req, res) {
-    async.waterfall([
-        function(done) {
-            crypto.randomBytes(20, function(err, buf) {
-                var token = buf.toString('hex');
-                done(err, token);
-            });
-        },
-        function(token, done) {
-            req.models.Local.find({ email: req.body.email }, function(err, locals) {
-                var local = locals[0];
-                if (local === undefined) {
-                    var error = 'No account with that email address exists.';
-                    req.flash('error', error);
-                    res.redirect('/forgot'); 
-                    return;
-                }
-
-                local.resetPasswordToken = token;
-                local.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
-
-                local.save(function(err) {
-                    done(err, token, local);
+    if (!req.user) { 
+        async.waterfall([
+            function(done) {
+                crypto.randomBytes(20, function(err, buf) {
+                    var token = buf.toString('hex');
+                    done(err, token);
                 });
-            });
-        },
-        function(token, local, done) {
-            var mailOptions = {
-                to: local.email,
-                from: 'passwordreset@verily.com',
-                subject: 'Verily Password Reset',
-                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-                    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                    'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-                    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-            };
-            smtpTransport.sendMail(mailOptions, function(err) {
+            },
+            function(token, done) {
+                req.models.Local.find({ email: req.body.email }, function(err, locals) {
+                    var local = locals[0];
+                    if (local === undefined) {
+                        var error = 'No account with that email address exists.';
+                        req.flash('error', error);
+                        res.redirect('/forgot'); 
+                        return;
+                    }
+
+                    local.resetPasswordToken = token;
+                    local.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
+
+                    local.save(function(err) {
+                        done(err, token, local);
+                    });
+                });
+            },
+            function(token, local, done) {
+                var mailOptions = {
+                    to: local.email,
+                    from: 'passwordreset@verily.com',
+                    subject: 'Verily Password Reset',
+                    text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                        'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                        'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+                };
+                smtpTransport.sendMail(mailOptions, function(err) {
+                    if (err) {
+                        req.flash('error', 'The email could not be sent.');
+                        res.redirect('/forgot'); 
+                        return;
+                    }
+                    done(err, local, 'done');
+                });
+            }
+            ], function(err, local) {
                 if (err) {
-                    req.flash('error', 'The email could not be sent.');
-                    res.redirect('/forgot'); 
-                    return;
-                }
-                done(err, local, 'done');
-            });
-        }
-        ], function(err, local) {
-            if (err) {
-                req.flash('info', 'There has been an error');
-                res.redirect('/forgot');
-                return; 
-            };
-            var info = 'An e-mail has been sent to ' + local.email + ' with further instructions.';
-            req.flash('info', info);
-            res.redirect('/forgot'); 
-    });
+                    req.flash('info', 'There has been an error');
+                    res.redirect('/forgot');
+                    return; 
+                };
+                var info = 'An e-mail has been sent to ' + local.email + ' with further instructions.';
+                req.flash('info', info);
+                res.redirect('/forgot'); 
+        });
+    } else {
+        res.redirect('/changePass');
+    }
 };
 
 exports.resetView = function (req, res) {
-    var token = req.params.token;
-    req.models.Local.find({ resetPasswordToken: token }, 1, function(err, locals) {
-        var local = locals[0];
-        if (local === undefined || local.resetPasswordExpires < Date.now()) {
-            var error = 'Password reset token is invalid or has expired.';
-            res.render('user/forgot', {
-                page: {
-                    title: 'Forgotten Password'
-                }, error: error
-            }); 
-        }
+    if (!req.user) {
+        var token = req.params.token;
+        req.models.Local.find({ resetPasswordToken: token }, 1, function(err, locals) {
+            var local = locals[0];
+            if (local === undefined || local.resetPasswordExpires < Date.now()) {
+                var error = 'Password reset token is invalid or has expired.';
+                res.render('user/forgot', {
+                    page: {
+                        title: 'Forgotten Password'
+                    }, error: error
+                }); 
+            }
 
-        res.render('user/reset', {
-            page: {
-                title: 'Reset Password'
-            }, 
-            token: token,
-            error: req.flash('error')
+            res.render('user/reset', {
+                page: {
+                    title: 'Reset Password'
+                }, 
+                token: token,
+                error: req.flash('error')
+            });
         });
-    });
+    } else {
+        res.redirect('/changePass');
+    }
 };
 
 exports.reset = function (req, res) {
-    var token = req.body.token;
-    var password = req.body.password;
-    var confirm = req.body.confirm;
-    async.waterfall([
-        function(done) {
-            req.models.Local.find({ resetPasswordToken: token }, 1, function(err, locals) {
-                var local = locals[0];
-                if (local === undefined || local.resetPasswordExpires < Date.now()) {
-                    var error = 'Password reset token is invalid or has expired.';
-                    req.flash('error', error);
-                    res.redirect('/reset/'+token);
-                    return;
-                }
+    if (!req.user) {
+        var token = req.body.token;
+        var password = req.body.password;
+        var confirm = req.body.confirm;
+        async.waterfall([
+            function(done) {
+                req.models.Local.find({ resetPasswordToken: token }, 1, function(err, locals) {
+                    var local = locals[0];
+                    if (local === undefined || local.resetPasswordExpires < Date.now()) {
+                        var error = 'Password reset token is invalid or has expired.';
+                        req.flash('error', error);
+                        res.redirect('/reset/'+token);
+                        return;
+                    }
 
-                if (password !== confirm) {
-                    var error = 'Passwords do not match.';
-                    req.flash('error', error);
-                    res.redirect('/reset/'+token);
-                    return;   
-                }
+                    if (password !== confirm) {
+                        var error = 'Passwords do not match.';
+                        req.flash('error', error);
+                        res.redirect('/reset/'+token);
+                        return;   
+                    }
 
-                if (!validatePassword(password)) {
-                    var error = 'Password must contain at least one letter, at least one number, no special characters and be longer than six charaters.';
-                    req.flash('error', error);
-                    res.redirect('/reset/'+token);
-                    return;   
-                }
+                    if (!validatePassword(password)) {
+                        var error = 'Password must contain at least one letter, at least one number, no special characters and be longer than six charaters.';
+                        req.flash('error', error);
+                        res.redirect('/reset/'+token);
+                        return;   
+                    }
 
-                local.password = local.generateHash(password);
-                local.resetPasswordToken = undefined;
-                local.resetPasswordExpires = undefined;
-                local.save(function(err) {
+                    local.password = local.generateHash(password);
+                    local.resetPasswordToken = undefined;
+                    local.resetPasswordExpires = undefined;
+                    local.save(function(err) {
+                        done(err, local);
+                    });
+                });
+            },
+            function(local, done) {
+                var mailOptions = {
+                    to: local.email,
+                    from: 'passwordreset@verily.com',
+                    subject: 'Your Verily password has been changed',
+                    text: 'Hello,\n\n' +
+                        'This is a confirmation that the password for your account ' + local.email + ' has just been changed.\n'
+                };
+                smtpTransport.sendMail(mailOptions, function(err) {
+                    req.flash('success', 'Success! Your password has been changed.');
                     done(err, local);
                 });
-            });
-        },
-        function(local, done) {
-            var mailOptions = {
-                to: local.email,
-                from: 'passwordreset@verily.com',
-                subject: 'Your Verily password has been changed',
-                text: 'Hello,\n\n' +
-                    'This is a confirmation that the password for your account ' + local.email + ' has just been changed.\n'
-            };
-            smtpTransport.sendMail(mailOptions, function(err) {
-                req.flash('success', 'Success! Your password has been changed.');
-                done(err, local);
-            });
-        }
-    ], function(err, local) {
-        if (err) {
-            req.flash('error', 'Your password did not change.');
-            res.redirect('/reset/'+token);
-        } else {
-            local.getUsers(function (err, users) {
-                if (err) {
-                    req.flash('error', 'Your password did not change.');
-                    res.redirect('/reset/'+token); 
-                } else {
-                    var user = users[0];
-                    req.logIn(user, function (err) {
-                        if (err) {
-                            req.flash('error', 'Your password did not change.');
-                            res.redirect('/reset/'+token); 
-                        } else {
-                            res.redirect('/');
-                        }
-                    });    
-                }
-                
-            });
-        }
-    });
+            }
+        ], function(err, local) {
+            if (err) {
+                req.flash('error', 'Your password did not change.');
+                res.redirect('/reset/'+token);
+            } else {
+                local.getUsers(function (err, users) {
+                    if (err) {
+                        req.flash('error', 'Your password did not change.');
+                        res.redirect('/reset/'+token); 
+                    } else {
+                        var user = users[0];
+                        req.logIn(user, function (err) {
+                            if (err) {
+                                req.flash('error', 'Your password did not change.');
+                                res.redirect('/reset/'+token); 
+                            } else {
+                                res.redirect('/');
+                            }
+                        });    
+                    }
+                    
+                });
+            }
+        });
+    } else {
+        res.redirect('changePass');
+    }
 };
