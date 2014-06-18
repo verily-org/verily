@@ -58,7 +58,9 @@ exports.index = function (req, res) {
 
                 },
                 crises: crises,
-                user: user
+                user: user,
+                info: req.flash('info'),
+                error: req.flash('error')
             });
         }
     });
@@ -161,3 +163,31 @@ var editCrisis = function (req, res) {
 var checkRole = role.can('edit crisis');
 
 exports.edit = [checkRole, editCrisis];
+
+// Update crisis
+var update = function (req, res) {
+    var crisis_id = req.params.crisis_id;
+    generic.get(req.models.Crisis, crisis_id, undefined, function (err, question) {
+        if (!err && question) {
+            generic.update(req.models.Crisis, crisis_id, req, function (err) {
+                if (!err) {
+
+                    res.redirect('/crisis/' + crisis_id);
+
+                    res.end();
+                } else {
+                    generic.genericErrorHandler(req, res, err);
+                }
+            });
+        } else {
+            generic.genericErrorHandler(req, res, err);
+        }
+
+    });
+
+};
+
+
+var checkRole = role.can('edit question');
+
+exports.update = [checkRole, update];
