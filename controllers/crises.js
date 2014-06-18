@@ -58,7 +58,9 @@ exports.index = function (req, res) {
 
                 },
                 crises: crises,
-                user: user
+                user: user,
+                info: req.flash('info'),
+                error: req.flash('error')
             });
         }
     });

@@ -343,11 +343,8 @@ exports.forgotView = function (req, res) {
 exports.forgot = function (req, res) {
     if (!req.user) { 
         async.waterfall([
-            function(done) {
-                crypto.randomBytes(20, function(err, buf) {
-                    var token = buf.toString('hex');
-                    done(err, token);
-                });
+            function (done) {
+                generic.generateToken(done)    
             },
             function(token, done) {
                 req.models.Local.find({ email: req.body.email }, function(err, locals) {
@@ -368,23 +365,7 @@ exports.forgot = function (req, res) {
                 });
             },
             function(token, local, done) {
-                var mailOptions = {
-                    to: local.email,
-                    from: 'passwordreset@verily.com',
-                    subject: 'Verily Password Reset',
-                    text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-                        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                        'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-                        'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-                };
-                smtpTransport.sendMail(mailOptions, function(err) {
-                    if (err) {
-                        req.flash('error', 'The email could not be sent.');
-                        res.redirect('/forgot'); 
-                        return;
-                    }
-                    done(err, local, 'done');
-                });
+                generic.sendMailtoLocal(req, token, local, 'forgot', done);
             }
             ], function(err, local) {
                 if (err) {
@@ -467,17 +448,7 @@ exports.reset = function (req, res) {
                 });
             },
             function(local, done) {
-                var mailOptions = {
-                    to: local.email,
-                    from: 'passwordreset@verily.com',
-                    subject: 'Your Verily password has been changed',
-                    text: 'Hello,\n\n' +
-                        'This is a confirmation that the password for your account ' + local.email + ' has just been changed.\n'
-                };
-                smtpTransport.sendMail(mailOptions, function(err) {
-                    req.flash('success', 'Success! Your password has been changed.');
-                    done(err, local);
-                });
+                generic.sendMailtoLocal(req, null, local, 'reset', done);
             }
         ], function(err, local) {
             if (err) {
@@ -495,6 +466,7 @@ exports.reset = function (req, res) {
                                 req.flash('error', 'Your password did not change.');
                                 res.redirect('/reset/'+token); 
                             } else {
+                                req.flash('info', 'Your password has been changed!');
                                 res.redirect('/');
                             }
                         });    
@@ -504,6 +476,33 @@ exports.reset = function (req, res) {
             }
         });
     } else {
-        res.redirect('changePass');
+        res.redirect('/changePass');
     }
+};
+
+exports.verifyAccount = function (req, res) {
+    var token = req.params.token;
+    req.models.Local.find({verificationToken: token}, function (err, locals) {
+        if (err) {
+            req.flash('info', 'Error in database');
+            res.redirect('/');
+        }
+        if (!locals[0]) {
+            req.flash('info', 'The token is invalid!');
+            res.redirect('/');
+        } else {
+            var local = locals[0];
+            local.verified = '1';
+            local.verificationToken = undefined;
+            local.save(function (err) {
+                if (err) {
+                    req.flash('info', 'Error in database');
+                    res.redirect('/');
+                    return;
+                }
+                req.flash('info', 'Your account has been verified!');
+                res.redirect('/');
+            });
+        }
+    });
 };
