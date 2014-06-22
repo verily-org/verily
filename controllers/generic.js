@@ -171,6 +171,10 @@ exports.create = function (model, data, req, cb) {
 
             });
         }
+        else{
+            cb(error, null);
+
+        }
     });
     
 

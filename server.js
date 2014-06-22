@@ -1,5 +1,5 @@
 // test
-module.exports = function (suppressLogs) {
+module.exports = function (suppressLogs, dbTestUrl, callback) {
     var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
@@ -17,6 +17,7 @@ module.exports = function (suppressLogs) {
         log = require('./log'),
         controllers = {},
         heroku,
+        global_db,
         db_url;
 
     //initial log functions.
@@ -76,14 +77,15 @@ module.exports = function (suppressLogs) {
     heroku = (process.env.HEROKU_POSTGRESQL_BLACK_URL !== undefined);
     //heroku = false;
     //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
-    //console.log('process.env',process.env);
-    if (heroku){
+    //console.log('process.env: ',process.env);
+    if(dbTestUrl){
+        db_url = dbTestUrl;
+    }
+    else if (heroku){
     	db_url = process.env.HEROKU_POSTGRESQL_BLACK_URL;
     } else {
     	db_url = "sqlite://app.db";
-        
     }
-    console.log('db_url:', db_url);
     
     // Set up the ORM to SQLite.
     app.use(orm.express(db_url, {
@@ -139,6 +141,7 @@ module.exports = function (suppressLogs) {
                         createAdmin(db.models.user, db.models.local);
                     }
                 });
+                global_db = db;
             });
             next();
         }
@@ -164,9 +167,9 @@ module.exports = function (suppressLogs) {
 //
 //    // Configure the routes.
     router(app, controllers);
-    http.createServer(app).listen(app.get('port'), function(){
-        console.log('Express server listening on port ' + app.get('port'));
-    });
+//    http.createServer(app).listen(app.get('port'), function(){
+//        console.log('Express server listening on port ' + app.get('port'));
+//    });
 
     //process.on('SIGINT', function () {
     //    console.logger.info('Server stopped.');
@@ -177,6 +180,7 @@ module.exports = function (suppressLogs) {
         User.exists({name: 'Admin'}, function (err, exists) {
             if (err) {throw err;}
             if (!exists) {
+
                 User.create([{
                     name: 'Admin',
                     role: 'admin'
@@ -194,12 +198,14 @@ module.exports = function (suppressLogs) {
                             admin.setLocal(local, function (err) {
                                 if (err) {throw err;}
                                 console.log('Admin user has been created.');
+                                if(callback) callback(app, global_db);
                             });
                         });
                     });
                 });
             } else {
                 console.log('Admin user already exists.');
+                if(callback) callback(app, global_db);
             }
         });
     }

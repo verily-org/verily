@@ -25,7 +25,7 @@ var checkRole = role.can('create a crisis');
 exports.create = [checkRole, createCrisis];
 
 //create new crisis
-exports.new = function (req, res) {
+var newCrisis = function (req, res) {
     // This is a POST request, so by default, fields go into the body.
 
     // only extra columns (apart from post) need to be written here
@@ -40,8 +40,10 @@ exports.new = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
     });
-
 };
+var checkRole = role.can('create a crisis');
+exports.new = [checkRole, newCrisis];
+
 
 
 //get 10 last crises
@@ -115,7 +117,7 @@ exports.get = function (req, res) {
 };
 
 // Mark crisis as Important
-exports.markImportant = function (req, res) {
+var markImportant = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (!err && crisis) {
             require('./ratings').importance(req, crisis.post, function(err, rating){
@@ -132,8 +134,10 @@ exports.markImportant = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
     });
-
 };
+var checkRole = role.can('mark important');
+
+exports.markImportant = [checkRole, markImportant];
 
 // View to edit a crisis
 var editCrisis = function (req, res) {

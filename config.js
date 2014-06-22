@@ -1,3 +1,4 @@
+
 module.exports = {
-    project_dir: __dirname
+    project_dir: __dirname,
 };

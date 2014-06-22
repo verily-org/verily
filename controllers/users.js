@@ -161,9 +161,9 @@ exports.getAdminPage = [isAdmin, adminPage];
 
 
 var setRoles = function (req, res) {
-    var basics = req.body.basics.split(".");
-    var editors = req.body.editors.split(".");
-    var admins = req.body.admins.split(".");
+    var basics = req.body.basics.split("|");
+    var editors = req.body.editors.split("|");
+    var admins = req.body.admins.split("|");
     var model = req.models.User;
 
 

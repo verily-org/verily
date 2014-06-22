@@ -253,7 +253,7 @@ module.exports = function (db, cb) {
         autoFetch: true
     });
 
-    Crisis.hasOne('post', Post, {reverse: 'crises', autoFetch: true});
+    Crisis.hasOne('post', Post, {reverse: 'crisis', autoFetch: true});
     Question.hasOne('crisis', Crisis, {
         reverse: 'questions'
     });
