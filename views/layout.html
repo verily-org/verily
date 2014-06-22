@@ -112,10 +112,36 @@
                     </ul>
 
                 </div>
+				
+				
 
             </div>
+			
+			
 
         </nav>
+		
+		<div class="container">
+				{% if info && info.length > 0 %}
+				<div class="alert alert-info">
+					<a class="close" data-dismiss="alert">×</a>
+					{{ info }}
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		
+		<div class="container">
+				{% if error && error.length > 0 %}
+				<div class="alert alert-danger">
+					<a class="close" data-dismiss="alert">×</a>
+					{{ error }}
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		
+		
         <main role="main" id="content" class="container">
             <!-- <ol class="breadcrumb"> -->
                 <!-- <li>

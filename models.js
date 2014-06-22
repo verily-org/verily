@@ -175,6 +175,13 @@ module.exports = function (db, cb) {
         resetPasswordExpires: {
             type: 'date',
             time: true
+        },
+        verificationToken: {
+            type: 'text'
+        },
+        verified: {
+            type: 'boolean',
+            defaultValue: '0'
         }
     }, {
         methods: {
