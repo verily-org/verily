@@ -58,7 +58,8 @@ exports.registerView = function (req, res) {
             page: {
                 title: 'Signup'
             },
-            message: req.flash('registerMessage')
+            error: req.flash('error'),
+            info: req.flash('info')
         });
     } else {
         // Logged out or signed up from canonical signup form (rather than an inline form)
@@ -74,7 +75,8 @@ exports.loginView = function (req, res) {
             page: {
                 title: 'Login',
             },
-            message: req.flash('loginMessage')
+            error: req.flash('error'),
+            info: req.flash('info')
         });
     } else {
         // If they are already logged in,

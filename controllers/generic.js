@@ -435,10 +435,9 @@ exports.generateToken = function (done) {
 };
 
 
-exports.sendMailtoLocal = function (req, token, local, scenario, done) {
+exports.sendMailtoLocal = function (req, token, local, scenario, cb) {
     var text = '';
     var subject = '';
-    var redirectUrl = '';
     switch (scenario) {
         case 'verify':
             subject = 'Verify User Account';
@@ -446,7 +445,6 @@ exports.sendMailtoLocal = function (req, token, local, scenario, done) {
                     'Please click on the following link, or paste this into your browser in order to verify '+
                     'your account!\n\n'+
                     'http://' + req.headers.host + '/verify/' + token + '\n\n';
-            redirectUrl = '/';
             break;
 
         case 'forgot':
@@ -455,14 +453,12 @@ exports.sendMailtoLocal = function (req, token, local, scenario, done) {
                 'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
                 'http://' + req.headers.host + '/reset/' + token + '\n\n' +
                 'If you did not request this, please ignore this email and your password will remain unchanged.\n';
-            redirectUrl = '/forgot';
             break;
 
         case 'reset': 
             subject = 'Your Verily password has been changed';
             text = 'Hello,\n\n' +
                     'This is a confirmation that the password for your account ' + local.email + ' has just been changed.\n';
-            redirectUrl = '/';
             break;
 
         default:
@@ -478,10 +474,8 @@ exports.sendMailtoLocal = function (req, token, local, scenario, done) {
     smtpTransport.sendMail(mailOptions, function(err) {
         if (err) {
             req.flash('error', 'The email could not be sent.');
-            res.redirect(redirectUrl); 
-            return;
         }
-        done(err, local, 'done');
+        cb(err, local);
     });
 };
 
