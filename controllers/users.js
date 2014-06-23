@@ -58,7 +58,8 @@ exports.registerView = function (req, res) {
             page: {
                 title: 'Signup'
             },
-            message: req.flash('registerMessage')
+            error: req.flash('error'),
+            info: req.flash('info')
         });
     } else {
         // Logged out or signed up from canonical signup form (rather than an inline form)
@@ -74,7 +75,8 @@ exports.loginView = function (req, res) {
             page: {
                 title: 'Login',
             },
-            message: req.flash('loginMessage')
+            error: req.flash('error'),
+            info: req.flash('info')
         });
     } else {
         // If they are already logged in,
@@ -161,9 +163,9 @@ exports.getAdminPage = [isAdmin, adminPage];
 
 
 var setRoles = function (req, res) {
-    var basics = req.body.basics.split(".");
-    var editors = req.body.editors.split(".");
-    var admins = req.body.admins.split(".");
+    var basics = req.body.basics.split("|");
+    var editors = req.body.editors.split("|");
+    var admins = req.body.admins.split("|");
     var model = req.models.User;
 
 
