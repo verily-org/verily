@@ -91,7 +91,6 @@
                             <li><a href="/crisis/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Crisis</a></li>
                         {% endif %}
                     	{% if crisis %}
-                            <li><a href="/question">Questions</a></li>
                             {% if userCan('create a question') %}
                                 <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
                             {% endif %}
