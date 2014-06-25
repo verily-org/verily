@@ -20,6 +20,9 @@ module.exports = function (db, cb) {
         targetLong: {
             type: 'number'
         },
+        automaticLocation: {
+            type: 'boolean'
+        },
         targetImage: {
             type: 'text'
         },

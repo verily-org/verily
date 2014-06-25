@@ -36,7 +36,6 @@ describe('Index', function(){
     });
 });
 
-require('./crisis/crisis-test.js');
 
 
 

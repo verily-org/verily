@@ -286,8 +286,6 @@ function initActionButtons() {
                 });
     });
 
-
-
 }
 
     $(function(){
@@ -323,6 +321,9 @@ function initActionButtons() {
         $("div").on('click', '.btn_comment', function(){
             window.location = "/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/"+$(this).data("answer-id")+"?action=comment";
         });
+        {% if question.targetLat and question.targetLong %}
+            if(map_add_marker) map_add_marker(map,{{ question.targetLat }}, {{ question.targetLong }} );
+        {% endif %}
     });
 
 
@@ -335,7 +336,9 @@ function displayForm() {
     
     // Update chars left
     displayCharsLeft();
-    
+    if(!map_form){
+        map_form_initialize();
+    }
     // Scroll the top of the form into view.
     //formCtr.scrollIntoView();
     
@@ -345,29 +348,11 @@ function displayForm() {
 
 </script>
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="/static/js/maps.js"></script>
 <script type="text/javascript">
 var map, layer;
-function init(){
-    map = new OpenLayers.Map( 'map');
-    layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
-    map.addLayer(layer);
-    map.setCenter(
-        new OpenLayers.LonLat(-1.422, 50.930).transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            map.getProjectionObject()
-        ), 12
-    ); 
-    
-    // Add Vector marker
-    var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
-    var feature = new OpenLayers.Feature.Vector(
-     new OpenLayers.Geometry.Point(-71.147, 42.472),
-     {some:'data'},
-     {externalGraphic: 'img/marker.png', graphicHeight: 21, graphicWidth: 16});
-    vectorLayer.addFeatures(feature);
-    map.addLayer(vectorLayer);
-};
-init();
+
+map = map_init('map');
 </script>
 
 {% endblock %}
