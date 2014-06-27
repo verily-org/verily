@@ -75,7 +75,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     //    });
     //}
 
-    heroku = (process.env.HEROKU_POSTGRESQL_AQUA_URL !== undefined);
+    heroku = (process.env.HEROKU_POSTGRESQL_CRIMSON_URL !== undefined);
     //heroku = false;
     //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
     //console.log('process.env: ',process.env);
@@ -83,7 +83,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         db_url = dbTestUrl;
     }
     else if (heroku){
-    	db_url = process.env.HEROKU_POSTGRESQL_AQUA_URL;
+    	db_url = process.env.HEROKU_POSTGRESQL_CRIMSON_URL;
     } else {
     	db_url = "sqlite://app.db";
     }
