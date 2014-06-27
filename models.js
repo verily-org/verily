@@ -196,8 +196,8 @@ module.exports = function (db, cb) {
             }
         }
     }), Facebook = db.define('facebook', {
-        id: {
-            type: 'number'
+        facebookId: {
+            type: 'text'
         },
         token: {
             type: 'text'
@@ -215,10 +215,20 @@ module.exports = function (db, cb) {
             role: {
                 type: 'enum',
                 values: ['editor', 'simple', 'admin']
+            },
+            signupPoints: {
+                type: 'number',
+                defaultValue: 0
+            },
+            votingPoints: {
+                type: 'number',
+                defaultValue: 0
+            },
+            postPoints: {
+                type: 'number',
+                defaultValue: 0
             }
-    },{validations: {
-        name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
-    }},
+    },
         {
             methods: {
                 isEditor: function(){
@@ -227,9 +237,15 @@ module.exports = function (db, cb) {
                 //Currently not being used but can be used for a better maintainability
                 getDisplayName: function(){
                     return this.name;
+                },
+                getTotalPoints: function () {
+                    var points = this.signupPoints + this.votingPoints + this.postPoints;
+                    return points;
                 }
             }
-        }), Crisis = db.define('crisis', {
+        },{validations: {
+        name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
+    }}), Crisis = db.define('crisis', {
     });
 
     Answer.hasOne('question', Question, {

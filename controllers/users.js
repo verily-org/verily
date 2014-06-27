@@ -6,7 +6,8 @@ passport = require('passport'),
 role = require('../lib/roles').user,
 nodemailer = require('nodemailer'),
 crypto = require('crypto'),
-config = require('../lib/auth');
+config = require('../lib/auth'),
+assignedPoints = require('../points.json');
 require('../lib/passport')(passport);
 
 var smtpTransport = config.mailer;
@@ -18,16 +19,47 @@ var validatePassword = function (password) {
 
 exports.profile = function (req, res) {
     if (req.user) {
-        var userData = {
-            name: req.user.name,
-            id: req.user.id
-        }
-        res.json(userData);
+        res.status(200);
+        var user = req.user;
+        user.getPosts(function (err, posts) {
+            if (err) {
+                generic.genericErrorHandler(req, res, err);
+            }
+            var upvotes = 0;
+            var downvotes = 0;
+            var postAnswers = 0;
+            for (var i = 0; i < posts.length; i++) {
+                upvotes += posts[i].getUpvoteCount();
+                downvotes += posts[i].getDownvoteCount();
+                if (posts[i].answers.length > 0) {
+                    postAnswers += 1;
+                }    
+            }
+            user.postPoints = postAnswers * assignedPoints.postEvidence;
+            user.votingPoints = upvotes * assignedPoints.voteUp;
+            user.save(function (err) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);       
+                }
+                res.render('user/profile', {
+                    page: {
+                        title: 'Profile'
+                    },
+                    user: user,
+                    points: user.getTotalPoints(),
+                    posts: postAnswers,
+                    upvotes: upvotes,
+                    downvotes: downvotes
+                })    
+            });
+        });
+        ;
     } else {
         // Not logged in.
         res.redirect('/login/');
     }
 };
+
 //Posts a new user
 exports.register = passport.authenticate('local-register', {
     successRedirect : 'back', // redirect to the page they were on
