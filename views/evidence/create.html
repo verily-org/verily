@@ -33,6 +33,7 @@ if (sameLatLongButton) {
     sameLatLongButton.addEventListener('click', function(e) {
         document.getElementById('form-target-lat').value = document.getElementById('question-target-lat').innerHTML;
         document.getElementById('form-target-long').value = document.getElementById('question-target-long').innerHTML;
+        if(update_map)update_map();
     });
 }
 

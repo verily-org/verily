@@ -126,6 +126,7 @@ exports.create = function (model, data, req, cb) {
                         targetLocality: req.body.targetLocality,
                         targetLat: req.body.targetLat,
                         targetLong: req.body.targetLong,
+                        automaticLocation: req.body.automaticLocation,
                         date: now,
                         author: req.user.name,
                         tags: tags,

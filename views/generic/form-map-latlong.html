@@ -1,0 +1,231 @@
+<div class="form-group">
+    <label><i class="fa fa-crosshairs"></i> Location</label>
+    <span class="text-muted">(Drag the marker to the desired location)</span>
+    <label class="pull-right" style="display:none">
+        <input name="automaticLocation" id="chb-automatic-location"
+               class="checkbox-inline" type="checkbox"> Detect location automatically
+        <input type="hidden" id="hidden-automatic-lat" name="automatic-lat">
+        <input type="hidden" id="hidden-automatic-long" name="automatic-lang">
+    </label>
+    {% if type === 'evidence' %}
+        <button id="btn-same-latlong" type="button" class="btn btn-link btn-sm btn-same-as">Same as question</button>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-6">
+            <span class="sr-only">Latitude in decimal degrees (e.g. 50.930)</span>
+            <input type="text" class="form-control" id="form-target-lat" name="targetLat"
+                   placeholder="Latitude in decimal degrees (e.g. 50.930)" value="{{ post.targetLat | default('') }}">
+        </div>
+        <div class="col-sm-6">
+            <span class="sr-only">Longitude in decimal degrees (e.g. -1.422)</span>
+            <input type="text" class="form-control" id="form-target-long" name="targetLong"
+                   placeholder="Longitude in decimal degrees (e.g. -1.422)" value="{{ post.targetLong | default('') }}">
+        </div>
+    </div>
+    <br/>
+    <div id="map_form" class="smallmap" style="height: 200px; margin-top:5px;"></div>
+</div>
+
+<script type="application/javascript">
+    $(function(){
+
+        if ("geolocation" in navigator) {
+            /* geolocation is available */
+            $('#chb-automatic-location').parent().show();
+        } else {
+            /* geolocation IS NOT available */
+            $('#chb-automatic-location').parent().hide();
+        }
+        $('#chb-automatic-location').change(function(){
+            if(this.checked){
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        set_lat_long(position.coords.latitude, position.coords.longitude);
+                    }, function(err){
+                        $('#chb-automatic-location').attr('checked', false);
+                        alert('We were unable to get your location');
+                    });
+                }
+            }
+            else{
+
+            }
+        });
+        $('#chb-automatic-location').change();
+        $('#form-target-lat').on('input',function(){
+            $('#chb-automatic-location').attr('checked', false);
+            update_map();
+        });
+        $('#form-target-long').on('input',function(){
+            $('#chb-automatic-location').attr('checked', false);
+            update_map();
+
+        });
+    });
+    function set_lat_long(lat, long){
+        $('#form-target-lat').val(lat);
+        $('#form-target-long').val(long);
+        $('#hidden-automatic-lat').val(lat);
+        $('#hidden-automatic-long').val(long);
+        update_map();
+    }
+    function update_map(){
+        search_lat_long($('#form-target-lat').val(), $('#form-target-long').val());
+    }
+</script>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script src="/static/js/maps.js"></script>
+<script type="application/javascript">
+    // Map for loading the markers and placing them
+    var map_form = null;
+    // Variable to geocode the points of interest:
+    var geocoder;
+    // OpenLayers point variable to save the lon & lat
+    var point;
+    // Layer for placing the damage/impact park marker. This layer allows drag & drop
+    var damageLayer;
+    // Layer for centering the city. This layer is static and does not allow drag & drop, is just a reference.
+    var cityLayer;
+    var default_long = -1.422;
+    var default_lat = 50.930;
+    function map_form_initialize(city_search) {
+        map_form = new OpenLayers.Map('map_form', {
+            controls: [
+                new OpenLayers.Control.MousePosition({displayProjection: new OpenLayers.Projection('EPSG:900913')}),
+
+                new OpenLayers.Control.Navigation()
+            ]
+        });
+        map_form.addLayer(new OpenLayers.Layer.OSM("Open Street Map"));
+
+        // Icon for the City Marker
+        var styleMapCity = new OpenLayers.StyleMap({
+            pointRadius: 0
+        });
+        cityLayer = new OpenLayers.Layer.Vector("City marker", {
+            styleMap: styleMapCity,
+            attribution: 'Marker Icons by <a href="http://mapicons.nicolasmollet.com/">Nicolas Mollet</a>'
+        });
+        map_form.addLayer(cityLayer);
+
+        styleDamage = new OpenLayers.StyleMap({
+            pointRadius: 15,
+            externalGraphic: 'https://01a8501412d0803e3903f1294229a3a0f79f839a.googledrive.com/host/0Bxs8G3uP6XL8Q3ZmQmQwNjRWNXM/location.png'
+        });
+        // Layer for placing the damage/impact marker
+        damageLayer = new OpenLayers.Layer.Vector("Damage/Impact Layer", {
+            styleMap: styleDamage,
+            attribution: 'Marker Icons by <a href="http://mapicons.nicolasmollet.com/">Nicolas Mollet</a>'
+        });
+        map_form.addLayer(damageLayer);
+
+        // Enable drag & drop in the damage/impact Layer
+        var drag = new OpenLayers.Control.DragFeature(damageLayer, {
+            onDrag: function() {
+                var damagePoint = damageLayer.features[0].geometry
+                var tmp = damagePoint.clone();
+                tmp.transform(
+                        map_form.getProjectionObject(), // from Spherical Mercator Projection
+                        new OpenLayers.Projection("EPSG:4326") // to transform from WGS 1984
+                );
+                // When the marker has been dropped, update the lon & lat of the urban park
+                $("#form-target-long").val(tmp.x);
+                $("#form-target-lat").val(tmp.y);
+
+                $('#chb-automatic-location').attr('checked', false);
+
+                //alert("loc:" + tmp.x + "  lat" + tmp.y);
+            }
+
+        });
+        // Add the drag & drop control into the map
+        map_form.addControl(drag);
+        // Activate drag & drop
+        drag.activate();
+        if(city_search){
+            search_map_form(city_search);
+        }
+        else{
+            map_set_marker(map_form, default_lat, default_long, damageLayer);
+        }
+    }
+
+    // This function will load the marker on the latitude and longitude, and center the map on it
+    function search_lat_long(lat, long) {
+        if (lat && long) {
+            $("#searchingError").hide();
+        }
+        else {
+
+        }
+        // Clean previous markers
+        damageLayer.removeAllFeatures();
+        cityLayer.removeAllFeatures();
+
+        var lonLat = new OpenLayers.LonLat(long, lat)
+                .transform(
+                        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                        map_form.getProjectionObject() // to Spherical Mercator Projection
+                );
+        var point = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+        damageLayer.addFeatures([new OpenLayers.Feature.Vector(point)]);
+        // Center the map
+        map_form.setCenter(lonLat,10);
+
+        var tmp = point.clone();
+        tmp.transform(
+                map_form.getProjectionObject(), // from Spherical Mercator Projection
+                new OpenLayers.Projection("EPSG:4326") // to transform from WGS 1984
+        );
+    }
+    // This function will load the marker of the city, and center the map on it
+    function search_map_form(city) {
+        if (city) {
+            var place = city;
+        }
+        else {
+
+        }
+
+        // Geocode the place using Nominatim OSM service
+        $.getJSON('http://nominatim.openstreetmap.org/search/' + place + '?format=json', function(output) {
+            if (output.length >= 1) {
+                //console.log("Lon: "+ output[0].lon + " Lat: " + output[0].lat);
+                // Clean previous markers
+                damageLayer.removeAllFeatures();
+                cityLayer.removeAllFeatures();
+
+                var lonLat = new OpenLayers.LonLat(output[0].lon, output[0].lat)
+                        .transform(
+                                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                                map_form.getProjectionObject() // to Spherical Mercator Projection
+                        );
+                // Set the marker position
+                var point = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+                damageLayer.addFeatures([new OpenLayers.Feature.Vector(point)]);
+                // Center the map
+                map_form.setCenter(lonLat,5);
+
+                var tmp = point.clone();
+                tmp.transform(
+                        map_form.getProjectionObject(), // from Spherical Mercator Projection
+                        new OpenLayers.Projection("EPSG:4326") // to transform from WGS 1984
+                );
+                // When the marker has been dropped, update the lon & lat of the urban park
+                $("#form-target-long").val(tmp.x);
+                $("#form-target-lat").val(tmp.y);
+
+                // Only show the messages when looking for user input
+                if ($('#locationRef').val()) {
+                    $("#searching").hide().fadeOut();
+                    $("#searchingDone").show().fadeIn().delay(2000).fadeOut();
+                }
+            }
+            else {
+                // City not found, sorry
+                // Warn the user and try with another place
+            }
+        });
+    }
+
+</script>

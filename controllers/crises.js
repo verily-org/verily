@@ -85,9 +85,6 @@ exports.get = function (req, res) {
                             crisis.post.addViewCount();
                             generic.load_crisis_extra_fields(crisis, function(err){
                                 if (req.user){var user = req.user; }
-                                if (user) {
-                                    console.log(user.role);
-                                }
                                 
                                 // For each question, add relative created date.
                                 questions.forEach(function(question) {

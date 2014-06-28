@@ -72,8 +72,8 @@
                 
                 <div class="action-buttons">
                     <div class="row">
-                        
-                        {% if user and user.role === 'editor' %}
+
+                        {% if userCan('create a question') %}
                         <div class="action-button-ctr btn-group">
                             <a class="btn btn-primary crisis-ask-question" href="/crisis/{{ crisis.id }}/question/create">Make Verification Request</a>
                         </div>
@@ -245,29 +245,11 @@
 {{ generic_macro.rearrange_children_script() }}
 
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
+    <script src="/static/js/maps.js"></script>
 <script type="text/javascript">
 var map, layer;
-function init(){
-    map = new OpenLayers.Map('map');
-    layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
-    map.addLayer(layer);
-    map.setCenter(
-        new OpenLayers.LonLat(-1.422, 50.930).transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            map.getProjectionObject()
-        ), 12
-    ); 
-    
-    // Add Vector marker
-    var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
-    var feature = new OpenLayers.Feature.Vector(
-     new OpenLayers.Geometry.Point(-71.147, 42.472),
-     {some:'data'},
-     {externalGraphic: 'img/marker.png', graphicHeight: 21, graphicWidth: 16});
-    vectorLayer.addFeatures(feature);
-    map.addLayer(vectorLayer);
-};
-init();
+
+map = map_init('map');
     $(function(){
         $(".mark-important-crisis-btn").click(function(){
             var button = $(this);
@@ -298,6 +280,10 @@ init();
             //trigger change if the initial selected index is not 0
             $('#select_filter_questions').change();
         }
+        {% if crisis.post.targetLat and crisis.post.targetLong %}
+        if(map_add_marker) map_add_marker(map,{{ crisis.post.targetLat }}, {{ crisis.post.targetLong }} );
+        {% endif %}
+
     });
 
     var update_markedImportant = function(crisis, element){

@@ -14,6 +14,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         router = require('./routing/router'),
+        config = require('./lib/auth'),
         log = require('./log'),
         controllers = {},
         heroku,
@@ -74,7 +75,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     //    });
     //}
 
-    heroku = (process.env.HEROKU_POSTGRESQL_BLACK_URL !== undefined);
+    heroku = (process.env.HEROKU_POSTGRESQL_CRIMSON_URL !== undefined);
     //heroku = false;
     //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
     //console.log('process.env: ',process.env);
@@ -82,7 +83,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         db_url = dbTestUrl;
     }
     else if (heroku){
-    	db_url = process.env.HEROKU_POSTGRESQL_BLACK_URL;
+    	db_url = process.env.HEROKU_POSTGRESQL_CRIMSON_URL;
     } else {
     	db_url = "sqlite://app.db";
     }
@@ -177,22 +178,22 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     //});
 
     var createAdmin = function (User, Local) {
-        User.exists({name: 'Admin'}, function (err, exists) {
+        User.exists({name: config.admin.username}, function (err, exists) {
             if (err) {throw err;}
             if (!exists) {
 
                 User.create([{
-                    name: 'Admin',
+                    name: config.admin.username,
                     role: 'admin'
                 }], function (err, u_created) {
                     if (err) {throw err;}
                     var admin = u_created[0];
                     Local.create([{
-                        email: 'Admin'
+                        email: config.admin.username
                     }], function (err, l_created) {
                         if (err) {throw err;}
                         var local = l_created[0];
-                        local.password = local.generateHash('1234');
+                        local.password = local.generateHash(config.admin.password);
                         local.save(function (err) {
                             if (err) {throw err;}
                             admin.setLocal(local, function (err) {
