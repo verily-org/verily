@@ -143,7 +143,7 @@ var getQuestion = function (req, addView, callback) {
             question.getAnswers(function (err, answers) {
                if (!err && answers) {
                    generic.load_question_extra_fields(question, function(err){
-                       if (!err ) {
+                       if (!err) {
                            var questionTmp = {
                                title: question.post.title,
                                id: question.id,
@@ -222,14 +222,28 @@ exports.get = function (req, res) {
                 
                 res.status(200);
                 if (req.user){var user = req.user; }
-                res.render('question/one', {
-                    crisis: crisis,
-                    question: question,
-                    page: {
-                        title: question.title
-                    },
-                    user: user
+                
+                generic.generateRefCodes(4, function(refcodeArray) {
+                    var refcodes = {
+                        twitter: refcodeArray[0],
+                        facebook: refcodeArray[1],
+                        email: refcodeArray[2],
+                        link: refcodeArray[3]
+                    };
+                    
+                    res.render('question/one', {
+                        crisis: crisis,
+                        question: question,
+                        page: {
+                            title: question.title
+                        },
+                        user: user,
+                        refcodes: refcodes,
+                        path: req.path
+                    });
                 });
+                
+
             }
         });
     });

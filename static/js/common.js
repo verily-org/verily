@@ -32,6 +32,27 @@ var tagize = exports.tagize = common.tagize = function(string) {
     return splitIntoTags(string).map(normalizeTag);
 };
 
+var campaign = exports.campaign = common.campaign = function() {
+    var campaigns = {
+        trial: 'VerilyTrial',
+        main: 'VerilyLive'
+    }
+    return campaigns.trial;
+}
+
+var campaigner = exports.campaigner = common.campaigner = function(medium, text, link) {    
+    if (medium === 'twitter') {
+        return {
+            hashtags: common.campaign()
+        };
+    } else if (medium === 'email') {
+        return {
+            subject: text + ' #' + common.campaign(),
+            body: text + ' – ' +  link + ' %0D%0A%0D%0AAnswer this with Verily, a crowdsourced verification platform.'
+        };
+    }
+};
+
 
 var splitIntoTags = exports.splitIntoTags = common.splitIntoTags = function(string) {
     return string.split(',').filter(function(tag) {
@@ -156,9 +177,10 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
     callback(error, date);
 };
 
-// 117 characters to allow linking of the resource.
+// Normally 117 characters to allow t.co linking of the resource.
 // Ref: https://blog.twitter.com/2012/upcoming-tco-changes
-var maxTitleLength = exports.maxTitleLength = common.maxTitleLength = 117;
+// For Verily challenge, hashtag is #VerilyLive which takes up 11 additional characters. To counter for whitespace, rounding to 100.
+var maxTitleLength = exports.maxTitleLength = common.maxTitleLength = 100;
 
 var dayDefault = exports.dayDefault = common.dayDefault = function() {
     return "Day";

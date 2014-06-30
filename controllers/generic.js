@@ -4,8 +4,31 @@ var enums = require('../enums');
 var config = require('../config');
 var common = require('../static/js/common');
 var utils = require('utilities');
+var async = require('async');
+var urlSafeBase64 = require('urlsafe-base64');
 
 var crypto = require('crypto');
+
+exports.generateRefCodes = function(count, callback) {
+    async.times(count, function(n, next) {
+        generateRefCode(function(err, refcode) {
+            next(err, refcode);
+        });
+    }, function(err, refcodes) {
+        callback(refcodes);
+    });
+}
+
+var generateRefCode = exports.generateRefCode = function(callback) {
+    var numRandomBytes = 4;
+    crypto.randomBytes(numRandomBytes, function(err, buffer) {
+        var random = urlSafeBase64.encode(buffer);
+        var now = new Date().getTime().toString();
+        now = now.substring(now.length - 2);
+        var refcode = random + now;
+        callback(err, refcode);
+    });
+};
 
 exports.genericErrorHandler = function (req, res, err) {
     if (!err) {
