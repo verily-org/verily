@@ -24,7 +24,7 @@ exports.generateRefCodes = function(count, callback) {
 }
 
 var generateRefCode = exports.generateRefCode = function(callback) {
-    var numRandomBytes = 4;
+    var numRandomBytes = 6;
     crypto.randomBytes(numRandomBytes, function(err, buffer) {
         var random = urlSafeBase64.encode(buffer);
         var now = new Date().getTime().toString();

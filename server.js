@@ -10,6 +10,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         passport = require('passport'),
         flash = require('connect-flash'),
         http = require('http'),
+        async = require('async'),
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
@@ -189,27 +190,60 @@ module.exports = function (suppressLogs, dbTestUrl) {
             httpRefererUrl: req.headers['referer']
         }
                 
-        function setReferralOfImpression(createdImpression, refCode, callback) {
-            if (!refCode) {
+        function setReferralOfImpression(createdImpression, refCodes, callback) {
+            if (!refCodes) {
                 callback();
             } else {
+                // Transform refcodes to [{refcode: <refcode1>}, {refcode: <refcode2>}]
+                // for node-orm format for disjunctions (or clause).
+                var formattedRefCodes = refCodes.map(function (refCode) {
+                    return {
+                        refCode: refCode
+                    };
+                });
+                
+                console.log('formattedRefCodes');
+                console.log(formattedRefCodes);
+                
                 req.models.Referral.find({
-                    refCode: refCode
-                }, 1, function(err, referrals) {
+                    or: formattedRefCodes
+                }, function(err, referrals) {
                     if (err) {
                         console.log(err);
                         callback();
                     } else if (referrals) {
-                        var referral = referrals[0];
-                        console.log('referral in set');
-                        console.log(referral)
-                        createdImpression.setReferral(referral, function (err) {
-                           if (err) {
-                               console.log(err);
-                           }
-                           callback();
-                   
-                       });
+                        // There are referrals.
+                        console.log('in setReferralOfImpression');
+                        console.log('refcodes produce referrals:')
+                        console.log(referrals);
+                        
+                        createdImpression.addReferrals(referrals, function(err) {
+                            if (err) {
+                                console.log(err);
+                            }
+
+                            console.log('added referrals to impression. Impression:');
+                            console.log(createdImpression);
+
+
+                            callback();
+                        });
+                        
+                        // async.each(referrals, function(referral, cb) {
+                        //     createdImpression.addReferrals(referral, function (err) {
+                        //        if (err) {
+                        //            console.log(err);
+                        //        }
+                        //        cb();
+                        //
+                        //     });
+                        // }, function(err) {
+                        //     // All referrals added.
+                        //     if (err) {
+                        //         console.log(err);
+                        //     }
+                        //     callback();
+                        // });
                     }
  
                });
@@ -242,8 +276,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                         // Create array.
                         req.session.refcodes = [refCode];
                     }
-                    console.log('---- REFCODES -----');
-                    console.log(req.session.refcodes);
+
                     res.redirect(referral.destinationPath);
                     res.end();
                 } else {
@@ -258,7 +291,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
             
             console.log('==================== IMPRESSION ' + req.path +  ' ====================');
             
-            var refCode = req.query.r;
+            console.log('---- REFCODES -----');
+            console.log(req.session.refcodes);
             
             req.models.Impression.create([impression], function (err, items) {
                 if (err) {
@@ -270,8 +304,9 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 // Sets user of impression, if user is logged in.
                 setUserOfInstance(createdImpression, user, function() {
 
-                    // Sets referral of impression, if there is a ref code (if user was referred).
-                    setReferralOfImpression(createdImpression, refCode, function() {
+                    // Sets referrals of impression, 
+                    // if there is at least one ref code in session (user was referred).
+                    setReferralOfImpression(createdImpression, req.session.refcodes, function() {
                         
                        createdImpression.save(function (err) {
                           if (err) {
@@ -357,27 +392,17 @@ module.exports = function (suppressLogs, dbTestUrl) {
                             if (err) {
                                 console.log(err);
                             }
-                        
-                            console.log('created items');
-                            console.log(items);
-                        
+                                                
                             var createdReferral = items[0];
                         
-                            console.log('createdReferral (1)');
-                            console.log(createdReferral);
-                        
                             setUserOfInstance(createdReferral, req.user, function() {
-                            
-                                console.log('createdReferral (2)');
-                                console.log(createdReferral)
-                        
+                                                    
                                 createdReferral.save(function (err) {
                                    if (err) {
                                        console.log(err);
                                    }
                            
-                                   console.log('createdReferral (3)');
-                                   console.log(createdReferral);
+                                   console.log('created referral');
                            
                                    res.status(201);
                                    res.end();

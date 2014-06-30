@@ -1,17 +1,3 @@
-// Node.js / browser support
-var isNodeJS = false;
-if (typeof exports === 'undefined') {
-    exports = {};
-}
-
-if (typeof module !== 'undefined') {
-    isNodeJS = true;
-}
-
-// Common namespace for browsers
-var common = {};
-
-
 var map_init = function(id) {
     var map = new OpenLayers.Map(id);
     layer = new OpenLayers.Layer.OSM( "Simple OSM Map");

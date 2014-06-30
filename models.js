@@ -380,8 +380,8 @@ module.exports = function (db, cb) {
         reverse: 'authoredReferrals', autoFetch: true
     });
     
-    Impression.hasOne('referral', Referral, {
-        reverse: 'impressions', autoFetch: true
+    Impression.hasMany('referrals', Referral, {}, {
+        key: true, reverse: 'impressions', autoFetch: true
     });
     
     Impression.hasOne('user', User, {

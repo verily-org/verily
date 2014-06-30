@@ -43,11 +43,11 @@ var campaign = exports.campaign = common.campaign = function() {
 var campaigner = exports.campaigner = common.campaigner = function(medium, text, link) {    
     if (medium === 'twitter') {
         return {
-            hashtags: common.campaign()
+            hashtags: campaign()
         };
     } else if (medium === 'email') {
         return {
-            subject: text + ' #' + common.campaign(),
+            subject: text + ' #' + campaign(),
             body: text + ' – ' +  link + ' %0D%0A%0D%0AAnswer this with Verily, a crowdsourced verification platform.'
         };
     }
