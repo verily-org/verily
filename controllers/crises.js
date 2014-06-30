@@ -25,7 +25,7 @@ var checkRole = role.can('create a crisis');
 exports.create = [checkRole, createCrisis];
 
 //create new crisis
-exports.new = function (req, res) {
+var newCrisis = function (req, res) {
     // This is a POST request, so by default, fields go into the body.
 
     // only extra columns (apart from post) need to be written here
@@ -40,8 +40,10 @@ exports.new = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
     });
-
 };
+var checkRole = role.can('create a crisis');
+exports.new = [checkRole, newCrisis];
+
 
 
 //get 10 last crises
@@ -58,7 +60,9 @@ exports.index = function (req, res) {
 
                 },
                 crises: crises,
-                user: user
+                user: user,
+                info: req.flash('info'),
+                error: req.flash('error')
             });
         }
     });
@@ -81,11 +85,6 @@ exports.get = function (req, res) {
                             crisis.post.addViewCount();
                             generic.load_crisis_extra_fields(crisis, function(err){
                                 if (req.user){var user = req.user; }
-                                console.log('user');
-                                console.log(user);
-                                if (user) {
-                                    console.log(user.role);
-                                }
                                 
                                 // For each question, add relative created date.
                                 questions.forEach(function(question) {
@@ -117,7 +116,7 @@ exports.get = function (req, res) {
 };
 
 // Mark crisis as Important
-exports.markImportant = function (req, res) {
+var markImportant = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (!err && crisis) {
             require('./ratings').importance(req, crisis.post, function(err, rating){
@@ -134,8 +133,10 @@ exports.markImportant = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         }
     });
-
 };
+var checkRole = role.can('mark important');
+
+exports.markImportant = [checkRole, markImportant];
 
 // View to edit a crisis
 var editCrisis = function (req, res) {
@@ -163,3 +164,31 @@ var editCrisis = function (req, res) {
 var checkRole = role.can('edit crisis');
 
 exports.edit = [checkRole, editCrisis];
+
+// Update crisis
+var update = function (req, res) {
+    var crisis_id = req.params.crisis_id;
+    generic.get(req.models.Crisis, crisis_id, undefined, function (err, question) {
+        if (!err && question) {
+            generic.update(req.models.Crisis, crisis_id, req, function (err) {
+                if (!err) {
+
+                    res.redirect('/crisis/' + crisis_id);
+
+                    res.end();
+                } else {
+                    generic.genericErrorHandler(req, res, err);
+                }
+            });
+        } else {
+            generic.genericErrorHandler(req, res, err);
+        }
+
+    });
+
+};
+
+
+var checkRole = role.can('edit question');
+
+exports.update = [checkRole, update];

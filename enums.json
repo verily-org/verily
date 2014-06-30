@@ -8,7 +8,7 @@
     "apiDoc": "doc/api.md",
     "requestlogfile": "request.log",
     "serverlogfile": "server.log",
-    "devMode": true,
+    "productionMode": true,
     "document": false,
     "NOT_MODIFIED": "NOT_MODIFIED",
     "ifNoneMatch": "If-None-Match",

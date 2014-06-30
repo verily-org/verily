@@ -2,10 +2,6 @@
     <!-- <input type="hidden" name="_method" value="POST">
     <input type="hidden" id="form-question-type" name="type"> -->
 
-		<div class="alert alert-danger" id="signup-alert" style="display: {% if !message or message.length === 0 %}none;{% else %}block{% endif %}">
-            {{ message }}
-        </div>
-
 	<div class="form-group">
         <input type="text" class="form-control input-lg" id="form-email" name="email" placeholder="Email">
     </div>
@@ -19,24 +15,8 @@
     <div class="form-group">
     	<input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="New Password again">
     </div>
-    
-
-    Role
-	<div class="form-group">
-
-        <div class="radio-inline">
-            <label>
-                <input type="radio" name="role" value="editor" checked>
-                Editor
-            </label>
-        </div>
-        <div class="radio-inline">
-            <label>
-                <input type="radio" name="role" value="simple">
-                Basic
-            </label>
-        </div>
-    </div>
 
     <button type="submit" class="btn btn-primary btn-lg pull-right">Signup</button>
+    
+    Registration Data and certain other information about you is subject to our Privacy Policy. We will not share or sell your email with another company without your permission. You understand that through your use of the Service you consent to the collection and use (as set forth in this Privacy Policy) of this information. This information will be treated according to the British Data Protection Act. If at any point you will want your personal information to be removed from our database, you may contact us by e-mail at contact@veri.ly.
 </form>

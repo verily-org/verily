@@ -1,7 +1,8 @@
-var fs = require('fs');
+var fs = require('fs'),
+    http = require('http');
 
 function start() {
-    require('./server')(false);
+    require('./server')(false, null);
 }
 
 if (process.argv[2] && (process.argv[2] === '-r' || process.argv[2] === '-reset')) {

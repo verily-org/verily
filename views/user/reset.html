@@ -1,0 +1,77 @@
+{% set type = 'user' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<div id="form-reg" class="form">
+    <p class="lead">
+        Reset Password
+    </p>
+
+    <div class="row">
+		<form class="reset-form" role="form" action="/reset" method="POST">
+		
+			<input type="hidden" name="token" value="{{ token }}">
+			
+			<div class="form-group">
+				<input type="password" class="form-control input-lg new-password" name="password" placeholder="New Password" tabindex="2">
+			</div>
+			
+			<div class="form-group">
+				<input type="password" class="form-control input-lg confirm-password" name="confirm" placeholder="Confirm New Password" tabindex="3">
+			</div>
+			
+			<button type="submit" class="btn btn-primary btn-lg" id="login-button">Change My Password</button>
+		</form>
+    </div>
+    <!-- / row -->
+    
+    <!-- .row -->
+    <div class="row">
+        <div class="col-sm-7">
+
+        </div>
+        <div class="col-sm-5">
+
+        </div>
+    </div>
+    
+    <!-- / .row -->
+    
+
+
+</div>
+
+<script type="text/javascript">
+
+var loginForm = $('.change-pass-form');
+
+loginForm.on('submit', function(e) {    
+    var valid = true;
+    var message;
+    
+    var formSubmitted = $(e.currentTarget);
+    
+    var loginAlert = formSubmitted.find('.change-pass-alert')
+    
+    if (formSubmitted.find('.old-password').val() === '' || formSubmitted.find('.confirm-password').val() === '') {
+        valid = false;
+        message = 'Enter your password.';
+    }
+    
+    if (valid) {
+        // Whole form is valid, submit form to endpoint
+        return;
+    } else {
+        // The form is not valid, don't submit form.
+        e.preventDefault();
+        loginAlert.text(message);
+        loginAlert.css('display', 'block');
+        
+    }
+})
+
+</script>
+
+{% endblock %}

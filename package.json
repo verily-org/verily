@@ -4,27 +4,15 @@
   "private": true,
   "author": "",
   "contributors": [
-    {
-      "name": "Alex Greenland"
-    },
-    {
-      "name": "Luis Arenal Mijares"
-    },
-    {
-      "name": "Dimitrios Papamilios"
-    },
-    {
-      "name": "He Shan"
-    },
-    {
-      "name": "Lu Zhu"
-    },
-    {
-      "name": "Wang Xiaoting"
-    }
+    "Alex Greenland",
+    "Luis Arenal Mijares",
+    "Dimitrios Papamilios",
+    "He Shan",
+    "Lu Zhu",
+    "Wang Xiaoting"
   ],
   "license": "MIT",
-  "description": "",
+  "description": "<!DOCTYPE html>",
   "main": "index.js",
   "dependencies": {
     "connect": "2.11.0",
@@ -45,7 +33,9 @@
     "connect-roles": "3.0.2",
     "pg": "2.5.0",
     "base62": "0.1.1",
-    "urlsafe-base64": "0.0.2"
+    "urlsafe-base64": "0.0.2",
+    "oembed": "0.1.0",
+	"nodemailer": "0.6.5"
   },
   "devDependencies": {},
   "scripts": {
@@ -54,5 +44,17 @@
   },
   "engines": {
     "node": "0.10.x"
-  }
+  },
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/verily-org/verily.git"
+  },
+  "bugs": {
+    "url": "https://github.com/verily-org/verily/issues"
+  },
+  "homepage": "https://github.com/verily-org/verily"
 }

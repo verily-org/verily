@@ -205,6 +205,9 @@ fa.breadcrumb {
     .login-aside-button:first-child {
         margin-top: 3em !important;
     }
+    .video{
+        widows: 100% !important;;
+    }
 }
 
 .login-aside-button {
@@ -216,8 +219,6 @@ fa.breadcrumb {
 }
 
 .evidence-content {
-    margin-left:30px;
-    width:90%;
     margin-bottom:30px;
 }
 
@@ -317,25 +318,36 @@ fa.breadcrumb {
 
 .video {
     margin-top: 1em;
-    text-align: right;
+    width:50%;
 }
 
-
-.video-answers {
+.video-wrapper {
+    text-align: center;
+}
+.video-spinner{
     text-align: center;
     position: relative;
     padding-bottom: 56.25%; /* 16:9 */
     padding-top: 25px;
     height: 0;
 }
-.video-answers iframe {
+.video-container {
+    text-align: center;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    height: 0;
+}
+.video-container iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
 }
-
+.btn-video-validate{
+    margin-top:5px;
+}
 .question-answer {
 /*    border-left: 5px solid transparent;*/
 }
@@ -445,8 +457,13 @@ fa.breadcrumb {
 }
 .twitter-share-button {
     margin-top: 11px;
+    height:31px;
 }
 
 .comments-content{
     margin-top:20px;
+}
+
+#widget{
+    padding-bottom: 20px !important;
 }

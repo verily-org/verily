@@ -17,5 +17,11 @@
         <a href="../" class="btn btn-default pull-right">Cancel</a>
     </form>
 </div>
-
+<script>
+    $(function(){
+        if(!map_form){
+            if(map_form_initialize)map_form_initialize();
+        }
+    })
+</script>
 {% endblock %}

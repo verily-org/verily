@@ -108,10 +108,16 @@ module.exports = function (db, cb) {
         targetLong: {
             type: 'number'
         },
+        automaticLocation: {
+            type: 'boolean'
+        },
         targetImage: {
             type: 'text'
         },
         targetYoutubeVideoId: {
+            type: 'text'
+        },
+        targetVideoUrl: {
             type: 'text'
         },
         targetDateTimeOccurred: {
@@ -248,8 +254,26 @@ module.exports = function (db, cb) {
             }
         }
     ), Local = db.define('local', {
-        email: String,
-        password: String
+        email: {
+            type: 'text'
+        },
+        password: {
+            type: 'text'
+        },
+        resetPasswordToken: {
+            type: 'text'
+        },
+        resetPasswordExpires: {
+            type: 'date',
+            time: true
+        },
+        verificationToken: {
+            type: 'text'
+        },
+        verified: {
+            type: 'boolean',
+            defaultValue: '0'
+        }
     }, {
         methods: {
             validPassword: function (pass) {
@@ -260,8 +284,8 @@ module.exports = function (db, cb) {
             }
         }
     }), Facebook = db.define('facebook', {
-        id: {
-            type: 'number'
+        facebookId: {
+            type: 'text'
         },
         token: {
             type: 'text'
@@ -278,11 +302,21 @@ module.exports = function (db, cb) {
             },
             role: {
                 type: 'enum',
-                values: ['editor', 'simple']
+                values: ['editor', 'simple', 'admin']
+            },
+            signupPoints: {
+                type: 'number',
+                defaultValue: 0
+            },
+            votingPoints: {
+                type: 'number',
+                defaultValue: 0
+            },
+            postPoints: {
+                type: 'number',
+                defaultValue: 0
             }
-    },{validations: {
-        name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
-    }},
+    },
         {
             methods: {
                 isEditor: function(){
@@ -290,11 +324,16 @@ module.exports = function (db, cb) {
                 },
                 //Currently not being used but can be used for a better maintainability
                 getDisplayName: function(){
-                    console.log('asdasd');
                     return this.name;
+                },
+                getTotalPoints: function () {
+                    var points = this.signupPoints + this.votingPoints + this.postPoints;
+                    return points;
                 }
             }
-        }), Crisis = db.define('crisis', {
+        },{validations: {
+        name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
+    }}), Crisis = db.define('crisis', {
     });
 
     Answer.hasOne('question', Question, {
@@ -328,7 +367,7 @@ module.exports = function (db, cb) {
         autoFetch: true
     });
 
-    Crisis.hasOne('post', Post, {reverse: 'crises', autoFetch: true});
+    Crisis.hasOne('post', Post, {reverse: 'crisis', autoFetch: true});
     Question.hasOne('crisis', Crisis, {
         reverse: 'questions'
     });

@@ -1,15 +1,65 @@
 <div class="form-group">
-    <label><i class="fa fa-crosshairs"></i> Lat Long</label>
+    <label><i class="fa fa-crosshairs"></i> Location</label>
+    <label class="pull-right" style="display:none">
+        <input name="automaticLocation" id="chb-automatic-location"
+               class="checkbox-inline" type="checkbox"> Detect location automatically
+        <input type="hidden" id="hidden-automatic-lat" name="automatic-lat">
+        <input type="hidden" id="hidden-automatic-long" name="automatic-lang">
+    </label>
     {% if type === 'evidence' %}
     <button id="btn-same-latlong" type="button" class="btn btn-link btn-sm btn-same-as">Same as question</button>
     {% endif %}
     <div class="row">
+
         <div class="col-sm-6">
-            <span class="sr-only">Latitude in decimal degrees (e.g. 50.930)</span><input type="text" class="form-control" id="form-target-lat" name="targetLat" placeholder="Latitude in decimal degrees (e.g. 50.930)" value="{{ post.targetLat | default('') }}">
+            <span class="sr-only">Latitude in decimal degrees (e.g. 50.930)</span>
+            <input type="text" class="form-control" id="form-target-lat" name="targetLat"
+                    placeholder="Latitude in decimal degrees (e.g. 50.930)" value="{{ post.targetLat | default('') }}">
         </div>
         <div class="col-sm-6">
-            <span class="sr-only">Longitude in decimal degrees (e.g. -1.422)</span><input type="text" class="form-control collapse-with-margin" id="form-target-long" name="targetLong" placeholder="Longitude in decimal degrees (e.g. -1.422)" value="{{ post.targetLong | default('') }}">
+            <span class="sr-only">Longitude in decimal degrees (e.g. -1.422)</span>
+            <input type="text" class="form-control" id="form-target-long" name="targetLong"
+                    placeholder="Longitude in decimal degrees (e.g. -1.422)" value="{{ post.targetLong | default('') }}">
         </div>
     </div>
 
 </div>
+
+<script type="application/javascript">
+    $(function(){
+
+        if ("geolocation" in navigator) {
+            /* geolocation is available */
+            $('#chb-automatic-location').parent().show();
+        } else {
+            /* geolocation IS NOT available */
+            $('#chb-automatic-location').parent().hide();
+        }
+        $('#chb-automatic-location').change(function(){
+            if(this.checked){
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        set_lat_long(position.coords.latitude, position.coords.longitude);
+                    });
+                }
+            }
+            else{
+
+            }
+        });
+        $('#chb-automatic-location').change();
+        $('#form-target-lat').on('input',function(){
+            $('#chb-automatic-location').attr('checked', false);
+        });
+        $('#form-target-long').on('input',function(){
+            $('#chb-automatic-location').attr('checked', false);
+
+        });
+    });
+    function set_lat_long(lat, long){
+        $('#form-target-lat').val(lat);
+        $('#form-target-long').val(long);
+        $('#hidden-automatic-lat').val(lat);
+        $('#hidden-automatic-long').val(long);
+    }
+</script>

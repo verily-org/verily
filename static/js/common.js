@@ -126,6 +126,26 @@ var validateFormTitle = exports.validateFormTitle = common.validateFormTitle = f
     
     callback(error, value);
 };
+var validateURL = exports.validateURL = common.validateURL = function(value, callback) {
+
+    var error = null;
+    var reg_exp = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
+
+    if (!reg_exp.test(value)) {
+        error = 'provide a valid URL!';
+    }
+
+    callback(error, value);
+};
+var validateComment = exports.validateComment = common.validateComment = function(value, callback) {
+    var error = null;
+
+    if (value.length <= 3) {
+        error = 'write some more!';
+    }
+
+    callback(error, value);
+};
 
 // Used at client and server side.
 var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validateDateTimeOccurred = function(value, elemsParent, elemsIsArray, callback) {

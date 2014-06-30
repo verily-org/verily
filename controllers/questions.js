@@ -3,6 +3,7 @@ var enums = require('../enums');
 var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
+var oembed = require('oembed');
 
 var common = require('../static/js/common');
 
@@ -105,7 +106,7 @@ var editQuestion = function (req, res) {
                 if (req.user){var user = req.user; }
                 res.render('question/edit', {
                     crisis: crisis,
-                    post: question,
+                    post: question.post,
                     question: {
                         id: question.id
                     },
@@ -153,6 +154,7 @@ var getQuestion = function (req, addView, callback) {
                                targetLong: question.post.targetLong,
                                targetImage: question.post.targetImage,
                                targetYoutubeVideoId: question.post.targetYoutubeVideoId,
+                               targetYoutubeVideoUrl: question.post.targetYoutubeVideoUrl,
                                targetDateTimeOccurred: question.post.targetDateTimeOccurred,
                                relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
                                date: question.post.date,
@@ -171,7 +173,7 @@ var getQuestion = function (req, addView, callback) {
 
                            // Answers present.
 
-                           async.each(answers, generic.load_post_ratings_count, function (err) {
+                           async.each(answers, generic.load_answers_extra_fields, function (err) {
                                if (err) {
                                    callback(err);
                                } else {
@@ -199,6 +201,20 @@ var getQuestion = function (req, addView, callback) {
     });  
 };
 
+function oneQuestionResponse(req, res, crisis, question, user, refcodes){
+    res.status(200);
+    res.render('question/one', {
+        crisis: crisis,
+        question: question,
+        page: {
+            title: question.title
+        },
+        user: user,
+        refcodes: refcodes,
+        path: req.path
+    });
+}
+
 // Get a specific question.
 exports.get = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
@@ -219,8 +235,6 @@ exports.get = function (req, res) {
                 
                 // Set the ETag header.
                 //res.set(enums.eTag, question.updated);
-                
-                res.status(200);
                 if (req.user){var user = req.user; }
                 
                 generic.generateRefCodes(4, function(refcodeArray) {
@@ -231,23 +245,31 @@ exports.get = function (req, res) {
                         link: refcodeArray[3]
                     };
                     
-                    res.render('question/one', {
-                        crisis: crisis,
-                        question: question,
-                        page: {
-                            title: question.title
-                        },
-                        user: user,
-                        refcodes: refcodes,
-                        path: req.path
-                    });
+                    if(question.post.targetVideoUrl){
+                        oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
+
+                            if(!err){
+                                question.post.targetVideoHtml = result.html;
+                            }else{
+                                question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
+                            }
+
+
+                            oneQuestionResponse(req, res, crisis, question, user, refcodes);
+                        });
+                    }
+                    else{
+                        oneQuestionResponse(req, res, crisis, question, user, refcodes);
+                    }
                 });
                 
+
 
             }
         });
     });
 };
+
 exports.head = function (req, res) {
 
     // ETag support.
@@ -312,7 +334,7 @@ exports.new = function (req, res) {
 };
 
 // Update question
-exports.update = function (req, res) {
+var update = function (req, res) {
     var crisis_id = req.params.crisis_id;
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
@@ -335,6 +357,11 @@ exports.update = function (req, res) {
     });
 
 };
+
+
+var checkRole = role.can('edit question');
+
+exports.update = [checkRole, update];
 
 // Mark question as Importante
 exports.markImportant = function (req, res) {

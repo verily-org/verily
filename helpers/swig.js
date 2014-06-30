@@ -15,7 +15,9 @@ module.exports = function(swig) {
         return isDownvoted;
     });
     swig.setFilter('relativeTime', function(input, abbreviated) {
-        return utils.date.relativeTime(input, {abbreviated: true});
+        //used this because if the input is not a date the application crashes
+        if(input instanceof Date)
+            return utils.date.relativeTime(input, {abbreviated: true});
     });
     
     swig.setFilter('getMaxTitleLength', function() {

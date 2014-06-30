@@ -20,7 +20,7 @@ exports.route = function (app, controllers, doc) {
     route('get', specific + '/edit', 'edit', 'Edit View; View to edit crisis');
 
     // API endpoint to update crisis
-    route('put', specific, 'update', 'Update; Update crisis');
+    route('post', specific, 'update', 'Update; Update crisis');
 
     route('delete', specific, 'remove', 'Delete; Delete crisis');
 

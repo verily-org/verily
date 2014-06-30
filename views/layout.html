@@ -90,7 +90,6 @@
                             <li><a href="/crisis/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Crisis</a></li>
                         {% endif %}
                     	{% if crisis %}
-                            <li><a href="/question">Questions</a></li>
                             {% if userCan('create a question') %}
                                 <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
                             {% endif %}
@@ -101,6 +100,9 @@
                         {% if user %}
                             <li><a href="/user">{{user.name}}</a></li>
                             <li><a href="/logout">Logout</a></li>
+							{% if userCan('assign roles') %}
+								<li><a href="/admin">Assign Roles</a></li>
+							{% endif %}
                         {% else %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>
@@ -108,10 +110,36 @@
                     </ul>
 
                 </div>
+				
+				
 
             </div>
+			
+			
 
         </nav>
+		
+		<div class="container">
+				{% if info && info.length > 0 %}
+				<div class="alert alert-info">
+					<a class="close" data-dismiss="alert">×</a>
+					{{ info }}
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		
+		<div class="container">
+				{% if error && error.length > 0 %}
+				<div class="alert alert-danger">
+					<a class="close" data-dismiss="alert">×</a>
+					{{ error }}
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		
+		
         <main role="main" id="content" class="container">
             <!-- <ol class="breadcrumb"> -->
                 <!-- <li>

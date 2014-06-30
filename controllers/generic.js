@@ -4,10 +4,14 @@ var enums = require('../enums');
 var config = require('../config');
 var common = require('../static/js/common');
 var utils = require('utilities');
-var async = require('async');
+var mode = require('../mode');
+
 var urlSafeBase64 = require('urlsafe-base64');
 
-var crypto = require('crypto');
+var smtpTransport = require('../lib/auth').mailer,
+crypto = require('crypto'),
+async = require('async');
+
 
 exports.generateRefCodes = function(count, callback) {
     async.times(count, function(n, next) {
@@ -142,10 +146,11 @@ exports.create = function (model, data, req, cb) {
                         title: req.body.title,
                         text: req.body.text,
                         targetImage: targetImagePath,
-                        targetYoutubeVideoId: req.body.targetYoutubeVideoId,
+                        targetVideoUrl: req.body.targetVideoUrl,
                         targetLocality: req.body.targetLocality,
                         targetLat: req.body.targetLat,
                         targetLong: req.body.targetLong,
+                        automaticLocation: req.body.automaticLocation,
                         date: now,
                         author: req.user.name,
                         tags: tags,
@@ -193,6 +198,10 @@ exports.create = function (model, data, req, cb) {
                 
 
             });
+        }
+        else{
+            cb(error, null);
+
         }
     });
     
@@ -379,6 +388,7 @@ exports.load_question_extra_fields = function(question, callback){
                     question.getPost(function(err, post){
                         if (!err && answers) {
                             question.importanceCount = question.post.getImportanceCount();
+                            question.popularityCoefficient = getQuestionPopularityCoefficient(question);
                             callback();
                         }
                         else{
@@ -400,10 +410,11 @@ exports.load_question_extra_fields = function(question, callback){
         question.rejectedAnswerCount = question.getRejectedAnswerCount();
         question.supportedAnswerCount = question.getSupportedAnswerCount();
         question.importanceCount = question.post.getImportanceCount();
+        question.popularityCoefficient = getQuestionPopularityCoefficient(question);
         callback();
     }
 }
-exports.load_post_ratings_count = function(item, callback){
+var load_post_ratings_count_function = function(item, callback){
     //item.post.getUser(function(a,d){});
     item.post.getRatings(function(err, ratings){
         if (!err && ratings) {
@@ -417,10 +428,86 @@ exports.load_post_ratings_count = function(item, callback){
         }
     });
 }
+exports.load_post_ratings_count = load_post_ratings_count_function;
+exports.load_answers_extra_fields = function(answer, callback){
+    //item.post.getUser(function(a,d){});
+    load_post_ratings_count_function(answer, function(err){
+        if(!err){
+            answer.popularityCoefficient = getAnswerPopularityCoefficient(answer);
+            callback();
+        }
+        else{
+            callback(err);
+        }
+    });
+}
 
-exports.getUserAccounts = function (user, cb) {
-    if (user.local_id) {
-        user.getLocal();
+function getQuestionPopularityCoefficient(question){
+    var popularityCoefficient = question.importanceCount + question.rejectedAnswerCount + question.supportedAnswerCount;
+    return popularityCoefficient;
+}
+
+function getAnswerPopularityCoefficient(answer){
+    var popularityCoefficient = answer.post.upvoteCount + answer.post.downvoteCount + answer.post.importanceCount + answer.comments.length;
+    return popularityCoefficient;
+}
+
+exports.generateToken = function (done) {
+    crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+    });
+};
+
+
+exports.sendMailtoLocal = function (req, token, local, scenario, cb) {
+    var text = '';
+    var subject = '';
+    switch (scenario) {
+        case 'verify':
+            subject = 'Verify User Account';
+            text = 'You are receiving this because you (or someone else) have recently created an account on Verily!\n\n'+
+                    'Please click on the following link, or paste this into your browser in order to verify '+
+                    'your account!\n\n'+
+                    'http://' + req.headers.host + '/verify/' + token + '\n\n';
+            break;
+
+        case 'forgot':
+            subject = 'Verily Password Reset';
+            text= 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                'If you did not request this, please ignore this email and your password will remain unchanged.\n';
+            break;
+
+        case 'reset': 
+            subject = 'Your Verily password has been changed';
+            text = 'Hello,\n\n' +
+                    'This is a confirmation that the password for your account ' + local.email + ' has just been changed.\n';
+            break;
+
+        default:
+
     }
 
+    var mailOptions = {
+        to: local.email,
+        from: 'info@verily.com',
+        subject: subject,
+        text: text
+    };
+    
+    if (mode.getRunningMode() === mode.PROD_MODE) {
+        smtpTransport.sendMail(mailOptions, function(err) {
+            if (err) {
+                req.flash('error', 'The email could not be sent.');
+            }
+            cb(err, local);
+        });
+    } else {
+        console.log('Not in production mode, cannot send email');
+    }
+    
+
 };
+

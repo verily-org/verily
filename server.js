@@ -1,5 +1,5 @@
 // test
-module.exports = function (suppressLogs) {
+module.exports = function (suppressLogs, dbTestUrl) {
     var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
@@ -14,11 +14,14 @@ module.exports = function (suppressLogs) {
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         router = require('./routing/router'),
+        config = require('./lib/auth'),
         log = require('./log'),
         ORMSessionStore = require('./orm-session-store')(express),
+        mode = require('./mode'),
         controllers = {},
         heroku,
         syncedModels,
+        global_db,
         db_url;
 
     //initial log functions.
@@ -75,17 +78,16 @@ module.exports = function (suppressLogs) {
     //    });
     //}
 
-    heroku = (process.env.HEROKU_POSTGRESQL_BLACK_URL !== undefined);
-    //heroku = false;
-    //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
-    //console.log('process.env',process.env);
-    if (heroku){
-    	db_url = process.env.HEROKU_POSTGRESQL_BLACK_URL;
+    heroku = mode.isHeroku();
+
+    if(dbTestUrl){
+        db_url = dbTestUrl;
+    }
+    else if (heroku){
+    	db_url = process.env.HEROKU_POSTGRESQL_CRIMSON_URL;
     } else {
     	db_url = "sqlite://app.db";
-        
     }
-    console.log('db_url:', db_url);
     
     // Set up the ORM to SQLite.
     app.use(orm.express(db_url, {
@@ -131,6 +133,7 @@ module.exports = function (suppressLogs) {
                 models.User.sync(function () {console.log("User synced")});
                 models.Question.sync(function () {console.log("Question synced")});
                 models.Answer.sync(function () {console.log("Answer synced")});
+                models.Comment.sync(function () {console.log("Comment synced")});
                 models.Rating.sync(function () {console.log("Rating synced")});
                 models.Facebook.sync(function () {console.log("Facebook synced")});
                 models.Impression.sync(function () {console.log("Impression synced")});
@@ -146,9 +149,11 @@ module.exports = function (suppressLogs) {
                     emitter.emit('model-synced');
                     if (!suppressLogs) {
                         console.logger.info("Model synchronised");
+                        
                     }
                                         
                 });
+                global_db = db;
             });
             next();
         }
@@ -292,6 +297,8 @@ module.exports = function (suppressLogs) {
     // Start everything up.
     function startUp() {
         
+        createAdmin(syncedModels.User, syncedModels.Local);
+        
         app.use(express.cookieParser());
         app.use(express.bodyParser({
             uploadDir: __dirname + '/static/images/submissions-pre'
@@ -404,9 +411,41 @@ module.exports = function (suppressLogs) {
         
     }
 
-
     //process.on('SIGINT', function () {
     //    console.logger.info('Server stopped.');
     //    process.exit(1);
     //});
+
+    var createAdmin = function (User, Local) {
+        User.exists({name: config.admin.username}, function (err, exists) {
+            if (err) {throw err;}
+            if (!exists) {
+
+                User.create([{
+                    name: config.admin.username,
+                    role: 'admin'
+                }], function (err, u_created) {
+                    if (err) {throw err;}
+                    var admin = u_created[0];
+                    Local.create([{
+                        email: config.admin.username
+                    }], function (err, l_created) {
+                        if (err) {throw err;}
+                        var local = l_created[0];
+                        local.password = local.generateHash(config.admin.password);
+                        local.save(function (err) {
+                            if (err) {throw err;}
+                            admin.setLocal(local, function (err) {
+                                if (err) {throw err;}
+                                console.log('Admin user has been created.');
+                            });
+                        });
+                    });
+                });
+            } else {
+                console.log('Admin user already exists.');
+            }
+        });
+    }
+
 };

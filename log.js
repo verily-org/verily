@@ -5,11 +5,11 @@ exports.init = function (config) {
     var logger = new (winston.Logger)({
         transports: [
             new (winston.transports.Console)({
-                handleExceptions: !enums.devMode
+                handleExceptions: enums.productionMode
             }),
             new (winston.transports.File)({
                 filename: config.serverlogfile,
-                handleExceptions: !enums.devMode
+                handleExceptions: enums.productionMode
             })
         ]
     }),
