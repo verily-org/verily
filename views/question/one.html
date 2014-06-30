@@ -201,11 +201,13 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         <!-- / button-email -->
                 
         <!-- small buttons -->
-        <div class="btn-group">
-            <div class="additional-button-ctr">
-                <a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
-            </div>
-        </div>
+        {% if userCan('edit a question') %}
+			<div class="btn-group">
+				<div class="additional-button-ctr">
+					<a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
+				</div>
+			</div>
+		{% endif %}
         
         <div class="btn-group">
             <div class="additional-button-ctr">
