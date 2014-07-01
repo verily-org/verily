@@ -5,6 +5,7 @@ var config = require('../config');
 var common = require('../static/js/common');
 var utils = require('utilities');
 var mode = require('../mode');
+var s3 = require('../s3');
 
 var urlSafeBase64 = require('urlsafe-base64');
 
@@ -122,15 +123,46 @@ exports.create = function (model, data, req, cb) {
                         
                         var imageId = now.getTime() + random;
                     
-                        var targetImagePath = '/static/images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
+                        // Base target image path.
+                        var targetImagePath = '/images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
                         
-                        fs.rename(req.files.targetImageUpload.path, config.project_dir + targetImagePath, function(err) {
-                            if (err) {
-                                cb(err, null);
-                            }
-                            imageHandled(targetImagePath);
+                        if (mode.isHeroku()) {
+                            console.log('before s3 upload');
+                            // Running on Heroku, so store in S3.
+                            var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
+                            s3.put(targetImagePath, fileReadStream, function(err, data) {
+                                if (err) {
+                                    console.log('Error in AWS S3 upload:')
+                                    console.log(err);
+                                } else {
+                                    console.log('AWS S3 -- successful upload');
+                                }
+                                console.log('s3 data');
+                                console.log(data);
+                                                                
+                                // URL that the file is available on S3.
+                                var destinationUrl = 'https://' + s3.BUCKET_ID + '.s3.amazonaws.com' + targetImagePath;
+                                
+                                imageHandled(destinationUrl);
+                                
+                            });
+                            
+                        } else {
+                            // Not running on Heroku, so store in filesystem.
+                            targetImagePath = '/static' + targetImagePath;
+                            
+                            fs.rename(req.files.targetImageUpload.path, config.project_dir + targetImagePath, function(err) {
+                                if (err) {
+                                    cb(err, null);
+                                }
+                                imageHandled(targetImagePath);
                         
-                        });
+                            });
+                        }
+                        
+                         
+                        
+
                         
                     });
                 } else {
