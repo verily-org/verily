@@ -120,7 +120,7 @@ var editQuestion = function (req, res) {
     });
 }
 
-var checkRole = role.can('edit question');
+var checkRole = role.can('edit a question');
 
 exports.edit = [checkRole, editQuestion];
 
@@ -358,7 +358,7 @@ var update = function (req, res) {
 };
 
 
-var checkRole = role.can('edit question');
+var checkRole = role.can('edit a question');
 
 exports.update = [checkRole, update];
 

@@ -187,7 +187,7 @@ var editCrisis = function (req, res) {
 }
 
 
-var checkRole = role.can('edit crisis');
+var checkRole = role.can('edit a crisis');
 
 exports.edit = [checkRole, editCrisis];
 
@@ -215,6 +215,6 @@ var update = function (req, res) {
 };
 
 
-var checkRole = role.can('edit question');
+var checkRole = role.can('edit a crisis');
 
 exports.update = [checkRole, update];
