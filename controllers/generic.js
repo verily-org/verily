@@ -124,7 +124,7 @@ exports.create = function (model, data, req, cb) {
                         var imageId = now.getTime() + random;
                     
                         // Base target image path.
-                        var targetImagePath = '/images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
+                        var targetImagePath = 'images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
                         
                         if (mode.isHeroku()) {
                             console.log('before s3 upload');
@@ -141,7 +141,7 @@ exports.create = function (model, data, req, cb) {
                                 console.log(data);
                                                                 
                                 // URL that the file is available on S3.
-                                var destinationUrl = 'https://' + s3.BUCKET_ID + '.s3.amazonaws.com' + targetImagePath;
+                                var destinationUrl = 'https://' + s3.BUCKET_ID + '.s3.amazonaws.com/' + targetImagePath;
                                 
                                 imageHandled(destinationUrl);
                                 
@@ -149,7 +149,7 @@ exports.create = function (model, data, req, cb) {
                             
                         } else {
                             // Not running on Heroku, so store in filesystem.
-                            targetImagePath = '/static' + targetImagePath;
+                            targetImagePath = '/static/' + targetImagePath;
                             
                             fs.rename(req.files.targetImageUpload.path, config.project_dir + targetImagePath, function(err) {
                                 if (err) {
