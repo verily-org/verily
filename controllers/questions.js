@@ -144,7 +144,7 @@ var getQuestion = function (req, addView, callback) {
             question.getAnswers(function (err, answers) {
                if (!err && answers) {
                    generic.load_question_extra_fields(question, function(err){
-                       if (!err ) {
+                       if (!err) {
                            var questionTmp = {
                                title: question.post.title,
                                id: question.id,
@@ -200,6 +200,20 @@ var getQuestion = function (req, addView, callback) {
     });  
 };
 
+function oneQuestionResponse(req, res, crisis, question, user, refcodes){
+    res.status(200);
+    res.render('question/one', {
+        crisis: crisis,
+        question: question,
+        page: {
+            title: question.title
+        },
+        user: user,
+        refcodes: refcodes,
+        path: req.path
+    });
+}
+
 // Get a specific question.
 exports.get = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
@@ -221,37 +235,40 @@ exports.get = function (req, res) {
                 // Set the ETag header.
                 //res.set(enums.eTag, question.updated);
                 if (req.user){var user = req.user; }
-                if(question.post.targetVideoUrl){
-                    oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
+                
+                generic.generateRefCodes(4, function(refcodeArray) {
+                    var refcodes = {
+                        twitter: refcodeArray[0],
+                        facebook: refcodeArray[1],
+                        email: refcodeArray[2],
+                        link: refcodeArray[3]
+                    };
+                    
+                    if(question.post.targetVideoUrl){
+                        oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
 
-                        if(!err){
-                            question.post.targetVideoHtml = result.html;
-                        }else{
-                            question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
-                        }
+                            if(!err){
+                                question.post.targetVideoHtml = result.html;
+                            }else{
+                                question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
+                            }
 
 
-                        oneQuestionResponse(res, crisis, question, user);
-                    });
-                }
-                else{
-                    oneQuestionResponse(res, crisis, question, user);
-                }
+                            oneQuestionResponse(req, res, crisis, question, user, refcodes);
+                        });
+                    }
+                    else{
+                        oneQuestionResponse(req, res, crisis, question, user, refcodes);
+                    }
+                });
+                
+
+
             }
         });
     });
 };
-function oneQuestionResponse(res, crisis, question, user){
-    res.status(200);
-    res.render('question/one', {
-        crisis: crisis,
-        question: question,
-        page: {
-            title: question.title
-        },
-        user: user
-    });
-}
+
 exports.head = function (req, res) {
 
     // ETag support.

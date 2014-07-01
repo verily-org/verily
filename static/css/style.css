@@ -136,6 +136,46 @@ fa.breadcrumb {
     width: 3em;
 }
 
+#fb-root {
+    display: inline-block;
+}
+
+#facebook-share-button > span {
+    width: 80px !important;
+    height: 16px !important;
+}
+
+.facebook-blue {
+    color: #3b5998;
+}
+
+#facebook-share-button iframe {
+    transform: scale(1.3);
+    -ms-transform: scale(1.3); 
+    -webkit-transform: scale(1.3); 
+    -o-transform: scale(1.3); 
+    -moz-transform: scale(1.3); 
+    transform-origin: top left;
+    -ms-transform-origin: top left;
+    -webkit-transform-origin: top left;
+    -moz-transform-origin: top left;
+    -webkit-transform-origin: top left;
+}
+
+.modal .vertically-centred {
+
+}
+
+#modal-share-question-link .modal-body {
+/*    padding: 0;*/
+    text-align: center;
+}
+
+#field-share-question-link {
+    border: none;
+}
+
+
 .question-answer .action-button-ctr {
     padding-top: 1em;
     margin-top: 0;

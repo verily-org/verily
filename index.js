@@ -2,12 +2,7 @@ var fs = require('fs'),
     http = require('http');
 
 function start() {
-    var app = require('./server')(false, null, function(app){
-        exports.app = app;
-        http.createServer(app).listen(app.get('port'), function(){
-            console.log('Express server listening on port ' + app.get('port'));
-        });
-    });
+    require('./server')(false, null);
 }
 
 if (process.argv[2] && (process.argv[2] === '-r' || process.argv[2] === '-reset')) {
