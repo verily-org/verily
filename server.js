@@ -3,6 +3,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
     var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
+        cleaner = require('./cleaner')(),
         orm = require('orm'),
         app = express(),
         emitter = require('./event-emitter')(),
@@ -178,9 +179,11 @@ module.exports = function (suppressLogs, dbTestUrl) {
         }
     }
     
+
+    
     // Express middleware for analytics
     var analytics = function(req, res, next) {
-
+        
         var impression = {
             path: req.path,
             requestMethod: req.method,
@@ -321,7 +324,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                         
         }
 
-    }
+    };
     
     
     // Start everything up once the models have synced.
@@ -338,6 +341,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
         app.use(express.bodyParser({
             uploadDir: __dirname + '/static/images/submissions-pre'
         }));
+        // Call the cleaner now!
+        app.use(cleaner);
                 
         app.use(express.session({
             secret: 'd9WvgPUdReT8D3dH50FUXuwkpMOcAxA1Nll8sLG9j1s',
