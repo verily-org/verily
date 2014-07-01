@@ -8,10 +8,6 @@ if (typeof module !== 'undefined') {
     isNodeJS = true;
 }
 
-// Common namespace for browsers
-var common = {};
-
-
 var map_init = function(id) {
     var map = new OpenLayers.Map(id);
     layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
@@ -42,8 +38,7 @@ var map_add_marker = function(map, lat, long){
     });
     // Layer for placing the damage/impact marker
     var damageLayer = new OpenLayers.Layer.Vector("Damage/Impact Layer", {
-        styleMap: styleDamage,
-        attribution: 'Marker Icons by <a href="http://mapicons.nicolasmollet.com/">Nicolas Mollet</a>'
+        styleMap: styleDamage
     });
     map.addLayer(damageLayer);
     map_set_marker(map, lat, long, damageLayer);

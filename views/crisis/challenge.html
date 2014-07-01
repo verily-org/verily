@@ -1,0 +1,156 @@
+{% set page.title = "Verily Challenge" %}
+{% extends '../layout.html' %}
+
+{% block navigation %}
+{% endblock %}
+{% block main %}
+    <style>
+        body{
+            background-color:black;
+        }
+        .section{
+            padding-top:45px;
+            padding-bottom:45px;
+            font-size: 20px;
+            color:#333333;
+        }
+        .section-white{
+            background-color:white;
+            color:black;
+            -webkit-box-shadow: 0px 4px 7px 0px rgba(22, 22, 22, 0.86) inset, 0px -4px 7px 0px rgba(22, 22, 22, 0.86) inset;
+            -moz-box-shadow:    0px 4px 7px 0px rgba(22, 22, 22, 0.86) inset, 0px -4px 7px 0px rgba(22, 22, 22, 0.86) inset;
+            box-shadow:         0px 4px 7px 0px rgba(22, 22, 22, 0.86) inset, 0px -4px 7px 0px rgba(22, 22, 22, 0.86) inset;
+
+        }
+        .section-whitee{
+            background-color:white;
+            color:black;
+            -webkit-box-shadow: 0px 5px 7px 0px rgba(244, 244, 244, 0.86), 0px -5px 7px 0px rgba(244, 244, 244, 0.86);
+            -moz-box-shadow:    0px 5px 7px 0px rgba(244, 244, 244, 0.86), 0px -5px 7px 0px rgba(244, 244, 244, 0.86);
+            box-shadow:         0px 5px 7px 0px rgba(244, 244, 244, 0.86), 0px -5px 7px 0px rgba(244, 244, 244, 0.86);
+
+        }
+        .verily-button{
+
+            text-align: center;
+        }
+    </style>
+    <div style="height:60px;">
+
+    </div>
+    <div class="section-white" style="text-align: center;">
+        <div style="padding:20px;"> <img src="/static/css/images/v-challenge.png"/> </div>
+    </div>
+    <div class="container section">
+        <div class="row">
+            <div class="col-sm-5">
+                <img src="/static/css/images/fake-img.png" />
+            </div>
+            <div class="col-sm-7">
+                <p style="font-size:30px;">
+                    We live in the Information Age... or the Disinformation Age.
+                    Finding out the truth in the vast amounts of contradictory information is becoming
+                    increasingly difficult for each of us.
+                </p>
+            </div>
+        </div>
+       </div>
+    <div class="section section-white">
+        <div class="container">
+            <p style="font-size: 60px; font-weight: bold; text-align:center">
+                Can a coordinated collective effort be effective in quickly discerning true answers to
+                key questions?
+            </p>
+        </div>
+    </div>
+    <div class="section">
+        <div class="container">
+            <div style='font-family:"trebuchet ms"; color:white; text-align: center; font-size:50px;font-weight:bold; margin-bottom: 20px;'>
+                It's all for a good cause!
+            </div>
+            <div style='font-size:22px; text-align: center; color: white;margin-bottom: 50px;'>
+                Accurate information is life-saving in extreme situations such as natural disasters.
+                This fun challenge is a pilot to prove feasibility of timely verification.
+                The same platform will soon be used to gather evidence during natural disasters,
+                which will enable more effective disasters response.
+                Your participation will help design a better platform.
+            </div>
+            <div style="color:#428bca">
+                More on verily:
+            </div>
+            <br/>
+            <div class="col-sm-4 verily-button">
+                <a href="https://www.youtube.com/watch?v=7eKkquHiFE4&t=10m42s" target="_blank">
+                    <i class="fa fa-youtube-play fa-5x"></i></br>
+                    Video
+                </a>
+            </div>
+            <div class="col-sm-4 verily-button">
+                <a href="http://veri.ly" target="_blank">
+                    <i class="fa fa-external-link fa-5x"></i></br>
+                    Site
+                </a>
+            </div>
+            <div class="col-sm-4 verily-button">
+                <a href="http://irevolution.net/2013/02/19/verily-crowdsourcing-evidence/" target="_blank">
+                    <i class="fa fa-file-text fa-5x"></i></br>
+                    Blog Post
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <div class="section section-white">
+        <div class="container">
+            <div style='font-size:50px; font-family:fantasy ; font-weight:bold; text-align:center'>
+                The Challenge
+            </div>
+            <br/>
+            <br/>
+            <div class="clearfix">
+                <div class="col-sm-4" style='font-size:50px; '>
+                    50 questions!
+                </div>
+                <div class="col-sm-8">
+                    <ul class="">
+                        <li>
+                            Can you prove that a displayed picture was taken from London Bridge this morning?
+                        </li>
+                        <li>
+                            Do you know somebody that will help you find out whether a convenience store at the corner of Revolution
+                            and Victory streets in the Siberian village of Lyoviha opens at 9am?
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style='font-size:30px; font-family:fantasy ; font-weight:bold; text-align:center; margin-top: 30px'>
+                Can you help answering them? Submit evidence, call your contacts, earn points, observe collective progress, be altruistic and win a certificate!
+            </div>
+        </div>
+    </div>
+    <div class="section" style='font-size:30px; text-align: center; font-weight: bold'>
+        <div class="container">
+            Interested? Drop us your email and we'll keep you posted:<br/>
+            <form >
+                <input type="text" class="form-control input-lg" id="form-email" name="email" placeholder="Email">
+                <input id="btn-submit-email" type="submit" value="submit" class="btn" />
+            </form>
+        </div>
+    </div>
+<script type="application/javascript">
+
+    $(function(){
+        $('#btn-submit-email').on('click', function(){
+            show_alert_message('warning', 5000, "Atention", "Submit under construction ");
+            return false;
+            $.post('/challenge',
+                    function(data){
+                        var answer = data;
+                        show_alert_message('success', 5000, "Email sent", "Thank you! We're looking forward to your contributions!");
+                    }).fail(function(){
+                        show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
+                    });
+        });
+    });
+</script>
+{% endblock %}

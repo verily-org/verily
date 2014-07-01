@@ -67,12 +67,14 @@
                 </div>
             </div>
         </div>
-        <div id="alert-window" style="display:none" class="alert alert-warning alert-dismissable">
+        <div id="alert-window" style="display:none; position:fixed;" class="alert alert-warning alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             <h4 class="alert-title"></h4>
             <span class="alert-message"></span>
         </div>
         <a href="#content" class="sr-only">Skip to main content</a>
+
+        {% block navigation %}
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
@@ -119,6 +121,7 @@
 			
 
         </nav>
+        {% endblock navigation %}
 		
 		<div class="container">
 				{% if info && info.length > 0 %}
@@ -139,17 +142,19 @@
 				{% endif %}
 			</div>
 		</div>
+
+        {% block main %}
 		
-		
-        <main role="main" id="content" class="container">
-            <!-- <ol class="breadcrumb"> -->
-                <!-- <li>
-                    <a href="/" title="Home">Home</a>
-                </li> -->
-                <!-- {% block breadcrumb %}{% endblock %} -->
-            <!-- </ol> -->
-            {% block content %}{% endblock %}
-        </main>
+            <main role="main" id="content" class="container">
+                <!-- <ol class="breadcrumb"> -->
+                    <!-- <li>
+                        <a href="/" title="Home">Home</a>
+                    </li> -->
+                    <!-- {% block breadcrumb %}{% endblock %} -->
+                <!-- </ol> -->
+                {% block content %}{% endblock %}
+            </main>
+        {% endblock %}
     </body>
 </html>
 

@@ -170,7 +170,6 @@ var getQuestion = function (req, addView, callback) {
                            }, wrapper = {
                                question: questionTmp
                            };
-
                            // Answers present.
 
                            async.each(answers, generic.load_answers_extra_fields, function (err) {
