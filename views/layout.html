@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+{% set challengeActive = null|challengeActive %}
     <head>
         <meta charset="utf-8">
         <title>{% if page.title %}{{ page.title }} &middot; {% endif %}Verily</title>
@@ -11,6 +12,8 @@
         <!-- TODO Use bower and modify Bootstrap to our needs -->
         
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        
+        <link href="http://fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
         
         <link href="/static/css/style.css" rel="stylesheet">
         
@@ -80,13 +83,17 @@
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
+                    {% if challengeActive %}
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand active" href="/" title="Home">Verily</a>
+                    {% endif %}
+                    <a class="navbar-brand active logo {% if path === '/' %}welcome{% endif %}" href="/" title="Home">
+                        <span class="first-char">V</span>erily
+                    </a>
                 </div>
                 <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
                     <ul class="nav navbar-nav">
@@ -108,7 +115,7 @@
 							{% if userCan('assign roles') %}
 								<li><a href="/admin">Assign Roles</a></li>
 							{% endif %}
-                        {% else %}
+                        {% elseif challengeActive or (path !== '/' and path !== '/about') %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>
                         {% endif %}
@@ -124,26 +131,30 @@
 
         </nav>
         {% endblock navigation %}
+        
+        <div class="flash-msgs-ctr">
 		
-		<div class="container">
-				{% if info && info.length > 0 %}
-				<div class="alert alert-info">
-					<a class="close" data-dismiss="alert">×</a>
-					{{ info }}
-				</div>
-				{% endif %}
-			</div>
-		</div>
+    		<div class="container flash-msg-ctr">
+    				{% if info and info.length > 0 %}
+    				<div class="alert alert-info">
+    					<a class="close" data-dismiss="alert">×</a>
+    					{{ info }}
+    				</div>
+    				{% endif %}
+    			</div>
+    		</div>
 		
-		<div class="container">
-				{% if error && error.length > 0 %}
-				<div class="alert alert-danger">
-					<a class="close" data-dismiss="alert">×</a>
-					{{ error }}
-				</div>
-				{% endif %}
-			</div>
-		</div>
+    		<div class="container flash-msg-ctr">
+    				{% if error and error.length > 0 %}
+    				<div class="alert alert-danger">
+    					<a class="close" data-dismiss="alert">×</a>
+    					{{ error }}
+    				</div>
+    				{% endif %}
+    			</div>
+    		</div>
+        
+        </div>
 
         {% block main %}
 		
@@ -155,6 +166,18 @@
                     <!-- {% block breadcrumb %}{% endblock %} -->
                 <!-- </ol> -->
                 {% block content %}{% endblock %}
+                <footer>
+                    <div class="text-muted">
+                        <a href="/copyright">&copy; 2014 Verily.</a>
+                    </div>
+                    <div class="text-muted">
+                        <a href="/about">About</a>
+                        &middot;
+                        <a href="/terms">Terms</a>
+                        &middot;
+                        <a href="/privacy">Privacy</a>
+                    </div>
+                </footer>
             </main>
         {% endblock %}
     </body>

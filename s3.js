@@ -5,8 +5,9 @@ var mode = require('./mode');
 var aws = require('aws-sdk');
 var s3Client = null;
 
-var DEFAULT_ACL = 'public-read';
+var DEFAULT_ACL = 'bucket-owner-full-control';
 exports.BUCKET_ID = process.env.S3_BUCKET_ID;
+exports.S3_SUBSCRIBERS_BUCKET_KEY = process.env.S3_SUBSCRIBERS_BUCKET_KEY + '/subscribers.json';
 
 aws.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -27,18 +28,29 @@ exports.client = function() {
 };
 
 // Higher-level API for uploading using AWS SDK putObject method.
-exports.put = function(key, body, callback) {
+exports.put = function(key, body, acl, callback) {
+    if (!acl) {
+        acl = DEFAULT_ACL;
+    }
     var params = {
         Bucket: exports.BUCKET_ID,
         Key: key,
-        ACL: DEFAULT_ACL,
+        ACL: acl,
         Body: body
-    }
+    };
     exports.client().putObject(params, function(err, data) {
         callback(err, data);
     });
 };
 
-
-
-
+// Higher-level API for downloading using AWS SDK getObject method.
+exports.get = function(key, callback) {
+    var params = {
+        Bucket: exports.BUCKET_ID,
+        Key: key,
+    };
+    
+    exports.client().getObject(params, function(err, data) {
+        callback(err, data);
+    });
+};

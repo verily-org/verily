@@ -1,0 +1,199 @@
+{% extends '../layout.html' %}
+
+{% set path = '/' %}
+
+{% block content %}
+
+<script type="text/javascript">
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '1430472757228218',
+    xfbml      : true,
+    version    : 'v2.0'
+  });
+};
+
+(function(d, s, id){
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement(s); js.id = id;
+   js.src = "//connect.facebook.net/en_US/sdk.js";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+</script>
+<div id="fb-root"></div>
+
+<div class="welcome">
+    <div class="well">
+        <h2>
+            <strong>#VerilyLive</strong>
+        </h2>
+        <p class="lead">
+             The global crowdsourcing challenge for evidence collection and verification
+        </p>
+        <p class="lead event-date">
+            <i class="fa fa-calendar-o"></i> <span id="eventStart">Saturday 12 July 09:00</span>
+                      &ndash; <span id="eventEnd">Sunday 13 July 16:00</span>
+        </p>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone" id="button-switch-local">Local</button>
+            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone active" id="button-switch-utc">UTC/GMT</button>
+        </div>
+        {% if challengeActive %}
+        <div class="enter-challenge-ctr">
+            <a class="btn btn-primary btn-lg btn-block" href="/crisis/1/">Enter Challenge</a>
+        </div>
+        {% endif %}
+        <div class="share-buttons">
+            <a href="https://twitter.com/intent/tweet?button_hashtag=VerilyLive&text=12%E2%80%9313%20July%3A%20Global%20crowdsourcing%20challenge%20for%20evidence%20collection%20and%20verification" class="twitter-hashtag-button twitter-share-button btn-group share-button" data-size="large" data-url="http://veri.ly/">Tweet #VerilyLive</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+            
+            <div class="btn-group">
+                <a class="btn btn-default btn-large text-action-button share-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
+            </div>
+            
+            <div class="btn-group">
+                <a class="btn btn-default add-to-calendar-button text-action-button share-button" href="/static/verily-live.ics"><i class="fa fa-calendar-o"></i> Add to calendar</a>
+            </div>
+            
+            <div class="btn-group">
+                <a class="btn btn-default add-to-calendar-button text-action-button share-button" href="https://www.youtube.com/watch?v=7eKkquHiFE4"><i class="fa fa-play-circle"></i> Watch intro</a>
+            </div>
+            
+            <div class="btn-group">
+                <a class="btn btn-default add-to-calendar-button text-action-button share-button" href="http://irevolution.net/2013/02/19/verily-crowdsourcing-evidence/"><i class="fa fa-align-left"></i> Read more</a>
+            </div>
+            
+        </div>
+        
+
+        
+    </div>
+    
+
+    <p class="lead">
+        Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult. We want to enable humanitarian organisations to send resources where needed in response to natural disasters, where accurate and timely information is critical. 
+    </p>
+    <p class="lead">
+        To prepare the platform for disaster response, we want to ascertain whether the crowd can coordinate effectively in response to our challenge questions. We want to determine whether Verily performs appropriately in time-critical events, and understand the methods of interaction in evidence collection and verification.
+    </p>
+    
+    {% if !challengeActive %}
+    <div class="signup-form-for-updates">
+        <form role="form" action="/subscriber" method="POST">
+            <h3>Sign up for updates</h3>
+            <input type="email" class="form-control input-lg" name="email" placeholder="Email">
+            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Subscribe">
+        </form>
+    </div>
+    {% endif %}
+    
+</div>
+
+<script src="/static/js/moment.js"></script>
+<script type="text/javascript">
+// Calculate local time.
+// (c) 2014 Alex Greenland. MIT Licence.
+
+// In UTC:
+var year = 2014;
+var month = 7;
+var startDate = 12;
+var endDate = 13;
+var startHour = 9;
+var endHour = 16;
+var minutes = seconds = msecs = 0;
+
+var momentFormat = 'dddd D MMMM ha';
+
+
+var eventStart = new Date();
+eventStart.setUTCFullYear(year);
+eventStart.setUTCMonth(month - 1);
+eventStart.setUTCDate(startDate);
+eventStart.setUTCHours(startHour, minutes, seconds, msecs);
+
+var eventEnd = new Date();
+eventEnd.setUTCFullYear(year);
+eventEnd.setUTCMonth(month - 1);
+eventEnd.setUTCDate(endDate);
+eventEnd.setUTCHours(endHour, minutes, seconds, msecs);
+
+var eventStartFormatted = moment(eventStart);
+var eventEndFormatted = moment(eventEnd);
+
+function updateDisplay(isLocal) {
+    $('#eventStart').text(eventStartFormatted.format(momentFormat));
+    $('#eventEnd').text(eventEndFormatted.format(momentFormat));
+    
+    if (isLocal) {
+        // Local time
+        $('#button-switch-local').addClass('active');
+        $('#button-switch-utc').removeClass('active');
+    } else {
+        // UTC
+        $('#button-switch-utc').addClass('active');
+        $('#button-switch-local').removeClass('active');
+    }
+    
+    
+}
+
+// Go into local mode.
+eventStartFormatted.local();
+eventEndFormatted.local();
+
+updateDisplay(true);
+
+$('#button-switch-utc').click(function(e) {
+    // Go into UTC mode.
+    eventStartFormatted.utc();
+    eventEndFormatted.utc();
+    
+    updateDisplay(false);
+});
+
+$('#button-switch-local').click(function(e) {
+    // Go into local mode.
+    eventStartFormatted.local();
+    eventEndFormatted.local();
+    
+    updateDisplay(true);
+});
+
+
+// console.log('eventStartUtc');
+// console.log(eventStartUtc);
+//
+// console.log('eventEndUtc');
+// console.log(eventEndUtc);
+
+// var nowLocal = new Date(Date.now());
+// var timezoneOffsetMsec = nowLocal.getTimezoneOffset() * 60000;
+//
+// console.log('nowLocal.getTimezoneOffset(): ' + nowLocal.getTimezoneOffset())
+// console.log('timezoneOffsetMsec: ' + timezoneOffsetMsec)
+//
+// var eventStartLocal = new Date(eventStartUtc.getTime() - timezoneOffsetMsec);
+// var eventEndLocal = new Date(eventEndUtc.getTime() - timezoneOffsetMsec);
+
+// console.log('eventStartLocal');
+// console.log(eventStartLocal);
+//
+// console.log('eventEndLocal');
+// console.log(eventEndLocal);
+
+
+var facebookShareButton = document.getElementById('facebook-share-button');
+facebookShareButton.addEventListener('click', function(e) {
+    FB.ui({
+      method: 'feed',
+      href: 'http://veri.ly/',
+    }, function(response){
+        
+    });
+});
+
+</script>
+
+{% endblock %}

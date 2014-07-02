@@ -55,10 +55,11 @@ exports.index = function (req, res) {
             res.status(200);
             if (req.user){var user = req.user; }
             //res.json(crises);
-            res.render('crisis/index', {
+            res.render('generic/index', {
                 page: {
 
                 },
+                path: '/',
                 crises: crises,
                 user: user,
                 info: req.flash('info'),
@@ -67,20 +68,38 @@ exports.index = function (req, res) {
         }
     });
 };
-//get the challenge welcome page
-exports.challenge = function (req, res) {
+
+exports.about = function (req, res) {
     res.status(200);
     if (req.user){var user = req.user; }
-    //res.json(crises);
-    res.render('crisis/challenge', {
+    res.render('generic/about', {
         page: {
-
         },
+        path: '/about',
         user: user,
         info: req.flash('info'),
         error: req.flash('error')
     });
 };
+
+
+
+//get the challenge welcome page
+// exports.challenge = function (req, res) {
+//     res.status(200);
+//     if (req.user){var user = req.user; }
+//     //res.json(crises);
+//     res.render('crisis/challenge', {
+//         page: {
+//
+//         },
+//         user: user,
+//         info: req.flash('info'),
+//         error: req.flash('error')
+//     });
+// };
+
+
 //post to challenge_email
 exports.challenge_email = function (req, res) {
     //todo: Save email, return to welcome page with feedback

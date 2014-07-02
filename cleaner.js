@@ -3,7 +3,7 @@ var sanitizer = require('sanitizer'),
 
 // Express middleware for sanitization and validation
 // of all request data.
-// (C) 2014 Alex Greenland. MIT Licence.
+// (c) 2014 Alex Greenland. MIT Licence.
 module.exports = function() {
     
     // Recursive cleaning function.
