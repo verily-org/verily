@@ -322,6 +322,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 });
             });
                         
+        } else {
+            next();
         }
 
     };

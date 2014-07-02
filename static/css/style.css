@@ -53,6 +53,10 @@ a {
     line-height: 60px;
 }
 
+.transparent {
+    background-color: transparent;
+}
+
 .flash-msgs-ctr {
     padding-top: 1.5em;
 }
