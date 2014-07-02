@@ -45,8 +45,7 @@ var checkRole = role.can('create a crisis');
 exports.new = [checkRole, newCrisis];
 
 
-
-//get 10 last crises
+// Homepage
 exports.index = function (req, res) {
     req.models.Crisis.find({}, 10,function (err, crises) {
         if (err) {
@@ -54,6 +53,17 @@ exports.index = function (req, res) {
         } else {
             res.status(200);
             if (req.user){var user = req.user; }
+            
+            var cookieMessageSeen = true;
+            
+            if (!req.session.hasOwnProperty('cookieMessageSeen') || !req.session.cookieMessageSeen) {
+                // Cookie message not seen yet.
+                cookieMessageSeen = false;
+                // True because they will have seen the cookie message upon this response
+                // so that on next request cookieMessageSeen will return as true.
+                req.session.cookieMessageSeen = true;
+            }
+                        
             //res.json(crises);
             res.render('generic/index', {
                 page: {
@@ -62,6 +72,7 @@ exports.index = function (req, res) {
                 path: '/',
                 crises: crises,
                 user: user,
+                cookieMessageSeen: cookieMessageSeen,
                 info: req.flash('info'),
                 error: req.flash('error')
             });
