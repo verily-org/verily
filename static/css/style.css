@@ -1,5 +1,108 @@
+body {
+    text-rendering: optimizeLegibility;
+    font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+}
+
 #content {
     margin-bottom: 1em;
+}
+
+footer {
+    margin-top: 3em;
+}
+
+footer a {
+    color: #777777 !important;
+}
+
+#fb-root {
+    display: none;
+}
+
+a {
+    color: #007ea5 !important;
+}
+
+.btn-primary {
+    background-color: #007ea5;
+    border-color: #006c8d;
+    color: #ffffff !important;
+}
+
+.btn-default {
+    background-color: transparent;
+}
+
+.logo {
+    font-family: 'Abril Fatface', cursive;
+    color: #007ea5 !important;
+    font-size: 35px;
+}
+
+.logo .first-char {
+    font-family: 'Cinzel Decorative', cursive;
+    letter-spacing: -0.13em;
+}
+
+.logo.welcome {
+    font-size: 60px;
+    line-height: 60px;
+}
+
+.flash-msgs-ctr {
+    padding-top: 1.5em;
+}
+
+div.welcome {
+/*    margin-top: 3em;*/
+}
+
+div.welcome .well {
+    padding-top: 0;
+}
+
+div.welcome p.lead {
+    margin-bottom: 0.5em;
+}
+
+div.welcome p.event-date {
+    display: inline-block;
+    margin-right: 0.5em;
+}
+
+div.welcome .button-switch-timezone {
+    font-weight: normal;
+}
+
+div.welcome .share-buttons {
+}
+
+div.welcome .enter-challenge-ctr {
+    margin-top: 0.5em;
+}
+
+div.welcome .share-buttons .btn-group {
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+}
+
+div.welcome .add-to-calendar-button {
+/*    margin-left: 0.5em;*/
+}
+
+div.welcome .signup-form-for-updates input {
+    margin-bottom: 0.5em;
+}
+
+
+
+.navbar-default {
+    background-color: transparent;
+    border-color: transparent;
 }
 
 /* TODO: Use LESS variables */
@@ -51,10 +154,10 @@ fa.breadcrumb {
 }
 
 .question.page-header {
-    border-left-width: 0.75em;
+/*    border-left-width: 0.75em;
     border-left-style: solid;
     padding-left: 1em;
-    border-bottom-style: none;
+    border-bottom-style: none;*/
 }
 
 .action-buttons {
@@ -87,10 +190,20 @@ fa.breadcrumb {
     margin-top: 1em;
 }
 
+
+
 .text-action-button {
 /*    width: 7em;*/
+
     min-width: 4em;
     font-weight: 800;
+
+}
+
+.text-action-button.share-button {
+    height: 28px;
+    padding: 3px 12px;
+/*    background-color: transparent;*/
 }
 
 .text-action-button * {
@@ -136,17 +249,13 @@ fa.breadcrumb {
     width: 3em;
 }
 
-#fb-root {
-    display: inline-block;
-}
-
 #facebook-share-button > span {
     width: 80px !important;
     height: 16px !important;
 }
 
 .facebook-blue {
-    color: #3b5998;
+    color: #3b5998 !important;
 }
 
 #facebook-share-button iframe {
@@ -455,9 +564,9 @@ fa.breadcrumb {
     right:50px;
     z-index:10000;
 }
-.twitter-share-button {
+.question .twitter-share-button {
     margin-top: 11px;
-    height:31px;
+/*    height:31px;*/
 }
 
 .comments-content{

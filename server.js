@@ -36,7 +36,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
     controllers.users = require('./controllers/users');
     controllers.ratings = require('./controllers/ratings');
     controllers.crises = require('./controllers/crises');
-
+    controllers.subscribers = require('./controllers/subscribers');
 
 
     app.use(connect.urlencoded());

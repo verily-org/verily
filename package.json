@@ -35,10 +35,11 @@
     "base62": "0.1.1",
     "urlsafe-base64": "0.0.2",
     "oembed": "0.1.0",
-	"nodemailer": "0.6.5",
+    "nodemailer": "0.6.5",
     "aws-sdk": "2.0.4",
     "sanitizer": "0.1.1",
-    "validator": "3.16.0"
+    "validator": "3.16.0",
+    "moment": "^2.7.0"
   },
   "devDependencies": {},
   "scripts": {

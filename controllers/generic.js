@@ -130,15 +130,13 @@ exports.create = function (model, data, req, cb) {
                             console.log('before s3 upload');
                             // Running on Heroku, so store in S3.
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
-                            s3.put(targetImagePath, fileReadStream, function(err, data) {
+                            s3.put(targetImagePath, fileReadStream, 'public-read', function(err, data) {
                                 if (err) {
                                     console.log('Error in AWS S3 upload:')
                                     console.log(err);
                                 } else {
                                     console.log('AWS S3 -- successful upload');
                                 }
-                                console.log('s3 data');
-                                console.log(data);
                                                                 
                                 // URL that the file is available on S3.
                                 var destinationUrl = 'https://' + s3.BUCKET_ID + '.s3.amazonaws.com/' + targetImagePath;
@@ -335,7 +333,7 @@ exports.update = function (model, id, req, cb) {
                 if (postNew) {
                     // Update post.
                     req.models.Post.get(item.post_id, function (err, post) {
-                        var now = new Date();
+                        var now = new Date().getTime();
                         post.updated = now;
                         post.save(postNew, function (err) {
                             if (err) {

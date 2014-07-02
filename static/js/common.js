@@ -32,12 +32,17 @@ var tagize = exports.tagize = common.tagize = function(string) {
     return splitIntoTags(string).map(normalizeTag);
 };
 
+// Set to true to enable challenge mode and disable welcome mode.
+var challengeActive = exports.challengeActive = common.challengeActive = function() {
+    return false;
+}
+
 var campaign = exports.campaign = common.campaign = function() {
     var campaigns = {
         trial: 'VerilyTrial',
         main: 'VerilyLive'
     }
-    return campaigns.trial;
+    return campaigns.main;
 }
 
 var campaigner = exports.campaigner = common.campaigner = function(medium, text, link) {    
