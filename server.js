@@ -1,8 +1,9 @@
 // test
-module.exports = function (suppressLogs, dbTestUrl, callback) {
+module.exports = function (suppressLogs, dbTestUrl) {
     var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
+        cleaner = require('./cleaner')(),
         orm = require('orm'),
         app = express(),
         emitter = require('./event-emitter')(),
@@ -10,14 +11,18 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         passport = require('passport'),
         flash = require('connect-flash'),
         http = require('http'),
+        async = require('async'),
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         router = require('./routing/router'),
         config = require('./lib/auth'),
         log = require('./log'),
+        ORMSessionStore = require('./orm-session-store')(express),
+        mode = require('./mode'),
         controllers = {},
         heroku,
+        syncedModels,
         global_db,
         db_url;
 
@@ -31,7 +36,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     controllers.users = require('./controllers/users');
     controllers.ratings = require('./controllers/ratings');
     controllers.crises = require('./controllers/crises');
-
+    controllers.subscribers = require('./controllers/subscribers');
 
 
     app.use(connect.urlencoded());
@@ -64,7 +69,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
 
     //prevent big package and return 413 error
     // app.use(connect.limit('5kb'));
-    app.use(connect.limit('5mb'));
+    app.use(connect.limit('10mb'));
 
     // Overwrite demo.sh at the start of execution because it is appended to.
     //if (enums.document) {
@@ -75,10 +80,8 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     //    });
     //}
 
-    heroku = (process.env.HEROKU_POSTGRESQL_CRIMSON_URL !== undefined);
-    //heroku = false;
-    //heroku = (process.env.HEROKU_POSTGRESQL_JADE_URL !== undefined);
-    //console.log('process.env: ',process.env);
+    heroku = mode.isHeroku();
+
     if(dbTestUrl){
         db_url = dbTestUrl;
     }
@@ -119,6 +122,10 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                 models.User = db.models.user;
                 models.Local = db.models.local;
                 models.Facebook = db.models.facebook;
+                models.Impression = db.models.impression;
+                models.Referral = db.models.referral;
+                models.Session = db.models.session;
+                models.SocialEvent = db.models.socialEvent;
 
                 models.Local.sync(function () {console.log("Local synced")});
                 models.QuestionComment.sync(function () {console.log("QuestionComment synced")});
@@ -131,46 +138,310 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                 models.Comment.sync(function () {console.log("Comment synced")});
                 models.Rating.sync(function () {console.log("Rating synced")});
                 models.Facebook.sync(function () {console.log("Facebook synced")});
+                models.Impression.sync(function () {console.log("Impression synced")});
+                models.Referral.sync(function () {console.log("Referral synced")});
+                models.Session.sync(function () {console.log("Session synced")});
+                models.SocialEvent.sync(function () {console.log("SocialEvent synced")});
 
                 // Post is the base class.
                 // Questions, answers and comments are types of Post.
 
                 db.sync(function () {
+                    syncedModels = models;
                     emitter.emit('model-synced');
                     if (!suppressLogs) {
                         console.logger.info("Model synchronised");
-                        createAdmin(db.models.user, db.models.local);
+                        
                     }
+                                        
                 });
                 global_db = db;
             });
             next();
         }
     }));
-
-    app.use(express.cookieParser());
-    app.use(express.bodyParser({
-        uploadDir: __dirname + '/static/images/submissions-pre'
-    }));
-    app.use(express.session({ secret: 'cat' }, {maxAge: new Date(Date.now() + 3600000)}));
-    app.use(flash());
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use(roles.user.middleware());
     
-    app.use(app.router);
+    // /r/<referral path>
+    var referralPathFormat  = /\/r\/([A-Za-z0-9_-]+)/;
+    
+    // Association setting with fallback.
+    // methodName e.g. setUser used for some, setAuthor used otherwise.
+    function setUserOfInstance(createdInstance, user, callback) {
+        if (!user) {
+            callback();
+        } else {
+            createdInstance.setUser(user, function (err) {
+                if (err) {
+                    console.log(err);
+                }
+                callback();
+            }); 
+        }
+    }
+    
 
-//    app.listen();
-//
-//    if (!suppressLogs) {
-//        console.logger.info('Server started on ' + enums.options.hostname + ':' + enums.options.port);
-//    }
-//
-//    // Configure the routes.
-    router(app, controllers);
-//    http.createServer(app).listen(app.get('port'), function(){
-//        console.log('Express server listening on port ' + app.get('port'));
-//    });
+    
+    // Express middleware for analytics
+    var analytics = function(req, res, next) {
+        
+        var impression = {
+            path: req.path,
+            requestMethod: req.method,
+            date: new Date(Date.now()),
+            ip: req.ip,
+            userAgent: req.headers['user-agent'],
+            httpRefererUrl: req.headers['referer']
+        }
+                
+        function setReferralOfImpression(createdImpression, refCodes, callback) {
+            if (!refCodes) {
+                callback();
+            } else {
+                // Transform refcodes to [{refcode: <refcode1>}, {refcode: <refcode2>}]
+                // for node-orm format for disjunctions (or clause).
+                var formattedRefCodes = refCodes.map(function (refCode) {
+                    return {
+                        refCode: refCode
+                    };
+                });
+                
+                console.log('formattedRefCodes');
+                console.log(formattedRefCodes);
+                
+                req.models.Referral.find({
+                    or: formattedRefCodes
+                }, function(err, referrals) {
+                    if (err) {
+                        console.log(err);
+                        callback();
+                    } else if (referrals) {
+                        // There are referrals.
+                        console.log('in setReferralOfImpression');
+                        console.log('refcodes produce referrals:')
+                        console.log(referrals);
+                        
+                        createdImpression.addReferrals(referrals, function(err) {
+                            if (err) {
+                                console.log(err);
+                            }
+
+                            console.log('added referrals to impression. Impression:');
+                            console.log(createdImpression);
+
+
+                            callback();
+                        });
+                        
+                        // async.each(referrals, function(referral, cb) {
+                        //     createdImpression.addReferrals(referral, function (err) {
+                        //        if (err) {
+                        //            console.log(err);
+                        //        }
+                        //        cb();
+                        //
+                        //     });
+                        // }, function(err) {
+                        //     // All referrals added.
+                        //     if (err) {
+                        //         console.log(err);
+                        //     }
+                        //     callback();
+                        // });
+                    }
+ 
+               });
+            }
+        }
+        
+        // req.user is only defined if user is logged in.
+        var user = req.user;
+        
+        // If this is a generated referral path being requested, redirect to the path intended.
+        var refPath = referralPathFormat.exec(impression.path);
+        
+        // If the user arrives via a referral code with a GET (not a registration of a refcode via POST/PUT).
+        // We do not want to create an impression for the PUT to a /r/ path because the referral won't exist yet.
+        if (refPath && req.method.toLowerCase() === 'get') {
+            var refCode = refPath[1];
+            // Referral short link
+            req.models.Referral.find({
+                refCode: refCode
+            }, 1, function(err, referrals) {
+                var referral = referrals[0];
+                console.log('get referral');
+                console.log(referral);
+                if (!err && referral) {
+                    // Add to refcodes in session.
+                    if (req.session.refcodes && Array.isArray(req.session.refcodes)) {
+                        // Push to array.
+                        req.session.refcodes.push(refCode);
+                    } else {
+                        // Create array.
+                        req.session.refcodes = [refCode];
+                    }
+
+                    res.redirect(referral.destinationPath);
+                    res.end();
+                } else {
+                    res.redirect('/');
+                    res.end();
+                }
+            });
+        } else if (req.path !== '/favicon.ico') {
+            // This is an impression.
+            // Do not count favicon.ico requests.
+            // Record the metadata of the impression.
+            
+            console.log('==================== IMPRESSION ' + req.path +  ' ====================');
+            
+            console.log('---- REFCODES -----');
+            console.log(req.session.refcodes);
+            
+            req.models.Impression.create([impression], function (err, items) {
+                if (err) {
+                    console.log(err);
+                }
+                                
+                var createdImpression = items[0];
+                
+                // Sets user of impression, if user is logged in.
+                setUserOfInstance(createdImpression, user, function() {
+
+                    // Sets referrals of impression, 
+                    // if there is at least one ref code in session (user was referred).
+                    setReferralOfImpression(createdImpression, req.session.refcodes, function() {
+                        
+                       createdImpression.save(function (err) {
+                          if (err) {
+                              console.log(err);
+                          }
+
+                         next();
+                       });
+                    });
+                });
+            });
+                        
+        } else {
+            next();
+        }
+
+    };
+    
+    
+    // Start everything up once the models have synced.
+    emitter.on('model-synced', function() {
+        startUp();
+    });
+    
+    // Start everything up.
+    function startUp() {
+        
+        createAdmin(syncedModels.User, syncedModels.Local);
+        
+        app.use(express.cookieParser());
+        app.use(express.bodyParser({
+            uploadDir: __dirname + '/static/images/submissions-pre'
+        }));
+        // Call the cleaner now!
+        app.use(cleaner);
+                
+        app.use(express.session({
+            secret: 'd9WvgPUdReT8D3dH50FUXuwkpMOcAxA1Nll8sLG9j1s',
+            store: new ORMSessionStore(syncedModels)
+
+        }, {maxAge: new Date(Date.now() + 3600000)}));
+        app.use(passport.initialize());
+        app.use(passport.session());
+
+        app.use(roles.user.middleware());
+        app.use(flash());
+        app.use(analytics);
+        
+        app.use(app.router);
+
+
+    //    app.listen();
+    //
+    //    if (!suppressLogs) {
+    //        console.logger.info('Server started on ' + enums.options.hostname + ':' + enums.options.port);
+    //    }
+    //
+    //    // Configure the routes.
+        router(app, controllers);
+    
+    
+        // New referral code being registered by a click on a sharing button.
+        // Once referral code has been registered (PUT), it cannot be PUT again.
+        app.post('/r/:refCode', function(req, res) {
+            console.log('register refcode route')
+        
+            var refCode = req.params.refCode;
+        
+            if (referralPathFormat.test(req.path)) {
+                // Valid referral path.
+        
+                // See if the referral under the refcode is already persistently stored.
+                req.models.Referral.exists({
+                    refCode: refCode
+                }, function(err, exists) {
+                    if (!exists) {
+                        // No referral stored yet -- good!
+                
+                        var referral = {
+                            refCode: refCode,
+                            destinationPath: req.body.destinationPath,
+                            medium: req.body.medium,
+                            date: new Date(Date.now())
+                        };
+                
+                        req.models.Referral.create([referral], function (err, items) {
+                            if (err) {
+                                console.log(err);
+                            }
+                                                
+                            var createdReferral = items[0];
+                        
+                            setUserOfInstance(createdReferral, req.user, function() {
+                                                    
+                                createdReferral.save(function (err) {
+                                   if (err) {
+                                       console.log(err);
+                                   }
+                           
+                                   console.log('created referral');
+                           
+                                   res.status(201);
+                                   res.end();
+                           
+                                });
+                        
+                            });
+                    
+                        });
+                
+                    } else {
+                        // Referral code already exists
+                        res.status(204);
+                        res.end();
+                    }
+                });
+        
+            } else {
+                // Not valid referral path.
+                res.status(200);
+                res.end();
+            }
+        
+        });
+    
+
+    
+        http.createServer(app).listen(app.get('port'), function(){
+            console.log('Express server listening on port ' + app.get('port'));
+        });
+        
+    }
 
     //process.on('SIGINT', function () {
     //    console.logger.info('Server stopped.');
@@ -199,14 +470,12 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                             admin.setLocal(local, function (err) {
                                 if (err) {throw err;}
                                 console.log('Admin user has been created.');
-                                if(callback) callback(app, global_db);
                             });
                         });
                     });
                 });
             } else {
                 console.log('Admin user already exists.');
-                if(callback) callback(app, global_db);
             }
         });
     }

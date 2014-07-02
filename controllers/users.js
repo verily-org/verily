@@ -127,7 +127,15 @@ exports.login = passport.authenticate('local-login', {
 
 exports.logout = function (req, res) {
     req.logout();
-    res.redirect('/logout-done');
+    
+    // Clear the session as PassportJS only clears login session, 
+    // namespaced under session.user, and not the entire session state for the user.
+    req.session.destroy(function (err) {
+        if (err) {
+            console.log(err);
+        }
+        res.redirect('/logout-done');
+    });
 };
 
 exports.facebookRedirect = passport.authenticate('facebook', {

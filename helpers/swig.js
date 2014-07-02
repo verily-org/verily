@@ -2,6 +2,11 @@ var utils = require('utilities');
 var common = require('../static/js/common');
 
 module.exports = function(swig) {
+    
+    swig.setFilter('challengeActive', function() {
+        return common.challengeActive();
+    });
+    
     swig.setFilter('isMarkedImportantBy', function( post, user) {
         var isMarkedAsImportant = post.isMarkedImportantBy(user);
         return isMarkedAsImportant;

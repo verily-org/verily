@@ -5,8 +5,41 @@
 {% block content %}
 <!-- question -->
 
+{% set questionTitleForSharing = question.title %}
+{% if questionTitleForSharing.charAt(questionTitleForSharing.length - 1) !== '?' %}
+    {% set questionTitleForSharing = questionTitleForSharing + '?' %}
+{% endif %}
 
-<div class="page-header clearfix">
+<script>
+var questionTitle = '{{ questionTitleForSharing }}';
+var refPathPrefix = '/r/';
+var refUrlPrefix = window.location.origin + refPathPrefix;
+var refUrlTwitter = refUrlPrefix + '{{ refcodes.twitter }}';
+var refUrlFacebook = refUrlPrefix + '{{ refcodes.facebook }}';
+var refUrlEmail = refUrlPrefix + '{{ refcodes.email }}';
+var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
+
+</script>
+
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1430472757228218',
+      xfbml      : true,
+      version    : 'v2.0'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="question page-header clearfix">
     <div class="row">
         <div class="col-sm-5">
             <div>
@@ -90,7 +123,7 @@
                     {% else %}
                     <div class="col col-sm-12">
                     {% endif %}
-                        <div id="map" class="smallmap" style="height: 200px;"></div>
+                        <!--<div id="map" class="smallmap" style="height: 200px;"></div>-->
                         <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
                     </div>    
                 </div>
@@ -104,14 +137,14 @@
         
         <!-- button-mark-true -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-success btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> <span class="hidden-xs">True because&hellip;</span> <span class="sr-only">True because&hellip;</span></button>
+            <button class="btn btn-success btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-true -->
     
         <!-- button-mark-false -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-danger btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> <span class="hidden-xs">False because&hellip;</span> <span class="sr-only">False because&hellip;</span></button>
+            <button class="btn btn-danger btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-false -->
@@ -125,23 +158,56 @@
                     {% if !user %} user-required-action{% endif %}
                     {% if questionMarkedImportant %}disabled{% endif %}"
                     title="Mark as important"><i class="fa fa-star">
-                    </i> <span class="hidden-xs">Important</span> <span class="sr-only">Important</span>
+                    </i> Important<span class="hidden-xs"></span> <span class="sr-only">Important</span>
             </button>
             <a href="#" class="btn btn-default action-button-count">{{ question.importanceCount }}</a>
         </div>
         <!-- / button-mark-important -->
         
         <!-- Twitter Tweet button -->
-        <a href="https://twitter.com/share" class="twitter-share-button btn-group" data-size="large">Tweet</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
         <!-- / Twitter Tweet button -->
+        
+        <!-- Facebook Share button -->
+        
+        
+        
+        <!-- <div data-type="button_count" class="fb-share-button fb_iframe_widget" fb-xfbml-state="rendered" id="facebook-share-button"></div>-->
+        <div id="fb-root"></div>
+        <div class="action-button-ctr btn-group">
+            <a class="btn btn-default btn-large text-action-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
+        </div>
+        
+        <!-- / Facebook Share button -->
+        
+        
+        <!-- button-share-question-link -->
+        <div class="action-button-ctr btn-group">
+            <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
+        </div>
+        <!-- / button-share-question-link -->
+        
+        <!-- button-email -->
+
+        <div class="action-button-ctr btn-group">
+            <a class="btn btn-default btn-large text-action-button" id="button-share-question-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
+        </div>
+        <script>
+        var buttonShareQuestionEmail = document.getElementById('button-share-question-email');
+        var emailMessage = common.campaigner('email', '{{ questionTitleForSharing }}', refUrlEmail);
+        buttonShareQuestionEmail.href = 'mailto:?subject=' + emailMessage.subject + '&body=' + emailMessage.body;
+        </script>
+        
+        <!-- / button-email -->
                 
         <!-- small buttons -->
-        <div class="btn-group">
-            <div class="additional-button-ctr">
-                <a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
-            </div>
-        </div>
+        {% if userCan('edit a question') %}
+			<div class="btn-group">
+				<div class="additional-button-ctr">
+					<a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
+				</div>
+			</div>
+		{% endif %}
         
         <div class="btn-group">
             <div class="additional-button-ctr">
@@ -198,6 +264,20 @@
     {{ answers_macro.answers_embeded(question.answers, crisis.id) }}
 </div>
 
+
+<div class="modal fade" id="modal-share-question-link" role="dialog">
+  <div class="modal-dialog vertically-centred">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Share link</h4>
+      </div>
+      <div class="modal-body">
+        <span id="field-share-question-link"></span>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 {{ generic_macro.rearrange_children_script() }}
@@ -285,7 +365,6 @@ function initActionButtons() {
                     show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
                 });
     });
-
 }
 
     $(function(){
@@ -336,9 +415,9 @@ function displayForm() {
     
     // Update chars left
     displayCharsLeft();
-    if(!map_form){
-        map_form_initialize();
-    }
+//    if(!map_form){
+//        map_form_initialize();
+//    }
     // Scroll the top of the form into view.
     //formCtr.scrollIntoView();
     
@@ -347,6 +426,96 @@ function displayForm() {
 
 
 </script>
+
+<script>
+window.twttr = (function (d, s, id) {
+  var t, js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id; js.src= "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  return window.twttr || (t = { _e: [], ready: function (f) { t._e.push(f) } });
+}(document, "script", "twitter-wjs"));
+
+var tweetButton = document.getElementById('tweet-button');
+
+var twitterCampaigner = common.campaigner('twitter');
+
+tweetButton.dataset.url = refUrlTwitter;
+tweetButton.dataset.counturl = window.location.origin + '{{ path }}';
+tweetButton.dataset.text = questionTitle;
+tweetButton.dataset.hashtags = twitterCampaigner.hashtags;
+
+var facebookShareButton = document.getElementById('facebook-share-button');
+facebookShareButton.dataset.href = refUrlFacebook;
+facebookShareButton.dataset.type = 'button';
+
+var emailButton = document.getElementById('button-share-question-email');
+
+var linkButton = document.getElementById('button-share-question-link');
+
+
+function intent (medium, intentEvent) {
+  
+  var refUrl = refUrlLink;
+    
+  if (medium === 'twitter') {
+      console.log('twitter');
+      refUrl = refUrlTwitter;
+  } else if (medium === 'facebook') {
+      console.log('facebook');
+      refUrl = refUrlFacebook;
+  } else if (medium === 'email') {
+      console.log('email');
+      refUrl = refUrlEmail;
+  } else {
+    console.log('link');
+  }
+  
+  $.ajax({
+      type: 'POST',
+      url: refUrl,
+      data: {
+          destinationPath: '{{ path }}',
+          medium: medium
+      }
+  });
+}
+
+// Wait for the asynchronous resources to load
+twttr.ready(function (twttr) {
+  // Now bind our custom intent events
+  twttr.events.bind('click', function(intentEvent) {
+      intent('twitter', intentEvent);
+  });
+});
+
+facebookShareButton.addEventListener('click', function(e) {
+    intent('facebook');
+    FB.ui({
+      method: 'feed',
+      href: refUrlFacebook
+    }, function(response){
+        
+    });
+});
+
+emailButton.addEventListener('click', function(e) {
+    intent('email');
+});
+
+linkButton.addEventListener('click', function(e) {
+    // TODO: do input for everything other than xs devices.
+    var shareQuestionLinkHtml = '<span class="hidden-xs">' + refUrlLink + '</span><span class="visible-xs">Hold to copy</span>';
+    
+    document.getElementById('field-share-question-link').innerHTML = refUrlLink;
+    intent('link');
+});
+
+
+
+
+</script>
+
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
 <script src="/static/js/maps.js"></script>
 <script type="text/javascript">

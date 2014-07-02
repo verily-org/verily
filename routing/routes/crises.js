@@ -25,4 +25,10 @@ exports.route = function (app, controllers, doc) {
     route('delete', specific, 'remove', 'Delete; Delete crisis');
 
     route('get', '/', 'index', 'Index; Spotlight: returns up to 10 crisis');
+    
+    route('get', '/about', 'about', 'About; About Verily');
+
+    route('get', '/challenge', 'challenge', 'Welcome page to the challenge');
+
+    route('post', '/challenge', 'challenge_email', 'Submit email of interested person');
 };

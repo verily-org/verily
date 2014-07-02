@@ -1,22 +1,39 @@
 {% include '../generic/form-title.html' %}
-
-{% include '../generic/form-image.html' %}
-
-{% include '../generic/form-video.html' %}
+<div class="well">
+    <input type="radio" class="pull-right" checked name="image-or-video" />
+    <div class="form-container"  id="image-container">
+        {% include '../generic/form-image.html' %}
+    </div>
+</div>
+<div class="well">
+    <input type="radio" class="pull-right" name="image-or-video" />
+    <div class="form-container" id="video-container">
+        {% include '../generic/form-video.html' %}
+    </div>
+</div>
 
 {% include '../generic/form-text.html' %}
 
-{% include '../generic/form-locality.html' %}
-
-{# include '../generic/form-latlong.html' #}
-
-{% include '../generic/form-map-latlong.html' %}
-
 {% include '../generic/form-date-occurred.html' %}
 
-{% include '../generic/form-tags.html' %}
-
 <script type="text/javascript">
+    $(function(){
+        disable_all($('#video-container'));
+        $("input[name*='image-or-video']").change(function(){
+            disable_all($('.form-container'));
+            enable_all($(this).next());
+        })
+    });
+    function disable_all(div){
+        $(div).find('input').attr('disabled', true);
+        $(div).find('*').addClass('disabled');
+        $(div).parent().addClass('disabled');
+    }
+    function enable_all(div){
+        $(div).find('input').attr('disabled', false);
+        $(div).find('*').removeClass('disabled');
+        $(div).parent().removeClass('disabled');
+    }
 // On form submit, validate fields on client side.
 document.addEventListener('DOMContentLoaded', function(event) {
     var defaultFormGroupClassName = 'form-group';

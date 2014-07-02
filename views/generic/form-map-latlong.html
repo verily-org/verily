@@ -103,8 +103,7 @@
             pointRadius: 0
         });
         cityLayer = new OpenLayers.Layer.Vector("City marker", {
-            styleMap: styleMapCity,
-            attribution: 'Marker Icons by <a href="http://mapicons.nicolasmollet.com/">Nicolas Mollet</a>'
+            styleMap: styleMapCity
         });
         map_form.addLayer(cityLayer);
 
@@ -114,8 +113,7 @@
         });
         // Layer for placing the damage/impact marker
         damageLayer = new OpenLayers.Layer.Vector("Damage/Impact Layer", {
-            styleMap: styleDamage,
-            attribution: 'Marker Icons by <a href="http://mapicons.nicolasmollet.com/">Nicolas Mollet</a>'
+            styleMap: styleDamage
         });
         map_form.addLayer(damageLayer);
 

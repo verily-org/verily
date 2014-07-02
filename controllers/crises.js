@@ -45,8 +45,7 @@ var checkRole = role.can('create a crisis');
 exports.new = [checkRole, newCrisis];
 
 
-
-//get 10 last crises
+// Homepage
 exports.index = function (req, res) {
     req.models.Crisis.find({}, 10,function (err, crises) {
         if (err) {
@@ -54,19 +53,76 @@ exports.index = function (req, res) {
         } else {
             res.status(200);
             if (req.user){var user = req.user; }
+            
+            var cookieMessageSeen = true;
+            
+            if (!req.session.hasOwnProperty('cookieMessageSeen') || !req.session.cookieMessageSeen) {
+                // Cookie message not seen yet.
+                cookieMessageSeen = false;
+                // True because they will have seen the cookie message upon this response
+                // so that on next request cookieMessageSeen will return as true.
+                req.session.cookieMessageSeen = true;
+            }
+                        
             //res.json(crises);
-            res.render('crisis/index', {
+            res.render('generic/index', {
                 page: {
 
                 },
+                path: '/',
                 crises: crises,
                 user: user,
+                cookieMessageSeen: cookieMessageSeen,
                 info: req.flash('info'),
                 error: req.flash('error')
             });
         }
     });
+};
 
+exports.about = function (req, res) {
+    res.status(200);
+    if (req.user){var user = req.user; }
+    res.render('generic/about', {
+        page: {
+        },
+        path: '/about',
+        user: user,
+        info: req.flash('info'),
+        error: req.flash('error')
+    });
+};
+
+
+
+//get the challenge welcome page
+// exports.challenge = function (req, res) {
+//     res.status(200);
+//     if (req.user){var user = req.user; }
+//     //res.json(crises);
+//     res.render('crisis/challenge', {
+//         page: {
+//
+//         },
+//         user: user,
+//         info: req.flash('info'),
+//         error: req.flash('error')
+//     });
+// };
+
+
+//post to challenge_email
+exports.challenge_email = function (req, res) {
+    //todo: Save email, return to welcome page with feedback
+//    req.models.InterestedUsers.create([req.body.email], function(err){
+//
+//        if(!err){
+//            res.status(200);
+//            res.send();
+//        } else {
+//            generic.genericErrorHandler(req, res, err);
+//        }
+//    });
 };
 //get a specific crisis
 exports.get = function (req, res) {
@@ -161,7 +217,7 @@ var editCrisis = function (req, res) {
 }
 
 
-var checkRole = role.can('edit crisis');
+var checkRole = role.can('edit a crisis');
 
 exports.edit = [checkRole, editCrisis];
 
@@ -189,6 +245,6 @@ var update = function (req, res) {
 };
 
 
-var checkRole = role.can('edit question');
+var checkRole = role.can('edit a crisis');
 
 exports.update = [checkRole, update];

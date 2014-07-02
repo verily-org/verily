@@ -2,6 +2,94 @@ var bcrypt   = require('bcrypt-nodejs'),
     orm = require('orm');
 
 module.exports = function (db, cb) {
+    
+    var Session = db.define('session', {
+        sid: {
+            type: 'text'
+        },
+        value: {
+            type: 'text'
+        }
+    });
+    
+    // Stores a referral at the point of its instantiation
+    var Referral = db.define('referral', {
+        refCode: {
+            type: 'text'
+        },
+        destinationPath: {
+            type: 'text'
+        },
+        medium: {
+            type: 'text'
+        },
+        type: {
+            type: 'text'
+        },
+        date: {
+            type: 'date',
+            time: true
+        }
+    });
+    
+    // Route impression
+    var Impression = db.define('impression', {
+       path: {
+           type: 'text'
+       },
+       requestMethod: {
+           type: 'text'
+       },
+       date: {
+           type: 'date',
+           time: true
+       },
+       ip: {
+           type: 'text'
+       },
+       userAgent: {
+           type: 'text'
+       },
+       httpRefererUrl: {
+           type: 'text'
+       }
+    });
+    
+    // Social event, such as a Tweet, Facebook post
+    var SocialEvent = db.define('socialEvent', {
+        eventSourceId: {
+            type: 'text'
+        },
+        path: {
+            type: 'text'
+        },
+        medium: {
+            type: 'text'
+        },
+        type: {
+            type: 'text'
+        },
+        authorSourceId: {
+            type: 'text'
+        },
+        authorSourceUsername: {
+            type: 'text'
+        },
+        content: {
+            type: 'text'
+        },
+        date: {
+            type: 'date',
+            time: true
+        },
+        ip: {
+            type: 'text'
+        },
+        userAgent: {
+            type: 'text'
+        }
+    });
+
 
     //  TODO: Ensure on migrration to MongoDB that default value is set to current timestamp equivalent or that it isn't the cause of an error
     var Post = db.define('post', {
@@ -287,6 +375,19 @@ module.exports = function (db, cb) {
     Post.hasOne('user', User, {
         reverse: 'posts', autoFetch: true
     });
+    
+    Referral.hasOne('user', User, {
+        reverse: 'authoredReferrals', autoFetch: true
+    });
+    
+    Impression.hasMany('referrals', Referral, {}, {
+        key: true, reverse: 'impressions', autoFetch: true
+    });
+    
+    Impression.hasOne('user', User, {
+        reverse: 'impressions', autoFetch: true
+    });
+    
 
     User.hasOne('local', Local, {
         reverse: 'users'

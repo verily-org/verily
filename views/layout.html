@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+{% set challengeActive = null|challengeActive %}
     <head>
         <meta charset="utf-8">
         <title>{% if page.title %}{{ page.title }} &middot; {% endif %}Verily</title>
@@ -11,6 +12,8 @@
         <!-- TODO Use bower and modify Bootstrap to our needs -->
         
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        
+        <link href="http://fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
         
         <link href="/static/css/style.css" rel="stylesheet">
         
@@ -28,7 +31,6 @@
         <script type="text/javascript" src="/static/js/common.js"></script>
         
         <!-- Latest compiled and minified Bootstrap JavaScript -->
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
         <!-- Load general functions JS -->
@@ -48,6 +50,9 @@
                                 
                                 {% include 'generic/form-login.html' %}
                                 
+								<div class="login-aside-button text-right centre-when-viewport-narrowed">
+									<a href="/auth/facebook" class="btn btn-default btn-lg"><i class="fa fa-facebook"></i> Login with Facebook</a>
+								</div>
                             </div>
                             <div class="col-sm-6">
                                 <p class="lead">
@@ -67,22 +72,28 @@
                 </div>
             </div>
         </div>
-        <div id="alert-window" style="display:none" class="alert alert-warning alert-dismissable">
+        <div id="alert-window" style="display:none; position:fixed;" class="alert alert-warning alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             <h4 class="alert-title"></h4>
             <span class="alert-message"></span>
         </div>
         <a href="#content" class="sr-only">Skip to main content</a>
+
+        {% block navigation %}
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
+                    {% if challengeActive %}
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand active" href="/" title="Home">Verily</a>
+                    {% endif %}
+                    <a class="navbar-brand active logo {% if path === '/' %}welcome{% endif %}" href="/" title="Home">
+                        <span class="first-char">V</span>erily
+                    </a>
                 </div>
                 <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
                     <ul class="nav navbar-nav">
@@ -104,7 +115,7 @@
 							{% if userCan('assign roles') %}
 								<li><a href="/admin">Assign Roles</a></li>
 							{% endif %}
-                        {% else %}
+                        {% elseif challengeActive or (path !== '/' and path !== '/about') %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>
                         {% endif %}
@@ -119,37 +130,56 @@
 			
 
         </nav>
+        {% endblock navigation %}
+        
+        <div class="flash-msgs-ctr">
 		
-		<div class="container">
-				{% if info && info.length > 0 %}
-				<div class="alert alert-info">
-					<a class="close" data-dismiss="alert">×</a>
-					{{ info }}
-				</div>
-				{% endif %}
-			</div>
-		</div>
+    		<div class="container flash-msg-ctr">
+    				{% if info and info.length > 0 %}
+    				<div class="alert alert-info">
+    					<a class="close" data-dismiss="alert">×</a>
+    					{{ info }}
+    				</div>
+    				{% endif %}
+    			</div>
+    		</div>
 		
-		<div class="container">
-				{% if error && error.length > 0 %}
-				<div class="alert alert-danger">
-					<a class="close" data-dismiss="alert">×</a>
-					{{ error }}
-				</div>
-				{% endif %}
-			</div>
-		</div>
+    		<div class="container flash-msg-ctr">
+    				{% if error and error.length > 0 %}
+    				<div class="alert alert-danger">
+    					<a class="close" data-dismiss="alert">×</a>
+    					{{ error }}
+    				</div>
+    				{% endif %}
+    			</div>
+    		</div>
+        
+        </div>
+
+        {% block main %}
 		
-		
-        <main role="main" id="content" class="container">
-            <!-- <ol class="breadcrumb"> -->
-                <!-- <li>
-                    <a href="/" title="Home">Home</a>
-                </li> -->
-                <!-- {% block breadcrumb %}{% endblock %} -->
-            <!-- </ol> -->
-            {% block content %}{% endblock %}
-        </main>
+            <main role="main" id="content" class="container">
+                <!-- <ol class="breadcrumb"> -->
+                    <!-- <li>
+                        <a href="/" title="Home">Home</a>
+                    </li> -->
+                    <!-- {% block breadcrumb %}{% endblock %} -->
+                <!-- </ol> -->
+                {% block content %}{% endblock %}
+                <footer>
+                    <div class="text-muted">
+                        <a href="/copyright">&copy; 2014 Verily.</a>
+                    </div>
+                    <div class="text-muted">
+                        <a href="/about">About</a>
+                        &middot;
+                        <a href="/terms">Terms</a>
+                        &middot;
+                        <a href="/privacy">Privacy</a>
+                    </div>
+                </footer>
+            </main>
+        {% endblock %}
     </body>
 </html>
 

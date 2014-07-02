@@ -4,11 +4,36 @@ var enums = require('../enums');
 var config = require('../config');
 var common = require('../static/js/common');
 var utils = require('utilities');
+var mode = require('../mode');
+var s3 = require('../s3');
+
+var urlSafeBase64 = require('urlsafe-base64');
+
 var smtpTransport = require('../lib/auth').mailer,
 crypto = require('crypto'),
 async = require('async');
 
-var crypto = require('crypto');
+
+exports.generateRefCodes = function(count, callback) {
+    async.times(count, function(n, next) {
+        generateRefCode(function(err, refcode) {
+            next(err, refcode);
+        });
+    }, function(err, refcodes) {
+        callback(refcodes);
+    });
+}
+
+var generateRefCode = exports.generateRefCode = function(callback) {
+    var numRandomBytes = 6;
+    crypto.randomBytes(numRandomBytes, function(err, buffer) {
+        var random = urlSafeBase64.encode(buffer);
+        var now = new Date().getTime().toString();
+        now = now.substring(now.length - 2);
+        var refcode = random + now;
+        callback(err, refcode);
+    });
+};
 
 exports.genericErrorHandler = function (req, res, err) {
     if (!err) {
@@ -98,15 +123,44 @@ exports.create = function (model, data, req, cb) {
                         
                         var imageId = now.getTime() + random;
                     
-                        var targetImagePath = '/static/images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
+                        // Base target image path.
+                        var targetImagePath = 'images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
                         
-                        fs.rename(req.files.targetImageUpload.path, config.project_dir + targetImagePath, function(err) {
-                            if (err) {
-                                cb(err, null);
-                            }
-                            imageHandled(targetImagePath);
+                        if (mode.isHeroku()) {
+                            console.log('before s3 upload');
+                            // Running on Heroku, so store in S3.
+                            var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
+                            s3.put(targetImagePath, fileReadStream, 'public-read', function(err, data) {
+                                if (err) {
+                                    console.log('Error in AWS S3 upload:')
+                                    console.log(err);
+                                } else {
+                                    console.log('AWS S3 -- successful upload');
+                                }
+                                                                
+                                // URL that the file is available on S3.
+                                var destinationUrl = 'https://' + s3.BUCKET_ID + '.s3.amazonaws.com/' + targetImagePath;
+                                
+                                imageHandled(destinationUrl);
+                                
+                            });
+                            
+                        } else {
+                            // Not running on Heroku, so store in filesystem.
+                            targetImagePath = '/static/' + targetImagePath;
+                            
+                            fs.rename(req.files.targetImageUpload.path, config.project_dir + targetImagePath, function(err) {
+                                if (err) {
+                                    cb(err, null);
+                                }
+                                imageHandled(targetImagePath);
                         
-                        });
+                            });
+                        }
+                        
+                         
+                        
+
                         
                     });
                 } else {
@@ -472,11 +526,18 @@ exports.sendMailtoLocal = function (req, token, local, scenario, cb) {
         subject: subject,
         text: text
     };
-    smtpTransport.sendMail(mailOptions, function(err) {
-        if (err) {
-            req.flash('error', 'The email could not be sent.');
-        }
-        cb(err, local);
-    });
+    
+    if (mode.getRunningMode() === mode.PROD_MODE) {
+        smtpTransport.sendMail(mailOptions, function(err) {
+            if (err) {
+                req.flash('error', 'The email could not be sent.');
+            }
+            cb(err, local);
+        });
+    } else {
+        console.log('Not in production mode, cannot send email');
+    }
+    
+
 };
 
