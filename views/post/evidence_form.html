@@ -1,0 +1,206 @@
+{% include '../generic/form-title.html' %}
+<div class="well">
+    <input type="radio" class="pull-right" checked name="image-or-video" />
+    <div class="form-container"  id="image-container">
+        {% include '../generic/form-image.html' %}
+    </div>
+</div>
+<div class="well">
+    <input type="radio" class="pull-right" name="image-or-video" />
+    <div class="form-container" id="video-container">
+        {% include '../generic/form-video.html' %}
+    </div>
+</div>
+
+{% include '../generic/form-text.html' %}
+
+{% include '../generic/form-date-occurred.html' %}
+
+<script type="text/javascript">
+    $(function(){
+        disable_all($('#video-container'));
+        $("input[name*='image-or-video']").change(function(){
+            disable_all($('.form-container'));
+            enable_all($(this).next());
+        })
+    });
+    function disable_all(div){
+        $(div).find('input').attr('disabled', true);
+        $(div).find('*').addClass('disabled');
+        $(div).parent().addClass('disabled');
+    }
+    function enable_all(div){
+        $(div).find('input').attr('disabled', false);
+        $(div).find('*').removeClass('disabled');
+        $(div).parent().removeClass('disabled');
+    }
+// On form submit, validate fields on client side.
+document.addEventListener('DOMContentLoaded', function(event) {
+    var defaultFormGroupClassName = 'form-group';
+    var form = document.getElementsByClassName('post-form')[0];
+    var submitButton = document.getElementById('submit');
+    
+    var formTitle = document.getElementById('form-title');
+    
+    var dateTimeOccurredFieldGroup = document.getElementById('form-occurred-group');
+
+    // Generic validation function for an element or a group of elements
+    // with the same specific validation functions.
+    var validate = function(elems, elemsParent, validator) {
+        // Closure which returns a function with a callback for providing the validation result for this field.
+        return function(callback) {
+            var error;
+            var value = [];
+            var elemsIsArray = false;
+                    
+            // elems may be an array of elements or just one element.
+            if (elems.length && elems.length !== 0) {
+                elemsIsArray = true;
+                
+                // Convert HTML NodeList into array of **values**.
+                for (var i = 0, node; node = elems[i]; i++) {
+                    value.push(node.value);
+                }
+                
+                // If elemsParent not passed in.
+                if (!elemsParent) {
+                    elemsParent = elems[0].parentNode;
+                }
+            } else {
+                // Single element (not array of elements).
+                value = elems.value;
+                
+                // If elemsParent not passed in.
+                if (!elemsParent) {
+                    elemsParent = elems.parentNode;
+                }
+            }
+        
+            var label;
+            label = elemsParent.getElementsByTagName('label')[0];
+        
+            // Set the initial value to the innerHTML of the label,
+            // if it hasn't been set yet.
+            if (!label.dataset.hasOwnProperty('initial')) {
+                label.dataset.initial = label.innerHTML;
+            }
+        
+            var icon = elemsParent.getElementsByClassName('icon')[0];
+        
+            // Reset form-group elements in the case of errors in multiple requests.
+            if (label.innerHTML !== label.dataset.initial) {
+                label.innerHTML = label.dataset.initial;
+                elemsParent.className = defaultFormGroupClassName;
+                if (icon) {
+                    elemsParent.removeChild(icon);
+                }   
+            }
+        
+            // Call the element-specific validator.
+            validator(value, elemsParent, elemsIsArray, function(error, data) {
+                // Handle the error callback.
+                if (error) {
+                    // Invalid (error present)
+            
+                    elemsParent.className = defaultFormGroupClassName + ' has-error has-feedback';
+            
+                    // Add the error message.
+                    label.innerHTML = label.dataset.initial + ' &ndash; ' + error;
+            
+                    // Add the icon.
+                    if (!elemsIsArray) {
+                        if (!icon) {
+                            icon = document.createElement('span');
+                            icon.className = 'icon fa fa-times form-control-feedback with-input-lg';
+                        }
+
+                        // Only add icon if elems is one element.
+                        elemsParent.insertBefore(icon, elems.nextSibling);
+                    }
+                
+                    // There may not be a callback if this is called from an individual
+                    // field rather than the validation harness.
+                    if (callback) {
+                        // Callback with invalid (false).
+                        callback(false);
+                    }
+
+                } else {
+                    // Valid
+                    
+                    // There may not be a callback if this is called from an individual
+                    // field rather than the validation harness.
+                    if (callback) {
+                        // Callback with valid (true).
+                        callback(true);
+                    }
+                }
+            });
+        }
+        // /closure
+        
+    };
+    
+    // Validation function set.
+    // Initialise the individual validation functions (each return a function with a callback).
+    var validateFunctions = [
+        validate(formTitle, null, common.validateFormTitle),
+        validate(document.getElementsByClassName('form-occurred'), dateTimeOccurredFieldGroup, common.validateDateTimeOccurred)
+    ]
+
+    // Validation harness which uses the validation function set to run all the validation functions.
+    function validateAll(e) {
+        var valid = true;
+        
+        // stop acts as `break` but continues validation to
+        // show all errors to the user.
+        var stop = false;
+        
+        for (var i = 0; i < validateFunctions.length; i++) {
+            if (validateFunctions[i](function(currentValid) {
+                if (!currentValid && !stop) {
+                    // Validation for this field returned errors
+                    // and we have not found a previous error
+                    // -- we have not stopped setting the valid variable yet.
+                    valid = false;
+                    stop = true;
+                    console.log('valid: ' + valid, 'stop: ' + stop);
+                };
+            }));            
+        }
+            
+        if (valid) {
+            // Whole form is valid, submit form to endpoint
+            return;
+        } else {
+            // The form is not valid, don't submit form.
+            e.preventDefault();
+        }
+    }
+
+    form.addEventListener('submit', function(e) {
+        validateAll(e);
+    });
+    
+    document.getElementById('form-title').addEventListener('keyup', function(e) {
+        validate(formTitle, null, validateFormTitle)();
+    });
+    
+    
+    // Same-as behaviour to duplicate fields from question.
+    document.getElementById('btn-occurred-now').addEventListener('click', function(e) {
+        var now = new Date();
+        
+        document.getElementById('form-occurred-year').value = now.getUTCFullYear();
+        document.getElementById('form-occurred-month').value = now.getUTCMonth() + 1;
+        document.getElementById('form-occurred-day').value = now.getUTCDate();
+
+        // selectedIndex + 1 because first index is the header (e.g. Hours).
+        document.getElementById('form-occurred-hour').selectedIndex = now.getUTCHours() + 1;
+        document.getElementById('form-occurred-minute').selectedIndex = now.getUTCMinutes() + 1;
+        document.getElementById('form-occurred-second').selectedIndex = now.getUTCSeconds() + 1;
+    });
+    
+    
+});
+</script>

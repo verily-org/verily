@@ -119,9 +119,9 @@
                     {% else %}
                     <div class="col col-sm-12">
                     {% endif %}
-                        <div id="map" class="smallmap" style="height: 200px;"></div>
+                        <!-- <div id="map" class="smallmap" style="height: 200px;"></div> -->
                         <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
-                    </div>    
+                    </div>
                 </div>
                 <!-- / .row -->
             </div>
@@ -182,58 +182,66 @@
     {% for question in questions | reverse %}
         <div class="col-sm-4 crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
             <div class="panel panel-default question-answer crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
-                    <div class="panel-heading">
-                            {% if question.post.targetLocality %}
-                                <div class="">
-                                   <i class="fa fa-map-marker"></i>
-                                   <span class="sr-only">Locality:</span>
-                                   <span id="question-locality">{{ question.post.targetLocality }}</span>
-                                </div>
-                            {% endif %}
-
-                        <h3 class="panel-title">
-                            <a href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
-                                {{ question.post.title }}
-                            </a>
-                        </h3>
-                        <div class="crisis-question-metrics">
-                            <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> {{ question.importanceCount }}</span>
-
-                            <span class="label metric crisis-question-metric" title="Answers that state this is true"><i class="fa fa-check success"></i> <span class="success">{{ question.supportedAnswerCount }}</span></span>
-
-                            <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">{{ question.rejectedAnswerCount }}</span></span>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-
-
-                        {{ question.post.text }}
-
-
-
-                        {% if question.post.targetVideoUrl %}
-                            <div id="video-wrapper-{{ question.post.id }}" class="video-wrapper video-wrapper-ajax"
-                                 data-video-url="{{ question.post.targetVideoUrl }}">
-                                <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
-                                <div class="video-container" style="display: none"></div>
-                                <div class="video-error-message alert alert-warning" style="display: none">
-                                    Video link: <a href="{{ question.post.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.post.targetVideoUrl }}</a>.
-                                </div>
-                            </div>
-                        {% elseif question.post.targetImage %}
-                            <div class="row">
-                                <img src="{{ question.post.targetImage }}" class="img-responsive center-block">
+                <div class="panel-heading">
+                        {% if question.post.targetLocality %}
+                            <div class="">
+                               <i class="fa fa-map-marker"></i>
+                               <span class="sr-only">Locality:</span>
+                               <span id="question-locality">{{ question.post.targetLocality }}</span>
                             </div>
                         {% endif %}
-                    
-                            <div class="">
-                                <i class="fa fa-bullhorn"></i>
-                                <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
-                                by {{ question.post.author }}
-                            </div>
 
+                    <h3 class="panel-title" >
+                        <a href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
+                            {{ question.post.title }}
+                        </a>
+                    </h3>
+                    <div class="crisis-question-metrics">
+                        <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> {{ question.importanceCount }}</span>
+
+                        <span class="label metric crisis-question-metric" title="Answers that state this is true"><i class="fa fa-check success"></i> <span class="success">{{ question.supportedAnswerCount }}</span></span>
+
+                        <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">{{ question.rejectedAnswerCount }}</span></span>
                     </div>
                 </div>
+                <div class="panel-body">
+
+
+                    {{ question.post.text }}
+
+
+
+                    {% if question.post.targetVideoUrl %}
+                        <div id="video-wrapper-{{ question.post.id }}" class="video-wrapper video-wrapper-ajax"
+                             data-video-url="{{ question.post.targetVideoUrl }}">
+                            <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+                            <div class="video-container" style="display: none"></div>
+                            <div class="video-error-message alert alert-warning" style="display: none">
+                                Video link: <a href="{{ question.post.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.post.targetVideoUrl }}</a>.
+                            </div>
+                        </div>
+                    {% elseif question.post.targetImage %}
+                        <div class="row">
+                            <img src="{{ question.post.targetImage }}" class="img-responsive center-block">
+                        </div>
+                    {% endif %}
+
+                        <div class="">
+                            <i class="fa fa-bullhorn"></i>
+                            <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
+                            by {{ question.post.author }}
+                        </div>
+
+                </div>
+                <div class="panel-footer">
+
+                    <div class="clearfix">
+                        <a title="help answer this question" class="btn btn-sm btn-primary pull-right" href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
+                            Post Evidence
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             
             

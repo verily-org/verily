@@ -467,3 +467,6 @@ fa.breadcrumb {
 #widget{
     padding-bottom: 20px !important;
 }
+.disabled.well{
+    opacity: .5;
+}

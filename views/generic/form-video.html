@@ -1,6 +1,6 @@
 {% import '../macros/_generic.html' as generic_macros %}
 <div class="form-group clearfix">
-    <label class="control-label">Video</label>. You need to have a licence to embed the video
+    <label class="control-label">Video</label> You need to have a licence to embed the video <span class="text-muted">(optional)</span>
     <br>
     <span class="text-muted">
         Note: if the video is not a valid Youtube or Vimeo video, a link will be displayed
@@ -9,7 +9,9 @@
     <div id="form-video-link-ctr" class="form-video-link-ctr">
         <span class="sr-only">Video URL</span>
         <input type="text" class="form-control" id="form-video-url" name="targetVideoUrl" placeholder="Video URL" value="{{ post.targetVideoUrl | default('') }}">
-        <div class="btn btn-primary btn-video-validate">Validate</div>
+        <!-- BUTTON TO VALIDATE VIDEO
+            <div class="btn btn-default btn-video-validate" title="validate"><i class="fa fa-check-circle-o"></i></div>
+        -->
     </div>
     <div class="video video-wrapper" style="display:none;">
         <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>

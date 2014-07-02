@@ -123,7 +123,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                     {% else %}
                     <div class="col col-sm-12">
                     {% endif %}
-                        <div id="map" class="smallmap" style="height: 200px;"></div>
+                        <!--<div id="map" class="smallmap" style="height: 200px;"></div>-->
                         <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
                     </div>    
                 </div>
@@ -365,7 +365,6 @@ function initActionButtons() {
                     show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
                 });
     });
-
 }
 
     $(function(){
@@ -416,9 +415,9 @@ function displayForm() {
     
     // Update chars left
     displayCharsLeft();
-    if(!map_form){
-        map_form_initialize();
-    }
+//    if(!map_form){
+//        map_form_initialize();
+//    }
     // Scroll the top of the form into view.
     //formCtr.scrollIntoView();
     
@@ -494,7 +493,7 @@ facebookShareButton.addEventListener('click', function(e) {
     intent('facebook');
     FB.ui({
       method: 'feed',
-      href: refUrlFacebook,
+      href: refUrlFacebook
     }, function(response){
         
     });
