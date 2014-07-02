@@ -4,6 +4,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         connect = require('connect'),
         express = require('express'),
         cleaner = require('./cleaner')(),
+        canon = require('./canon')(),
         orm = require('orm'),
         app = express(),
         emitter = require('./event-emitter')(),
@@ -343,6 +344,10 @@ module.exports = function (suppressLogs, dbTestUrl) {
         app.use(express.bodyParser({
             uploadDir: __dirname + '/static/images/submissions-pre'
         }));
+        
+        // Redirect www URLs to the canonical non-www (apex) URLs.
+        app.use(canon);
+        
         // Call the cleaner now!
         app.use(cleaner);
                 

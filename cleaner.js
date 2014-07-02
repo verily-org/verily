@@ -30,7 +30,7 @@ module.exports = function() {
     }
     
     // The cleaner must be called as soon as possible,
-    // before any other middleware and before the router.
+    // and ensure before the router and impression/analytics handling.
     return function(req, res, next) {
         console.log('Cleaner request: ' + req.path)
         

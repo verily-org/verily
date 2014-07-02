@@ -3,7 +3,11 @@
         "protocol": "http",
         "hostname": "localhost",
         "port": 3000
-    }, 
+    },
+    "production": {
+        "protocol": "http",
+        "hostname": "veri.ly"
+    },
     "demo": "bin/demo.sh",
     "apiDoc": "doc/api.md",
     "requestlogfile": "request.log",
