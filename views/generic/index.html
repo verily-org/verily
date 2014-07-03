@@ -23,12 +23,13 @@ window.fbAsyncInit = function() {
 </script>
 <div id="fb-root"></div>
 
-<div class="well well-sm transparent cookie-message {% if cookieMessageSeen === true %}hidden{% endif %}">
-    We use cookies to provide the best experience. By using our service, you agree to our use of cookies.
-</div>
-
 <div class="welcome">
-    <div class="well">
+    
+    <div class="well well-sm transparent cookie-message {% if cookieMessageSeen === true %}hidden{% endif %}">
+        We use cookies to provide the best experience. By using our service, you agree to our cookie use.
+    </div>
+    
+    <div class="well challenge-info-box">
         <h2>
             <strong>#VerilyLive</strong>
         </h2>
@@ -36,11 +37,11 @@ window.fbAsyncInit = function() {
              The global crowdsourcing challenge for evidence collection and verification
         </p>
         <p class="lead event-date">
-            <i class="fa fa-calendar-o"></i> <span id="eventStart">Saturday 12 July 09:00</span>
-                      &ndash; <span id="eventEnd">Sunday 13 July 16:00</span>
+            <i class="fa fa-calendar-o"></i> <span id="eventStart">Saturday 12 July 9am</span>
+                      &ndash; <span id="eventEnd">Sunday 13 July 4pm</span>
         </p>
         <div class="btn-group">
-            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone" id="button-switch-local">Local</button>
+            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone" id="button-switch-local">Local <span id="timezone-offset-hours" class="text-muted"></button>
             <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone active" id="button-switch-utc">UTC/GMT</button>
         </div>
         {% if challengeActive %}
@@ -75,10 +76,10 @@ window.fbAsyncInit = function() {
     </div>
     
 
-    <p class="lead">
+    <p class="lead challenge-description">
         Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult. We want to enable humanitarian organisations to send resources where needed in response to natural disasters, where accurate and timely information is critical. 
     </p>
-    <p class="lead">
+    <p class="lead challenge-description">
         To prepare the platform for disaster response, we want to ascertain whether the crowd can coordinate effectively in response to our challenge questions. We want to determine whether Verily performs appropriately in time-critical events, and understand the methods of interaction in evidence collection and verification.
     </p>
     
@@ -125,6 +126,20 @@ eventEnd.setUTCHours(endHour, minutes, seconds, msecs);
 
 var eventStartFormatted = moment(eventStart);
 var eventEndFormatted = moment(eventEnd);
+
+var nowLocal = new Date();
+var timezoneOffsetHours = -(nowLocal.getTimezoneOffset() / 60);
+var timezoneOffsetHoursString = '(';
+
+if (timezoneOffsetHours < 0) {
+    timezoneOffsetHoursString += '-' + timezoneOffsetHours;
+} else {
+    timezoneOffsetHoursString += '+' + timezoneOffsetHours;
+}
+
+timezoneOffsetHoursString += ')';
+
+$('#timezone-offset-hours').text(timezoneOffsetHoursString);
 
 function updateDisplay(isLocal) {
     $('#eventStart').text(eventStartFormatted.format(momentFormat));

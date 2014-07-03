@@ -1,6 +1,31 @@
+
 body {
     text-rendering: optimizeLegibility;
     font-weight: 300;
+
+}
+
+body.hero-cover {
+    background-color: #003030;
+    background: url(/static/images/hero-splash.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.hidden-xxs {
+    display: none;
+}
+
+@media (min-width: 500px) {
+    .hidden-xxs {
+        display: block;
+    }
+}
+
+body.hero-cover footer {
+    color: #dddddd;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -19,27 +44,41 @@ footer a {
     color: #777777 !important;
 }
 
+main.hero-cover {
+/*    background-color: rgba(255, 255, 255, .5);*/
+}
+
 #fb-root {
     display: none;
 }
 
 a {
-    color: #007ea5 !important;
+    color: #009c9c !important;
 }
 
 .btn-primary {
-    background-color: #007ea5;
-    border-color: #006c8d;
+    background-color: #009c9c;
+    border-color: #008a8a;
     color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #008a8a;
+    border-color: #008a8a;
 }
 
 .btn-default {
     background-color: transparent;
 }
 
+div.welcome .challenge-info-box .btn-default {
+    background-color: #f5f5f5;
+}
+
 .logo {
     font-family: 'Abril Fatface', cursive;
-    color: #007ea5 !important;
+/*    color: #009c9c !important;*/
     font-size: 35px;
 }
 
@@ -57,12 +96,39 @@ a {
     background-color: transparent;
 }
 
+.no-bullets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0.5em;
+}
+
 .flash-msgs-ctr {
     padding-top: 1.5em;
 }
 
 div.welcome {
 /*    margin-top: 3em;*/
+
+}
+
+div.welcome .challenge-info-box {
+    background-color: rgba(245, 245, 245, 0.7);
+}
+
+div.welcome .cookie-message {
+    color: #dddddd;
+}
+
+div.welcome .signup-form-for-updates {
+    color: #dddddd;
+}
+
+div.welcome p.challenge-description {
+    color: #dddddd;
+}
+
+.well.challenge-description {
+/*        background-color: rgba(255, 255, 255, .5);*/
 }
 
 div.welcome .well {
@@ -72,6 +138,8 @@ div.welcome .well {
 div.welcome p.lead {
     margin-bottom: 0.5em;
 }
+
+
 
 div.welcome p.event-date {
     display: inline-block;
@@ -105,8 +173,16 @@ div.welcome .signup-form-for-updates input {
 
 
 .navbar-default {
-    background-color: transparent;
+    background-color: #009c9c;
     border-color: transparent;
+}
+
+.hero-cover .navbar-default {
+    background-color: transparent;
+}
+
+.navbar-default a {
+    color: #ffffff !important;
 }
 
 /* TODO: Use LESS variables */

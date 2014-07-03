@@ -39,7 +39,7 @@ exports.new = function (req, res) {
                         json.subscribers.push(subscriber);
                         string = JSON.stringify(json);
                         
-                        s3.put(s3.S3_SUBSCRIBERS_BUCKET_KEY, string, function(err, data) {
+                        s3.put(s3.S3_SUBSCRIBERS_BUCKET_KEY, string, null, function(err, data) {
                             if (err) {
                                 console.log('err in s3 put');
                                 console.log(err);

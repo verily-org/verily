@@ -130,7 +130,7 @@ exports.create = function (model, data, req, cb) {
                             console.log('before s3 upload');
                             // Running on Heroku, so store in S3.
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
-                            s3.put(targetImagePath, fileReadStream, 'public-read', function(err, data) {
+                            s3.put(targetImagePath, fileReadStream, s3.ACL_PUBLIC_READ, function(err, data) {
                                 if (err) {
                                     console.log('Error in AWS S3 upload:')
                                     console.log(err);
@@ -522,7 +522,7 @@ exports.sendMailtoLocal = function (req, token, local, scenario, cb) {
 
     var mailOptions = {
         to: local.email,
-        from: 'info@verily.com',
+        from: 'verily.info@gmail.com',
         subject: subject,
         text: text
     };
