@@ -522,7 +522,7 @@ exports.sendMailtoLocal = function (req, token, local, scenario, cb) {
 
     var mailOptions = {
         to: local.email,
-        from: 'info@verily.com',
+        from: 'verily.info@gmail.com',
         subject: subject,
         text: text
     };
