@@ -466,6 +466,10 @@ fa.breadcrumb {
 /*    min-width: 4.25em;*/
 }
 
+.action-button-count.disabled {
+    opacity: 1;
+}
+
 /* Buttons with a background colour need better borders */
 .action-button-count.back-coloured {
     margin-left: 0 !important;
