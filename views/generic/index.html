@@ -40,7 +40,7 @@ window.fbAsyncInit = function() {
                       &ndash; <span id="eventEnd">Sunday 13 July 4pm</span>
         </p>
         <div class="btn-group">
-            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone" id="button-switch-local">Local</button>
+            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone" id="button-switch-local">Local <span id="timezone-offset-hours" class="text-muted"></button>
             <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone active" id="button-switch-utc">UTC/GMT</button>
         </div>
         {% if challengeActive %}
@@ -125,6 +125,20 @@ eventEnd.setUTCHours(endHour, minutes, seconds, msecs);
 
 var eventStartFormatted = moment(eventStart);
 var eventEndFormatted = moment(eventEnd);
+
+var nowLocal = new Date();
+var timezoneOffsetHours = -(nowLocal.getTimezoneOffset() / 60);
+var timezoneOffsetHoursString = '(';
+
+if (timezoneOffsetHours < 0) {
+    timezoneOffsetHoursString += '-' + timezoneOffsetHours;
+} else {
+    timezoneOffsetHoursString += '+' + timezoneOffsetHours;
+}
+
+timezoneOffsetHoursString += ')';
+
+$('#timezone-offset-hours').text(timezoneOffsetHoursString);
 
 function updateDisplay(isLocal) {
     $('#eventStart').text(eventStartFormatted.format(momentFormat));
