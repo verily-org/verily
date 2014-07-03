@@ -29,8 +29,14 @@ a {
 
 .btn-primary {
     background-color: #009c9c;
-    border-color: #006c8d;
+    border-color: #008a8a;
     color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #008a8a;
+    border-color: #008a8a;
 }
 
 .btn-default {
