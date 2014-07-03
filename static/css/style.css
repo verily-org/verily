@@ -39,7 +39,7 @@ a {
 
 .logo {
     font-family: 'Abril Fatface', cursive;
-    color: #009c9c !important;
+/*    color: #009c9c !important;*/
     font-size: 35px;
 }
 
@@ -49,8 +49,8 @@ a {
 }
 
 .logo.welcome {
-    font-size: 60px;
-    line-height: 60px;
+/*    font-size: 60px;*/
+/*    line-height: 60px;*/
 }
 
 .transparent {
@@ -111,8 +111,12 @@ div.welcome .signup-form-for-updates input {
 
 
 .navbar-default {
-    background-color: transparent;
+    background-color: #009c9c;
     border-color: transparent;
+}
+
+.navbar-default a {
+    color: #ffffff !important;
 }
 
 /* TODO: Use LESS variables */
