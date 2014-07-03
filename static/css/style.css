@@ -24,11 +24,11 @@ footer a {
 }
 
 a {
-    color: #007ea5 !important;
+    color: #009c9c !important;
 }
 
 .btn-primary {
-    background-color: #007ea5;
+    background-color: #009c9c;
     border-color: #006c8d;
     color: #ffffff !important;
 }
@@ -39,7 +39,7 @@ a {
 
 .logo {
     font-family: 'Abril Fatface', cursive;
-    color: #007ea5 !important;
+    color: #009c9c !important;
     font-size: 35px;
 }
 
