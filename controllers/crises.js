@@ -44,6 +44,12 @@ var newCrisis = function (req, res) {
 var checkRole = role.can('create a crisis');
 exports.new = [checkRole, newCrisis];
 
+//All Crisis
+exports.all = function (req, res) {
+    //Redirect to crisis/1 for Challenge purposes
+    res.redirect('/crisis/1');
+    res.end();
+}
 
 // Homepage
 exports.index = function (req, res) {
@@ -93,39 +99,13 @@ exports.about = function (req, res) {
     });
 };
 
-
-
-//get the challenge welcome page
-// exports.challenge = function (req, res) {
-//     res.status(200);
-//     if (req.user){var user = req.user; }
-//     //res.json(crises);
-//     res.render('crisis/challenge', {
-//         page: {
-//
-//         },
-//         user: user,
-//         info: req.flash('info'),
-//         error: req.flash('error')
-//     });
-// };
-
-
-//post to challenge_email
-exports.challenge_email = function (req, res) {
-    //todo: Save email, return to welcome page with feedback
-//    req.models.InterestedUsers.create([req.body.email], function(err){
-//
-//        if(!err){
-//            res.status(200);
-//            res.send();
-//        } else {
-//            generic.genericErrorHandler(req, res, err);
-//        }
-//    });
-};
 //get a specific crisis
 exports.get = function (req, res) {
+    //Redirection if different than 1 for Challenge purpose
+    if(req.params.crisis_id != 1){
+        res.redirect('/crisis/1');
+        res.end();
+    }
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         
         if (!err){
