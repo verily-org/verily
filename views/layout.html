@@ -40,7 +40,7 @@
         <script type="text/javascript" src="/static/js/load.js"></script>
         
     </head>
-    <body>
+    <body class="{% if path === '/' %} hero-cover{% endif %}">
         <div id="login-register" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -170,16 +170,27 @@
                 <!-- </ol> -->
                 {% block content %}{% endblock %}
                 <footer>
-                    <div class="text-muted">
-                        <a href="/copyright">&copy; 2014 Verily.</a>
+                    {% if path === '/' %}
+                    <div class="pull-right text-right about-hero-cover hidden-xxs">
+                        This photo is evidence to the example question:<br>
+                        <em>Is there graffiti in Stoneholt?</em>
                     </div>
-                    <div class="text-muted">
-                        <a href="/about">About</a>
-                        &middot;
-                        <a href="/terms">Terms</a>
-                        &middot;
-                        <a href="/privacy">Privacy</a>
+                    {% endif %}
+                    <div class="pull-left">
+                        <div class="text-muted">
+                            <a href="/copyright">&copy; 2014 Verily.</a>
+                        </div>
+                        <div class="text-muted">
+                            <a href="/about">About</a>
+                            &middot;
+                            <a href="/terms">Terms</a>
+                            &middot;
+                            <a href="/privacy">Privacy</a>
+                        </div>
                     </div>
+
+                    
+                    
                 </footer>
             </main>
         {% endblock %}
