@@ -77,7 +77,9 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                     {% endif %}
                     
                     {% if question.targetLat and question.targetLong %}
-                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetLat }},{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat }}</span>, <span id="question-target-long">{{ question.targetLong}}</span></a>
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetLat }},{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.targetLong.toFixed(4) }}</span></a>
+                    <span class="text-muted">&middot;</span>
+                    <a href="" id="view-map">Show map</a>
                     {% endif %}
                 </p>
                 {% endif %}
@@ -89,13 +91,14 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 </p>
 
                 {% if question.tags and question.tags.length !== 0 %}
-                <p class="metadata">
+                <p class="metadata tags">
                     <i class="fa fa-tag fa-lg fa-fw"></i>
                         {% for tag in question.tags %}
-                            <a href="/tag/{{ tag }}"><span class="label label-primary tag">{{ tag }}</span></a>
+                            <a href="/tag/{{ tag }}" class="tag-ctr"><span class="label label-primary tag">{{ tag }}</span></a>
                         {% endfor %}
                 </p>
                 {% endif %}
+                
                 
                 <div class="action-buttons">
                     <div class="row">
@@ -123,7 +126,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                     {% else %}
                     <div class="col col-sm-12">
                     {% endif %}
-                        <!--<div id="map" class="smallmap" style="height: 200px;"></div>-->
+                        <div id="map" class="smallmap" style="height: 200px;"></div>
                         <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
                     </div>    
                 </div>
@@ -348,9 +351,12 @@ function initActionButtons() {
         displayQuestionTrueForm();
 
     });
+    
     $('#question-reject').click(function(){
         displayQuestionFalseForm();
     });
+    
+
     
     
     

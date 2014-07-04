@@ -17,6 +17,22 @@ $(function(){
         e.stopImmediatePropagation();
         return false;
     });
+    
+    $('#map').css('display', 'none');
+
+    var viewMapDefaultText = $('#view-map').text();
+
+    $('#view-map').click(function(e){
+        e.preventDefault();
+        $('#map').toggle();
+
+        // Toggle view map text
+        var viewMapText = $('#view-map').text();
+        $('#view-map').text(viewMapText === viewMapDefaultText ? 'Hide map' : viewMapDefaultText);
+    
+    });
+    
+    
 });
 
 // Shows an alert box

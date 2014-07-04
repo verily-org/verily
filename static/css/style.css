@@ -193,6 +193,7 @@ div.welcome .signup-form-for-updates input {
 .navbar-default {
     background-color: #009c9c;
     border-color: transparent;
+    border-radius: 0 !important;
 }
 
 .hero-cover .navbar-default {
@@ -482,6 +483,11 @@ fa.breadcrumb {
     min-width: 2em;
 }
 
+.metadata.tags .tag-ctr {
+    display: inline-block;
+    margin-top: 0.5em;
+}
+
 .tag {
     font-weight: normal;
     font-size: 100%;
@@ -504,6 +510,10 @@ fa.breadcrumb {
 
 .text-muted code {
     color: #999999;
+}
+
+#map {
+/*    visibility: hidden;*/
 }
 
 

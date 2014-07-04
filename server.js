@@ -1,4 +1,5 @@
-// test
+var ONE_DAY_MSECS = 86400000;
+
 module.exports = function (suppressLogs, dbTestUrl) {
     var //fs = require('fs'),
         connect = require('connect'),
@@ -350,12 +351,15 @@ module.exports = function (suppressLogs, dbTestUrl) {
         
         // Call the cleaner now!
         app.use(cleaner);
+        
+        // 10 years in millseconds.
+        var cookieExpireAfter = 10 * 365 * ONE_DAY_MSECS;
                 
         app.use(express.session({
             secret: 'd9WvgPUdReT8D3dH50FUXuwkpMOcAxA1Nll8sLG9j1s',
             store: new ORMSessionStore(syncedModels)
 
-        }, {maxAge: new Date(Date.now() + 3600000)}));
+        }, {maxAge: new Date(Date.now() + cookieExpireAfter)}));
         app.use(passport.initialize());
         app.use(passport.session());
 
