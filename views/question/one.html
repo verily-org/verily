@@ -43,11 +43,16 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
 
 <div class="question page-header clearfix">
     <div class="row">
-        {% if (question.targetLat and question.targetLong) or (question.post.targetImage) %}
-        <div class="col-sm-5">
+        {% if (question.targetLat and question.targetLong) and (question.post.targetImage) %}
+        {% set questionLeftSideCols = 5 %}
+        {% set questionRightSideIndiv = 6 %}
+        {% elif (question.targetLat and question.targetLong) or (question.post.targetImage) %} 
+        {% set questionLeftSideCols = 8 %}
+        {% set questionRightSideIndiv = 12 %}
         {% else %}
-        <div class="col-sm-12">
+        {% set questionLeftSideCols = 12 %}
         {% endif %}
+        <div class="col-sm-{{ questionLeftSideCols }}">
             <div>
                 <a href="/crisis/{{ crisis.id }}" title="Crisis">
                     <i class="fa fa-fw fa-dot-circle-o fa-breadcrumb"></i>{{ crisis.post.title }}
@@ -121,20 +126,22 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 
             </div>
             
-            {% if (question.targetLat and question.targetLong) or (question.post.targetImage) %}
-            <div class="col-sm-7 question-image-and-map-ctr">
+            {% if questionLeftSideCols !== 12 %}
+            <div class="col-sm-{{ 12 - questionLeftSideCols }} question-image-and-map-ctr">
                 <div class="row">
                     {% if question.post.targetImage %}
-                    <div class="col col-sm-6">
+                    <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <img src="{{ question.post.targetImage }}" class="img-responsive">
                     </div>
-                    <div class="col col-sm-6">
-                    {% else %}
-                    <div class="col col-sm-12">
                     {% endif %}
+                    
+                    {% if question.targetLat %}
+                    <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <div id="map" class="smallmap" style="height: 200px;"></div>
-                        <!-- <img src="http://maps.googleapis.com/maps/api/staticmap?center=-15.800513,-47.91378&zoom=11&size=700x400&sensor=false" alt="map" class="img-responsive"> -->
-                    </div>    
+                    </div>
+                    {% endif %}
+
+                        
                 </div>
                 <!-- / .row -->
             </div>
