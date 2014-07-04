@@ -16,8 +16,10 @@ exports.route = function (app, controllers, doc) {
     route('get', '/auth/facebook', 'facebookRedirect', 'Authenticate Facebook user');
     route('get', '/auth/facebook/callback', 'facebookAuthenticate', 'Authenticate Facebook user');
 
-    route('get', '/admin', 'getAdminPage', 'Get administrator page');
-    route('post', '/admin', 'changeRoles', 'Change the roles of the users');
+    route('get', '/roles', 'getRoles', 'Get page for user roles');
+    route('post', '/roles', 'changeRoles', 'Change the roles of the users');
+    route('get', '/adminAnswers', 'getAdminAnswers', 'Get all the answers for the admin page');
+    route('post', '/adminAnswers', 'postAdminAnswers', 'Post answers that should be hidden');
 
     route('get', '/changePass', 'passChangeView', 'Get view to change the password');
     route('post', '/changePass', 'passChange', 'Change user\'s password');

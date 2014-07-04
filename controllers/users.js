@@ -180,12 +180,12 @@ var getRoles = function (model, cb) {
     });   
 };
 
-var adminPage = function (req, res) {
+var assignRoles = function (req, res) {
     getRoles(req.models.User, function (err, basics, editors, admins) {
         if (err) {
             generic.genericErrorHandler(req, res, err); 
         } else {
-            res.render('user/admin', {
+            res.render('user/roles', {
                 page: {
                     title: 'Administrator'
                 },
@@ -198,7 +198,7 @@ var adminPage = function (req, res) {
     });
 };
 
-exports.getAdminPage = [isAdmin, adminPage];
+exports.getRoles = [isAdmin, assignRoles];
 
 
 
@@ -209,8 +209,8 @@ var setRoles = function (req, res) {
     var model = req.models.User;
 
 
-    if (basics.indexOf('Admin') !== -1 || editors.indexOf('Admin') !== -1) {
-        res.render('user/admin', {
+    if (basics.indexOf(config.admin.username) !== -1 || editors.indexOf(config.admin.username) !== -1) {
+        res.render('user/roles', {
             page: {
                 title: 'Administrator'
             },
@@ -291,7 +291,7 @@ var setRoles = function (req, res) {
                         if (err) {
                             generic.genericErrorHandler(req, res, err); 
                         } else {
-                            res.render('user/admin', {
+                            res.render('user/roles', {
                                 page: {
                                     title: 'Administrator'
                                 },
@@ -548,3 +548,123 @@ exports.verifyAccount = function (req, res) {
         }
     });
 };
+
+
+var getAllAnswers = function (req, res) {
+    req.models.Crisis.find({}, function (err, crises) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err); 
+        } else {
+            if (crises) {
+                async.each(crises, function (crisis, cb) {
+                    crisis.getQuestions(function (err, questions) {
+                        if (err) {
+                            cb(err); 
+                        } else {
+                            if (questions) {
+                                async.each(questions, function (question, cb2) {
+                                    question.getAnswers(function (err, answers) {
+                                       if (!err) {
+                                               // Answers present.
+                                               async.each(answers, generic.load_answers_extra_fields, function (err) {
+                                                   if (err) {
+                                                       cb2(err);
+                                                   } else {
+                                                       question.answers = answers;
+                                                       cb2(null);
+                                                   }
+                                               });
+                                               
+                                       } else {
+                                           cb2(err);
+                                       }
+                                    });
+                                }, function (err) {
+                                    if (err) {
+                                        cb(err);
+                                    } else {
+                                        crisis.questions = questions;
+                                        cb(null);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }, function (err) {
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);   
+                    } else {
+                        res.render('user/adminAnswers', {
+                            page: {
+                                title: 'Answers'
+                            },
+                            crises: crises,
+                            error: req.flash('error'),
+                            info: req.flash('info')
+                        });
+                    }
+                });
+            }
+        }
+    });
+};
+
+exports.getAdminAnswers = [isAdmin, getAllAnswers];
+
+
+var postAllAnswers = function (req, res) {
+    var shown = req.body.shownAnswers.split("|");
+    var hidden = req.body.hiddenAnswers;
+    if (hidden || shown) {
+        req.models.Answer.find({id: hidden, show: 1}, function (err, hiddenAnswers) {
+            if (err) {
+                generic.genericErrorHandler(req, res, err);   
+            } else {
+                async.each(hiddenAnswers, function (hiddenAnswer, cb) {
+                    hiddenAnswer.show = 0;
+                    hiddenAnswer.save(function (err) {
+                        if (err) {
+                            cb(err);
+                        } else {
+                            cb(null);
+                        }
+                    });
+                }, function (err) {
+                    if (err) {
+                        req.flash('error', 'An error occurred');
+                        res.redirect('/adminAnswers');    
+                    } else {
+                        req.models.Answer.find({id: shown, show: 0}, function (err, shownAnswers) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err);
+                            } else {
+                                async.each(shownAnswers, function (shownAnswer, cb) {
+                                    shownAnswer.show = 1;
+                                    shownAnswer.save(function (err) {
+                                        if (err) {
+                                            cb(err);
+                                        } else {
+                                            cb(null);
+                                        }
+                                    }); 
+                                }, function (err) {
+                                    if (err) {
+                                        req.flash('error', 'An error occurred');
+                                        res.redirect('/adminAnswers'); 
+                                    } else {
+                                        req.flash('info', 'Your changes have been made');
+                                        res.redirect('/adminAnswers');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    } else {
+        res.redirect('/adminAnswers');
+    }
+};
+
+exports.postAdminAnswers = [isAdmin, postAllAnswers];

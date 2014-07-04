@@ -160,7 +160,8 @@
                             <li><a href="/user">{{user.name}}</a></li>
                             <li><a href="/logout">Logout</a></li>
 							{% if userCan('assign roles') %}
-								<li><a href="/admin">Assign Roles</a></li>
+								<li><a href="/roles">Assign Roles</a></li>
+								<li><a href="/adminAnswers">All Answers</a></li>
 							{% endif %}
                         {% elseif challengeActive or (path !== '/' and path !== '/about') %}
                             <li><a href="/login">Login</a></li>

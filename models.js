@@ -177,7 +177,7 @@ module.exports = function (db, cb) {
                 getSupportedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Support, else not loaded returns 0!
                     if(this.answers != undefined){
-                        return this.answers.filter(function(a){return a.isSupport()}).length;
+                        return this.answers.filter(function(a){return a.isSupport() && a.show}).length;
                     }
                     else{
                         return 0;
@@ -186,7 +186,7 @@ module.exports = function (db, cb) {
                 getRejectedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Reject, else not loaded returns 0!
                     if(this.answers != undefined){
-                        return this.answers.filter(function(a){return a.isAgainst()}).length;
+                        return this.answers.filter(function(a){return a.isAgainst() && a.show}).length;
                     }
                     else{
                         return 0;
@@ -197,7 +197,11 @@ module.exports = function (db, cb) {
         type: {
             type: 'enum',
             values: ['support', 'reject']
-        }
+        },
+        show: {
+            type: 'boolean',
+            defaultValue: '1'
+        } 
     }, {
         methods: {
             isSupport: function(){

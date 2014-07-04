@@ -38,84 +38,96 @@
         }
     </script>
 {% endmacro %}
-{% macro answers_embeded(answers, crisis_id) %}
+{% macro answers_embeded(answers, crisis_id, adminFlag) %}
     {% import '_generic.html' as generic_macros %}
     {{ vote_script() }}
     {% for answer in answers | reverse %}
-        {% if loop.index % 3 == 1 %}
-            <div class="row">
-        {% endif %}
-        <div class="col-sm-4 answer-wrapper" data-date="{{ answer.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ answer.popularityCoefficient }}" data-upvotes="{{ answer.post.upvoteCount }}">
-            <div class="panel panel-default verily-panel question-answer">
-                <div class="question-answer-bar {% if answer.type === 'support' %}label-success{% else %}label-danger{% endif %}">
-                    {% if answer.type === 'support' %}
-                        <span class="metric">
-                            <i class="fa fa-check"></i>
-                            <span class="">True because
-                        </span>
-                    {% else %}
-                        <span class="metric">
-                            <i class="fa fa-times"></i>
-                            <span class="">False because
-                        </span>
+		{% if (!adminFlag && answer.show) || (adminFlag) %}
+			{% if loop.index % 3 == 1 %}
+				<div class="row">
+			{% endif %}
+			<div class="col-sm-4 answer-wrapper" data-date="{{ answer.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ answer.popularityCoefficient }}" data-upvotes="{{ answer.post.upvoteCount }}">
+				<div class="panel panel-default verily-panel question-answer">
+					<div class="question-answer-bar {% if answer.type === 'support' %}label-success{% else %}label-danger{% endif %}">
+						{% if answer.type === 'support' %}
+							<span class="metric">
+								<i class="fa fa-check"></i>
+								<span class="">True because
+							</span>
+						{% else %}
+							<span class="metric">
+								<i class="fa fa-times"></i>
+								<span class="">False because
+							</span>
 
-                    {% endif %}
-                </div>
-                <div class="panel-heading">
-                        {% if answer.post.targetLocality %}
-                            <div class="">
-                               <i class="fa fa-map-marker"></i>
-                               <span class="sr-only">Locality:</span>
-                               <span id="answer-locality">{{ answer.post.targetLocality }}</span>
-                            </div>
-                        {% endif %}
+						{% endif %}
+					</div>
+					<div class="panel-heading">
+							{% if answer.post.targetLocality %}
+								<div class="">
+								   <i class="fa fa-map-marker"></i>
+								   <span class="sr-only">Locality:</span>
+								   <span id="answer-locality">{{ answer.post.targetLocality }}</span>
+								</div>
+							{% endif %}
 
-                        <h3 class="panel-title">
-                            <a href="/crisis/{{ crisis.id }}/question/{{ answer.question_id }}/answer/{{ answer.id }}">
-                        {{ answer.post.title }}
-                            </a>
-                        </h3>
-                </div>
-                <div class="panel-body">
+							<h3 class="panel-title">
+								<a href="/crisis/{{ crisis.id }}/question/{{ answer.question_id }}/answer/{{ answer.id }}">
+							{{ answer.post.title }}
+								</a>
+								
+							{% if adminFlag %}	
+								<div class="input-group">
+									<input type="checkbox" name="hiddenAnswers" value="{{ answer.id }}" {% if !answer.show %} checked {% endif %}>
+									Check to hide
+								</div><!-- /input-group -->
+							{% endif %}
+							</h3>
+							
+								
+					</div>
+					<div class="panel-body">
 
 
-                    {{ answer.post.text | cropString(300)  }}
-                    
-                    {% if answer.post.targetImage %}
-                        <div class="row">
-                            <img src="{{ answer.post.targetImage }}" class="img-responsive center-block answer-image">
-                        </div>
+						{{ answer.post.text | cropString(300)  }}
+						
+						{% if answer.post.targetImage %}
+							<div class="row">
+								<img src="{{ answer.post.targetImage }}" class="img-responsive center-block answer-image">
+							</div>
 
-                    {% elseif answer.post.targetVideoUrl %}
-                        <div id="video-wrapper-{{ answer.post.id }}" class="video-wrapper video-wrapper-ajax"
-                             data-video-url="{{ answer.post.targetVideoUrl }}">
-                            <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
-                            <div class="video-container" style="display: none"></div>
-                            <div class="video-error-message alert alert-warning" style="display: none">
-                                Video link: <a target="_blank"></a>.
-                            </div>
-                        </div>
-                    {% endif %}
-                    
-                        <div class="">
-                            <i class="fa fa-bullhorn"></i>
-                            <span class=""><abbr title="{{ answer.post.date.toUTCString() }}">{{ answer.post.date | relativeTime }}</abbr></span>
-                            by {{ answer.post.user.name }}
-                        </div>
+						{% elseif answer.post.targetVideoUrl %}
+							<div id="video-wrapper-{{ answer.post.id }}" class="video-wrapper video-wrapper-ajax"
+								 data-video-url="{{ answer.post.targetVideoUrl }}">
+								<div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+								<div class="video-container" style="display: none"></div>
+								<div class="video-error-message alert alert-warning" style="display: none">
+									Video link: <a target="_blank"></a>.
+								</div>
+							</div>
+						{% endif %}
+						
+							<div class="">
+								<i class="fa fa-bullhorn"></i>
+								<span class=""><abbr title="{{ answer.post.date.toUTCString() }}">{{ answer.post.date | relativeTime }}</abbr></span>
+								by {{ answer.post.user.name }}
+							</div>
+						{% if !adminFlag %}
+							<!-- vote row -->
+							<div class="row">
+								{{ evidence_actions(crisis_id, answer.question_id, answer) }}
+							</div>
+							<!-- / vote row -->
+						{% endif %}
 
-                    <!-- vote row -->
-                    <div class="row">
-                        {{ evidence_actions(crisis_id, answer.question_id, answer) }}
-                    </div>
-                    <!-- / vote row -->
+					</div>
+				</div>
+			</div>
 
-                </div>
-            </div>
-        </div>
-
-        {% if loop.index % 3 == 0 %}
-            </div>
-        {% endif %}
+			{% if loop.index % 3 == 0 %}
+				</div>
+			{% endif %}
+		{% endif %}
     {% endfor %}
     {{ generic_macros.video_html_script() }}
 {% endmacro %}

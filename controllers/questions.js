@@ -143,6 +143,12 @@ var getQuestion = function (req, addView, callback) {
             
             question.getAnswers(function (err, answers) {
                if (!err && answers) {
+                    var answersShown = [];
+                    for (var i = 0; i < answers.length; i++) {
+                        if (answers[i].show)
+                            answersShown.push(answers[i]);
+                    }
+
                    generic.load_question_extra_fields(question, function(err){
                        if (!err) {
                            var questionTmp = {
@@ -172,11 +178,11 @@ var getQuestion = function (req, addView, callback) {
                            };
                            // Answers present.
 
-                           async.each(answers, generic.load_answers_extra_fields, function (err) {
+                           async.each(answersShown, generic.load_answers_extra_fields, function (err) {
                                if (err) {
                                    callback(err);
                                } else {
-                                   questionTmp.answers = answers;
+                                   questionTmp.answers = answersShown;
                                    callback(err, questionTmp);
                                }
                            });

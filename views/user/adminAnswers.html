@@ -1,0 +1,40 @@
+{% set type = 'user' %}
+{% import '../macros/_answers.html' as answers_macro %}
+{% import '../macros/_generic.html' as generic_macro %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<script type="text/javascript">
+	function getShown() {
+		var shownStr = document.getElementById('shownAnswers');
+		shownStr.value = '';
+		var checkboxes = document.getElementsByName('hiddenAnswers');
+		for (var i = 0; i < checkboxes.length; i++) {
+			if (!checkboxes[i].checked) {
+				shownStr.value = shownStr.value + '|' + checkboxes[i].value;
+			}
+		}
+	}
+</script>
+
+<form action="/adminAnswers" method="POST" onsubmit="getShown();">
+	<input type="hidden" name="shownAnswers" id="shownAnswers">
+
+	<div class="row question-answers">
+		{% for crisis in crises %}
+			<h3><a href="/crisis/{{crisis.id}}">{{crisis.post.title}}</a></h3>
+			{% for question in crisis.questions %}
+				<h4><a href="/crisis/{{crisis.id}}/question/{{question.id}}">{{question.post.title}}</a></h4>
+				{{ answers_macro.answers_embeded(question.answers, crisis.id, true) }}
+			{% endfor %}
+		{% endfor %}
+	</div>
+	
+	<button class="btn btn-primary btn-large" type="submit">Submit</button>
+	
+	</div>
+	
+</form>
+{% endblock %}
