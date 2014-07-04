@@ -10,6 +10,8 @@
     {% set questionTitleForSharing = questionTitleForSharing + '?' %}
 {% endif %}
 
+{% set numResponses = question.answers | length %}
+
 <script>
 var questionTitle = '{{ questionTitleForSharing }}';
 var refPathPrefix = '/r/';
@@ -138,6 +140,12 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         </div>
         <!-- / question header row -->
         
+        {% if numResponses === 0 %}
+        <div>
+            <strong>No responses yet</strong>
+        </div>
+        {% endif %}
+        
         <!-- button-mark-true -->
         <div class="action-button-ctr btn-group">
             <button class="btn btn-success btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
@@ -167,50 +175,54 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         </div>
         <!-- / button-mark-important -->
         
-        <!-- Twitter Tweet button -->
-        <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
-        <!-- / Twitter Tweet button -->
+        <div>
+            Ask your social network to help with this question
+            <!-- Twitter Tweet button -->
+            <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
+            <!-- / Twitter Tweet button -->
         
-        <!-- Facebook Share button -->
-        
-        
-        
-        <!-- <div data-type="button_count" class="fb-share-button fb_iframe_widget" fb-xfbml-state="rendered" id="facebook-share-button"></div>-->
-        <div id="fb-root"></div>
-        <div class="action-button-ctr btn-group">
-            <a class="btn btn-default btn-large text-action-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
-        </div>
-        
-        <!-- / Facebook Share button -->
+            <!-- Facebook Share button -->
         
         
-        <!-- button-share-question-link -->
-        <div class="action-button-ctr btn-group">
-            <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
-        </div>
-        <!-- / button-share-question-link -->
         
-        <!-- button-email -->
+            <!-- <div data-type="button_count" class="fb-share-button fb_iframe_widget" fb-xfbml-state="rendered" id="facebook-share-button"></div>-->
+            <div id="fb-root"></div>
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
+            </div>
+        
+            <!-- / Facebook Share button -->
+        
+        
+            <!-- button-share-question-link -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
+            </div>
+            <!-- / button-share-question-link -->
+        
+            <!-- button-email -->
 
-        <div class="action-button-ctr btn-group">
-            <a class="btn btn-default btn-large text-action-button" id="button-share-question-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
-        </div>
-        <script>
-        var buttonShareQuestionEmail = document.getElementById('button-share-question-email');
-        var emailMessage = common.campaigner('email', '{{ questionTitleForSharing }}', refUrlEmail);
-        buttonShareQuestionEmail.href = 'mailto:?subject=' + emailMessage.subject + '&body=' + emailMessage.body;
-        </script>
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button" id="button-share-question-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
+            </div>
+            <script>
+            var buttonShareQuestionEmail = document.getElementById('button-share-question-email');
+            var emailMessage = common.campaigner('email', '{{ questionTitleForSharing }}', refUrlEmail);
+            buttonShareQuestionEmail.href = 'mailto:?subject=' + emailMessage.subject + '&body=' + emailMessage.body;
+            </script>
         
-        <!-- / button-email -->
+            <!-- / button-email -->
                 
-        <!-- small buttons -->
-        {% if userCan('edit a question') %}
-			<div class="btn-group">
-				<div class="additional-button-ctr">
-					<a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
-				</div>
-			</div>
-		{% endif %}
+            <!-- small buttons -->
+            {% if userCan('edit a question') %}
+    			<div class="btn-group">
+    				<div class="additional-button-ctr">
+    					<a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
+    				</div>
+    			</div>
+    		{% endif %}
+        
+        </div>
         
         <div class="btn-group">
             <div class="additional-button-ctr">
@@ -250,22 +262,25 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
     
 </div>
 
-<h3>{{ question.answers | length }} Responses</h3>
-    <div class="row">
-        <div class="pull-right">
-            <label for="select_filter_evidence">View evidence:</label>
-            <select id="select_filter_evidence">
-                <option value="Recent">Recent (most recent first)</option>
-                <option value="Popular">Popular (most popular first)</option>
-                <option value="Upvote">Upvotes</option>
-            </select>
+{% if numResponses !== 0 %}
+<h3>{{ numResponses }} responses</h3>
 
-        </div>
 
+<div class="row">
+    <div class="pull-right">
+        <label for="select_filter_evidence">Order by:</label>
+        <select id="select_filter_evidence">
+            <option value="Recent">Time</option>
+            <option value="Popular">Popularity</option>
+            <option value="Upvote">Upvotes</option>
+        </select>
     </div>
+
+</div>
 <div class="row question-answers">
     {{ answers_macro.answers_embeded(question.answers, crisis.id) }}
 </div>
+{% endif %}
 
 
 <div class="modal fade" id="modal-share-question-link" role="dialog">

@@ -18,41 +18,31 @@
                 {{ crisis.post.title }}
             </h2>
 
-            <p class="lead" style="font-family: 'Helvetica'; font-size:18px; font-weight: lighter">
+            <p class="lead">
                 {{ crisis.post.text }}
             </p>
 
-            <div style="font-family: sans-serif; font-size:22px;">Ask your social network to help with these questions:</div>
-
             <div class="action-buttons">
-                <div class="row">
-                    {% if userCan('create a question') %}
-                    <div class="action-button-ctr btn-group">
-                        <a class="btn btn-primary crisis-ask-question" href="/crisis/{{ crisis.id }}/question/create">Make Verification Request</a>
-                    </div>
-                    {% endif %}
-
-                    <!-- button-mark-important -->
-                    <div class="action-button-ctr btn-group">
-                        {% set crisis_markedImportant = crisis.post | isMarkedImportantBy(user) %}
-                        <button data-crisis-id="{{ crisis.id }}"
-                                data-question-id="{{ answer.question_id }}"
-                                data-answer-id="{{ answer.id }}"
-                                class="mark-important-crisis-btn btn btn-default btn-large text-action-button {% if !user %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
-                                title="Mark as important">
-                                    <i class="fa fa-star"></i>
-                                    <span class="sr-only">Important</span></a>
-                        </button>
-                        <a href="#" class="btn btn-default action-button-count">{{ crisis.importanceCount }}</a>
-                    </div>
-                    <!-- / button-mark-important -->
-
-
-
-
+                {% if userCan('create a question') %}
+                <div class="action-button-ctr btn-group">
+                    <a class="btn btn-primary crisis-ask-question" href="/crisis/{{ crisis.id }}/question/create">Make Verification Request</a>
                 </div>
-                <!-- / action buttons row -->
+                {% endif %}
 
+                <!-- button-mark-important -->
+                <div class="action-button-ctr btn-group">
+                    {% set crisis_markedImportant = crisis.post | isMarkedImportantBy(user) %}
+                    <button data-crisis-id="{{ crisis.id }}"
+                            data-question-id="{{ answer.question_id }}"
+                            data-answer-id="{{ answer.id }}"
+                            class="mark-important-crisis-btn btn btn-default btn-large text-action-button {% if !user %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
+                            title="Mark as important">
+                                <i class="fa fa-star"></i>
+                                Important</a>
+                    </button>
+                    <a href="#" class="btn btn-default action-button-count disabled">{{ crisis.importanceCount }}</a>
+                </div>
+                <!-- / button-mark-important -->
 
             </div>
             <!-- / action-buttons -->
@@ -84,10 +74,7 @@
         </div>
         <!-- / question header row -->
         
-        <!-- Twitter Tweet button -->
-        <a href="https://twitter.com/share" class="twitter-share-button btn-group" data-size="large">Tweet</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        <!-- / Twitter Tweet button -->
+
                 
         <!-- small buttons -->
 		{% if userCan('edit a crisis') %}
@@ -119,12 +106,22 @@
 
 
 
-<div class="row">
-    <div class="pull-right">
-        <label for="select_filter_questions">View questions:</label>
+<div class="row crisis-questions-header">
+    <div class="col-sm-9">
+        Ask your social network to help with these questions
+        <!-- Twitter Tweet button -->
+               <a href="https://twitter.com/share" class="twitter-share-button btn-group" data-size="large">Tweet</a>
+               <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+       <!-- / Twitter Tweet button -->
+        
+        
+    </div>
+    
+    <div class="col-sm-3 text-right">
+        <label for="select_filter_questions">Order by</label>
         <select id="select_filter_questions">
-            <option value="Recent">Recent (most recent first)</option>
-            <option value="Popular">Popular (most popular first)</option>
+            <option value="Recent">Time</option>
+            <option value="Popular">Popularity</option>
         </select>
 
     </div>
@@ -133,10 +130,12 @@
 
 <div class="crisis-questions display-table">
     {% for question in questions | reverse %}
-        {% if loop.index % 3 == 1 %}
+        {% set numColumns = 4 %}
+        {% set colWidth = 12 / numColumns %}
+        {% if loop.index % numColumns == 1 %}
             <div class="row">
         {% endif %}
-        <div class="col-sm-4 crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
+        <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
             <div class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
                 <div class="panel-heading">
                         {% if question.post.targetLocality %}
@@ -189,7 +188,7 @@
 
             </div>
         </div>
-            {% if loop.index % 3 == 0 %}
+            {% if loop.index % numColumns == 0 %}
         </div>
         {% endif %}
         <!-- / .col-sm-4 -->

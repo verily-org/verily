@@ -694,14 +694,19 @@ fa.breadcrumb {
     opacity: .5;
 }
 
+.crisis-questions-header {
+    margin-bottom: 1em;
+}
+
+
 @media (max-width: 768px)  {
     .verily-panel img{
-        max-height:330px;
+
     }
 }
 @media (min-width: 768px) and  (max-width: 991px) {
     .verily-panel img{
-        max-height:130px;
+
     }
     .crisis-question-metrics{
         font-size:1.2em;
@@ -712,12 +717,12 @@ fa.breadcrumb {
 }
 @media (min-width: 991px) and  (max-width: 1200px) {
     .verily-panel img{
-        max-height:130px;
+
     }
 }
 
 @media (min-width: 1200px)  {
     .verily-panel img{
-        max-height:130px;
+
     }
 }
