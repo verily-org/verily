@@ -42,8 +42,11 @@
     {% import '_generic.html' as generic_macros %}
     {{ vote_script() }}
     {% for answer in answers | reverse %}
+        {% if loop.index % 3 == 1 %}
+            <div class="row">
+        {% endif %}
         <div class="col-sm-4 answer-wrapper" data-date="{{ answer.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ answer.popularityCoefficient }}" data-upvotes="{{ answer.post.upvoteCount }}">
-            <div class="panel panel-default question-answer">
+            <div class="panel panel-default verily-panel question-answer">
                 <div class="question-answer-bar {% if answer.type === 'support' %}label-success{% else %}label-danger{% endif %}">
                     {% if answer.type === 'support' %}
                         <span class="metric">
@@ -82,15 +85,8 @@
                         <div class="row">
                             <img src="{{ answer.post.targetImage }}" class="img-responsive center-block answer-image">
                         </div>
-                    {% endif %}
 
-                    {% if answer.post.targetYoutubeVideoId %}
-                        <div class="video-container">
-                            <iframe width="323" height="200" src="//www.youtube.com/embed/{{ answer.post.targetYoutubeVideoId }}?rel=0" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    {% endif %}
-
-                    {% if answer.post.targetVideoUrl %}
+                    {% elseif answer.post.targetVideoUrl %}
                         <div id="video-wrapper-{{ answer.post.id }}" class="video-wrapper video-wrapper-ajax"
                              data-video-url="{{ answer.post.targetVideoUrl }}">
                             <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
@@ -116,6 +112,10 @@
                 </div>
             </div>
         </div>
+
+        {% if loop.index % 3 == 0 %}
+            </div>
+        {% endif %}
     {% endfor %}
     {{ generic_macros.video_html_script() }}
 {% endmacro %}

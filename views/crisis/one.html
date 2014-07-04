@@ -131,10 +131,13 @@
     
 </div>
 
-<div class="row crisis-questions">
+<div class="crisis-questions display-table">
     {% for question in questions | reverse %}
+        {% if loop.index % 3 == 1 %}
+            <div class="row">
+        {% endif %}
         <div class="col-sm-4 crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
-            <div class="panel panel-default question-answer crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
+            <div class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
                 <div class="panel-heading">
                         {% if question.post.targetLocality %}
                             <div class="">
@@ -185,11 +188,10 @@
                 </div>
 
             </div>
-
-            
-            
-            
         </div>
+            {% if loop.index % 3 == 0 %}
+        </div>
+        {% endif %}
         <!-- / .col-sm-4 -->
     {% endfor %}
 </div>
