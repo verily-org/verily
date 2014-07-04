@@ -3,7 +3,6 @@ var enums = require('../enums');
 var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
-var s3 = require('../s3');
 
 var common = require('../static/js/common');
 
@@ -70,9 +69,6 @@ exports.index = function (req, res) {
                 // so that on next request cookieMessageSeen will return as true.
                 req.session.cookieMessageSeen = true;
             }
-
-
-            var imageURL = 'https://s3-eu-west-1.amazonaws.com/' + s3.BUCKET_ID + '/images/verily_banner1200x627.png';
                         
             //res.json(crises);
             res.render('generic/index', {
@@ -83,9 +79,8 @@ exports.index = function (req, res) {
                 crises: crises,
                 user: user,
                 cookieMessageSeen: cookieMessageSeen,
-                imageURL: imageURL,
                 info: req.flash('info'),
-                error: req.flash('error'),
+                error: req.flash('error')
             });
         }
     });
