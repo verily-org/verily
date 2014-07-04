@@ -7,10 +7,20 @@ role = require('../lib/roles').user,
 nodemailer = require('nodemailer'),
 crypto = require('crypto'),
 config = require('../lib/auth'),
+mode = require('../mode'),
 assignedPoints = require('../points.json');
 require('../lib/passport')(passport);
 
 var smtpTransport = config.mailer;
+var trueValue;
+var falseValue;
+if (mode.isHeroku()) {
+    trueValue = true;
+    falseValue = false;
+} else {
+    trueValue = 1;
+    falseValue = 0;
+}
 
 var validatePassword = function (password) {
     var re = /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$/;
@@ -534,7 +544,7 @@ exports.verifyAccount = function (req, res) {
             res.redirect('/');
         } else {
             var local = locals[0];
-            local.verified = '1';
+            local.verified = trueValue;
             local.verificationToken = undefined;
             local.save(function (err) {
                 if (err) {
@@ -616,12 +626,12 @@ var postAllAnswers = function (req, res) {
     var shown = req.body.shownAnswers.split("|");
     var hidden = req.body.hiddenAnswers;
     if (hidden || shown) {
-        req.models.Answer.find({id: hidden, show: 1}, function (err, hiddenAnswers) {
+        req.models.Answer.find({id: hidden, show: trueValue}, function (err, hiddenAnswers) {
             if (err) {
                 generic.genericErrorHandler(req, res, err);   
             } else {
                 async.each(hiddenAnswers, function (hiddenAnswer, cb) {
-                    hiddenAnswer.show = 0;
+                    hiddenAnswer.show = falseValue;
                     hiddenAnswer.save(function (err) {
                         if (err) {
                             cb(err);
@@ -634,12 +644,12 @@ var postAllAnswers = function (req, res) {
                         req.flash('error', 'An error occurred');
                         res.redirect('/adminAnswers');    
                     } else {
-                        req.models.Answer.find({id: shown, show: 0}, function (err, shownAnswers) {
+                        req.models.Answer.find({id: shown, show: falseValue}, function (err, shownAnswers) {
                             if (err) {
                                 generic.genericErrorHandler(req, res, err);
                             } else {
                                 async.each(shownAnswers, function (shownAnswer, cb) {
-                                    shownAnswer.show = 1;
+                                    shownAnswer.show = trueValue;
                                     shownAnswer.save(function (err) {
                                         if (err) {
                                             cb(err);
