@@ -407,7 +407,6 @@ function initActionButtons() {
                 rearrange_children($('.question-answers'), function(a,b){
                     return new Date($(b).data('date')) - new Date($(a).data('date'));
                 });
-
             }
             else if($('#select_filter_evidence').val() == "Popular"){
                 rearrange_children($('.question-answers'), function(a,b){

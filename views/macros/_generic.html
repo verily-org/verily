@@ -57,14 +57,18 @@
     var rearrange_children = function(parent, sort_function){
 //        parent.fadeOut('fast', function(){
         var children = [];
-        parent.children('div').each(function(){
-            children.push(this);
-            $(this).remove();
+        parent.children('div.row').each(function(){
+            $(this).children('div').each(function(){
+                children.push(this);
+                $(this).remove();
+            });
         });
         children.sort(sort_function);
 
         for (var i in children) {
-            parent.append(children[i]);
+            var parent_row_index = Math.floor(i/3);
+            var parent_row = parent.children('div.row')[parent_row_index];
+            $(parent_row).append(children[i]);
         }
 //            parent.fadeIn('slow');
 //        });
