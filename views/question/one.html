@@ -43,7 +43,11 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
 
 <div class="question page-header clearfix">
     <div class="row">
+        {% if (question.targetLat and question.targetLong) or (question.post.targetImage) %}
         <div class="col-sm-5">
+        {% else %}
+        <div class="col-sm-12">
+        {% endif %}
             <div>
                 <a href="/crisis/{{ crisis.id }}" title="Crisis">
                     <i class="fa fa-fw fa-dot-circle-o fa-breadcrumb"></i>{{ crisis.post.title }}
@@ -117,7 +121,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 
             </div>
             
-            
+            {% if (question.targetLat and question.targetLong) or (question.post.targetImage) %}
             <div class="col-sm-7 question-image-and-map-ctr">
                 <div class="row">
                     {% if question.post.targetImage %}
@@ -135,6 +139,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 <!-- / .row -->
             </div>
             <!-- / .question-image-and-map-ctr -->
+            {% endif %}
             
             
         </div>
