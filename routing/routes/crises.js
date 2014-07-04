@@ -28,5 +28,7 @@ exports.route = function (app, controllers, doc) {
     
     route('get', '/about', 'about', 'About; About Verily');
 
+    route('get', '/terms', 'terms', 'Terms; Terms and conditions of Verily');
+
     route('get', '/challenge', 'challenge', 'Welcome page to the challenge');
 };

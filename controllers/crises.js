@@ -98,6 +98,18 @@ exports.about = function (req, res) {
         error: req.flash('error')
     });
 };
+exports.terms = function (req, res) {
+    res.status(200);
+    if (req.user){var user = req.user; }
+    res.render('generic/terms', {
+        page: {
+        },
+        path: '/terms',
+        user: user,
+        info: req.flash('info'),
+        error: req.flash('error')
+    });
+};
 
 //get a specific crisis
 exports.get = function (req, res) {
