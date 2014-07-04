@@ -333,7 +333,7 @@ exports.update = function (model, id, req, cb) {
                 if (postNew) {
                     // Update post.
                     req.models.Post.get(item.post_id, function (err, post) {
-                        var now = new Date().getTime();
+                        var now = new Date();
                         post.updated = now;
                         post.save(postNew, function (err) {
                             if (err) {
