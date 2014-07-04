@@ -26,10 +26,10 @@ window.fbAsyncInit = function() {
 <div class="welcome">
     
     <div class="well well-sm transparent cookie-message {% if cookieMessageSeen === true %}hidden{% endif %}">
-        We use cookies to provide the best experience. By using our service, you agree to our cookie use.
+        We use cookies to provide a better experience. By using our service, you agree to our cookie use.
     </div>
     
-    <div class="well challenge-info-box">
+    <div class="well transparent challenge-info-box">
         <h2>
             <strong>#VerilyLive</strong>
         </h2>
@@ -38,10 +38,10 @@ window.fbAsyncInit = function() {
         </p>
         <p class="lead event-date">
             <i class="fa fa-calendar-o"></i> <span id="eventStart">Saturday 12 July 9am</span>
-                      &ndash; <span id="eventEnd">Sunday 13 July 4pm</span>
+                      &ndash;<span class="visible-xs-inline"><br><i class="fa fa-calendar-o invisible"></i></span> <span id="eventEnd">Sunday 13 July 4pm</span>
         </p>
         <div class="btn-group">
-            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone" id="button-switch-local">Local <span id="timezone-offset-hours" class="text-muted"></button>
+            <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone" id="button-switch-local"><span id="timezone-offset-hours"></button>
             <button type="button" class="btn btn-default text-action-button share-button button-switch-timezone active" id="button-switch-utc">UTC/GMT</button>
         </div>
         {% if challengeActive %}
@@ -86,9 +86,8 @@ window.fbAsyncInit = function() {
     {% if !challengeActive %}
     <div class="signup-form-for-updates">
         <form role="form" action="/subscriber" method="POST">
-            <h3>Sign up for updates</h3>
             <input type="email" class="form-control input-lg" name="email" placeholder="Email">
-            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Subscribe">
+            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Subscribe to updates">
         </form>
     </div>
     {% endif %}
@@ -127,17 +126,62 @@ eventEnd.setUTCHours(endHour, minutes, seconds, msecs);
 var eventStartFormatted = moment(eventStart);
 var eventEndFormatted = moment(eventEnd);
 
-var nowLocal = new Date();
-var timezoneOffsetHours = -(nowLocal.getTimezoneOffset() / 60);
-var timezoneOffsetHoursString = '(';
-
-if (timezoneOffsetHours < 0) {
-    timezoneOffsetHoursString += '-' + timezoneOffsetHours;
-} else {
-    timezoneOffsetHoursString += '+' + timezoneOffsetHours;
+// Returns the timezone offset when in daylight savings time (DST).
+// Internationally, the northen hemisphere would apply DST in July
+// and the southern hemisphere would apply DST in January.
+Date.prototype.dstTimezoneOffset = function() {
+    var january = new Date(this.getFullYear(), 0, 1);
+    var july = new Date(this.getFullYear(), 6, 1);
+    return Math.max(january.getTimezoneOffset(), july.getTimezoneOffset());
 }
 
-timezoneOffsetHoursString += ')';
+// Returns whether the the current time uses DST.
+Date.prototype.isDst = function() {
+    return this.getTimezoneOffset() < this.dstTimezoneOffset();
+}
+
+var nowLocal = new Date(Date.now());
+var timezoneOffsetHours = -(nowLocal.getTimezoneOffset() / 60);
+var isDst = nowLocal.isDst();
+var timezoneOffsetHoursString = '';
+
+if (isDst) {
+    // Currently DST.
+    if (timezoneOffsetHours === -7) {
+        timezoneOffsetHoursString = 'PDT/';
+    } else if (timezoneOffsetHours === -4) {
+        timezoneOffsetHoursString = 'EDT/';
+        
+    } else if (timezoneOffsetHours === 1) {
+        timezoneOffsetHoursString = 'BST/';
+        
+    } else if (timezoneOffsetHours === 2) {
+        timezoneOffsetHoursString = 'CEST/';
+        
+    } else if (timezoneOffsetHours === 3) {
+        timezoneOffsetHoursString = 'EEST/';
+    }
+} else {
+    // Not currently DST.
+    if (timezoneOffsetHours === -8) {
+        timezoneOffsetHoursString = 'PST/';
+    } else if (timezoneOffsetHours === -5) {
+        timezoneOffsetHoursString = 'EST/';
+        
+    } else if (timezoneOffsetHours === 1) {
+        timezoneOffsetHoursString = 'CET/';
+        
+    } else if (timezoneOffsetHours === 2) {
+        timezoneOffsetHoursString = 'EET/';
+    }
+}
+
+if (timezoneOffsetHours < 0) {
+    timezoneOffsetHoursString += 'UTC' + timezoneOffsetHours;
+} else {
+    timezoneOffsetHoursString += 'UTC+' + timezoneOffsetHours;
+}
+
 
 $('#timezone-offset-hours').text(timezoneOffsetHoursString);
 
