@@ -626,52 +626,51 @@ var postAllAnswers = function (req, res) {
     var shown = req.body.shownAnswers.split("|");
     var hidden = req.body.hiddenAnswers;
     if (hidden || shown) {
-        req.models.Answer.find({id: hidden, show: trueValue}, function (err, hiddenAnswers) {
-            if (err) {
-                generic.genericErrorHandler(req, res, err);   
-            } else {
-                async.each(hiddenAnswers, function (hiddenAnswer, cb) {
-                    hiddenAnswer.show = falseValue;
-                    hiddenAnswer.save(function (err) {
-                        if (err) {
-                            cb(err);
-                        } else {
-                            cb(null);
-                        }
-                    });
-                }, function (err) {
+
+        async.waterfall([
+            function (done) {
+                req.models.Answer.find({id: hidden, show: trueValue}, function (err, hiddenAnswers) {
                     if (err) {
-                        req.flash('error', 'An error occurred');
-                        res.redirect('/adminAnswers');    
+                        done(err);  
                     } else {
-                        req.models.Answer.find({id: shown, show: falseValue}, function (err, shownAnswers) {
-                            if (err) {
-                                generic.genericErrorHandler(req, res, err);
-                            } else {
-                                async.each(shownAnswers, function (shownAnswer, cb) {
-                                    shownAnswer.show = trueValue;
-                                    shownAnswer.save(function (err) {
-                                        if (err) {
-                                            cb(err);
-                                        } else {
-                                            cb(null);
-                                        }
-                                    }); 
-                                }, function (err) {
-                                    if (err) {
-                                        req.flash('error', 'An error occurred');
-                                        res.redirect('/adminAnswers'); 
-                                    } else {
-                                        req.flash('info', 'Your changes have been made');
-                                        res.redirect('/adminAnswers');
-                                    }
-                                });
-                            }
+                        async.each(hiddenAnswers, function (hiddenAnswer, cb) {
+                            hiddenAnswer.show = falseValue;
+                            hiddenAnswer.save(function (err) {
+                                cb(err);
+                            });
+                        }, function (err) {
+                            done(err);
                         });
                     }
                 });
+            },
+            function (done) {
+                req.models.Answer.find({id: shown, show: falseValue}, function (err, shownAnswers) {
+                    if (err) {
+                        done(err);
+                    } else {
+                        async.each(shownAnswers, function (shownAnswer, cb) {
+                            shownAnswer.show = trueValue;
+                            shownAnswer.save(function (err) {
+                                cb(err);
+                            }); 
+                        }, function (err) {
+                            done(err, 'done');
+                        });
+                    }
+                });
+            }], 
+            function (err) {
+                if (err) {
+                    req.flash('error', 'An error occurred');
+                    res.redirect('/adminAnswers');  
+                } else {
+                    req.flash('info', 'Your changes have been made');
+                    res.redirect('/adminAnswers');
+                }
             }
-        });
+        );
+
     } else {
         res.redirect('/adminAnswers');
     }
