@@ -303,6 +303,7 @@ exports.update = function (model, id, req, cb) {
                     crypto.randomBytes(8, function(err, buffer) {
                         var random = buffer.toString('hex');
 
+                        var now = new Date();
                         var imageId = now.getTime() + random;
 
                         // Base target image path.
