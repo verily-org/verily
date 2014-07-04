@@ -66,6 +66,10 @@ a {
     color: #ffffff !important;
 }
 
+.tag.label-primary {
+    background-color: #009c9c;
+}
+
 .btn-primary:hover,
 .btn-primary:focus {
     background-color: #008a8a;
