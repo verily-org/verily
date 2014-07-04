@@ -706,6 +706,10 @@ fa.breadcrumb {
     opacity: .5;
 }
 
+.page-header {
+    margin-top: 0;
+}
+
 .crisis-questions-header {
     margin-bottom: 1em;
 }

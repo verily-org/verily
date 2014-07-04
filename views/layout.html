@@ -139,6 +139,7 @@
         </nav>
         {% endblock navigation %}
         
+        {% if info or error %}
         <div class="flash-msgs-ctr">
 		
     		<div class="container flash-msg-ctr">
@@ -162,6 +163,7 @@
     		</div>
         
         </div>
+        {% endif %}
 
         {% block main %}
 		
