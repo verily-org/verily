@@ -130,20 +130,8 @@ exports.create = function (model, data, req, cb) {
                             console.log('before s3 upload');
                             // Running on Heroku, so store in S3.
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
-                            s3.put(targetImagePath, fileReadStream, s3.ACL_PUBLIC_READ, function(err, data) {
-                                if (err) {
-                                    console.log('Error in AWS S3 upload:')
-                                    console.log(err);
-                                } else {
-                                    console.log('AWS S3 -- successful upload');
-                                }
-                                                                
-                                // URL that the file is available on S3.
-                                var destinationUrl = 'https://' + s3.BUCKET_ID + '.s3.amazonaws.com/' + targetImagePath;
-                                
-                                imageHandled(destinationUrl);
-                                
-                            });
+                            s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
+
                             
                         } else {
                             // Not running on Heroku, so store in filesystem.
@@ -157,11 +145,6 @@ exports.create = function (model, data, req, cb) {
                         
                             });
                         }
-                        
-                         
-                        
-
-                        
                     });
                 } else {
                     // No image specified.
@@ -234,10 +217,25 @@ exports.create = function (model, data, req, cb) {
 
         }
     });
-    
-
 
 };
+
+function s3Upload(s3, targetImagePath, fileReadStream, done){
+    s3.put(targetImagePath, fileReadStream, s3.ACL_PUBLIC_READ, function(err, data) {
+        if (err) {
+            console.log('Error in AWS S3 upload:')
+            console.log(err);
+        } else {
+            console.log('AWS S3 -- successful upload');
+        }
+
+        // URL that the file is available on S3.
+        var destinationUrl = 'https://' + s3.BUCKET_ID + '.s3.amazonaws.com/' + targetImagePath;
+
+        done(destinationUrl);
+
+    });
+}
 
 // Removes quotes from a string
 function cutQuotes(str) {
@@ -299,51 +297,93 @@ exports.update = function (model, id, req, cb) {
             
             model.get(id, function (err, item) {
 
-                var itemNew = {},
-                    postNew = {},
-                    i = {};
-            
-                // Tags: tag1, tag2, tag3, ..., tagN
-                if (req.body.hasOwnProperty('tags')) {
-                    req.body.tags = common.tagize(req.body.tags);
-                }
+                if (req.body.formSelectImage === 'link' && req.body.targetImageUrl) {
+                    imageHandled(req.body.targetImageUrl);
+                } else if (req.body.formSelectImage === 'upload' && req.files && req.files.targetImageUpload && req.files.targetImageUpload.name !== '' && req.files.targetImageUpload.size !== 0) {
+                    crypto.randomBytes(8, function(err, buffer) {
+                        var random = buffer.toString('hex');
 
-                for (i in req.body) {
-                    if (req.body.hasOwnProperty(i)) {
-                        if (model.allProperties.hasOwnProperty(i)) {
-                            // Post property has been included in request, update item.
-                            itemNew[i] = req.body[i];
-                        }
+                        var imageId = now.getTime() + random;
 
-                        if (req.models.Post.allProperties.hasOwnProperty(i)) {
-                            // Item property has been included in request, update Post.
-                            postNew[i] = req.body[i];
-                        }
-                    }
+                        // Base target image path.
+                        var targetImagePath = 'images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
 
-                }
-                if (itemNew) {
-                    // Update item.
-                    item.save(itemNew, function (err) {
-                        if (err) {
-                            throw err;
+                        if (mode.isHeroku()) {
+                            console.log('before s3 upload');
+                            // Running on Heroku, so store in S3.
+                            var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
+                            s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
+
+
+                        } else {
+                            // Not running on Heroku, so store in filesystem.
+                            targetImagePath = '/static/' + targetImagePath;
+
+                            fs.rename(req.files.targetImageUpload.path, config.project_dir + targetImagePath, function(err) {
+                                if (err) {
+                                    cb(err, null);
+                                }
+                                imageHandled(targetImagePath);
+
+                            });
                         }
                     });
+                } else {
+                    // No image specified.
+                    imageHandled(undefined);
                 }
-                if (postNew) {
-                    // Update post.
-                    req.models.Post.get(item.post_id, function (err, post) {
-                        var now = new Date();
-                        post.updated = now;
-                        post.save(postNew, function (err) {
+                function imageHandled(targetImagePath){
+                    var itemNew = {},
+                        postNew = {},
+                        i = {};
+                    //Set the image if not undefined
+                    if(targetImagePath){
+                        postNew.targetImage = targetImagePath;
+                    }
+
+                    // Tags: tag1, tag2, tag3, ..., tagN
+                    if (req.body.hasOwnProperty('tags')) {
+                        req.body.tags = common.tagize(req.body.tags);
+                    }
+
+                    for (i in req.body) {
+                        if (req.body.hasOwnProperty(i)) {
+                            if (model.allProperties.hasOwnProperty(i)) {
+                                // Post property has been included in request, update item.
+                                itemNew[i] = req.body[i];
+                            }
+
+                            if (req.models.Post.allProperties.hasOwnProperty(i)) {
+                                // Item property has been included in request, update Post.
+                                postNew[i] = req.body[i];
+                            }
+                        }
+
+                    }
+                    if (itemNew) {
+                        // Update item.
+                        item.save(itemNew, function (err) {
                             if (err) {
                                 throw err;
                             }
-                            // Update successful.
-                            cb(null);
                         });
-                    });
+                    }
+                    if (postNew) {
+                        // Update post.
+                        req.models.Post.get(item.post_id, function (err, post) {
+                            var now = new Date();
+                            post.updated = now;
+                            post.save(postNew, function (err) {
+                                if (err) {
+                                    throw err;
+                                }
+                                // Update successful.
+                                cb(null);
+                            });
+                        });
+                    }
                 }
+
             });
     
     
