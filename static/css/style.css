@@ -161,7 +161,7 @@ div.welcome p.lead {
     margin-bottom: 0.5em;
 }
 
-div.welcome p.lead {
+div.welcome p.lead.stay-large {
     font-size: 21px !important;
 }
 
