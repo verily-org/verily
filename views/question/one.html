@@ -43,7 +43,8 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
 
 <div class="question page-header clearfix">
     <div class="row">
-        <div class="col-sm-5">
+        <!-- <div class="col-sm-5"> -->
+        <div>
             <div>
                 <a href="/crisis/{{ crisis.id }}" title="Crisis">
                     <i class="fa fa-fw fa-dot-circle-o fa-breadcrumb"></i>{{ crisis.post.title }}
@@ -176,32 +177,8 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         <!-- / button-mark-important -->
         
         <div>
-            Ask your social network to help with this question
-            <!-- Twitter Tweet button -->
-            <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
-            <!-- / Twitter Tweet button -->
-        
-            <!-- Facebook Share button -->
-        
-        
-        
-            <!-- <div data-type="button_count" class="fb-share-button fb_iframe_widget" fb-xfbml-state="rendered" id="facebook-share-button"></div>-->
-            <div id="fb-root"></div>
-            <div class="action-button-ctr btn-group">
-                <a class="btn btn-default btn-large text-action-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
-            </div>
-        
-            <!-- / Facebook Share button -->
-        
-        
-            <!-- button-share-question-link -->
-            <div class="action-button-ctr btn-group">
-                <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
-            </div>
-            <!-- / button-share-question-link -->
-        
+            Ask your social network to help with this question<br/>
             <!-- button-email -->
-
             <div class="action-button-ctr btn-group">
                 <a class="btn btn-default btn-large text-action-button" id="button-share-question-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
             </div>
@@ -210,10 +187,29 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
             var emailMessage = common.campaigner('email', '{{ questionTitleForSharing }}', refUrlEmail);
             buttonShareQuestionEmail.href = 'mailto:?subject=' + emailMessage.subject + '&body=' + emailMessage.body;
             </script>
-        
             <!-- / button-email -->
+
+            <!-- button-share-question-link -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
+            </div>
+            <!-- / button-share-question-link -->
+        
+            <!-- Facebook Share button -->
+            <!-- <div data-type="button_count" class="fb-share-button fb_iframe_widget" fb-xfbml-state="rendered" id="facebook-share-button"></div>-->
+            <div id="fb-root"></div>
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
+            </div>
+            <!-- / Facebook Share button -->
+        
+            <!-- Twitter Tweet button -->
+            <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
+            <!-- / Twitter Tweet button -->
+        
                 
             <!-- small buttons -->
+            <br/>
             {% if userCan('edit a question') %}
     			<div class="btn-group">
     				<div class="additional-button-ctr">
