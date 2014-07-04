@@ -130,7 +130,7 @@
 
 <div class="crisis-questions display-table">
     {% for question in questions | reverse %}
-        {% set numColumns = 4 %}
+        {% set numColumns = 3 %}
         {% set colWidth = 12 / numColumns %}
         {% if loop.index % numColumns == 1 %}
             <div class="row">
