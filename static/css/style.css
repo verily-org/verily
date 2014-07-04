@@ -734,3 +734,8 @@ fa.breadcrumb {
 
     }
 }
+
+/* this is for the group of social media buttons */
+.sharing-buttons {
+    padding-top: 1em;
+}
