@@ -126,9 +126,9 @@
        <!-- / Twitter Tweet button -->
 	   
 		<!-- Facebook Share button -->
-			<div class="btn-group">
-				<div class="fb-share-button" data-href="http://veri.ly{{path}}" data-type="button_count"></div>
-			</div>
+            <div class="btn-group">
+                <a class="btn btn-default btn-large text-action-button share-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
+            </div>
         <!-- / Facebook Share button -->
         
     </div>
@@ -260,6 +260,18 @@ map = map_init('map');
         element.next('a.action-button-count').text(crisis.importanceCount);
         element.addClass('active').addClass('disabled');
     }
+</script>
+
+<script type="text/javascript">
+var facebookShareButton = document.getElementById('facebook-share-button');
+facebookShareButton.addEventListener('click', function(e) {
+    FB.ui({
+      method: 'share',
+      href: 'http://veri.ly{{path}}',
+    }, function(response){
+        
+    });
+});
 </script>
 
 {% endblock %}

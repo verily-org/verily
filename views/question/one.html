@@ -196,16 +196,18 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
             </div>
             <!-- / button-share-question-link -->
+			
+			<!-- Facebook Share button -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button share-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
+            </div>
+			<!-- / Facebook Share button -->
         
             <!-- Twitter Tweet button -->
             <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
             <!-- / Twitter Tweet button -->
 			
-			<!-- Facebook Share button -->
-				<div class="btn-group">
-					<div class="fb-share-button" data-href="http://veri.ly{{path}}" data-type="button_count"></div>
-				</div>
-			<!-- / Facebook Share button -->
+
         
                 
             <!-- small buttons -->
@@ -461,9 +463,6 @@ tweetButton.dataset.counturl = window.location.origin + '{{ path }}';
 tweetButton.dataset.text = questionTitle;
 tweetButton.dataset.hashtags = twitterCampaigner.hashtags;
 
-var facebookShareButton = document.getElementById('facebook-share-button');
-facebookShareButton.dataset.href = refUrlFacebook;
-facebookShareButton.dataset.type = 'button';
 
 var emailButton = document.getElementById('button-share-question-email');
 
@@ -505,15 +504,6 @@ twttr.ready(function (twttr) {
   });
 });
 
-facebookShareButton.addEventListener('click', function(e) {
-    intent('facebook');
-    FB.ui({
-      method: 'feed',
-      href: refUrlFacebook
-    }, function(response){
-        
-    });
-});
 
 emailButton.addEventListener('click', function(e) {
     intent('email');
@@ -526,10 +516,18 @@ linkButton.addEventListener('click', function(e) {
     document.getElementById('field-share-question-link').innerHTML = refUrlLink;
     intent('link');
 });
+</script>
 
-
-
-
+<script type="text/javascript">
+var facebookShareButton = document.getElementById('facebook-share-button');
+facebookShareButton.addEventListener('click', function(e) {
+    FB.ui({
+      method: 'share',
+      href: 'http://veri.ly{{path}}',
+    }, function(response){
+        
+    });
+});
 </script>
 
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
