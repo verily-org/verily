@@ -623,46 +623,59 @@ exports.getAdminAnswers = [isAdmin, getAllAnswers];
 
 
 var postAllAnswers = function (req, res) {
-    var shown = req.body.shownAnswers.split("|");
+    var shown = req.body.shownAnswers.split("|").map(function(i){
+        return parseInt(i, 10);
+    });
     var hidden = req.body.hiddenAnswers;
     if (hidden || shown) {
 
         async.waterfall([
             function (done) {
-                req.models.Answer.find({id: hidden, show: trueValue}, function (err, hiddenAnswers) {
-                    if (err) {
-                        done(err);  
-                    } else {
-                        async.each(hiddenAnswers, function (hiddenAnswer, cb) {
-                            hiddenAnswer.show = falseValue;
-                            hiddenAnswer.save(function (err) {
-                                cb(err);
+                if (hidden) {
+                    req.models.Answer.find({id: hidden, show: trueValue}, function (err, hiddenAnswers) {
+                        if (err) {
+                            done(err);  
+                        } else {
+                            async.each(hiddenAnswers, function (hiddenAnswer, cb) {
+                                hiddenAnswer.show = falseValue;
+                                hiddenAnswer.save(function (err) {
+                                    cb(err);
+                                });
+                            }, function (err) {
+                                done(err);
                             });
-                        }, function (err) {
-                            done(err);
-                        });
-                    }
-                });
+                        }
+                    }); 
+                } else {
+                    done(null);
+                }
+                    
             },
             function (done) {
-                req.models.Answer.find({id: shown, show: falseValue}, function (err, shownAnswers) {
-                    if (err) {
-                        done(err);
-                    } else {
-                        async.each(shownAnswers, function (shownAnswer, cb) {
-                            shownAnswer.show = trueValue;
-                            shownAnswer.save(function (err) {
-                                cb(err);
-                            }); 
-                        }, function (err) {
+                if (shown[0]) {
+                    req.models.Answer.find({id: shown, show: falseValue}, function (err, shownAnswers) {
+                        if (err) {
+                            console.log(err);
                             done(err, 'done');
-                        });
-                    }
-                });
+                        } else {
+                            async.each(shownAnswers, function (shownAnswer, cb) {
+                                shownAnswer.show = trueValue;
+                                shownAnswer.save(function (err) {
+
+                                    cb(err);
+                                }); 
+                            }, function (err) {
+                                done(err, 'done');
+                            });
+                        }
+                    }); 
+                } else {
+                    done(null, 'done');
+                }                  
             }], 
             function (err) {
                 if (err) {
-                    req.flash('error', 'An error occurred');
+                    req.flash('error', 'An error occurred: ' + err);
                     res.redirect('/adminAnswers');  
                 } else {
                     req.flash('info', 'Your changes have been made');

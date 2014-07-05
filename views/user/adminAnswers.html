@@ -13,7 +13,7 @@
 		var checkboxes = document.getElementsByName('hiddenAnswers');
 		for (var i = 0; i < checkboxes.length; i++) {
 			if (!checkboxes[i].checked) {
-				shownStr.value = shownStr.value + '|' + checkboxes[i].value;
+				shownStr.value = shownStr.value == '' ? checkboxes[i].value : shownStr.value + '|' + checkboxes[i].value;
 			}
 		}
 	}
