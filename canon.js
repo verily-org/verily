@@ -14,13 +14,8 @@ module.exports = function() {
         
         if (mode.isProduction) {
             // Running on production.
-            
-            console.log('canon req protocol');
-            console.log(req.protocol);
-            console.log('canon req');
-            console.log(req);
-    
-            if ((req.protocol === 'http') || (req.host === 'www.' + enums.production.hostname)) {
+                
+            if ((req.get('x-forwarded-proto') === 'http') || (req.host === 'www.' + enums.production.hostname)) {
                 // An http or www-based URL, so redirect to apex.
                 // Compose the expected canonical absolute URL.
                 var productionUrlObject = enums.production;
