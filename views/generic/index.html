@@ -4,24 +4,6 @@
 
 {% block content %}
 
-<script type="text/javascript">
-window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '1430472757228218',
-    xfbml      : true,
-    version    : 'v2.0'
-  });
-};
-
-(function(d, s, id){
-   var js, fjs = d.getElementsByTagName(s)[0];
-   if (d.getElementById(id)) {return;}
-   js = d.createElement(s); js.id = id;
-   js.src = "//connect.facebook.net/en_US/sdk.js";
-   fjs.parentNode.insertBefore(js, fjs);
- }(document, 'script', 'facebook-jssdk'));
-</script>
-<div id="fb-root"></div>
 
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
@@ -259,7 +241,7 @@ $('#button-switch-local').click(function(e) {
 var facebookShareButton = document.getElementById('facebook-share-button');
 facebookShareButton.addEventListener('click', function(e) {
     FB.ui({
-      method: 'feed',
+      method: 'share',
       href: 'http://veri.ly/',
     }, function(response){
         

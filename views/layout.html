@@ -6,14 +6,37 @@
         <title>{% if page.title %}{{ page.title }} &middot; {% endif %}Verily</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
+		<!-- set variables for fb tags -->
+		{% set title = "Verily Challenge" %}
+		{% set imageurl = "https://s3-eu-west-1.amazonaws.com/efe8ea3fb0a1c1b/images/verily_banner1200x1200.png" %}
+		{% set description = "Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult.
+												We want to enable humanitarian organisations to send resources where needed in response to natural disasters, 
+												where accurate and timely information is critical." %}
+		
+		{% if crisis %}
+			{% set title = crisis.post.title %}
+			{% set imageurl = crisis.post.targetImage || imageurl %}
+			{% set description = crisis.post.text || description %}
+		{% endif %}
+		
+		{% if question %}
+			{% set title = question.post.title %}
+			{% set imageurl = question.post.targetImage || imageurl %}
+			{% set description = question.post.text || description %}
+		{% endif %}
+		
+		{% if answer %}
+			{% set title = answer.post.title %}
+			{% set imageurl = answer.post.targetImage || imageurl %}
+			{% set description = answer.post.text || description %}
+		{% endif %}
+		
 		<!-- FB open graph tags -->
 		<meta property="og:site_name" content="Verily"/>
-		<meta property="og:url" content="http://veri.ly" /> 
-		<meta property="og:image" content="https://s3-eu-west-1.amazonaws.com/efe8ea3fb0a1c1b/images/verily_banner1200x1200.png"/>
-		<meta property="og:title" content="Verily Challenge"/>
-		<meta property="og:description" content="Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult.
-												We want to enable humanitarian organisations to send resources where needed in response to natural disasters, 
-												where accurate and timely information is critical."/>
+		<meta property="og:url" content="http://veri.ly{{ path }}" /> 
+		<meta property="og:image" content="{{ imageurl }}"/>
+		<meta property="og:title" content="{{ title }}"/>
+		<meta property="og:description" content="{{ description }}"/>
 
         
         <!-- Latest compiled and minified Bootstrap CSS -->
