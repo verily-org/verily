@@ -1,4 +1,5 @@
 var url = require('url');
+var mode = require('./mode');
 var enums = require('./enums');
 
 // Express middleware for canonicalisation of URLs
@@ -11,20 +12,28 @@ module.exports = function() {
         // req.host from Express returns just the hostname (no port number).
         // See: http://expressjs.com/api.html#req.host
         
-        if (req.host === 'www.' + enums.production.hostname) {
-            // A www-based URL, so redirect to apex.
-            // Compose the expected canonical absolute URL.
-            var productionUrlObject = enums.production;
+        if (mode.isProduction) {
+            // Running on production.
+    
+            if ((req.protocol === 'http') || (req.host === 'www.' + enums.production.hostname)) {
+                // An http or www-based URL, so redirect to apex.
+                // Compose the expected canonical absolute URL.
+                var productionUrlObject = enums.production;
             
-            // req.url from Express returns the relative URL (path) after the hostname.
-            productionUrlObject.pathname = req.url;
+                // req.url from Express returns the relative URL (path) after the hostname.
+                productionUrlObject.pathname = req.url;
             
-            var productionUrl = url.format(productionUrlObject);
+                var productionUrl = url.format(productionUrlObject);
             
-            res.redirect(productionUrl);
-            res.end();
+                res.redirect(productionUrl);
+                res.end();
+            } else {
+                // Everything is ok -- the URL is already canonical.
+                next();
+            }
+        
         } else {
-            // Everything is ok -- the URL is already canonical.
+            // Running on development.
             next();
         }
     };

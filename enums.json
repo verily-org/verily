@@ -5,7 +5,7 @@
         "port": 3000
     },
     "production": {
-        "protocol": "http",
+        "protocol": "https",
         "hostname": "veri.ly"
     },
     "demo": "bin/demo.sh",
