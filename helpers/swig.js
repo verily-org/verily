@@ -1,7 +1,12 @@
 var utils = require('utilities');
+var mode = require('../mode');
 var common = require('../static/js/common');
 
 module.exports = function(swig) {
+    
+    swig.setFilter('isProduction', function() {
+        return mode.isProduction();
+    });
     
     swig.setFilter('challengeActive', function() {
         return common.challengeActive();

@@ -1,39 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 {% set challengeActive = null|challengeActive %}
+{% set isProduction = null|isProduction %}
     <head>
         <meta charset="utf-8">
         <title>{% if page.title %}{{ page.title }} &middot; {% endif %}Verily</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<!-- set variables for fb tags -->
-		{% set title = "Verily Challenge" %}
-		{% set imageurl = "https://s3-eu-west-1.amazonaws.com/efe8ea3fb0a1c1b/images/verily_banner1200x1200.png" %}
-		{% set description = "Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult.
-												We want to enable humanitarian organisations to send resources where needed in response to natural disasters, 
-												where accurate and timely information is critical." %}
-		
+		{% set title = "Verily" %}
+		{% set imageurl = "https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-v-logo.png" %}
+		{% set description = "Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult. We want to enable humanitarian organisations to send resources where needed in response to natural disasters, where accurate and timely information is critical." %}
 		{% if crisis %}
 			{% set title = crisis.post.title %}
 			{% set imageurl = crisis.post.targetImage || imageurl %}
 			{% set description = crisis.post.text || description %}
 		{% endif %}
-		
 		{% if question %}
 			{% set title = question.post.title %}
 			{% set imageurl = question.post.targetImage || imageurl %}
 			{% set description = question.post.text || description %}
 		{% endif %}
-		
 		{% if answer %}
 			{% set title = answer.post.title %}
 			{% set imageurl = answer.post.targetImage || imageurl %}
 			{% set description = answer.post.text || description %}
 		{% endif %}
-		
 		<!-- FB open graph tags -->
 		<meta property="og:site_name" content="Verily"/>
-		<meta property="og:url" content="http://veri.ly{{ path }}" /> 
+		<meta property="og:url" content="https://veri.ly{{ path }}" /> 
 		<meta property="og:image" content="{{ imageurl }}"/>
 		<meta property="og:title" content="{{ title }}"/>
 		<meta property="og:description" content="{{ description }}"/>
@@ -46,7 +39,7 @@
         
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         
-        <link href="http://fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
+        <link href="//fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
         
         <link rel="shortcut icon" href="/static/images/favicon.png">
         <link rel="apple-touch-icon-precomposed" href="/static/images/favicon.png" >
@@ -57,7 +50,7 @@
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+          <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <![endif]-->
         
         <!-- jQuery -->
@@ -72,7 +65,17 @@
         <!-- Load general functions JS -->
         <script type="text/javascript" src="/static/js/load.js"></script>
 
-        <!-- Start of StatCounter Code for Default Guide -->
+        {% if isProduction %}
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-52527080-1', 'auto');
+            ga('require', 'displayfeatures');
+            ga('send', 'pageview');
+        </script>
         <script type="text/javascript">
             var sc_project=9897798;
             var sc_invisible=1;
@@ -83,25 +86,7 @@
                     scJsHost+
                     "statcounter.com/counter/counter.js'></"+"script>");
         </script>
-        <noscript><div class="statcounter"><a title="web analytics"
-                                              href="http://statcounter.com/" target="_blank"><img
-                            class="statcounter"
-                            src="http://c.statcounter.com/9897798/0/741aa466/1/"
-                            alt="web analytics"></a></div></noscript>
-        <!-- End of StatCounter Code for Default Guide -->
-        <!-- Start of GoogleAnalytics Code -->
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-52527080-1', 'auto');
-            ga('require', 'displayfeatures');
-            ga('send', 'pageview');
-
-        </script>
-        <!-- End of GoogleAnalytics Code -->
+        {% endif %}
     </head>
     <body class="{% if path === '/' %} hero-cover{% endif %}">
         <div id="login-register" class="modal">
@@ -252,7 +237,7 @@
                         <div class="text-muted">
                             <a href="/about">About</a>
                             &middot;
-                            <a href="/terms">Terms & Conditions</a>
+                            <a href="/terms">Terms &amp; Privacy</a>
                         </div>
                     </div>
 
