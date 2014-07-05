@@ -39,6 +39,11 @@ module.exports = function (suppressLogs, dbTestUrl) {
     controllers.ratings = require('./controllers/ratings');
     controllers.crises = require('./controllers/crises');
     controllers.subscribers = require('./controllers/subscribers');
+    
+    if (mode.isProduction()) {
+        // Enable reverse proxy support
+        app.enable('trust proxy');
+    }
 
 
     app.use(connect.urlencoded());
