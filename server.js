@@ -18,7 +18,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         router = require('./routing/router'),
-        config = require('./lib/auth'),
+        authConfig = require('./lib/auth'),
         log = require('./log'),
         ORMSessionStore = require('./orm-session-store')(express),
         mode = require('./mode'),
@@ -463,22 +463,22 @@ module.exports = function (suppressLogs, dbTestUrl) {
     //});
 
     var createAdmin = function (User, Local) {
-        User.exists({name: config.admin.username}, function (err, exists) {
+        User.exists({name: authConfig.admin.username}, function (err, exists) {
             if (err) {throw err;}
             if (!exists) {
 
                 User.create([{
-                    name: config.admin.username,
+                    name: authConfig.admin.username,
                     role: 'admin'
                 }], function (err, u_created) {
                     if (err) {throw err;}
                     var admin = u_created[0];
                     Local.create([{
-                        email: config.admin.username
+                        email: authConfig.admin.username
                     }], function (err, l_created) {
                         if (err) {throw err;}
                         var local = l_created[0];
-                        local.password = local.generateHash(config.admin.password);
+                        local.password = local.generateHash(authConfig.admin.password);
                         local.save(function (err) {
                             if (err) {throw err;}
                             admin.setLocal(local, function (err) {
