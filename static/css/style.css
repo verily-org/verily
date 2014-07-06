@@ -7,7 +7,7 @@ body {
 
 body.hero-cover {
     background-color: #003030;
-    background: url(/static/images/hero-splash.jpg) no-repeat left center fixed;
+    background: url(https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/hero-splash.jpg) no-repeat left center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
