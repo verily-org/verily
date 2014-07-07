@@ -365,6 +365,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         var sess = {
             secret: 'd9WvgPUdReT8D3dH50FUXuwkpMOcAxA1Nll8sLG9j1s',
             store: new ORMSessionStore(syncedModels),
+            cookie: {}
         };
         
         if (secureCookies && secureCookies === true) {
