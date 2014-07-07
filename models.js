@@ -141,7 +141,7 @@ module.exports = function (db, cb) {
             viewCount: {
                 type: 'number'
             }
-    },
+        },
         {
             methods: {
                 getUpvoteCount: function(){
@@ -168,6 +168,11 @@ module.exports = function (db, cb) {
                     this.viewCount++;
                     this.save();
                 }
+            }
+        },
+        {
+            validations:{
+                title:[orm.enforce.notEmptyString("Title Required"), orm.enforce.required("Title Required")]
             }
         }), Question = db.define('question', {
 

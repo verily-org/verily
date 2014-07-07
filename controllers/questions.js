@@ -88,6 +88,114 @@ var checkRole = role.can('create a question');
 
 exports.create = [checkRole, createQuestion];
 
+// View to add multiple questions
+var create_multiple_questions = function (req, res) {
+    res.status(200);
+    if (req.user){var user = req.user; }
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        res.render('question/createMultiple', {
+            page: {
+                title: 'Add multiple questions'
+            },
+            crisis: crisis,
+            user: user
+        });
+    });
+}
+
+var checkRole = role.can('create multiple questions');
+
+exports.createQuestions = [checkRole, create_multiple_questions];
+
+// Add multiple questions
+var new_questions = function (req, res) {
+    res.status(200);
+    if (req.user){var user = req.user; }
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+
+        var fs = require('fs');
+        var file = req.body.file;
+
+        fs.readFile(file, function(err, data){
+            if (err) {
+                console.error('File read error: ' + err);
+                res.render('question/createMultiple', {
+                    page: {
+                        title: 'Add multiple questions'
+                    },
+                    crisis: crisis,
+                    error: 'Unable to open file on URL: "' + file + '"'
+                });
+                return;
+            }
+            var data = JsonObjToArray(JSON.parse(data));
+            async.eachSeries(data,
+                function(question, callback){
+                    //Prepare data
+                    if(question.targetDateTimeOccurred){
+                        var date = new Date(question.targetDateTimeOccurred);
+                    }
+                    else{
+                        var date = new Date();
+                       }
+                    req.body.formSelectImage = "link";
+                    req.body.targetDateTimeOccurred = [date.getDate(), (date.getMonth()+1), date.getFullYear(), date.getHours(), date.getMinutes()];
+
+                    if(!question.title || question.title == ""){
+                        callback("Title needed on question: " + question.key);
+                        return;
+                    }
+                    req.body.title = question.title;
+                    req.body.text = question.text;
+                    req.body.targetImageUrl = question.targetImage;
+                    req.body.targetVideoUrl = question.targetVideoUrl;
+                    req.body.targetLocality = question.targetLocality;
+                    req.body.targetLat = question.targetLat;
+                    req.body.targetLong = question.targetLong;
+                    req.body.tags = question.tags;
+                    req.body.automaticLocation = question.automaticLocation;
+
+                    generic.create(req.models.Question, {}, req, function (err, question) {
+                        if (!err && question) {
+                            question.setCrisis(crisis, function (err) {
+                                if (err) throw err;
+                                generic.get(req.models.Question, question.id, undefined, function (err, question2) {
+                                    if (!err && question2) {
+                                        callback();
+                                    } else {
+                                        callback(err);
+                                        //special err: if 404 then it means the create just executed is invalid.
+
+                                    }
+                                });
+                            });
+                        } else {
+                            callback(err);
+                        }
+                    });
+                }, function(err){
+                    if (err) {
+                        res.status(500);
+                        res.end('Error 500: Server Error - '+ err);
+                        console.r.error(req, 500, err);
+                    }
+                    else{
+                        res.redirect('/crisis/' + req.params.crisis_id);
+                        res.end();
+                    }
+                });
+
+        });
+
+    });
+}
+
+var checkRole = role.can('create multiple questions');
+
+exports.newQuestions = [checkRole, new_questions];
+
 // View to edit a question
 var editQuestion = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
@@ -297,7 +405,7 @@ exports.head = function (req, res) {
 };
 
 // Adds a question and responds with the created question.
-exports.new = function (req, res) {
+var new_question = function (req, res) {
     // This is a POST request, so by default, fields go into the body.
 
     // only extra columns (apart from post) need to be written here
@@ -337,6 +445,8 @@ exports.new = function (req, res) {
         });
     });
 };
+var checkRole = role.can('create a question');
+exports.new = [checkRole, new_question];
 
 // Update question
 var update = function (req, res) {
@@ -462,3 +572,10 @@ exports.remove = function (req, res) {
 
     });
 };
+function JsonObjToArray(jsonObj){
+    var result = [];
+
+    for(var i in jsonObj)
+        result.push( jsonObj [i]);
+    return result;
+}

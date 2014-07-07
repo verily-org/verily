@@ -127,7 +127,6 @@ exports.create = function (model, data, req, cb) {
                         var targetImagePath = 'images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
                         
                         if (mode.isHeroku()) {
-                            console.log('before s3 upload');
                             // Running on Heroku, so store in S3.
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
                             s3Upload(s3, targetImagePath, fileReadStream, imageHandled);

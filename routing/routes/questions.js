@@ -15,6 +15,12 @@ exports.route = function (app, controllers, doc) {
     // Create question API endpoint
     route('post', specificCrisis + '/question', 'new', 'New; New question');
 
+    // View to create questions bash API endpoint
+    route('get', specificCrisis + '/questions/create', 'createQuestions', 'Create multiple questions on a Crisis');
+
+    // Create multiple questions API endpoint
+    route('post', specificCrisis + '/questions/create', 'newQuestions', 'Create multiple questions on a Crisis');
+
     // Mark question as important
     route('post', specific + '/markImportant', 'markImportant', 'Mark as Important');
 

@@ -1,0 +1,22 @@
+
+{
+    "0": {
+        "title": "Title number 1",
+        "text": "Text 1",
+        "targetImage": "http://upload.wikimedia.org/wikipedia/commons/3/31/William_Shakespeare_1609.jpg",
+        "targetVideoUrl": "",
+        "targetLocality": "Southampton",
+        "targetLat": 0,
+        "targetLong": 1,
+        "tags": "one, two",
+        "targetDateTimeOccurred": "2014-05-15",
+        "automaticLocation": false
+
+    },
+    "1": {
+        "title": "title 2",
+        "text": "Text 2",
+        "targetImage": "http://cbsatlanta.files.wordpress.com/2011/04/natural_disaster_wallpapers.jpg",
+        "tags": "one, two"
+    }
+}
