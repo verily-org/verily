@@ -4,6 +4,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
     var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
+        session = require('express-session'),
         cleaner = require('./cleaner')(),
         canon = require('./canon')(),
         orm = require('orm'),
@@ -373,7 +374,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
             sess.cookie.secure = true;
         }
                 
-        app.use(express.session(sess, {
+        app.use(session(sess, {
             httpOnly: true,
             maxAge: cookieExpireAfter
         }));

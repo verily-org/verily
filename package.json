@@ -17,6 +17,7 @@
   "dependencies": {
     "connect": "2.11.0",
     "express": "3.4.4",
+    "express-session": "1.6.3",
     "orm": "2.1.15",
     "sqlite3": "2.2.0",
     "async": "0.2.9",
