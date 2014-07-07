@@ -446,8 +446,7 @@ exports.markImportant = function (req, res) {
                         if(!err){
 
                             res.status(200);
-                            // res.json(question);
-                            res.end();
+                            res.json(question);
                         } else {
                             generic.genericErrorHandler(req, res, err);
                         }
