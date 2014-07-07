@@ -11,61 +11,33 @@ var role = require('../lib/roles').user;
 
 // Enables discovery of questions – this is the questions spotlight.
 exports.index = function (req, res) {
-    req.models.Question.find({}, 10, function (err, questions) {
-        if (err || !questions || questions.length === 0) {
-            if (!questions || questions.length === 0) {
-                err = {};
-                err.code = 2;
-            }
-            generic.genericErrorHandler(req, res, err);
-        } else {
-            // Questions with Post data included in each question. 
-            var indexGen = function indexGen(q, callback) {
-                q.getAnswers(function (err, answers) {
-                    if (!err && answers) {
-                        callback();
-                    } else if (err.code !== 2 || answers) { //special consideration,because no answer for a question is normal
-                        generic.genericErrorHandler(req, res, err);
-                        throw err;
-                    }
-                });
-
-            };
-            async.each(questions, indexGen, function (err) {
-                if (err) {
-                    generic.genericErrorHandler(req, res, err);
-                } else {
-                    // Wrap up the questions in a 'questions' property.
-                    var wrapper = {
-                        questions: questions
-                    };
-                    res.json(wrapper);
-                    res.end();
-                }
-            });
-        }
-    });
+    res.redirect('/');
+    res.end();
 };
+
 
 // Get all questions.
 exports.all = function (req, res) {
 
-    req.models.Question.find({}, function (err, questions) {
-        if (err) {
-            generic.genericErrorHandler(req, res, err);
-        } else {
-            res.status(200);
-            if (req.user){var user = req.user; }
-            //res.json(crisis);
-            res.render('question/index', {
-                page: {
-                    title: 'Verily questions'
-                },
-                questions: questions,
-                user: user
-            });
-        }
-    });
+    // req.models.Question.find({}, function (err, questions) {
+    //     if (err) {
+    //         generic.genericErrorHandler(req, res, err);
+    //     } else {
+    //         res.status(200);
+    //         if (req.user){var user = req.user; }
+    //         //res.json(crisis);
+    //         res.render('question/index', {
+    //             page: {
+    //                 title: 'Verily questions'
+    //             },
+    //             questions: questions,
+    //             user: user
+    //         });
+    //     }
+    // });
+    
+    res.redirect('/');
+    res.end();
 };
 
 // View to add question
@@ -329,7 +301,7 @@ function oneQuestionResponse(req, res, crisis, question, user, refcodes){
 }
 
 // Get a specific question.
-exports.get = function (req, res) {
+var getOne = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
@@ -383,29 +355,15 @@ exports.get = function (req, res) {
     });
 };
 
+exports.get = [role.can('view challenge pages'), getOne];
+
 exports.head = function (req, res) {
-
-    // ETag support.
-    var reqIfNoneMatch = req.get(enums.ifNoneMatch);
-
-    generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
-        if (!err && question) {
-//         Used for caching:
-//            res.set(enums.eTag, question.updated);
-            res.end();
-            req.destroy();
-        } else if (err === enums.NOT_MODIFIED) {
-            // 304 Not Modified.
-            res.status(304);
-            res.end();
-        } else {
-            generic.genericErrorHandler(req, res, err);
-        }
-    });
+    res.redirect('/');
+    res.end();
 };
 
 // Adds a question and responds with the created question.
-var new_question = function (req, res) {
+var newOne = function (req, res) {
     // This is a POST request, so by default, fields go into the body.
 
     // only extra columns (apart from post) need to be written here
@@ -445,8 +403,8 @@ var new_question = function (req, res) {
         });
     });
 };
-var checkRole = role.can('create a question');
-exports.new = [checkRole, new_question];
+
+exports.new = [role.can('create a question'), newOne];
 
 // Update question
 var update = function (req, res) {
@@ -488,7 +446,8 @@ exports.markImportant = function (req, res) {
                         if(!err){
 
                             res.status(200);
-                            res.json(question);
+                            // res.json(question);
+                            res.end();
                         } else {
                             generic.genericErrorHandler(req, res, err);
                         }
@@ -501,7 +460,7 @@ exports.markImportant = function (req, res) {
 };
 
 // Delete question
-exports.remove = function (req, res) {
+var remove = function (req, res) {
     var afterRemove = function (err) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
@@ -572,6 +531,9 @@ exports.remove = function (req, res) {
 
     });
 };
+
+exports.remove = [role.can('edit a question'), remove];
+
 function JsonObjToArray(jsonObj){
     var result = [];
 

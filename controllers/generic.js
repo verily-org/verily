@@ -1,9 +1,11 @@
 var fs = require('fs');
 var path = require('path');
+var utils = require('utilities');
+
 var enums = require('../enums');
 var config = require('../config');
 var common = require('../static/js/common');
-var utils = require('utilities');
+var role = require('../lib/roles').user;
 var mode = require('../mode');
 var s3 = require('../s3');
 
@@ -12,6 +14,10 @@ var urlSafeBase64 = require('urlsafe-base64');
 var smtpTransport = require('../lib/auth').mailer,
 crypto = require('crypto'),
 async = require('async');
+
+exports.isAdmin = function() {
+    return role.can('assign roles');
+}
 
 
 exports.generateRefCodes = function(count, callback) {

@@ -1,8 +1,17 @@
+var generic = require('../controllers/generic');
 var utils = require('utilities');
 var mode = require('../mode');
 var common = require('../static/js/common');
 
 module.exports = function(swig) {
+    
+    // swig.setFilter('canViewChallengePages', function() {
+    //
+    // })
+    
+    swig.setFilter('isAdmin', function() {
+        return generic.isAdmin();
+    });
     
     swig.setFilter('isProduction', function() {
         return mode.isProduction();

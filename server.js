@@ -366,7 +366,10 @@ module.exports = function (suppressLogs, dbTestUrl) {
         var sess = {
             secret: 'd9WvgPUdReT8D3dH50FUXuwkpMOcAxA1Nll8sLG9j1s',
             store: new ORMSessionStore(syncedModels),
-            cookie: {}
+            cookie: {
+                httpOnly: true,
+                maxAge: cookieExpireAfter
+            }
         };
         
         if (secureCookies && secureCookies === true) {
@@ -374,10 +377,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
             sess.cookie.secure = true;
         }
                 
-        app.use(session(sess, {
-            httpOnly: true,
-            maxAge: cookieExpireAfter
-        }));
+        app.use(session(sess));
         app.use(passport.initialize());
         app.use(passport.session());
 

@@ -157,7 +157,7 @@ exports.facebookAuthenticate = passport.authenticate('facebook', {
     failureRedirect : '/login', // redirect back to the signup page if there is an error
 });
 
-var isAdmin = role.can('assign roles');
+var isAdmin = generic.isAdmin();
 
 var getRoles = function (model, cb) {
     var basics = [];

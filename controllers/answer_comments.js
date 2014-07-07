@@ -4,131 +4,28 @@ var enums = require('../enums');
 
 var async = require('async');
 
+var role = require('../lib/roles').user;
+
 // Get a specific comment of a specific answer.
 exports.get = function (req, res) {
-
-    // ETag support.
-    var reqIfNoneMatch = req.get(enums.ifNoneMatch);
-
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
-        if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
-                if (!err && answer) {
-                    generic.get(req.models.AnswerComment, req.params.comment_id, reqIfNoneMatch, function (err, comment) {
-                        if (!err && comment) {
-                            var answerComment = {
-                                id: comment.id,
-                                text: comment.text,
-                                date: comment.date,
-                                author: comment.author,
-                                updated: comment.updated
-                            }, wrapper = {
-                                answer_comment: answerComment
-                            };
-                            res.set(enums.eTag, comment.updated);
-                            res.json(wrapper);
-                            res.end();
-                        } else if (err === enums.NOT_MODIFIED) {
-                            // 304 Not Modified.
-                            res.status(304);
-                            res.end();
-                        } else {
-                            generic.genericErrorHandler(req, res, err);
-                        }
-
-                    });
-                } else {
-                    generic.genericErrorHandler(req, res, err);
-                }
-            });
-        } else {
-            generic.genericErrorHandler(req, res, err);
-        }
-    });
+    res.redirect('/');
+    res.end();
 };
 
 exports.head = function (req, res) {
-
-    // ETag support.
-    var reqIfNoneMatch = req.get(enums.ifNoneMatch);
-
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
-        if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
-                if (!err && answer) {
-                    generic.get(req.models.AnswerComment, req.params.comment_id, reqIfNoneMatch, function (err, comment) {
-                        if (!err && comment) {
-                            res.set(enums.eTag, comment.updated);
-                            res.end();
-                            req.destroy();
-                        } else if (err === enums.NOT_MODIFIED) {
-                            // 304 Not Modified.
-                            res.status(304);
-                            res.end();
-                        } else {
-                            generic.genericErrorHandler(req, res, err);
-                        }
-
-                    });
-                } else {
-                    generic.headErrorHandler(req, res, err);
-                }
-            });
-        } else {
-            generic.headErrorHandler(req, res, err);
-        }
-    });
+    res.redirect('/');
+    res.end();
 };
 
 // Get all comments for a specific answer.
 exports.all = function (req, res) {
-    req.models.Question.get(req.params.question_id, function (err, question) {
-        if (err || !question) {
-            // Error with getting the specified question.
-            generic.genericErrorHandler(req, res, err);
-        } else {
-            req.models.Answer.get(req.params.answer_id, function (err, answer) {
-                if (err || !answer) {
-                    // Error with getting the specified answer.
-                    generic.genericErrorHandler(req, res, err);
-                } else {
-                    // Getting the question and its answer was okay.
-                    // Now get the comments of this answer.
-                    answer.getComments(function (err, answerComments) {
-                        if (err) {
-                            generic.genericErrorHandler(req, res, err);
-                        } else if (!answerComments || answerComments.length === 0) {
-                            err = {};
-                            err.code = 2;
-                            generic.genericErrorHandler(req, res, err);
-                        } else {
-                            // Add post data to answer comments.
-                            async.each(answerComments, generic.gen, function (err) {
-                                if (err) {
-                                    generic.genericErrorHandler(req, res, err);
-                                } else {
-                                    // Wrap up the question comments in an 'answer_comments' property.
-                                    var wrapper = {
-                                        answer_comments: answerComments
-                                    };
-                                    res.status(200);
-                                    res.json(wrapper);
-                                    res.end();
-                                }
-                            });
-
-                        }
-                    });
-
-                }
-            });
-        }
-    });
+    res.redirect('/');
+    res.end();
 
 };
 
 // Create comment and add it to answer.
-exports.create = function (req, res) {
+var create = function (req, res) {
     var crisis_id = req.params.crisis_id;
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
@@ -168,6 +65,8 @@ exports.create = function (req, res) {
         }
     });
 };
+
+exports.create = [role.can('create an answer comment'), create];
 
 function create_answer_comment(req, answer, cb){
     var answerCommentData = {
@@ -237,7 +136,7 @@ function create_comment(req, cb){
 }
 
 // Update an answer comment.
-exports.update = function (req, res) {
+var update = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
@@ -265,8 +164,10 @@ exports.update = function (req, res) {
 
 };
 
+exports.update = [role.can('edit an answer comment'), update];
+
 // Remove an answer comment.
-exports.remove = function (req, res) {
+var remove = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
@@ -293,3 +194,5 @@ exports.remove = function (req, res) {
     });
 
 };
+
+exports.remove = [role.can('edit an answer comment'), remove];
