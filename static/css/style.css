@@ -113,10 +113,14 @@ div.welcome #eventEnd {
     background-color: transparent;
 }
 
-.no-bullets {
+ul.no-bullets {
     list-style-type: none;
     margin: 0;
-    padding: 0.5em;
+    padding: 0;
+}
+
+ul.no-bullets li {
+    padding-bottom: 0.5em;
 }
 
 .flash-msgs-ctr {
@@ -363,6 +367,18 @@ fa.breadcrumb {
     height: 16px !important;
 }
 
+.facebook-button {
+    background-color: #3b5998;
+    border-color: transparent;
+    color: #ffffff !important;
+}
+
+.facebook-button:hover,
+.facebook-button:focus {
+    border-color: transparent;
+    background-color: #344f88;
+}
+
 .facebook-blue {
     color: #3b5998 !important;
 }
@@ -399,6 +415,7 @@ fa.breadcrumb {
     margin-top: 0;
 }
 
+
 @media (max-width: 768px) {
     .question-image-and-map-ctr .col {
         margin-top: 1em !important;
@@ -434,6 +451,11 @@ fa.breadcrumb {
 
 .login-aside-button:first-child {
     margin-top: 0;
+}
+
+.auth-modal .login-aside-button {
+    margin-top: 0 !important;
+    margin-bottom: 1em;
 }
 
 .evidence-content {
@@ -669,6 +691,10 @@ fa.breadcrumb {
 .form-group a.tag .label {
     display: inline-block;
 /*    font-size: 100%*/
+}
+
+ul.team {
+    font-size: 1.5em;
 }
 
 

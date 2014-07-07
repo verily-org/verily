@@ -25,6 +25,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         controllers = {},
         heroku,
         syncedModels,
+        secureCookies,
         global_db,
         db_url;
 
@@ -43,6 +44,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
     if (mode.isProduction()) {
         // Enable reverse proxy support
         app.enable('trust proxy');
+        secureCookies = true;
     }
 
 
@@ -359,12 +361,21 @@ module.exports = function (suppressLogs, dbTestUrl) {
         
         // 10 years in millseconds.
         var cookieExpireAfter = 10 * 365 * ONE_DAY_MSECS;
-                
-        app.use(express.session({
+        
+        var sess = {
             secret: 'd9WvgPUdReT8D3dH50FUXuwkpMOcAxA1Nll8sLG9j1s',
-            store: new ORMSessionStore(syncedModels)
-
-        }, {maxAge: new Date(Date.now() + cookieExpireAfter)}));
+            store: new ORMSessionStore(syncedModels),
+        };
+        
+        if (secureCookies && secureCookies === true) {
+            // Serve secure cookies
+            sess.cookie.secure = true;
+        }
+                
+        app.use(express.session(sess, {
+            httpOnly: true,
+            maxAge: cookieExpireAfter
+        }));
         app.use(passport.initialize());
         app.use(passport.session());
 
