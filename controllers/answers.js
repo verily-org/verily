@@ -7,7 +7,7 @@ var async = require('async');
 var role = require('../lib/roles').user;
 
 // Get a specific answer
-exports.get = function (req, res) {
+var getOne = function (req, res) {
 
     // ETag support.
     var reqIfNoneMatch = req.get(enums.ifNoneMatch);
@@ -51,6 +51,9 @@ exports.get = function (req, res) {
         }
     });
 };
+
+exports.get = [role.can('view challenge pages'), getOne];
+
 function oneAnswerResponse(res, crisis, question, answer, user){
     //Sort comments in reverse chronological order
     answer.comments.sort(function(a,b){return b.comment.date - a.comment.date });
@@ -66,34 +69,12 @@ function oneAnswerResponse(res, crisis, question, answer, user){
 }
 
 exports.head = function (req, res) {
-
-    // ETag support.
-    var reqIfNoneMatch = req.get(enums.ifNoneMatch);
-
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
-        if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, reqIfNoneMatch, function (err, answer) {
-                if (!err && answer) {
-//                    Used for caching:
-//                    res.set(enums.eTag, answer.updated);
-                    res.end();
-                    req.destroy();
-                } else {
-                    generic.headErrorHandler(req, res, err);
-                }
-            });
-        } else if (err === enums.NOT_MODIFIED) {
-            // 304 Not Modified.
-            res.status(304);
-            res.end();
-        } else {
-            generic.genericErrorHandler(req, res, err);
-        }
-    });
+    res.redirect('/');
+    res.end();
 };
 
 // Get all answers ever, regardless of question id.
-exports.allEver = function (req, res) { // this function finds all answers in db,regardless of the question id.
+var allEver = function (req, res) { // this function finds all answers in db,regardless of the question id.
     req.models.Answer.find({}, function (err, Answers) {
         if (err || !Answers || Answers.length === 0) {
             generic.genericErrorHandler(req, res, err);
@@ -113,9 +94,10 @@ exports.allEver = function (req, res) { // this function finds all answers in db
         }
     });
 };
+exports.allEver = [role.can('assign roles'), allEver];
 
 // Get all answers for a specific question.
-exports.all = function (req, res) { // this function finds all answers of an specific question.
+var all = function (req, res) { // this function finds all answers of an specific question.
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             //question exists
@@ -144,6 +126,8 @@ exports.all = function (req, res) { // this function finds all answers of an spe
         }
     });
 };
+
+exports.all = [role.can('assign roles'), all];
 
 // Create an answer and add it to a question.
 var createAnswer = function (req, res) {
@@ -197,7 +181,7 @@ exports.create = [checkRole, createAnswer];
 
 
 // Update answer
-exports.update = function (req, res) {
+var update = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
@@ -218,8 +202,10 @@ exports.update = function (req, res) {
     });
 };
 
+exports.update = [role.can('edit an answer'), update];
+
 // Remove an answer
-exports.remove = function (req, res) {
+var remove = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
@@ -242,7 +228,8 @@ exports.remove = function (req, res) {
                         generic.removeOne(answer, req, function (err) {
                             if (!err) {
                                 res.status(200);
-                                res.json(answer);
+                                // res.json(answer);
+                                res.end();
                             } else {
                                 generic.genericErrorHandler(req, res, err);
                                 throw err;
@@ -259,7 +246,10 @@ exports.remove = function (req, res) {
         }
     });
 };
-exports.upvote = function (req, res) {
+
+exports.remove = [role.can('edit an answer'), remove];
+
+var upvote = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
@@ -268,7 +258,8 @@ exports.upvote = function (req, res) {
                         generic.load_answers_extra_fields(answer, function(){
                             if(!err){
                                 res.status(200);
-                                res.json(answer);
+                                // res.json(answer);
+                                res.end();
                             } else {
                                 generic.genericErrorHandler(req, res, err);
                             }
@@ -283,7 +274,10 @@ exports.upvote = function (req, res) {
         }
     });
 };
-exports.downvote = function (req, res) {
+
+exports.upvote = [role.can('view challenge pages'), upvote];
+
+var downvote = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
@@ -293,7 +287,8 @@ exports.downvote = function (req, res) {
                             generic.load_answers_extra_fields(answer, function(){
                                 if(!err){
                                     res.status(200);
-                                    res.json(answer);
+                                    // res.json(answer);
+                                    res.end();
                                 } else {
                                     generic.genericErrorHandler(req, res, err);
                                 }
@@ -309,6 +304,9 @@ exports.downvote = function (req, res) {
         }
     });
 };
+
+exports.downvote = [role.can('view challenge pages'), downvote];
+
 exports.getVideoHtml = function (req, res) {
     oembed.fetch(req.body.videoUrl, {}, function(err, result){
 

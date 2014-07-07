@@ -44,12 +44,13 @@ var newCrisis = function (req, res) {
 var checkRole = role.can('create a crisis');
 exports.new = [checkRole, newCrisis];
 
-//All Crisis
-exports.all = function (req, res) {
+// All Crises
+var all = function (req, res) {
     //Redirect to crisis/1 for Challenge purposes
     res.redirect('/crisis/1');
     res.end();
 }
+exports.all = [role.can('view challenge pages'), all];
 
 // Homepage
 exports.index = function (req, res) {
@@ -98,6 +99,7 @@ exports.about = function (req, res) {
         error: req.flash('error')
     });
 };
+
 exports.terms = function (req, res) {
     res.status(200);
     if (req.user){var user = req.user; }
@@ -112,7 +114,7 @@ exports.terms = function (req, res) {
 };
 
 //get a specific crisis
-exports.get = function (req, res) {
+var getOne = function (req, res) {
     //Redirection if different than 1 for Challenge purpose
     if(req.params.crisis_id != 1){
         res.redirect('/crisis/1');
@@ -163,6 +165,8 @@ exports.get = function (req, res) {
     });
 };
 
+exports.get = [role.can('view challenge pages'), getOne];
+
 // Mark crisis as Important
 var markImportant = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
@@ -171,7 +175,8 @@ var markImportant = function (req, res) {
                 generic.load_crisis_extra_fields(crisis, function(){
                     if(!err){
                         res.status(200);
-                        res.json(crisis);
+                        // res.json(crisis);
+                        res.end();
                     } else {
                         generic.genericErrorHandler(req, res, err);
                     }
@@ -207,7 +212,6 @@ var editCrisis = function (req, res) {
         });
     });
 }
-
 
 var checkRole = role.can('edit a crisis');
 
