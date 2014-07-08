@@ -129,6 +129,48 @@ exports.loginView = function (req, res) {
 
 };
 
+// Helper to create a provisional user.
+exports.newProvisionalUser = function(req, callback) {
+    generic.generateUsernameDigits(function(digits) {
+        var username = 'user-' + digits;
+        var type = 'provisional';
+        var role = 'simple';
+        
+        // TODO: Signup points might want to be set to something non-zero here
+        // like in signup handler.
+        var signupPoints = 0;
+    
+        // Create a new instance of User.
+        req.models.User.create([{
+            name: username,
+            type: type,
+            role: role,
+            signupPoints: signupPoints
+        }], function (err, users) {
+            if (err) {
+                console.log('error in creating provisional user:')
+                console.log(err);
+                callback(err);
+            } else {
+                var user = users[0];
+                
+                req.logIn(user, function (err) {
+                    if (err) {
+                        console.log('error in logging in provisional user:');
+                        console.log(err);
+                    }
+                    callback(err, user);
+                });
+                
+            }
+        
+        
+        });
+    });
+    
+
+};
+
 exports.login = passport.authenticate('local-login', {
     successRedirect : 'back', // redirect to the page they were on
     failureRedirect : '/login', // redirect back to the signup page if there is an error

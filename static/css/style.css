@@ -155,6 +155,21 @@ div.welcome p.challenge-description {
 }
 
 
+.label-verily-invert {
+    background-color: #ffffff;
+    color: #009c9c;
+}
+
+.label-verily-invert-muted {
+    background-color: #eeeeee;
+    color: #009c9c;
+}
+
+.navbar .label-verily-invert-muted {
+    background-color: #53cfcf;
+    color: #007f80;
+}
+
 
 div.welcome .well {
     padding-top: 0;

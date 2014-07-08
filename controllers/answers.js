@@ -4,7 +4,40 @@ var enums = require('../enums');
 var oembed = require('oembed');
 
 var async = require('async');
+
+var userController = require('./users');
 var role = require('../lib/roles').user;
+
+function oneAnswerResponse(res, crisis, question, answer, user) {
+    //Sort comments in reverse chronological order
+    answer.comments.sort(function(a,b){return b.comment.date - a.comment.date });
+    res.render('evidence/one', {
+        crisis: crisis,
+        question: question,
+        answer: answer,
+        page: {
+            title: answer.post.title
+        },
+        user: user
+    });
+}
+
+// Creates a provisional user if the user is not logged in.
+var applyUserAndRespond = function(req, res, crisis, question, answer) {
+    if (req.user) {
+        // User is currently logged in.
+        oneAnswerResponse(res, crisis, question, answer, req.user);
+    } else {
+        // User is not currently logged in --
+        // let's make them a provisional account
+        // so they can immediately do stuff.
+        userController.newProvisionalUser(req, function(err, user) {
+            // Provisional user account created.
+            // Respond.
+            oneAnswerResponse(res, crisis, question, answer, req.user);
+        });   
+    }
+};
 
 // Get a specific answer
 var getOne = function (req, res) {
@@ -20,7 +53,7 @@ var getOne = function (req, res) {
                         if (!err && answer) {
                             if (req.user){var user = req.user; }
                             answer.getComments(function(err){
-                                if(answer.post.targetVideoUrl){
+                                if(answer.post.targetVideoUrl) {
 
                                     oembed.fetch(answer.post.targetVideoUrl, {}, function(err, result){
 
@@ -30,11 +63,11 @@ var getOne = function (req, res) {
                                             answer.post.VideoUrlNotEmbeddable = answer.post.targetVideoUrl;
                                         }
 
-                                        oneAnswerResponse(res, crisis, question, answer, user);
+                                        applyUserAndRespond(req, res, crisis, question, answer, user);
                                     });
                                 }
                                 else{
-                                    oneAnswerResponse(res, crisis, question, answer, user);
+                                    applyUserAndRespond(req, res, crisis, question, answer, user);
                                 }
                             });
                         }else {
@@ -54,19 +87,7 @@ var getOne = function (req, res) {
 
 exports.get = [role.can('view challenge pages'), getOne];
 
-function oneAnswerResponse(res, crisis, question, answer, user){
-    //Sort comments in reverse chronological order
-    answer.comments.sort(function(a,b){return b.comment.date - a.comment.date });
-    res.render('evidence/one', {
-        crisis: crisis,
-        question: question,
-        answer: answer,
-        page: {
-            title: answer.post.title
-        },
-        user: user
-    });
-}
+
 
 exports.head = function (req, res) {
     res.redirect('/');
@@ -140,7 +161,6 @@ var createAnswer = function (req, res) {
             }, req, function (err, answer) {
                 if (!err && answer) {
                     answer.setQuestion(question, function (err) {
-                        // TODO: Change this so that it redirects to1 created answer.
                         generic.get(req.models.Answer, answer.id, undefined, function (err, answer2) {
                             if (!err && answer2) {
                                 var answerTmp = {
@@ -152,7 +172,7 @@ var createAnswer = function (req, res) {
                                 }, wrapper = {
                                     answer: answerTmp
                                 };
-                                res.redirect('/crisis/'+ crisis_id +'/question/' + answer2.question_id);
+                                res.redirect('/crisis/' + crisis_id +'/question/' + answer2.question_id);
                                 //res.json(wrapper);
                                 res.end();
                             } else {

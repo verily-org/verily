@@ -5,6 +5,7 @@ var async = require('async');
 var utils = require('utilities');
 
 var common = require('../static/js/common');
+var userController = require('./users');
 
 var role = require('../lib/roles').user;
 
@@ -113,6 +114,10 @@ exports.terms = function (req, res) {
     });
 };
 
+var oneCrisisResponse = function(req, res, responseData) {
+    res.render('crisis/one', responseData);
+}
+
 //get a specific crisis
 var getOne = function (req, res) {
     //Redirection if different than 1 for Challenge purpose
@@ -134,7 +139,6 @@ var getOne = function (req, res) {
                         } else {
                             crisis.post.addViewCount();
                             generic.load_crisis_extra_fields(crisis, function(err){
-                                if (req.user){var user = req.user; }
                                 
                                 // For each question, add relative created date.
                                 questions.forEach(function(question) {
@@ -145,14 +149,30 @@ var getOne = function (req, res) {
                                 var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
                                 crisis.relativeCreatedDate = relativeCreatedDate;
                                 
-                                res.render('crisis/one', {
+                                var responseData = {
                                     crisis: crisis,
                                     questions: questions,
-                                    user: user,
                                     page: {
                                         title: crisis.post.title
                                     }
-                                });
+                                };
+                                
+                                if (req.user) {
+                                    responseData.user = req.user;
+                                    // Respond.
+                                    oneCrisisResponse(req, res, responseData);
+                                } else {
+                                    // User is not currently logged in --
+                                    // let's make them a provisional account
+                                    // so they can immediately do stuff.
+                                    userController.newProvisionalUser(req, function(err, user) {
+                                        // Provisional user account created.
+                                        // Respond.
+                                        responseData.user = user;
+                                        oneCrisisResponse(req, res, responseData);
+                                    });   
+                                }
+
                             });
                         }
                     });
