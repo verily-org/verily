@@ -182,7 +182,7 @@
                             {% if user.type === 'provisional' %}
                             <li>
                                 <a href="/register">
-                                    Choose Username
+                                    Signup
                                 </a>
                             </li>
                             {% endif %}
@@ -190,7 +190,9 @@
 								<li><a href="/roles">Assign Roles</a></li>
 								<li><a href="/adminAnswers">All Answers</a></li>
 							{% endif %}
+                            {% if user.type !== 'provisional' %}
                             <li><a href="/logout">Logout</a></li>
+                            {% endif %}
                         {% elseif challengePublished or (path !== '/' and path !== '/about') %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>
