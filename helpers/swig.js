@@ -21,6 +21,10 @@ module.exports = function(swig) {
         return common.challengeActive();
     });
     
+    swig.setFilter('challengePublished', function() {
+        return common.challengePublished();
+    });
+    
     swig.setFilter('isMarkedImportantBy', function( post, user) {
         var isMarkedAsImportant = post.isMarkedImportantBy(user);
         return isMarkedAsImportant;
