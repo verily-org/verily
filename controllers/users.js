@@ -132,7 +132,7 @@ exports.loginView = function (req, res) {
 // Helper to create a provisional user.
 exports.newProvisionalUser = function(req, callback) {
     generic.generateUsernameDigits(function(digits) {
-        var username = 'user-' + digits;
+        var username = 'anon-' + digits;
         var type = 'provisional';
         var role = 'simple';
         
