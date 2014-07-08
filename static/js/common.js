@@ -12,6 +12,15 @@ if (typeof module !== 'undefined') {
 var common = {};
 
 
+// --- CHALLENGE ACTIVE SETTING ---
+// Set to true to enable challenge mode and disable welcome mode.
+// This is a function so we can return a boolean
+// based on the current date being within a set date range, for example.
+var challengeActive = exports.challengeActive = common.challengeActive = function() {
+    return false;
+}
+
+
 var formAbsoluteURI = exports.formAbsoluteURI = common.formAbsoluteURI = function(path, options) {
     if (isNodeJS) {
         var url = require('url');
@@ -32,10 +41,7 @@ var tagize = exports.tagize = common.tagize = function(string) {
     return splitIntoTags(string).map(normalizeTag);
 };
 
-// Set to true to enable challenge mode and disable welcome mode.
-var challengeActive = exports.challengeActive = common.challengeActive = function() {
-    return false;
-}
+
 
 var campaign = exports.campaign = common.campaign = function() {
     var campaigns = {

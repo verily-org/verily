@@ -7,6 +7,7 @@ var oembed = require('oembed');
 
 var common = require('../static/js/common');
 
+var userController = require('./users');
 var role = require('../lib/roles').user;
 
 // Enables discovery of questions – this is the questions spotlight.
@@ -300,6 +301,23 @@ function oneQuestionResponse(req, res, crisis, question, user, refcodes){
     });
 }
 
+// Creates a provisional user if the user is not logged in.
+var applyUserAndRespond = function(req, res, crisis, question, refcodes) {
+    if (req.user) {
+        // User is currently logged in.
+        oneQuestionResponse(req, res, crisis, question, req.user, refcodes);
+    } else {
+        // User is not currently logged in --
+        // let's make them a provisional account
+        // so they can immediately do stuff.
+        userController.newProvisionalUser(req, function(err, user) {
+            // Provisional user account created.
+            // Respond.
+            oneQuestionResponse(req, res, crisis, question, req.user, refcodes);
+        });   
+    }
+};
+
 // Get a specific question.
 var getOne = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
@@ -320,7 +338,6 @@ var getOne = function (req, res) {
                 
                 // Set the ETag header.
                 //res.set(enums.eTag, question.updated);
-                if (req.user){var user = req.user; }
                 
                 generic.generateRefCodes(4, function(refcodeArray) {
                     var refcodes = {
@@ -333,18 +350,17 @@ var getOne = function (req, res) {
                     if(question.post.targetVideoUrl){
                         oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
 
-                            if(!err){
+                            if (!err){
                                 question.post.targetVideoHtml = result.html;
-                            }else{
+                            } else {
                                 question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
                             }
 
 
-                            oneQuestionResponse(req, res, crisis, question, user, refcodes);
+                            applyUserAndRespond(req, res, crisis, question, refcodes);
                         });
-                    }
-                    else{
-                        oneQuestionResponse(req, res, crisis, question, user, refcodes);
+                    } else{
+                        applyUserAndRespond(req, res, crisis, question, refcodes);
                     }
                 });
                 

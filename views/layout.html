@@ -170,12 +170,26 @@
                     </ul>
                     <ul class="nav navbar-nav pull-right">
                         {% if user %}
-                            <li><a href="/user">{{user.name}}</a></li>
-                            <li><a href="/logout">Logout</a></li>
+                            <li>
+                                <a href="/user" {% if user.type === 'provisional' %}title="provisional username"{% endif %}>
+                                    {% if user.type === 'provisional' %}
+                                    <i class="fa fa-ticket"></i>
+                                    {% endif %}
+                                    {{ user.name }}
+                                </a>
+                            </li>
+                            {% if user.type === 'provisional' %}
+                            <li>
+                                <a href="/register">
+                                    Choose Username
+                                </a>
+                            </li>
+                            {% endif %}
 							{% if userCan('assign roles') %}
 								<li><a href="/roles">Assign Roles</a></li>
 								<li><a href="/adminAnswers">All Answers</a></li>
 							{% endif %}
+                            <li><a href="/logout">Logout</a></li>
                         {% elseif challengeActive or (path !== '/' and path !== '/about') %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>

@@ -309,6 +309,10 @@ module.exports = function (db, cb) {
             name: {
                 type: 'text',
             },
+            type: {
+                type: 'enum',
+                values: ['chosen-username', 'provisional']
+            },
             role: {
                 type: 'enum',
                 values: ['editor', 'simple', 'admin']

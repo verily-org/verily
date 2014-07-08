@@ -19,6 +19,10 @@ exports.isAdmin = function() {
     return role.can('assign roles');
 }
 
+exports.generateUsernameDigits = function(callback) {
+    var numBytes = 4;
+    callback(parseInt(crypto.randomBytes(numBytes).toString('hex'), 16));
+}
 
 exports.generateRefCodes = function(count, callback) {
     async.times(count, function(n, next) {
