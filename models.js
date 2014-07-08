@@ -175,7 +175,9 @@ module.exports = function (db, cb) {
                 title:[orm.enforce.notEmptyString("Title Required"), orm.enforce.required("Title Required")]
             }
         }), Question = db.define('question', {
-
+            // knownAnswer: {
+            //     type: 'text'
+            // }
     },
         {
             methods: {
