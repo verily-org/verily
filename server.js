@@ -189,16 +189,6 @@ module.exports = function (suppressLogs, dbTestUrl) {
         }
     }
     
-
-    // Express middleware for delivering robots.txt
-    var robotstxt = function(req, res, next) {
-        if (req.url === '/robots.txt') {
-            res.type('text/plain');
-            res.end('User-agent: *\nDisallow: /crisis/\nDisallow: /images/');
-        } else {
-            next();
-        }
-    };
     
     // Express middleware for analytics
     var analytics = function(req, res, next) {
@@ -345,6 +335,16 @@ module.exports = function (suppressLogs, dbTestUrl) {
             next();
         }
 
+    };
+    
+    // Express middleware for delivering robots.txt
+    var robotstxt = function(req, res, next) {
+        if (req.url === '/robots.txt') {
+            res.type('text/plain');
+            res.end('User-agent: *\nDisallow: /crisis/\nDisallow: /images/');
+        } else {
+            next();
+        }
     };
     
     
