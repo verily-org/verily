@@ -2,7 +2,10 @@
 body {
     text-rendering: optimizeLegibility;
     font-weight: 300;
+}
 
+.fa {
+  text-rendering: auto;
 }
 
 body.hero-cover {

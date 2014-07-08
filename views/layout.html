@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% set challengeActive = null|challengeActive %}
+{% set challengePublished = null|challengePublished %}
 {% set isProduction = null|isProduction %}
     <head>
         <meta charset="utf-8">
@@ -134,7 +135,7 @@
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    {% if challengeActive %}
+                    {% if challengePublished %}
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
@@ -149,7 +150,7 @@
                 <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         
-                        {% if challengeActive or (path !== '/' and path !== '/about') %}
+                        {% if challengePublished or (path !== '/' and path !== '/about') %}
                             <li><a href="/crisis/1">#VerilyLive</a></li>
                         {% endif %}
                     
@@ -181,7 +182,7 @@
                             {% if user.type === 'provisional' %}
                             <li>
                                 <a href="/register">
-                                    Choose Username
+                                    Signup
                                 </a>
                             </li>
                             {% endif %}
@@ -189,8 +190,10 @@
 								<li><a href="/roles">Assign Roles</a></li>
 								<li><a href="/adminAnswers">All Answers</a></li>
 							{% endif %}
+                            {% if user.type !== 'provisional' %}
                             <li><a href="/logout">Logout</a></li>
-                        {% elseif challengeActive or (path !== '/' and path !== '/about') %}
+                            {% endif %}
+                        {% elseif challengePublished or (path !== '/' and path !== '/about') %}
                             <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>
                         {% endif %}

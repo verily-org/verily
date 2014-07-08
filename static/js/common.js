@@ -12,8 +12,11 @@ if (typeof module !== 'undefined') {
 var common = {};
 
 
+
+
 // --- CHALLENGE ACTIVE SETTING ---
-// Set to true to enable challenge mode and disable welcome mode.
+// Set to true to enable challenge active mode
+// so that the routes are requestable.
 // This is a function so we can return a boolean
 // based on the current date being within a set date range, for example.
 var challengeActive = exports.challengeActive = common.challengeActive = function() {
@@ -157,6 +160,11 @@ var validateComment = exports.validateComment = common.validateComment = functio
 
     callback(error, value);
 };
+
+// --- CHALLENGE PUBLISHED SETTING ---
+var challengePublished = exports.challengePublished = common.challengePublished = function() {
+    return false;
+}
 
 // Used at client and server side.
 var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validateDateTimeOccurred = function(value, elemsParent, elemsIsArray, callback) {

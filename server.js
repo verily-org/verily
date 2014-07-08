@@ -189,7 +189,6 @@ module.exports = function (suppressLogs, dbTestUrl) {
         }
     }
     
-
     
     // Express middleware for analytics
     var analytics = function(req, res, next) {
@@ -338,6 +337,16 @@ module.exports = function (suppressLogs, dbTestUrl) {
 
     };
     
+    // Express middleware for delivering robots.txt
+    var robotstxt = function(req, res, next) {
+        if (req.url === '/robots.txt') {
+            res.type('text/plain');
+            res.end('User-agent: *\nDisallow: /crisis/\nDisallow: /images/');
+        } else {
+            next();
+        }
+    };
+    
     
     // Start everything up once the models have synced.
     emitter.on('model-synced', function() {
@@ -356,6 +365,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
         
         // Redirect www URLs to the canonical non-www (apex) URLs.
         app.use(canon);
+        
+        app.use(robotstxt);
         
         // Call the cleaner now!
         app.use(cleaner);

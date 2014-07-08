@@ -21,7 +21,7 @@ exports.isAdmin = function() {
 
 exports.generateUsernameDigits = function(callback) {
     var numBytes = 4;
-    callback(parseInt(crypto.randomBytes(numBytes).toString('hex'), 16));
+    callback(crypto.randomBytes(numBytes).toString('hex'));
 }
 
 exports.generateRefCodes = function(count, callback) {
