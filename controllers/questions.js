@@ -446,6 +446,7 @@ exports.markImportant = function (req, res) {
                         if(!err){
 
                             res.status(200);
+                            //Return question for ajax update
                             res.json(question);
                         } else {
                             generic.genericErrorHandler(req, res, err);

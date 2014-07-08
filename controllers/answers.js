@@ -258,6 +258,7 @@ var upvote = function (req, res) {
                         generic.load_answers_extra_fields(answer, function(){
                             if(!err){
                                 res.status(200);
+                                //Return answer for ajax update
                                 res.json(answer);
                             } else {
                                 generic.genericErrorHandler(req, res, err);
@@ -286,6 +287,7 @@ var downvote = function (req, res) {
                             generic.load_answers_extra_fields(answer, function(){
                                 if(!err){
                                     res.status(200);
+                                    //Return answer for ajax update
                                     res.json(answer);
                                 } else {
                                     generic.genericErrorHandler(req, res, err);
