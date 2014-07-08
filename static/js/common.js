@@ -17,7 +17,7 @@ var common = {};
 // This is a function so we can return a boolean
 // based on the current date being within a set date range, for example.
 var challengeActive = exports.challengeActive = common.challengeActive = function() {
-    return false;
+    return true;
 }
 
 
