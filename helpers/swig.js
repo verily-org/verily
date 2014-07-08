@@ -80,14 +80,16 @@ module.exports = function(swig) {
     });
 
     swig.setFilter('cropString', function(string, limit) {
-        if(string.length > limit){
-            var i = limit-1;
-            while(i < string.length){
-                if(string[i] == ' '){
-                    return string.substring(0, i) + '...';
-                    break;
+        if(string != null){
+            if(string.length > limit){
+                var i = limit-1;
+                while(i < string.length){
+                    if(string[i] == ' '){
+                        return string.substring(0, i) + '...';
+                        break;
+                    }
+                    i++;
                 }
-                i++;
             }
         }
         return string;
