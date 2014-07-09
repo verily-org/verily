@@ -1,3 +1,4 @@
+
 <form id="signup" role="form" action="/user" method="POST">
     <!-- <input type="hidden" name="_method" value="POST">
     <input type="hidden" id="form-question-type" name="type"> -->
@@ -15,8 +16,17 @@
     <div class="form-group">
     	<input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="Enter password again">
     </div>
+	
+	<div class="form-group">
+		<label for="terms-agreement">
+			<input type="checkbox" id="terms-agreement" name="termsAgreement">
+			I agree with the <a href="/terms" target="_blank">Terms and Conditions</a>.
+		</label>
+	</div>
 
-    <button type="submit" class="btn btn-primary btn-lg pull-right">Signup with Email</button>
+    <button type="submit" class="btn btn-primary btn-lg pull-right" id="submit-button">Signup with Email</button>
+	
+
     
     {% if user.type === 'provisional' %}
 	<div class="form-group">
@@ -26,6 +36,12 @@
         </label>
     </div>
     {% endif %}
-    
-    By signing up or logging in with Facebook, you agree to our <a href="/terms" target="_blank">Terms</a>.
+	
+    <b>IMPORTANT :</b> This website is part of an academic research project at the University of Southampton (Ethics reference number: ERGO/FPSE/10709).
+	Your data will be used only for academic research purposes and it will be treated in accordance to the UK Data Protection Act 1998.
+	Full details in our <a href="/terms" target="_blank">Terms and Conditions</a>.
 </form>
+
+
+
+
