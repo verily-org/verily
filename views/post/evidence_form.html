@@ -1,13 +1,9 @@
 {% include '../generic/form-title.html' %}
-<div class="well">
-    <input type="radio" class="pull-right" checked name="image-or-video" />
-    <div class="form-container"  id="image-container">
+<div id="form-video-image-parent">
+    <label class="control-label">Submit a video or an image</label> (optional)
+    <div class="well">
+
         {% include '../generic/form-image.html' %}
-    </div>
-</div>
-<div class="well">
-    <input type="radio" class="pull-right" name="image-or-video" />
-    <div class="form-container" id="video-container">
         {% include '../generic/form-video.html' %}
     </div>
 </div>
@@ -41,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var submitButton = document.getElementById('submit');
     
     var formTitle = document.getElementById('form-title');
+    var videoImageParent = document.getElementById('form-video-image-parent');
     
     var dateTimeOccurredFieldGroup = document.getElementById('form-occurred-group');
 
@@ -144,9 +141,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
     // Validation function set.
     // Initialise the individual validation functions (each return a function with a callback).
     var validateFunctions = [
+        validate_video_image,
         validate(formTitle, null, common.validateFormTitle),
-        validate(document.getElementsByClassName('form-occurred'), dateTimeOccurredFieldGroup, common.validateDateTimeOccurred)
+        validate(document.getElementsByClassName('form-occurred'), dateTimeOccurredFieldGroup, common.validateDateTimeOccurred),
+
     ]
+    function validate_video_image(callback){
+        //Get the visible values for
+        var formVideoImageArray = $('.form-video-image:visible').get();
+        var validate_function = validate(formVideoImageArray, videoImageParent, common.validateVideoImage);
+        validate_function(callback);
+    }
 
     // Validation harness which uses the validation function set to run all the validation functions.
     function validateAll(e) {

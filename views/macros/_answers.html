@@ -106,11 +106,10 @@
 								</div>
 							</div>
 						{% endif %}
-						
-							<div class="">
-								<i class="fa fa-bullhorn"></i>
-								<span class=""><abbr title="{{ answer.post.date.toUTCString() }}">{{ answer.post.date | relativeTime }}</abbr></span>
-								by {{ answer.post.user.name }}
+							<div class="posted">
+								Posted
+								<span class=""><abbr title="{{ answer.post.date.toUTCString() }}">{{ answer.post.date | relativeTime }}</abbr> ago </span>
+								by user {{ answer.post.user.name }}
 							</div>
 						{% if !adminFlag %}
 							<!-- vote row -->

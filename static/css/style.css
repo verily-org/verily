@@ -767,7 +767,12 @@ ul.team {
     margin-bottom: 1em;
 }
 
-
+.verily-panel .posted{
+    padding-top:9px;
+}
+.panel-body{
+    padding-bottom: 6px;
+}
 @media (max-width: 768px)  {
     .verily-panel img{
         max-height:200px;
@@ -776,6 +781,9 @@ ul.team {
 @media (min-width: 768px) and  (max-width: 991px) {
     .verily-panel img{
         max-height:120px;
+    }
+    .verily-panel .posted{
+        font-size:0.9em;
     }
     .crisis-question-metrics{
         font-size:1.2em;

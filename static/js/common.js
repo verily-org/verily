@@ -129,6 +129,23 @@ var getAllFromRange = exports.getAllFromRange = common.getAllFromRange = functio
 
 // maxTitleLength defined in generic/title-chars-left.html
 // @return boolean: true for valid
+var validateVideoImage = exports.validateVideoImage = common.validateVideoImage = function(values, elemsParent, elemsIsArray, callback) {
+    var error = null,
+        i = 0;
+    console.log(values);
+    for(var key in values){
+        if(values[key].length > 0){
+            i++;
+        }
+    }
+    if(i > 1){
+        error = 'Please submit only 1 piece of evidence! (video or image)';
+    }
+
+    callback(error, values);
+};
+// maxTitleLength defined in generic/title-chars-left.html
+// @return boolean: true for valid
 var validateFormTitle = exports.validateFormTitle = common.validateFormTitle = function(value, elemsParent, elemsIsArray, callback) {
     var error = null;
     

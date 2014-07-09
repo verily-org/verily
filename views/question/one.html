@@ -87,14 +87,14 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 {% endif %}
 
                 <p class="metadata">
-                    <i class="fa fa-bullhorn fa-lg fa-fw"></i>
-                    <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
-                    by {{ question.author }}
+                    Posted
+                    <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> ago </span>
+                    by user {{ question.author }}
                 </p>
 
                 {% if question.tags and question.tags.length !== 0 %}
                 <p class="metadata tags">
-                    <i class="fa fa-tag fa-lg fa-fw"></i>
+                    Tags:
                         {% for tag in question.tags %}
                             <a href="/tag/{{ tag }}" class="tag-ctr"><span class="label label-primary tag">{{ tag }}</span></a>
                         {% endfor %}
@@ -368,12 +368,7 @@ function initActionButtons() {
     $('#question-reject').click(function(){
         displayQuestionFalseForm();
     });
-    
 
-    
-    
-    
-    
     $(".btn_markImportant").click(function(){
         var button = $(this);
         $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id')+'/markImportant',

@@ -1,6 +1,8 @@
 <div class="form-group">
     {% if type != 'evidence' %}
     <label for="form-title" class="control-label">Title</label>
+    {% else %}
+    <label for="form-title" class="control-label"></label>
     {% endif %}
     <div id="form-title-chars-left" class="pull-right"><span class="sr-only">Characters remaining:</span><span class="value"></span>
     </div>
