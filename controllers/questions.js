@@ -565,19 +565,19 @@ var exportQuestionsView = function(req, res){
                 for(var i in data.Contents){
                     files.push(data.Contents[i].Key);
                 }
-                renderExportView(res, crisis, files, user);
+                renderExportView(res, req, crisis, files, user);
             });
         }
         else{
             fs.readdir('static/backups/questions/', function(err, files){
                 if (err) console.log(err);
-                renderExportView(res, crisis, files, user);
+                renderExportView(res, req, crisis, files, user);
             });
         }
     });
 }
 exports.exportQuestionsView = [role.can('export questions'), exportQuestionsView];
-function renderExportView(res, crisis, files, user){
+function renderExportView(res, req, crisis, files, user){
     res.status(200);
     res.render('question/exports', {
         page: {
@@ -585,6 +585,7 @@ function renderExportView(res, crisis, files, user){
         },
         crisis: crisis,
         question_exports: files,
+        info: req.flash('info'),
         user: user
     });
 }
@@ -615,7 +616,7 @@ var exportQuestions = function(req, res){
                 });
             }
             else{
-                var file_path = 'static/backups/questions/'+file_name;
+                var file_path = 'static/'+file_name;
                 fs.writeFile(file_path, string, function(err){
                     if (err) console.log(err);
                     req.flash('info', 'Export saved successfully.');
