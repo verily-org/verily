@@ -157,14 +157,14 @@
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    {% if challengePublished %}
+
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    {% endif %}
+
                     <a class="navbar-brand active logo {% if path === '/' %}welcome{% endif %}" href="/" title="Home">
                         <span class="first-char">V</span>erily
                     </a>
@@ -240,11 +240,7 @@
         </nav>
         {% endblock navigation %}
         
-        {% if info or error %}
-        
-
-        
-        
+        {% if (info and info.length > 0) or (error and error.length > 0) %}
         <div class="flash-msgs-ctr">
 		
     		<div class="container flash-msg-ctr">
