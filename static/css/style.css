@@ -278,6 +278,10 @@ fa.breadcrumb {
 }
 
 
+.btn-danger {
+    color: #ffffff !important;
+}
+
 
 .calendar-day {
     top: 3px;
