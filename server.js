@@ -133,6 +133,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 models.User = db.models.user;
                 models.Local = db.models.local;
                 models.Facebook = db.models.facebook;
+                models.Twitter = db.models.twitter;
                 models.Impression = db.models.impression;
                 models.Referral = db.models.referral;
                 models.Session = db.models.session;
@@ -149,6 +150,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 models.Comment.sync(function () {console.log("Comment synced")});
                 models.Rating.sync(function () {console.log("Rating synced")});
                 models.Facebook.sync(function () {console.log("Facebook synced")});
+                models.Twitter.sync(function () {console.log("Twitter synced")});
                 models.Impression.sync(function () {console.log("Impression synced")});
                 models.Referral.sync(function () {console.log("Referral synced")});
                 models.Session.sync(function () {console.log("Session synced")});

@@ -303,8 +303,12 @@ module.exports = function (db, cb) {
         },
         email: {
             type: 'text'
-        },
-        name: {
+        }
+    }), Twitter = db.define('twitter', {
+        twitterId: {
+            type: 'text'
+        }, 
+        token: {
             type: 'text'
         }
     }), User = db.define('user', {
@@ -408,6 +412,9 @@ module.exports = function (db, cb) {
         reverse: 'users'
     });
     User.hasOne('facebook', Facebook, {
+        reverse: 'users', autoFetch: true
+    });
+    User.hasOne('twitter', Twitter, {
         reverse: 'users', autoFetch: true
     });
 
