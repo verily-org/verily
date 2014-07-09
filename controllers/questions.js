@@ -557,7 +557,7 @@ var exportQuestionsView = function(req, res){
     if (req.user){var user = req.user; }
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
-        var export_files_prefix = s3.QUESTION_EXPORT_FILE_PREFIX + crisis.id;
+        var export_files_prefix = 'backups/questions/'+s3.QUESTION_EXPORT_FILE_PREFIX + crisis.id;
         if (mode.isHeroku()) {
             s3.list(export_files_prefix, function(err, data){
                 if (err) {console.log(err);}
