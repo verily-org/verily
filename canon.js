@@ -1,11 +1,25 @@
 var url = require('url');
 var mode = require('./mode');
 var enums = require('./enums');
+var common = require('./static/js/common');
 
 // Express middleware for canonicalisation of URLs
 // from www URLs to the canonical non-www (apex) URL equivalents.
 // (c) 2014 Alex Greenland. MIT Licence.
 module.exports = function() {
+    
+    var crisis1Canon = function(req, res, next) {
+        if (common.challengePublished()) {
+            if (req.url === '/live' || req.url === '/verilylive' || req.url === '/challenge') {
+                res.redirect('/crisis/1');
+            } else {
+                next();
+            }
+        } else {
+            next();
+        }
+
+    };
         
     // The canon should be called as early as possible.
     return function(req, res, next) {
@@ -28,13 +42,13 @@ module.exports = function() {
                 res.redirect(productionUrl);
                 res.end();
             } else {
-                // Everything is ok -- the URL is already canonical.
-                next();
+                // The URL is already canonical in terms of using HTTPS at the apex.
+                crisis1Canon(req, res, next);
             }
         
         } else {
             // Running on development.
-            next();
+            crisis1Canon(req, res, next);
         }
     };
 };

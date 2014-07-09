@@ -23,6 +23,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         log = require('./log'),
         ORMSessionStore = require('./orm-session-store')(express),
         mode = require('./mode'),
+        common = require('./static/js/common'),
         controllers = {},
         heroku,
         syncedModels,
@@ -471,24 +472,36 @@ module.exports = function (suppressLogs, dbTestUrl) {
         
         
         // The last thing is error handling.
-        app.use(function(req, res, next){
-            res.status(404);
-            res.render('error/404', {
-                page: {
-                    title: 'Not found'
-                },
-                user: req.user
-            });
+        app.use(function(req, res, next) {
+            if (common.challengePublished()) {
+                res.status(404);
+                res.render('error/404', {
+                    page: {
+                        title: 'Not found'
+                    },
+                    user: req.user
+                });
+            } else {
+                res.redirect('/');
+                res.end();
+            }
+
         });
     
         app.use(function(err, req, res, next) {
-            res.send(500);
-            res.render('error/500', {
-                page: {
-                    title: 'Server error'
-                },
-                user: req.user
-            });
+            if (common.challengePublished()) {
+                res.send(500);
+                res.render('error/500', {
+                    page: {
+                        title: 'Server error'
+                    },
+                    user: req.user
+                });
+            } else {
+                res.redirect('/');
+                res.end();
+            }
+
         });
 
     
