@@ -9,7 +9,7 @@ var DEFAULT_ACL = 'bucket-owner-full-control';
 exports.ACL_PUBLIC_READ = 'public-read';
 exports.BUCKET_ID = process.env.S3_BUCKET_ID;
 exports.S3_SUBSCRIBERS_BUCKET_KEY = process.env.S3_SUBSCRIBERS_BUCKET_KEY + '/subscribers.json';
-exports.QUESTION_EXPORT_FILE_PREFIX = "crisis-";//Plus the ID of the Crisis.
+exports.QUESTION_EXPORT_FILE_PREFIX = "backups/questions/crisis-";//Plus the ID of the Crisis.
 
 aws.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY,
