@@ -90,6 +90,28 @@
         {% endif %}
     </head>
     <body class="{% if path === '/' %} hero-cover{% endif %}">
+        {% if user.type === 'provisional' %}
+        <!-- provisional user confirm login modal -->
+        <div class="modal fade" id="provisionalUserConfirmLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to withdraw from <strong>{{ user.name }}</strong>?</h4>
+              </div>
+              <div class="modal-body">
+                  Submissions made under your provisional username, <strong>{{ user.name }}</strong>, will be lost if you log in now. To transfer your content, <a href="/register/">sign up</a>.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a href="/login?via=/logout" type="button" class="btn btn-danger">Withdraw and log in</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / provisional user confirm login modal -->
+        {% endif %}
+        
         <div id="login-register" class="modal auth-modal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -192,7 +214,7 @@
                                     Signup
                                 </a>
                             </li>
-                            <li><a href="/login?via=/logout">Login</a></li>
+                            <li><a href="" data-toggle="modal" data-target="#provisionalUserConfirmLoginModal">Login</a></li>
                             {% endif %}
 							{% if userCan('assign roles') %}
 								<li><a href="/roles">Assign Roles</a></li>
@@ -202,8 +224,8 @@
                             <li><a href="/logout">Logout</a></li>
                             {% endif %}
                         {% elseif challengePublished or (path !== '/' and path !== '/about') %}
-                            <li><a href="/login">Login</a></li>
                             <li><a href="/register">Signup</a></li>
+                            <li><a href="/login">Login</a></li>
                         {% endif %}
                     </ul>
 
@@ -219,6 +241,10 @@
         {% endblock navigation %}
         
         {% if info or error %}
+        
+
+        
+        
         <div class="flash-msgs-ctr">
 		
     		<div class="container flash-msg-ctr">
