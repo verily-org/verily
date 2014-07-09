@@ -18,5 +18,14 @@
 
     <button type="submit" class="btn btn-primary btn-lg pull-right">Signup</button>
     
+    {% if user.type === 'provisional' %}
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Transfer my submissions from {{ user.name }} to this account
+        </label>
+    </div>
+    {% endif %}
+    
     By signing up or logging in with Facebook, you agree to our <a href="/terms" target="_blank">Terms</a>.
 </form>

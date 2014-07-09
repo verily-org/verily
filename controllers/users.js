@@ -94,6 +94,8 @@ exports.logoutDone = function (req, res) {
 };
 
 exports.registerView = function (req, res) {
+    if (!req.user || req.user.type === 'provisional') {
+        // Not logged in or using provisional user account.
         res.status(200);
         res.render('user/register', {
             page: {
@@ -101,7 +103,11 @@ exports.registerView = function (req, res) {
             },
             error: req.flash('error'),
             info: req.flash('info')
-        });    
+        });
+    } else {
+        // Logged in, redirect to crisis.
+        res.redirect('/crisis');
+    }  
 };
 
 exports.loginView = function (req, res) {
