@@ -461,6 +461,28 @@ fa.breadcrumb {
     -webkit-transform-origin: top left;
 }
 
+.twitter-button {
+    background-color: #55acee;
+    border-color: transparent;
+    color: #ffffff !important; 
+}
+
+.twitter-button:hover,
+.twitter-button:focus {
+    background-color: #55acee;
+    border-color: transparent;
+}
+
+.signup-form .twitter-button {
+    margin-top: 0.5em;
+}
+
+@media (min-width: 992px) {
+    .signup-form .twitter-button {
+        margin-top: 0;
+    }
+}
+
 .modal .vertically-centred {
 
 }
