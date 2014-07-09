@@ -21,6 +21,12 @@ exports.route = function (app, controllers, doc) {
     // Create multiple questions API endpoint
     route('post', specificCrisis + '/questions/create', 'newQuestions', 'Create multiple questions on a Crisis');
 
+    // View Questions exports
+    route('get', specificCrisis + '/questions/export', 'exportQuestionsView', 'View of exported questions to JSON file');
+
+    // Export questions in a crisis to a json file
+    route('post', specificCrisis + '/questions/export', 'exportQuestions', 'Export questions to JSON file on AWS');
+
     // Mark question as important
     route('post', specific + '/markImportant', 'markImportant', 'Mark as Important');
 

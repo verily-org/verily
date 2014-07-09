@@ -238,6 +238,10 @@ div.welcome .signup-form-for-updates input {
     color: #ffffff !important;
 }
 
+.navbar-default .open a {
+    color: #009c9c !important;
+}
+
 /* TODO: Use LESS variables */
 .text-muted a {
     color: #999;

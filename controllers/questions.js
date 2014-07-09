@@ -4,6 +4,9 @@ var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
 var oembed = require('oembed');
+var fs = require('fs');
+var s3 = require('../s3');
+var mode = require('../mode');
 
 var common = require('../static/js/common');
 
@@ -63,10 +66,10 @@ exports.create = [checkRole, createQuestion];
 
 // View to add multiple questions
 var create_multiple_questions = function (req, res) {
-    res.status(200);
     if (req.user){var user = req.user; }
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
+        res.status(200);
         res.render('question/createMultiple', {
             page: {
                 title: 'Add multiple questions'
@@ -550,6 +553,107 @@ var remove = function (req, res) {
 
 exports.remove = [role.can('edit a question'), remove];
 
+var exportQuestionsView = function(req, res){
+    if (req.user){var user = req.user; }
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        var export_files_prefix = s3.QUESTION_EXPORT_FILE_PREFIX + crisis.id;
+        if (mode.isHeroku()) {
+            s3.list(export_files_prefix, function(err, data){
+                if (err) {console.log(err);}
+                renderExportView(res, crisis, data, user);
+            });
+        }
+        else{
+            fs.readdir('static/backups/questions/', function(err, files){
+                if (err) console.log(err);
+                renderExportView(res, crisis, files, user);
+            });
+        }
+    });
+}
+exports.exportQuestionsView = [role.can('export questions'), exportQuestionsView];
+function renderExportView(res, crisis, files, user){
+    res.status(200);
+    res.render('question/exports', {
+        page: {
+            title: 'Export questions'
+        },
+        crisis: crisis,
+        question_exports: files,
+        user: user
+    });
+}
+
+var exportQuestions = function(req, res){
+    if (req.user){var user = req.user; }
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        var file_name = getExportsFileName(s3.QUESTION_EXPORT_FILE_PREFIX, crisis.id);
+        getQuestionsJson(crisis, function(err, questions_json){
+            if(err)generic.genericErrorHandler(req, res, err);
+            var string = JSON.stringify(questions_json);
+            if (mode.isHeroku()) {
+                var file_path = 'backups/questions/'+file_name;
+                s3.put(file_path, string, null, function(err, data){
+                    if (err) {
+                        console.log('err in s3 put');
+                        console.log(err);
+                        req.flash('error', 'Couldn\'t make the export');
+                        res.redirect('/crisis/'+crisis.id+"/questions/export");
+                        res.end();
+                    } else {
+                        console.log('s3 successful put');
+                        req.flash('info', 'Export done successfully');
+                        res.redirect('/crisis/'+crisis.id+"/questions/export");
+                        res.end();
+                    }
+                });
+            }
+            else{
+                var file_path = 'static/backups/questions/'+file_name;
+                fs.writeFile(file_path, string, function(err){
+                    if (err) console.log(err);
+                    req.flash('info', 'Export saved successfully.');
+                    res.redirect('/crisis/'+crisis.id+"/questions/export");
+                    res.end();
+                });
+            }
+        });
+    });
+}
+exports.exportQuestions = [role.can('export questions'), exportQuestions];
+function getQuestionsJson(crisis, callback){
+    crisis.getQuestions({}, function(err, questions){
+        if (err) {
+            callback(err);
+        }
+        else{
+            var questions_json = {};
+            for(var key in questions){
+                questions_json[key] = {
+                    "title": questions[key].post.title,
+                    "text": questions[key].post.text,
+                    "targetImage": questions[key].post.targetImage,
+                    "targetVideoUrl": questions[key].post.targetVideoUrl,
+                    "targetLocality": questions[key].post.targetLocality,
+                    "targetLat": questions[key].targetLat,
+                    "targetLong": questions[key].targetLong,
+                    "tags": questions[key].post.tags.join(),
+                    "targetDateTimeOccurred": questions[key].targetDateTimeOccurred,
+                    "automaticLocation": questions[key].post.automaticLocation,
+                    "user_id": questions[key].post.user_id
+                }
+            }
+            callback(null, questions_json);
+        }
+    });
+}
+function getExportsFileName(prefix, crisis_id){
+    var now = new Date();
+    var export_file_name = prefix + crisis_id + " (" + now.toISOString().replace(/:/g,"_") + ").json";
+    return export_file_name;
+}
 function JsonObjToArray(jsonObj){
     var result = [];
 

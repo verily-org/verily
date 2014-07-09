@@ -157,15 +157,22 @@
                         {% if userCan('create a crisis') %}
                             <li><a href="/crisis/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Crisis</a></li>
                         {% endif %}
-                    	{% if crisis %}
-                            {% if userCan('create a question') %}
-                                <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Question</a></li>
-                            {% endif %}
-                        {% endif %}
-                        {% if crisis %}
-                            {% if userCan('create multiple questions') %}
-                                <li><a href="/crisis/{{ crisis.id }}/questions/create"><span class="fa fa-plus-square"></span>&nbsp;<span class="sr-only">Add</span>Questions</a></li>
-                            {% endif %}
+                        {% if crisis && (userCan('create a question') || userCan('create multiple questions') || userCan('export questions')) %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Questions <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+
+                                    {% if userCan('create a question') %}
+                                        <li><a href="/crisis/{{ crisis.id }}/question/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Add</a></li>
+                                    {% endif %}
+                                    {% if userCan('create multiple questions') %}
+                                        <li><a href="/crisis/{{ crisis.id }}/questions/create"><span class="fa fa-plus-square"></span>&nbsp;<span class="sr-only">Add</span>Bulk</a></li>
+                                    {% endif %}
+                                    {% if userCan('export questions') %}
+                                        <li><a href="/crisis/{{ crisis.id }}/questions/export"><span class="fa fa-hdd-o"></span>&nbsp;<span class="sr-only">Exports</span>Exports</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
                         {% endif %}
 
                     </ul>

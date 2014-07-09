@@ -111,7 +111,7 @@ exports.registerView = function (req, res) {
 };
 
 exports.loginView = function (req, res) {
-    if (!req.user) {
+//    if (!req.user) {
         res.status(200);
         res.render('user/login', {
             page: {
@@ -120,12 +120,12 @@ exports.loginView = function (req, res) {
             error: req.flash('error'),
             info: req.flash('info')
         });
-    } else {
-        // If they are already logged in,
-        // don't let them log in again!
-        // This is also used when login to make the 'back' redirect behaviour work.
-        res.redirect('/');
-    }
+//    } else {
+//        // If they are already logged in,
+//        // don't let them log in again!
+//        // This is also used when login to make the 'back' redirect behaviour work.
+//        res.redirect('/');
+//    }
 
 };
 

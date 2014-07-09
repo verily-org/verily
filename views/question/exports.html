@@ -1,0 +1,24 @@
+{% extends '../layout.html' %}
+
+{% block content %}
+    <div class="row">
+        <h2>Question exports for crisis: "{{ crisis.post.title }}"</h2>
+    </div>
+    <div class="row">
+    <h3>Current exports list</h3>
+    </div>
+
+    {% if question_exports %}
+        <table class="table table-responsive table-bordered">
+        {% for question_export in question_exports | reverse %}
+            <tr><td>{{ question_export }}</td></tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <div class="alert alert-info">No export files at the moment</div>
+    {% endif %}
+    <form method="post" action="/crisis/{{ crisis.id }}/questions/export">
+        <button class="btn btn-primary">Export Current Questions</button>
+    </form>
+
+{% endblock %}
