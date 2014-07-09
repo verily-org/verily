@@ -561,7 +561,11 @@ var exportQuestionsView = function(req, res){
         if (mode.isHeroku()) {
             s3.list(export_files_prefix, function(err, data){
                 if (err) {console.log(err);}
-                renderExportView(res, crisis, data, user);
+                var files = [];
+                for(var i in data.Contents){
+                    files.push(data.Contents[i].Key);
+                }
+                renderExportView(res, crisis, files, user);
             });
         }
         else{
