@@ -29,6 +29,7 @@
     "passport": "0.2.0",
     "passport-local": "0.1.6",
     "passport-facebook": "1.0.2",
+    "passport-twitter": "1.0.2",
     "connect-flash": "0.1.1",
     "bcrypt-nodejs": "0.0.3",
     "connect-roles": "3.0.2",
