@@ -35,11 +35,11 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
 <div class="question page-header clearfix">
     <div class="row">
         {% if (question.targetLat and question.targetLong) and (question.post.targetImage) %}
-        {% set questionLeftSideCols = 5 %}
+        {% set questionLeftSideCols = 12 %}
         {% set questionRightSideIndiv = 6 %}
         {% elif (question.targetLat and question.targetLong) or (question.post.targetImage) %} 
-        {% set questionLeftSideCols = 8 %}
-        {% set questionRightSideIndiv = 12 %}
+        {% set questionLeftSideCols = 12 %}
+        {% set questionRightSideIndiv = 6 %}
         {% else %}
         {% set questionLeftSideCols = 12 %}
         {% endif %}
@@ -117,7 +117,6 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 
             </div>
             
-            {% if questionLeftSideCols !== 12 %}
             <div class="col-sm-{{ 12 - questionLeftSideCols }} question-image-and-map-ctr">
                 <div class="row">
                     {% if question.post.targetImage %}
@@ -137,7 +136,6 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 <!-- / .row -->
             </div>
             <!-- / .question-image-and-map-ctr -->
-            {% endif %}
             
             
         </div>
