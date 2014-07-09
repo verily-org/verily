@@ -158,14 +158,16 @@ exports.newProvisionalUser = function(req, callback) {
             } else {
                 var user = users[0];
                 
-                req.logIn(user, function (err) {
-                    if (err) {
-                        console.log('error in logging in provisional user:');
-                        console.log(err);
-                    }
-                    callback(err, user);
+                user.save(function(err) {
+                    req.logIn(user, function (err) {
+                        if (err) {
+                            console.log('error in logging in provisional user:');
+                            console.log(err);
+                        }
+                        callback(err, user);
+                    });
                 });
-                
+
             }
         
         

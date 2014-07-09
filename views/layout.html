@@ -90,7 +90,7 @@
         {% endif %}
     </head>
     <body class="{% if path === '/' %} hero-cover{% endif %}">
-        {% if user.type === 'provisional' %}
+        {% if userIs('provisional user') %}
         <!-- provisional user confirm login modal -->
         <div class="modal fade" id="provisionalUserConfirmLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog">
@@ -179,7 +179,7 @@
                         {% if userCan('create a crisis') %}
                             <li><a href="/crisis/create"><span class="fa fa-plus"></span>&nbsp;<span class="sr-only">Add</span>Crisis</a></li>
                         {% endif %}
-                        {% if crisis && (userCan('create a question') || userCan('create multiple questions') || userCan('export questions')) %}
+                        {% if crisis and (userCan('create a question') or userCan('create multiple questions') or userCan('export questions')) %}
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Questions <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
@@ -200,15 +200,16 @@
                     </ul>
                     <ul class="nav navbar-nav pull-right">
                         {% if user %}
+
                             <li>
-                                <a href="/user" {% if user.type === 'provisional' %}title="provisional username"{% endif %}>
-                                    {% if user.type === 'provisional' %}
+                                <a href="/user" {% if userIs('provisional user') %}title="provisional username"{% endif %}>
+                                    {% if userIs('provisional user') %}
                                     <i class="fa fa-ticket"></i>
                                     {% endif %}
-                                    {{ user.name }}
+                                    {{ user.name or user }}
                                 </a>
                             </li>
-                            {% if user.type === 'provisional' %}
+                            {% if userIs('provisional user') %}
                             <li>
                                 <a href="/register">
                                     Signup
@@ -220,8 +221,8 @@
 								<li><a href="/roles">Assign Roles</a></li>
 								<li><a href="/adminAnswers">All Answers</a></li>
 							{% endif %}
-                            {% if user.type !== 'provisional' %}
-                            <li><a href="/logout">Logout</a></li>
+                            {% if !userIs('provisional user') %}
+                            <li><a href="/logout">Logout </a></li>
                             {% endif %}
                         {% elseif challengePublished or (path !== '/' and path !== '/about') %}
                             <li><a href="/register">Signup</a></li>
