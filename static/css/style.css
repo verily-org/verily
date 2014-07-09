@@ -4,7 +4,8 @@ body {
     font-weight: 300;
 }
 
-.fa {
+.fa,
+.logo {
   text-rendering: auto;
 }
 

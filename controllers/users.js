@@ -94,7 +94,6 @@ exports.logoutDone = function (req, res) {
 };
 
 exports.registerView = function (req, res) {
-    if (!req.user) {
         res.status(200);
         res.render('user/register', {
             page: {
@@ -102,16 +101,11 @@ exports.registerView = function (req, res) {
             },
             error: req.flash('error'),
             info: req.flash('info')
-        });
-    } else {
-        // Logged out or signed up from canonical signup form (rather than an inline form)
-        res.redirect('/');
-    }
-    
+        });    
 };
 
 exports.loginView = function (req, res) {
-//    if (!req.user) {
+    if (!req.user) {
         res.status(200);
         res.render('user/login', {
             page: {
@@ -120,12 +114,16 @@ exports.loginView = function (req, res) {
             error: req.flash('error'),
             info: req.flash('info')
         });
-//    } else {
-//        // If they are already logged in,
-//        // don't let them log in again!
-//        // This is also used when login to make the 'back' redirect behaviour work.
-//        res.redirect('/');
-//    }
+        
+    } else if (req.query.via === '/logout') {
+        // logout-login cycle.
+        // log them out (/logout), then take them to login view (/login)
+        res.redirect('/logout?next=/login');
+    } else {
+        // If they are already logged in,
+        // don't let them log in again.
+        res.redirect('/crisis');
+    }
 
 };
 
@@ -177,16 +175,29 @@ exports.login = passport.authenticate('local-login', {
     failureFlash : true // allow flash messages
 });
 
-exports.logout = function (req, res) {
+// If next is 'login', the session will be regnerated
+exports.logout = function(req, callback) {
+    // Destroy PassportJS login session.
     req.logout();
     
-    // Clear the session as PassportJS only clears login session, 
-    // namespaced under session.user, and not the entire session state for the user.
+    // Now clear the whole session as PassportJS only clears login session, 
+    // namespaced under session.user, and not the entire session state for the user.        
+    // Destroy the session.
     req.session.destroy(function (err) {
         if (err) {
             console.log(err);
         }
-        res.redirect('/logout-done');
+        callback(err);
+    });
+};
+
+exports.logoutView = function (req, res) {
+    exports.logout(req, function(err) {
+        if (req.query.next === '/login') {
+            res.redirect('/login');
+        } else {
+            res.redirect('/logout-done');
+        }
     });
 };
 
