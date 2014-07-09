@@ -368,6 +368,9 @@ fa.breadcrumb {
     margin-top: 1em;
 }
 
+.btn-danger {
+    color: #ffffff !important;
+}
 
 
 .text-action-button {
