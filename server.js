@@ -23,6 +23,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         log = require('./log'),
         ORMSessionStore = require('./orm-session-store')(express),
         mode = require('./mode'),
+        common = require('./static/js/common'),
         controllers = {},
         heroku,
         syncedModels,
@@ -132,6 +133,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 models.User = db.models.user;
                 models.Local = db.models.local;
                 models.Facebook = db.models.facebook;
+                models.Twitter = db.models.twitter;
                 models.Impression = db.models.impression;
                 models.Referral = db.models.referral;
                 models.Session = db.models.session;
@@ -148,6 +150,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 models.Comment.sync(function () {console.log("Comment synced")});
                 models.Rating.sync(function () {console.log("Rating synced")});
                 models.Facebook.sync(function () {console.log("Facebook synced")});
+                models.Twitter.sync(function () {console.log("Twitter synced")});
                 models.Impression.sync(function () {console.log("Impression synced")});
                 models.Referral.sync(function () {console.log("Referral synced")});
                 models.Session.sync(function () {console.log("Session synced")});
@@ -346,15 +349,11 @@ module.exports = function (suppressLogs, dbTestUrl) {
             next();
         }
     };
-    
-    
-    // Start everything up once the models have synced.
-    emitter.on('model-synced', function() {
-        startUp();
-    });
+        
+
     
     // Start everything up.
-    function startUp() {
+    var startUp = function() {
         
         createAdmin(syncedModels.User, syncedModels.Local);
         
@@ -397,7 +396,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         app.use(analytics);
         
         app.use(app.router);
-
+        
 
     //    app.listen();
     //
@@ -407,7 +406,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
     //
     //    // Configure the routes.
         router(app, controllers);
-    
+        
     
         // New referral code being registered by a click on a sharing button.
         // Once referral code has been registered (PUT), it cannot be PUT again.
@@ -472,7 +471,40 @@ module.exports = function (suppressLogs, dbTestUrl) {
             }
         
         });
+        
+        
+        // The last thing is error handling.
+        app.use(function(req, res, next) {
+            if (common.challengePublished()) {
+                res.status(404);
+                res.render('error/404', {
+                    page: {
+                        title: 'Not found'
+                    },
+                    user: req.user
+                });
+            } else {
+                res.redirect('/');
+                res.end();
+            }
+
+        });
     
+        app.use(function(err, req, res, next) {
+            if (common.challengePublished()) {
+                res.send(500);
+                res.render('error/500', {
+                    page: {
+                        title: 'Server error'
+                    },
+                    user: req.user
+                });
+            } else {
+                res.redirect('/');
+                res.end();
+            }
+
+        });
 
     
         http.createServer(app).listen(app.get('port'), function(){
@@ -480,6 +512,11 @@ module.exports = function (suppressLogs, dbTestUrl) {
         });
         
     }
+    
+    // Start everything up once the models have synced.
+    emitter.on('model-synced', function() {
+        startUp();
+    });
 
     //process.on('SIGINT', function () {
     //    console.logger.info('Server stopped.');

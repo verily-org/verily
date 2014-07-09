@@ -94,6 +94,8 @@ exports.logoutDone = function (req, res) {
 };
 
 exports.registerView = function (req, res) {
+    if (!req.user || req.user.type === 'provisional') {
+        // Not logged in or using provisional user account.
         res.status(200);
         res.render('user/register', {
             page: {
@@ -101,7 +103,11 @@ exports.registerView = function (req, res) {
             },
             error: req.flash('error'),
             info: req.flash('info')
-        });    
+        });
+    } else {
+        // Logged in, redirect to crisis.
+        res.redirect('/crisis');
+    }  
 };
 
 exports.loginView = function (req, res) {
@@ -152,14 +158,16 @@ exports.newProvisionalUser = function(req, callback) {
             } else {
                 var user = users[0];
                 
-                req.logIn(user, function (err) {
-                    if (err) {
-                        console.log('error in logging in provisional user:');
-                        console.log(err);
-                    }
-                    callback(err, user);
+                user.save(function(err) {
+                    req.logIn(user, function (err) {
+                        if (err) {
+                            console.log('error in logging in provisional user:');
+                            console.log(err);
+                        }
+                        callback(err, user);
+                    });
                 });
-                
+
             }
         
         
@@ -205,10 +213,99 @@ exports.facebookRedirect = passport.authenticate('facebook', {
     scope: 'email'
 });
 
-exports.facebookAuthenticate = passport.authenticate('facebook', {
-    successRedirect : 'back', // redirect to the secure profile section
-    failureRedirect : '/login', // redirect back to the signup page if there is an error
-});
+exports.facebookAuthenticate = function (req, res) {
+    passport.authenticate('facebook', function (err, user, info) {
+        if (err || !user) {
+            req.flash('error', 'There has been an error');
+            res.redirect('/register');
+        } else {
+            if (!user.name) {
+                req.session.user = user;
+                req.flash('info', 'You have registered successfully with Facebook. Please choose your Verily username.');
+                res.redirect('/chooseUsername');        
+            } else {
+                req.logIn(user, function (err) {
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);
+                    } else {
+                        res.redirect('back');        
+                    }
+                });
+            }
+        }
+    })(req, res);
+};
+
+exports.twitterRedirect = passport.authenticate('twitter');
+
+exports.twitterAuthenticate = function (req, res) {
+    passport.authenticate('twitter', function (err, user, info) {
+        if (err || !user) {
+            req.flash('error', 'There has been an error');
+            res.redirect('/register');
+        } else {
+            if (!user.name) {
+                req.session.user = user;
+                req.flash('info', 'You have registered successfully with Twitter. Please choose your Verily username.');
+                res.redirect('/chooseUsername');        
+            } else {
+                req.logIn(user, function (err) {
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);
+                    } else {
+                        res.redirect('back');        
+                    }
+                });
+            }
+        }
+    })(req, res);
+};
+
+var canChooseUsername = role.can('choose a username');
+
+var chooseUsernameViewf = function (req, res) {
+    res.render('user/choose-username', {
+        page: {
+            title: 'Choose Username'
+        },
+        info: req.flash('info'),
+        error: req.flash('error')
+    }); 
+};
+
+exports.chooseUsernameView = [canChooseUsername, chooseUsernameViewf];
+
+var chooseUsernamef = function (req, res) {
+    if (!req.body.username) {
+        req.flash('error', 'Please choose a username! You won\'t be logged in until you choose a username');
+        res.redirect('/chooseUsername');
+    }
+    var userId = req.session.user.id;
+    req.models.User.get(userId, function (err, user) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);  
+        } else {
+            user.name = req.body.username;
+            user.save(function (err) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                } else {
+                    req.logIn(user, function (err) {
+                        if (err) {
+                            generic.genericErrorHandler(req, res, err);
+                        } else {
+                            delete req.session.user;
+                            res.redirect('/');
+                        }
+                    });
+                }
+            }); 
+        }
+    });       
+};
+
+exports.chooseUsername = [canChooseUsername, chooseUsernamef];
+
 
 var isAdmin = generic.isAdmin();
 

@@ -50,10 +50,14 @@ exports.genericErrorHandler = function (req, res, err) {
         err = {};
     }
     if (err.code === 2) {
+        // res.redirect('/400');
+        // res.end();
         res.status(404);
         res.end('Error 404: Not found');
         console.r.error(req, 404, err);
     } else {
+        // res.redirect('/500');
+        // res.end();
         res.status(500);
         res.end('Error 500: Internal Server Error');
         console.r.error(req, 500, err);

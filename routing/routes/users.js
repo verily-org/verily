@@ -16,6 +16,12 @@ exports.route = function (app, controllers, doc) {
     route('get', '/auth/facebook', 'facebookRedirect', 'Authenticate Facebook user');
     route('get', '/auth/facebook/callback', 'facebookAuthenticate', 'Authenticate Facebook user');
 
+    route('get', '/auth/twitter', 'twitterRedirect', 'Authenticate Twitter user');
+    route('get', '/auth/twitter/callback', 'twitterAuthenticate', 'Authenticate twitter user');
+
+    route('get', '/chooseUsername', 'chooseUsernameView', 'View for facebook and twitter users to choose their username');
+    route('post', '/username', 'chooseUsername', 'Assign a username for fb and twitter user'); 
+
     route('get', '/roles', 'getRoles', 'Get page for user roles');
     route('post', '/roles', 'changeRoles', 'Change the roles of the users');
     route('get', '/adminAnswers', 'getAdminAnswers', 'Get all the answers for the admin page');

@@ -277,10 +277,45 @@ fa.breadcrumb {
     margin-right: 0.5em;
 }
 
-
-.btn-danger {
-    color: #ffffff !important;
+.navbar-default .navbar-toggle {
+    background-color: transparent;
+    border-color: transparent;
 }
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
+}
+
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.hero-cover .navbar-default .navbar-toggle {
+    margin-top: 2em;
+}
+
+.hero-cover .navbar-default .navbar-collapse {
+    border-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.hero-cover .navbar-default ul.navbar-nav li a {
+    line-height: 60px;
+}
+
+.hero-cover .navbar-default {
+    margin-bottom: 3.85em;
+}
+
+@media (min-width: 768px) {
+    .hero-cover .navbar-default {
+        margin-bottom: 3em;
+    }
+}
+
 
 
 .calendar-day {
@@ -333,6 +368,9 @@ fa.breadcrumb {
     margin-top: 1em;
 }
 
+.btn-danger {
+    color: #ffffff !important;
+}
 
 
 .text-action-button {
