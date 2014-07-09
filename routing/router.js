@@ -95,10 +95,6 @@ module.exports = function (app, controllers) {
                 // Run the routes and add to the documentation.
                 require('./' + p + '/' + filenames[i]).route(app, controllers, doc[moduleName]);
             }
-            app.get('*', function (req, res) {
-                res.status(400);
-                res.end('Bad Request');
-            });
             // Generate API docs and the demonstration shell script!
             if (enums.document) {
                 document();
