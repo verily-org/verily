@@ -190,7 +190,7 @@
             <div class="row">
         {% endif %}
         <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
-            <div onclick="location.href = '/crisis/{{ crisis.id }}/question/{{ question.id }}'" style="cursor:pointer"
+            <div data-href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}" style="cursor:pointer"
                  class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
                 <div class="panel-heading">
                         {% if question.post.targetLocality %}
@@ -261,6 +261,20 @@ var map, layer;
 
 map = map_init('map');
     $(function(){
+        var cntrlIsPressed = false;
+        $(document).keydown(function(event){
+            if(event.which=="17")
+                cntrlIsPressed = true;
+        });
+
+        $(document).keyup(function(){
+            cntrlIsPressed = false;
+        });
+        $('.verily-panel').click(function(){
+            if(!cntrlIsPressed){
+                location.href=$(this).data('href');
+            }
+        });
         $(".mark-important-crisis-btn").click(function(){
             var button = $(this);
             $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',

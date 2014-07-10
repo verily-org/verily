@@ -300,6 +300,7 @@ function oneQuestionResponse(req, res, crisis, question, user, refcodes){
         },
         user: user,
         refcodes: refcodes,
+        info: req.flash('info'),
         path: req.path
     });
 }
