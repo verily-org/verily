@@ -102,7 +102,7 @@ var new_questions = function (req, res) {
                         title: 'Add multiple questions'
                     },
                     crisis: crisis,
-                    error: 'Unable to open file on URL: "' + file + '"'
+                    error: 'Unable to open file with key: "' + key + '"'
                 });
                 return;
             }
