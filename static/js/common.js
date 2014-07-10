@@ -263,6 +263,6 @@ var secondDefault = exports.secondDefault = common.secondDefault = function() {
 }
 
 var properUser = exports.properUser = common.properUser = function(req) {
-    return (req.user.type !== 'provisional' || process.env.BLOCK_PROVISIONAL_USERS === false) && req.user.active;
+    return (req.user.type !== 'provisional' || process.env.BLOCK_PROVISIONAL_USERS == false) && req.user.active;
 }
 
