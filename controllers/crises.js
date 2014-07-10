@@ -154,7 +154,9 @@ var getOne = function (req, res) {
                                     questions: questions,
                                     page: {
                                         title: crisis.post.title
-                                    }
+                                    },
+                                    info: req.flash('info'),
+                                    error: req.flash('error')
                                 };
                                 
                                 if (req.user) {

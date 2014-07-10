@@ -462,6 +462,7 @@ tweetButton.dataset.counturl = window.location.origin + '{{ path }}';
 tweetButton.dataset.text = questionTitle;
 tweetButton.dataset.hashtags = twitterCampaigner.hashtags;
 
+var facebookShareButton = document.getElementById('facebook-share-button');
 
 var emailButton = document.getElementById('button-share-question-email');
 
@@ -503,6 +504,15 @@ twttr.ready(function (twttr) {
   });
 });
 
+facebookShareButton.addEventListener('click', function(e) {
+	intent('facebook');
+    FB.ui({
+      method: 'share',
+      href: refUrlFacebook,
+    }, function(response){
+        
+    });
+});
 
 emailButton.addEventListener('click', function(e) {
     intent('email');
@@ -514,18 +524,6 @@ linkButton.addEventListener('click', function(e) {
     
     document.getElementById('field-share-question-link').innerHTML = refUrlLink;
     intent('link');
-});
-</script>
-
-<script type="text/javascript">
-var facebookShareButton = document.getElementById('facebook-share-button');
-facebookShareButton.addEventListener('click', function(e) {
-    FB.ui({
-      method: 'share',
-      href: refUrlFacebook,
-    }, function(response){
-        
-    });
 });
 </script>
 

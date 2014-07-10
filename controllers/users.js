@@ -12,6 +12,7 @@ assignedPoints = require('../points.json');
 require('../lib/passport')(passport);
 
 var smtpTransport = config.mailer;
+var redirectUrl = '/';
 var trueValue;
 var falseValue;
 if (mode.isHeroku()) {
@@ -71,11 +72,25 @@ exports.profile = function (req, res) {
 };
 
 //Posts a new user
-exports.register = passport.authenticate('local-register', {
-    successRedirect : 'back', // redirect to the page they were on
-    failureRedirect : '/register', // redirect back to the signup page if there is an error
-    failureFlash : true // allow flash messages
-});
+exports.register = function (req, res) {
+    passport.authenticate('local-register', function (err, user, info) {
+        if (err || !user) {
+            res.redirect('/register');
+        } else {
+            req.logIn(user, function (err) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                } else {
+                    if (req.session.redirectUrl) {
+                        res.redirect(req.session.redirectUrl);   
+                    } else {
+                        res.redirect('/');    
+                    }
+                }
+            });
+        }
+    })(req, res);
+};
 
 exports.logoutDone = function (req, res) {
     if (!req.user) {
@@ -112,6 +127,9 @@ exports.registerView = function (req, res) {
 
 exports.loginView = function (req, res) {
     if (!req.user) {
+        if (!req.session.redirectUrl) {
+            req.session.redirectUrl = redirectUrl;
+        }
         res.status(200);
         res.render('user/login', {
             page: {
@@ -177,16 +195,36 @@ exports.newProvisionalUser = function(req, callback) {
 
 };
 
-exports.login = passport.authenticate('local-login', {
-    successRedirect : 'back', // redirect to the page they were on
-    failureRedirect : '/login', // redirect back to the signup page if there is an error
-    failureFlash : true // allow flash messages
-});
+exports.login = function (req, res) {
+    passport.authenticate('local-login', function (err, user, info) {
+        if (err || !user) {
+            res.redirect('/login');
+        } else {
+            req.logIn(user, function (err) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                } else {
+                    if (req.session.redirectUrl) {
+                        res.redirect(req.session.redirectUrl);   
+                    } else {
+                        res.redirect('/');    
+                    }
+                }
+            });
+        }
+    })(req, res);
+};
 
 // If next is 'login', the session will be regnerated
 exports.logout = function(req, callback) {
     // Destroy PassportJS login session.
     req.logout();
+    if (req.query.next === '/login') {
+        redirectUrl = req.session.redirectUrl;    
+    } else {
+        redirectUrl = '/';
+    }
+    
     
     // Now clear the whole session as PassportJS only clears login session, 
     // namespaced under session.user, and not the entire session state for the user.        
@@ -228,7 +266,11 @@ exports.facebookAuthenticate = function (req, res) {
                     if (err) {
                         generic.genericErrorHandler(req, res, err);
                     } else {
-                        res.redirect('back');        
+                        if (req.session.redirectUrl) {
+                            res.redirect(req.session.redirectUrl);   
+                        } else {
+                            res.redirect('/');    
+                        }
                     }
                 });
             }
@@ -240,6 +282,7 @@ exports.twitterRedirect = passport.authenticate('twitter');
 
 exports.twitterAuthenticate = function (req, res) {
     passport.authenticate('twitter', function (err, user, info) {
+        console.log(req.session);
         if (err || !user) {
             req.flash('error', 'There has been an error');
             res.redirect('/register');
@@ -253,7 +296,11 @@ exports.twitterAuthenticate = function (req, res) {
                     if (err) {
                         generic.genericErrorHandler(req, res, err);
                     } else {
-                        res.redirect('back');        
+                        if (req.session.redirectUrl) {
+                            res.redirect(req.session.redirectUrl);   
+                        } else {
+                            res.redirect('/');    
+                        }       
                     }
                 });
             }
@@ -303,7 +350,11 @@ var chooseUsernamef = function (req, res) {
                                         generic.genericErrorHandler(req, res, err);
                                     } else {
                                         delete req.session.user;
-                                        res.redirect('/');
+                                        if (req.session.redirectUrl) {
+                                            res.redirect(req.session.redirectUrl);   
+                                        } else {
+                                            res.redirect('/');    
+                                        }
                                     }
                                 });
                             }
