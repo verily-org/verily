@@ -92,22 +92,28 @@ var new_questions = function (req, res) {
         if (err) throw err;
 
         var fs = require('fs');
-        var file = req.body.file;
+        var key = req.body.key;
 
-        fs.readFile(file, function(err, data){
+        s3.get(key, function(err, data){
             if (err) {
-                console.error('File read error: ' + err);
+                console.log('error in getting from S3:');
+                console.log(err);
                 res.render('question/createMultiple', {
                     page: {
                         title: 'Add multiple questions'
                     },
                     crisis: crisis,
-                    error: 'Unable to open file on URL: "' + file + '"'
+                    error: 'Unable to get file with key: "' + key + '"'
                 });
                 return;
             }
-            var data = JSON.parse(data);
-            async.eachSeries(data.questions,
+                        
+            // Get the string (UTF-8) encoding of the data.
+            var buffer = data.Body;
+            var string = buffer.toString('utf8');
+            var json = JSON.parse(string);
+            
+            async.eachSeries(json.questions,
                 function(question, callback){
                     //Prepare data
                     if(question.targetDateTimeOccurred){
@@ -658,7 +664,7 @@ function getQuestionsJson(crisis, callback){
 }
 function getExportsFileName(prefix, crisis_id){
     var now = new Date();
-    var export_file_name = prefix + crisis_id + " (" + now.toISOString().replace(/:/g,"_") + ").json";
+    var export_file_name = prefix + crisis_id + "-" + now.toISOString().replace(/[:T]/g,"-") + ".json";
     return export_file_name;
 }
 function JsonObjToArray(jsonObj){

@@ -16,10 +16,10 @@
     <form id="create-question-bash" class="post-form" role="form" action="/crisis/{{ crisis.id }}/questions/create" method="POST" enctype="multipart/form-data">
         <!-- <input type="hidden" name="_method" value="POST"> -->
         <input type="hidden" id="form-question-type" name="type">
-        <label for="questions-file-url">Url to File</label>
-        <input id="questions-file-url" type="text" class="form-control"
-               placeholder="Full URL to JSON file (example on questions-data.json)"
-               name="file" />
+        <label for="questions-file-key">Path to JSON file on S3</label>
+        <input id="questions-file-key" type="text" class="form-control"
+               placeholder="Key to JSON file, beginning with 'backups/'"
+               name="key" />
     <br/>
         <button id="submit" type="submit" class="btn btn-primary">Submit</button>
         <a href="../" class="btn btn-default pull-right">Cancel</a>
