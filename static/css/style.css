@@ -560,8 +560,14 @@ fa.breadcrumb {
 .crisis-question-metric {
     padding-left: 0;
     padding-right: 5px;
-}
 
+}
+.crisis-question-metric .success{
+    color:grey !important;
+}
+.crisis-question-metric .danger{
+    color:grey !important;
+}
 .success {
     color: #5cb85c;
 }
