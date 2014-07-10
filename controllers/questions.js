@@ -92,9 +92,9 @@ var new_questions = function (req, res) {
         if (err) throw err;
 
         var fs = require('fs');
-        var file = req.body.file;
+        var key = req.body.key;
 
-        fs.readFile(file, function(err, data){
+        s3.get(key, function(err, data){
             if (err) {
                 console.error('File read error: ' + err);
                 res.render('question/createMultiple', {
