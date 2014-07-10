@@ -106,8 +106,8 @@ var new_questions = function (req, res) {
                 });
                 return;
             }
-            var data = JsonObjToArray(JSON.parse(data));
-            async.eachSeries(data,
+            var data = JSON.parse(data);
+            async.eachSeries(data.questions,
                 function(question, callback){
                     //Prepare data
                     if(question.targetDateTimeOccurred){
@@ -635,8 +635,9 @@ function getQuestionsJson(crisis, callback){
         }
         else{
             var questions_json = {};
+            questions_json.questions = [];
             for(var key in questions){
-                questions_json[key] = {
+                questions_json.questions.push( {
                     "title": questions[key].post.title,
                     "text": questions[key].post.text,
                     "targetImage": questions[key].post.targetImage,
@@ -648,7 +649,7 @@ function getQuestionsJson(crisis, callback){
                     "targetDateTimeOccurred": questions[key].targetDateTimeOccurred,
                     "automaticLocation": questions[key].post.automaticLocation,
                     "user_id": questions[key].post.user_id
-                }
+                });
             }
             callback(null, questions_json);
         }
