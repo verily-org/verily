@@ -13,10 +13,79 @@ var common = require('../static/js/common');
 var userController = require('./users');
 var role = require('../lib/roles').user;
 
+var words;
+var relevantQuestions = [];
+
 // Enables discovery of questions – this is the questions spotlight.
 exports.index = function (req, res) {
     res.redirect('/');
     res.end();
+};
+
+var getQuestionRelevance = function (question, cb) {
+    var word;
+    var relevance = 0;
+    // measure the relevenace of a question to the search text
+    // similarities with the tags and locality are more important than text ant title.
+    for (var i = 0; i < words.length; i++) {
+        word = words[i];
+        if (~question.post.title.toLowerCase().indexOf(word)) relevance++;
+        if (~question.post.text.toLowerCase().indexOf(word)) relevance++;
+        if (~question.post.tags.indexOf(word)) relevance += 3;
+        if (~question.post.targetLocality.toLowerCase().indexOf(word)) relevance += 3;
+    }
+    if (relevance > 0) {
+        question.relevance = relevance;
+        relevantQuestions.push(question);
+    }
+    cb();
+};
+
+//Search Questions
+exports.searchQuestions = function (req, res) {
+    words = req.body.search.toLowerCase().split(' ');
+    req.models.Question.find({}, function (err, questions) {
+        if (err) {
+            console.log(err);
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            if (questions.length > 0) {
+                async.each(questions, getQuestionRelevance, function (err) {
+                    if (relevantQuestions.length > 0) {
+                        async.each(relevantQuestions, generic.load_question_extra_fields, function (err) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err);  
+                            } else {
+                                relevantQuestions.forEach(function(question) {
+                                    var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
+                                    question.relativeCreatedDate = relativeCreatedDate;
+                                });
+                                var questionsTmp = relevantQuestions;
+                                relevantQuestions = [];
+
+                                res.render('question/search', {
+                                    page: {
+                                        title: 'Search Questions'
+                                    },
+                                    info: req.flash('info'),
+                                    error: req.flash('error'),
+                                    questions: questionsTmp
+                                });
+                            }
+                        });
+                    } else {
+                        req.flash('info', 'No matches were found!');
+                        res.redirect('back');
+                    }    
+                });
+
+                    
+            } else {
+                req.flash('info', 'No matches were found!');
+                res.redirect('back'); 
+            }
+        }
+    });
 };
 
 

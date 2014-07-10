@@ -1,0 +1,144 @@
+{% extends '../layout.html' %}
+{% import '../macros/_generic.html' as generic_macro %}
+
+
+{% block content %}
+
+<h2 class="title">
+	Search Results
+</h2>
+
+<div class="row">
+    <div class="pull-right">
+        <label for="select_filter_questions">View questions:</label>
+        <select id="select_filter_questions">
+			<option value="Relevant">Relevance (most relevant first)</option>
+            <option value="Recent">Recent (most recent first)</option>
+            <option value="Popular">Popular (most popular first)</option>
+        </select>
+    </div>
+</div>
+
+<div class="row question-answers crisis-questions">
+    {% for question in questions | reverse %}
+        <div class="col-sm-4 crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}" data-relevance="{{ question.relevance }}">
+            <div class="panel panel-default question-answer crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
+                    <div class="panel-heading">
+                            {% if question.post.targetLocality %}
+                                <div class="">
+                                   <i class="fa fa-map-marker"></i>
+                                   <span class="sr-only">Locality:</span>
+                                   <span id="question-locality">{{ question.post.targetLocality }}</span>
+                                </div>
+                            {% endif %}
+
+                        <h3 class="panel-title">
+                            <a href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
+                                {{ question.post.title }}
+                            </a>
+                        </h3>
+                        <div class="crisis-question-metrics">
+                            <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> {{ question.importanceCount }}</span>
+
+                            <span class="label metric crisis-question-metric" title="Answers that state this is true"><i class="fa fa-check success"></i> <span class="success">{{ question.supportedAnswerCount }}</span></span>
+
+                            <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">{{ question.rejectedAnswerCount }}</span></span>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+
+
+                        {{ question.post.text }}
+
+
+
+                        {% if question.post.targetVideoUrl %}
+                            <div id="video-wrapper-{{ question.post.id }}" class="video-wrapper video-wrapper-ajax"
+                                 data-video-url="{{ question.post.targetVideoUrl }}">
+                                <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+                                <div class="video-container" style="display: none"></div>
+                                <div class="video-error-message alert alert-warning" style="display: none">
+                                    Video link: <a href="{{ question.post.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.post.targetVideoUrl }}</a>.
+                                </div>
+                            </div>
+                        {% elseif question.post.targetImage %}
+                            <div class="row">
+                                <img src="{{ question.post.targetImage }}" class="img-responsive center-block">
+                            </div>
+                        {% endif %}
+                    
+                            <div class="">
+                                <i class="fa fa-bullhorn"></i>
+                                <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
+                                by {{ question.post.author }}
+                            </div>
+
+                    </div>
+                </div>
+
+            
+            
+            
+        </div>
+        <!-- / .col-sm-4 -->
+    {% endfor %}
+</div>
+
+{{ generic_macro.video_html_script() }}
+{{ generic_macro.rearrange_children_script() }}
+
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+    <script src="/static/js/maps.js"></script>
+<script type="text/javascript">
+var map, layer;
+
+map = map_init('map');
+    $(function(){
+        $(".mark-important-crisis-btn").click(function(){
+            var button = $(this);
+            $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',
+                    function(data){
+                        var crisis = data;
+                        update_markedImportant(crisis, button);
+                    }).fail(function(){
+                        show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
+                    });
+        });
+        $('#select_filter_questions').change(function(){
+            if($('#select_filter_questions').val() == "Recent"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return new Date($(b).data('date')) - new Date($(a).data('date'));
+                });
+
+            }
+            else if($('#select_filter_questions').val() == "Popular"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return $(b).data('popularity') - $(a).data('popularity') ;
+                });
+
+            }
+			else if($('#select_filter_questions').val() == "Relevant"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return $(b).data('relevance') - $(a).data('relevance') ;
+                });
+
+            }
+
+        });
+        if($('#select_filter_questions').prop("selectedIndex") != 0){
+            //trigger change if the initial selected index is not 0
+            $('#select_filter_questions').change();
+        }
+        {% if crisis.post.targetLat and crisis.post.targetLong %}
+        if(map_add_marker) map_add_marker(map,{{ crisis.post.targetLat }}, {{ crisis.post.targetLong }} );
+        {% endif %}
+
+    });
+
+    var update_markedImportant = function(crisis, element){
+        element.next('a.action-button-count').text(crisis.importanceCount);
+        element.addClass('active').addClass('disabled');
+    }
+</script>
+
+{% endblock %}

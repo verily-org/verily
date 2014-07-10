@@ -228,6 +228,16 @@
                             <li><a href="/register">Signup</a></li>
                             <li><a href="/login">Login</a></li>
                         {% endif %}
+						{% if challengePublished or (path !== '/' and path !== '/about')%}
+							<li>
+								<form action="/search" method="POST" class="navbar-form navbar-right" role="search">
+									<div class="form-group input-group-sm btn-group-sm">
+										<input type="text" class="form-control" placeholder="Search Questions" name="search" id="search">
+										<button class="btn" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+									</div>
+								</form>
+							</li>
+						{% endif %}
                     </ul>
 
                 </div>
