@@ -253,7 +253,7 @@ exports.twitterAuthenticate = function (req, res) {
                     if (err) {
                         generic.genericErrorHandler(req, res, err);
                     } else {
-                        res.redirect('back');        
+                        res.redirect('/');        
                     }
                 });
             }
