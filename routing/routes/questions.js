@@ -46,4 +46,5 @@ exports.route = function (app, controllers, doc) {
 
     route('head', specific, 'head', 'Head; Get headers for testing validity, accessibility, and recent modification');
 
+    route('get', '/tag/:tag', 'searchTag', 'Search for the specific tag');
 };

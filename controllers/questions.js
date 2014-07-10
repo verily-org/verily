@@ -13,8 +13,6 @@ var common = require('../static/js/common');
 var userController = require('./users');
 var role = require('../lib/roles').user;
 
-var words;
-var relevantQuestions = [];
 
 // Enables discovery of questions – this is the questions spotlight.
 exports.index = function (req, res) {
@@ -22,7 +20,7 @@ exports.index = function (req, res) {
     res.end();
 };
 
-var getQuestionRelevance = function (question, cb) {
+var getQuestionRelevance = function (words, relevantQuestions, question, cb) {
     var word;
     var relevance = 0;
     // measure the relevenace of a question to the search text
@@ -41,16 +39,14 @@ var getQuestionRelevance = function (question, cb) {
     cb();
 };
 
-//Search Questions
-exports.searchQuestions = function (req, res) {
-    words = req.body.search.toLowerCase().split(' ');
+var searchQuestionsByWords = function (req, res, words, relevantQuestions) {
     req.models.Question.find({}, function (err, questions) {
         if (err) {
             console.log(err);
             generic.genericErrorHandler(req, res, err);
         } else {
             if (questions.length > 0) {
-                async.each(questions, getQuestionRelevance, function (err) {
+                async.each(questions, getQuestionRelevance.bind(null, words, relevantQuestions), function (err) {
                     if (relevantQuestions.length > 0) {
                         async.each(relevantQuestions, generic.load_question_extra_fields, function (err) {
                             if (err) {
@@ -85,9 +81,25 @@ exports.searchQuestions = function (req, res) {
                 res.redirect('back'); 
             }
         }
-    });
+    });   
 };
 
+//Search Questions
+exports.searchQuestions = function (req, res) {
+    var words = req.body.search.toLowerCase().split(' ');
+    var relevantQuestions = [];
+    searchQuestionsByWords(req, res, words, relevantQuestions);
+};
+
+exports.searchTag = function (req, res) {
+    if (req.params.tag) {
+        var tag = [req.params.tag];
+        var relevantQuestions = [];
+        searchQuestionsByWords(req, res, tag, relevantQuestions);
+    } else {
+        res.redirect('/');
+    }
+};
 
 // Get all questions.
 exports.all = function (req, res) {
