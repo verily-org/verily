@@ -2,19 +2,21 @@
 var generic = require('./generic');
 var enums = require('../enums');
 var oembed = require('oembed');
+var common = require('../static/js/common');
 
 var async = require('async');
 
 var userController = require('./users');
 var role = require('../lib/roles').user;
 
-function oneAnswerResponse(res, crisis, question, answer, user) {
+function oneAnswerResponse(res, req, crisis, question, answer, user) {
     //Sort comments in reverse chronological order
     answer.comments.sort(function(a,b){return b.comment.date - a.comment.date;});
     res.render('evidence/one', {
         crisis: crisis,
         question: question,
         answer: answer,
+        properUser: common.properUser(req),
         page: {
             title: answer.post.title
         },
@@ -27,7 +29,7 @@ function oneAnswerResponse(res, crisis, question, answer, user) {
 var applyUserAndRespond = function(req, res, crisis, question, answer) {
     if (req.user) {
         // User is currently logged in.
-        oneAnswerResponse(res, crisis, question, answer, req.user);
+        oneAnswerResponse(res, req, crisis, question, answer, req.user);
     } else {
         // User is not currently logged in --
         // let's make them a provisional account
@@ -35,7 +37,7 @@ var applyUserAndRespond = function(req, res, crisis, question, answer) {
         userController.newProvisionalUser(req, function(err, user) {
             // Provisional user account created.
             // Respond.
-            oneAnswerResponse(res, crisis, question, answer, req.user);
+            oneAnswerResponse(res, req, crisis, question, answer, req.user);
         });   
     }
 };
@@ -298,7 +300,7 @@ var upvote = function (req, res) {
     });
 };
 
-exports.upvote = [role.can('view challenge pages'), upvote];
+exports.upvote = [role.can('upvote downvote'), upvote];
 
 var downvote = function (req, res) {
     generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
@@ -328,7 +330,7 @@ var downvote = function (req, res) {
     });
 };
 
-exports.downvote = [role.can('view challenge pages'), downvote];
+exports.downvote = [role.can('upvote downvote'), downvote];
 
 exports.getVideoHtml = function (req, res) {
     oembed.fetch(req.body.videoUrl, {}, function(err, result){

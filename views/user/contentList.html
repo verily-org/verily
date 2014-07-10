@@ -1,0 +1,38 @@
+{% set type = 'user' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+    <h2>Posts</h2>
+    {% if posts && posts | length > 0 %}
+        <table id="evidence-table" class="table table-responsive table-bordered">
+            <thead>
+                <th>title</th>
+                <th>text</th>
+                <th>date</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr {% if post.answer.show == false %}class="danger"{% endif %}>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.text }}</td>
+                        <td>{{ post.date | date('Y-m-d') }}</td>
+                        <td style="text-align: right">
+                            <a class="btn"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <script>
+            $(function(){
+                $('#evidence-table').dataTable({bPaginate: false});
+            })
+        </script>
+    {% else %}
+        <div class="alert alert-info">No evidence to show!</div>
+    {% endif %}
+
+{% endblock %}

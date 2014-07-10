@@ -317,7 +317,6 @@ function resetElement(target) {
 
 
 function initActionButtons() {
-    
     function displayQuestionTrueForm() {
         questionType.value = 'support';
 
@@ -361,12 +360,17 @@ function initActionButtons() {
     }
     
     $('#question-support').click(function(){
-        displayQuestionTrueForm();
+        if(!$(this).hasClass('user-required-action')){
+            displayQuestionTrueForm();
+        }
 
     });
-    
+
     $('#question-reject').click(function(){
-        displayQuestionFalseForm();
+        if(!$(this).hasClass('user-required-action')){
+            console.log('display question false form');
+            displayQuestionFalseForm();
+        }
     });
 
     $(".btn_markImportant").click(function(){

@@ -8,7 +8,7 @@
     {% if users && users | length > 0 %}
         <table id="user-table" class="table table-responsive table-bordered">
             <thead>
-                <th>Users</th>
+                <th>User</th>
                 <th>active</th>
                 <th># evidence</th>
                 <th># comments</th>
@@ -37,7 +37,7 @@
                                 <input type="hidden" name="user_id" value="{{ user.id }}">
                                 <button class="btn btn-danger">Hide Content</button>
                             </form>
-                            <a href="#" class="btn btn-default">Content List</a>
+                            <a href="/user/{{ user.id }}/userContentList" class="btn btn-default">Content List</a>
                         </td>
                     </tr>
                 {% endfor %}

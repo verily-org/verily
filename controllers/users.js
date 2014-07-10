@@ -533,8 +533,30 @@ var postBanUser = function (req, res) {
         }
     });
 };
-
 exports.postBanUser = [isAdmin, postBanUser];
+
+var getUserContentList = function (req, res) {
+    req.models.User.get(req.params.user_id, function (err, user) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            user.getPosts(function(err, posts){
+                if(err)generic.genericErrorHandler(req, res, err);
+                res.render('user/contentList', {
+                    page: {
+                        title: 'User Content List'
+                    },
+                    info: req.flash('info'),
+                    //user: req.user,
+                    posts: user.posts,
+                    comments: user.comments
+                });
+            });
+
+        }
+    });
+};
+exports.getUserContentList = [isAdmin, getUserContentList];
 
 
 exports.passChangeView = function (req, res) {

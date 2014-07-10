@@ -261,3 +261,8 @@ var minuteDefault = exports.minuteDefault = common.minuteDefault = function() {
 var secondDefault = exports.secondDefault = common.secondDefault = function() {
     return "Seconds";
 }
+
+var properUser = exports.properUser = common.properUser = function(req) {
+    return (req.user.type !== 'provisional' || process.argv.BLOCK_PROVISIONAL_USERS === false) && req.user.active;
+}
+

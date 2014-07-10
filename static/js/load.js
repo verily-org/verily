@@ -4,7 +4,6 @@ $(function(){
     // For: buttons and links which action requires a user
     // Prevents action and show a modal instead
     $('div').on('click','.user-required-action', function (e) {
-        
         var fragment = $(e.currentTarget).data('fragment');
         if(fragment != undefined){
             history.pushState('', document.title, window.location.pathname + '?action=' + fragment);
