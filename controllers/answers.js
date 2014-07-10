@@ -21,7 +21,7 @@ function oneAnswerResponse(res, req, crisis, question, answer, user) {
             title: answer.post.title
         },
         user: user,
-        properuser: (req.user.type !== 'provisional' || process.argv.block_provisional_users === false)
+        properUser: common.properUser(req)
     });
 }
 
