@@ -280,28 +280,39 @@ var chooseUsernamef = function (req, res) {
         req.flash('error', 'Please choose a username! You won\'t be logged in until you choose a username');
         res.redirect('/chooseUsername');
     }
-    var userId = req.session.user.id;
-    req.models.User.get(userId, function (err, user) {
+    req.models.User.exists({name: req.body.username}, function (err, flag) {
         if (err) {
-            generic.genericErrorHandler(req, res, err);  
+            generic.genericErrorHandler(req, res, err);
         } else {
-            user.name = req.body.username;
-            user.save(function (err) {
-                if (err) {
-                    generic.genericErrorHandler(req, res, err);
-                } else {
-                    req.logIn(user, function (err) {
-                        if (err) {
-                            generic.genericErrorHandler(req, res, err);
-                        } else {
-                            delete req.session.user;
-                            res.redirect('/');
-                        }
-                    });
-                }
-            }); 
+            if (flag) {
+                req.flash('error', 'That username is not available. Pleas choose a different one.');
+                res.redirect('/chooseUsername');           
+            } else {
+                var userId = req.session.user.id;
+                req.models.User.get(userId, function (err, user) {
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);  
+                    } else {
+                        user.name = req.body.username;
+                        user.save(function (err) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err);
+                            } else {
+                                req.logIn(user, function (err) {
+                                    if (err) {
+                                        generic.genericErrorHandler(req, res, err);
+                                    } else {
+                                        delete req.session.user;
+                                        res.redirect('/');
+                                    }
+                                });
+                            }
+                        }); 
+                    }
+                });
+            }
         }
-    });       
+    });    
 };
 
 exports.chooseUsername = [canChooseUsername, chooseUsernamef];
