@@ -350,6 +350,16 @@ module.exports = function (suppressLogs, dbTestUrl) {
             next();
         }
     };
+
+    //Middleware for saving the current path in order to use it on redirecting the user 
+    //after logging in or signing up 
+    var saveRedirectUrl = function (req, res, next) {
+        
+        if (~req.path.indexOf('/crisis')) {
+            req.session.redirectUrl = req.path;
+        }
+        next();
+    };
         
 
     
@@ -395,7 +405,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         app.use(roles.user.middleware());
         app.use(flash());
         app.use(analytics);
-        
+        app.use(saveRedirectUrl);
         app.use(app.router);
         
 
