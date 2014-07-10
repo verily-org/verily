@@ -96,7 +96,8 @@ var new_questions = function (req, res) {
 
         s3.get(key, function(err, data){
             if (err) {
-                console.error('File read error: ' + err);
+                console.log('error in getting from S3:');
+                console.log(err);
                 res.render('question/createMultiple', {
                     page: {
                         title: 'Add multiple questions'
