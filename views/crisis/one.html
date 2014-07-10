@@ -270,8 +270,9 @@ map = map_init('map');
         $(document).keyup(function(){
             cntrlIsPressed = false;
         });
-        $('.verily-panel').click(function(){
-            if(!cntrlIsPressed){
+        $('.verily-panel').click(function(e){
+            if(!cntrlIsPressed && e.which !== 2) {
+                // Not middle click.
                 location.href=$(this).data('href');
             }
         });
