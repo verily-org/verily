@@ -374,7 +374,7 @@ function oneQuestionResponse(req, res, crisis, question, user, refcodes){
             title: question.title
         },
         user: user,
-        properuser: (req.user.type !== 'provisional' || process.argv.block_provisional_users === false),
+        properUser: common.properUser(req),
         refcodes: refcodes,
         info: req.flash('info'),
         path: req.path
