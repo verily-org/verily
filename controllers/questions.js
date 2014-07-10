@@ -106,8 +106,8 @@ var new_questions = function (req, res) {
                 });
                 return;
             }
-            var data = JsonObjToArray(JSON.parse(data));
-            async.eachSeries(data,
+            var data = JSON.parse(data);
+            async.eachSeries(data.questions,
                 function(question, callback){
                     //Prepare data
                     if(question.targetDateTimeOccurred){
@@ -300,6 +300,7 @@ function oneQuestionResponse(req, res, crisis, question, user, refcodes){
         },
         user: user,
         refcodes: refcodes,
+        info: req.flash('info'),
         path: req.path
     });
 }
@@ -565,19 +566,19 @@ var exportQuestionsView = function(req, res){
                 for(var i in data.Contents){
                     files.push(data.Contents[i].Key);
                 }
-                renderExportView(res, crisis, files, user);
+                renderExportView(res, req, crisis, files, user);
             });
         }
         else{
             fs.readdir('static/backups/questions/', function(err, files){
                 if (err) console.log(err);
-                renderExportView(res, crisis, files, user);
+                renderExportView(res, req, crisis, files, user);
             });
         }
     });
 }
 exports.exportQuestionsView = [role.can('export questions'), exportQuestionsView];
-function renderExportView(res, crisis, files, user){
+function renderExportView(res, req, crisis, files, user){
     res.status(200);
     res.render('question/exports', {
         page: {
@@ -585,6 +586,7 @@ function renderExportView(res, crisis, files, user){
         },
         crisis: crisis,
         question_exports: files,
+        info: req.flash('info'),
         user: user
     });
 }
@@ -615,7 +617,7 @@ var exportQuestions = function(req, res){
                 });
             }
             else{
-                var file_path = 'static/backups/questions/'+file_name;
+                var file_path = 'static/'+file_name;
                 fs.writeFile(file_path, string, function(err){
                     if (err) console.log(err);
                     req.flash('info', 'Export saved successfully.');
@@ -634,8 +636,9 @@ function getQuestionsJson(crisis, callback){
         }
         else{
             var questions_json = {};
+            questions_json.questions = [];
             for(var key in questions){
-                questions_json[key] = {
+                questions_json.questions.push( {
                     "title": questions[key].post.title,
                     "text": questions[key].post.text,
                     "targetImage": questions[key].post.targetImage,
@@ -647,7 +650,7 @@ function getQuestionsJson(crisis, callback){
                     "targetDateTimeOccurred": questions[key].targetDateTimeOccurred,
                     "automaticLocation": questions[key].post.automaticLocation,
                     "user_id": questions[key].post.user_id
-                }
+                });
             }
             callback(null, questions_json);
         }

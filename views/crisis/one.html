@@ -119,16 +119,55 @@
 <div class="row crisis-questions-header">
     <div class="col-sm-9">
         Ask your social network to help with these questions
-        <!-- Twitter Tweet button -->
-               <a href="https://twitter.com/share" class="twitter-share-button btn-group" data-size="large">Tweet</a>
-               <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-       <!-- / Twitter Tweet button -->
-	   
-		<!-- Facebook Share button -->
-            <div class="btn-group">
+        <!-- temporal buttons for testing!-->
+        <div class="sharing-buttons question">
+            <!-- button-email -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button" id="button-share-question-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
+            </div>
+            <script>
+                var buttonShareQuestionEmail = document.getElementById('button-share-question-email');
+                var emailMessage = common.campaigner('email', '{{ questionTitleForSharing }}', refUrlEmail);
+                buttonShareQuestionEmail.href = 'mailto:?subject=' + emailMessage.subject + '&body=' + emailMessage.body;
+            </script>
+            <!-- / button-email -->
+
+            <!-- button-share-question-link -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
+            </div>
+            <!-- / button-share-question-link -->
+
+            <!-- Facebook Share button -->
+            <div class="action-button-ctr btn-group">
                 <a class="btn btn-default btn-large text-action-button share-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
             </div>
-        <!-- / Facebook Share button -->
+            <!-- / Facebook Share button -->
+
+            <!-- Twitter Tweet button -->
+            <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
+            <!-- / Twitter Tweet button -->
+
+
+
+
+            <!-- small buttons -->
+            <br/>
+            {% if userCan('edit a question') %}
+                <div class="btn-group">
+                    <div class="additional-button-ctr">
+                        <a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="btn-group">
+            <div class="additional-button-ctr">
+                <button class="btn btn-default btn-sm" style="display: none;"><i class="fa fa-flag"></i> <strong>Flag</strong></button>
+            </div>
+        </div>
         
     </div>
     
@@ -151,7 +190,7 @@
             <div class="row">
         {% endif %}
         <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
-            <div onclick="location.href = '/crisis/{{ crisis.id }}/question/{{ question.id }}'" style="cursor:pointer"
+            <div data-href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}" style="cursor:pointer"
                  class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
                 <div class="panel-heading">
                         {% if question.post.targetLocality %}
@@ -169,8 +208,9 @@
                     </h3>
                     <div class="clearfix">
                         <div class="crisis-question-metrics pull-left">
+                            <!-- Comment for Challenge!
                             <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> {{ question.importanceCount }}</span>
-
+                            -->
                             <span class="label metric crisis-question-metric" title="Answers that state this is true"><i class="fa fa-check success"></i> <span class="success">{{ question.supportedAnswerCount }}</span></span>
 
                             <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">{{ question.rejectedAnswerCount }}</span></span>
@@ -221,6 +261,20 @@ var map, layer;
 
 map = map_init('map');
     $(function(){
+        var cntrlIsPressed = false;
+        $(document).keydown(function(event){
+            if(event.which=="17")
+                cntrlIsPressed = true;
+        });
+
+        $(document).keyup(function(){
+            cntrlIsPressed = false;
+        });
+        $('.verily-panel').click(function(){
+            if(!cntrlIsPressed){
+                location.href=$(this).data('href');
+            }
+        });
         $(".mark-important-crisis-btn").click(function(){
             var button = $(this);
             $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',
@@ -272,6 +326,13 @@ facebookShareButton.addEventListener('click', function(e) {
         
     });
 });
+window.twttr = (function (d, s, id) {
+    var t, js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id; js.src= "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+    return window.twttr || (t = { _e: [], ready: function (f) { t._e.push(f) } });
+}(document, "script", "twitter-wjs"));
 </script>
 
 {% endblock %}

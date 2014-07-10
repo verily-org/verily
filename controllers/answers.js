@@ -172,6 +172,8 @@ var createAnswer = function (req, res) {
                                 }, wrapper = {
                                     answer: answerTmp
                                 };
+                                var link_string = '<a href="/crisis/'+crisis_id +'/question/' + answer2.question_id +'/answer/'+answer2.id+'">View evidence</a>';
+                                req.flash('info', 'Thanks, your evidence has been posted! ' + link_string);
                                 res.redirect('/crisis/' + crisis_id +'/question/' + answer2.question_id);
                                 //res.json(wrapper);
                                 res.end();
