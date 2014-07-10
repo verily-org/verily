@@ -10,7 +10,7 @@ var role = require('../lib/roles').user;
 
 function oneAnswerResponse(res, crisis, question, answer, user) {
     //Sort comments in reverse chronological order
-    answer.comments.sort(function(a,b){return b.comment.date - a.comment.date });
+    answer.comments.sort(function(a,b){return b.comment.date - a.comment.date;});
     res.render('evidence/one', {
         crisis: crisis,
         question: question,
@@ -18,7 +18,8 @@ function oneAnswerResponse(res, crisis, question, answer, user) {
         page: {
             title: answer.post.title
         },
-        user: user
+        user: user,
+        properuser: (req.user.type !== 'provisional' || process.argv.block_provisional_users === false)
     });
 }
 

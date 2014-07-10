@@ -149,14 +149,14 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         
         <!-- button-mark-true -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-success btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
+            <button class="btn btn-success btn-large text-action-button {% if !properuser %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-true -->
     
         <!-- button-mark-false -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-danger btn-large text-action-button {% if !user %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No because&hellip;</span></button>
+            <button class="btn btn-danger btn-large text-action-button {% if !properuser %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-false -->
@@ -168,7 +168,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
             <button data-crisis-id="{{ crisis.id }}"
                     data-question-id="{{ question.id }}"
                     class="btn btn-default btn-large text-action-button btn_markImportant
-                    {% if !user %} user-required-action{% endif %}
+                    {% if !properuser %} user-required-action{% endif %}
                     {% if questionMarkedImportant %}disabled{% endif %}"
                     title="Mark as important"><i class="fa fa-star">
                     </i> Important<span class="hidden-xs"></span> <span class="sr-only">Important</span>
