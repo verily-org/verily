@@ -285,7 +285,7 @@ var chooseUsernamef = function (req, res) {
             generic.genericErrorHandler(req, res, err);
         } else {
             if (flag) {
-                req.flash('error', 'That username is not available. Pleas choose a different one.');
+                req.flash('error', 'That username is not available. Please choose a different one.');
                 res.redirect('/chooseUsername');           
             } else {
                 var userId = req.session.user.id;
