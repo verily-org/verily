@@ -27,6 +27,11 @@ exports.route = function (app, controllers, doc) {
     route('get', '/adminAnswers', 'getAdminAnswers', 'Get all the answers for the admin page');
     route('post', '/adminAnswers', 'postAdminAnswers', 'Post answers that should be hidden');
 
+    route('get', '/banUser', 'getBanUsers', 'Get User ban view');
+    route('get', '/userEvidence', 'getAdminAnswers', 'Get all the answers for the admin page');
+    route('post', '/banUser', 'postBanUser', 'Post to Ban a specific user');
+    route('post', '/hideUserEvidence', 'postHideUserEvidence', 'Post user that should have all answers hidden');
+
     route('get', '/changePass', 'passChangeView', 'Get view to change the password');
     route('post', '/changePass', 'passChange', 'Change user\'s password');
 

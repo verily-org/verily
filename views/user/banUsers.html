@@ -1,0 +1,55 @@
+{% set type = 'user' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+    <h2>Users</h2>
+    {% if users && users | length > 0 %}
+        <table id="user-table" class="table table-responsive table-bordered">
+            <thead>
+                <th>Users</th>
+                <th>active</th>
+                <th># evidence</th>
+                <th># comments</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr {% if user.active == false %}class="danger"{% endif %}>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.active }}</td>
+                        <td>{{ user.posts | length }}</td>
+                        <td>{{ user.comments | length }}</td>
+                        <td style="text-align: right">
+                            <form method="post" action="/banUser" class="single-button-form">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                {% if user.active %}
+                                    <input type="hidden" name="active" value="0">
+                                    <button class="btn btn-danger">Block</button>
+
+                                {% else %}
+                                    <input type="hidden" name="active" value="1">
+                                    <button class="btn btn-default">Activate</button>
+                                {% endif %}
+                            </form>
+                            <form method="post" action="/hideUserEvidence" class="single-button-form">
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                <button class="btn btn-danger">Hide Content</button>
+                            </form>
+                            <a href="#" class="btn btn-default">Content List</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <script>
+            $(function(){
+                $('#user-table').dataTable({bPaginate: false});
+            })
+        </script>
+    {% else %}
+        <div class="alert alert-info">No users to show!</div>
+    {% endif %}
+
+{% endblock %}

@@ -138,9 +138,9 @@ module.exports = function (db, cb) {
             type: 'date',
             time: true
         },
-            viewCount: {
-                type: 'number'
-            }
+        viewCount: {
+            type: 'number'
+        }
         },
         {
             methods: {
@@ -229,6 +229,10 @@ module.exports = function (db, cb) {
         updated: {
             type: 'date',
             time: true
+        },
+        show: {
+            type: 'boolean',
+            defaultValue: '1'
         }
     }), QuestionComment = db.define('question_comment', {
     },{
@@ -334,6 +338,10 @@ module.exports = function (db, cb) {
             postPoints: {
                 type: 'number',
                 defaultValue: 0
+            },
+            active: {
+                type: 'boolean',
+                defaultValue: '1'
             }
     },
         {

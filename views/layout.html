@@ -46,6 +46,8 @@
         <link rel="apple-touch-icon-precomposed" href="/static/images/favicon.png" >
         
         <link href="/static/css/style.css" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.css">
         
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -56,12 +58,18 @@
         
         <!-- jQuery -->
         <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-        
+
+        <!-- Jquery Datatable -->
+        <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.min.js"></script>
+
+        <script type="text/javascript" language="javascript" src="//cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
         <!-- Common JS -->
         <script type="text/javascript" src="/static/js/common.js"></script>
-        
+
         <!-- Latest compiled and minified Bootstrap JavaScript -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
 
         <!-- Load general functions JS -->
         <script type="text/javascript" src="/static/js/load.js"></script>
@@ -218,8 +226,14 @@
                             <li><a href="" data-toggle="modal" data-target="#provisionalUserConfirmLoginModal">Login</a></li>
                             {% endif %}
 							{% if userCan('assign roles') %}
-								<li><a href="/roles">Assign Roles</a></li>
-								<li><a href="/adminAnswers">All Answers</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/roles"><span class="fa fa-users"></span>&nbsp;<span class="sr-only">Assign roles</span> Assign roles</a></li>
+                                        <li><a href="/adminAnswers"><span class="fa fa-ban"></span>&nbsp;<span class="sr-only">Hide by Evidence</span>Hide evidence</a></li>
+                                        <li><a href="/banUser"><span class="fa fa-ban"></span>&nbsp;<span class="sr-only">Ban Users</span>Ban users</a></li>
+                                    </ul>
+                                </li>
 							{% endif %}
                             {% if !userIs('provisional user') %}
                             <li><a href="/logout">Logout </a></li>

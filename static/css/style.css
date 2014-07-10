@@ -876,3 +876,7 @@ ul.team {
 .sharing-buttons {
     padding-top: 1em;
 }
+
+.single-button-form {
+    display: inline;
+}

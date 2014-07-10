@@ -482,6 +482,61 @@ var setRoles = function (req, res) {
 
 exports.changeRoles = [isAdmin, setRoles];
 
+var getBanUsers = function (req, res) {
+    req.models.User.find({role: 'simple'}, function (err, users) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            async.each(users, load_user_extra_fields, function(err){
+                if(err)throw err;
+                res.render('user/banUsers', {
+                    page: {
+                        title: 'User Ban'
+                    },
+                    info: req.flash('info'),
+                    //user: req.user,
+                    users: users
+                });
+            });
+        }
+    });
+};
+var load_user_extra_fields = function(user, callback){
+    var content_count = user.posts.length + user.comments.length;
+    user.postsCommentsCount = content_count;
+    callback(null);
+}
+exports.getBanUsers = [isAdmin, getBanUsers];
+
+var postBanUser = function (req, res) {
+    console.log('posted')
+    req.models.User.get(req.body.user_id, function (err, user) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            if(req.body.active == "1"){
+                user.active = trueValue;
+            }
+            else{
+                user.active = falseValue;
+            }
+            user.save(function(err){
+                if(err){
+                    req.flash('error', 'Couldn\'t save to database.');
+                }
+                else{
+                    req.flash('info', 'User status saved successfully.');
+                }
+                res.redirect('/banUser');
+                res.end();
+            });
+        }
+    });
+};
+
+exports.postBanUser = [isAdmin, postBanUser];
+
+
 exports.passChangeView = function (req, res) {
     if (req.user) {
         res.render('user/change-pass', {
