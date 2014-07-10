@@ -46,7 +46,7 @@
                     <button data-crisis-id="{{ crisis.id }}"
                             data-question-id="{{ answer.question_id }}"
                             data-answer-id="{{ answer.id }}"
-                            class="mark-important-crisis-btn btn btn-default btn-large text-action-button {% if !user %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
+                            class="mark-important-crisis-btn btn btn-default btn-large text-action-button {% if !properuser %} user-required-action{% endif %} {% if crisis_markedImportant %}disabled{% endif %}"
                             title="Mark as important">
                                 <i class="fa fa-star"></i>
                                 Important</a>
