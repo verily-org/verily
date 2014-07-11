@@ -858,7 +858,9 @@ exports.forgot = function (req, res) {
                 });
             },
             function(token, local, done) {
-                generic.sendMailtoLocal(req, token, local, 'forgot', done);
+                generic.sendMailtoLocal(req, token, local, 'forgot', function (err, local) {
+                    done(err, local, 'done');
+                });
             }
             ], function(err, local) {
                 if (err) {
