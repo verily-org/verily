@@ -587,14 +587,22 @@ var postBanUser = function (req, res) {
 exports.postBanUser = [isAdmin, postBanUser];
 
 var getUserContentList = function (req, res) {
-    req.models.User.get(req.params.user_id, {autoFetch:true, autoFetchLimit:4}, function (err, user) {
+    var datetime = new Date();
+    console.log('entered: ' + datetime.getMinutes() +":"+datetime.getSeconds());
+    req.models.User.get(req.params.user_id, function (err, user) {
+        var datetime = new Date();
+        console.log('got User: ' + datetime.getMinutes() +":"+datetime.getSeconds());
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {
             req.models.Answer.findByPost({user_id: user.id},function(err, answers){
                 if(err)generic.genericErrorHandler(req, res, err);
+                var datetime = new Date();
+                console.log('got answers: ' + datetime.getMinutes() +":"+datetime.getSeconds());
                 req.models.Comment.find({user_id: user.id},function(err, comments){
                     if(err)generic.genericErrorHandler(req, res, err);
+                    var datetime = new Date();
+                    console.log('got comments: ' + datetime.getMinutes() +":"+datetime.getSeconds());
                     res.render('user/contentList', {
                         page: {
                             title: 'User Content List'
@@ -611,10 +619,22 @@ var getUserContentList = function (req, res) {
         }
     });
 };
+function msToTime(duration) {
+    var milliseconds = parseInt((duration%1000)/100)
+        , seconds = parseInt((duration/1000)%60)
+        , minutes = parseInt((duration/(1000*60))%60)
+        , hours = parseInt((duration/(1000*60*60))%24);
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+}
 exports.getUserContentList = [isAdmin, getUserContentList];
 
 var postEditUserEvidenceShow = function (req, res) {
-    req.models.User.get(req.body.user_id, {autoFetch:true, autoFetchLimit:4}, function (err, user) {
+    req.models.User.get(req.body.user_id, function (err, user) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {

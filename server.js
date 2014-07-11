@@ -53,7 +53,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
     app.use(connect.urlencoded());
     app.use(connect.json());
 
-    var csrf = express.csrf();
+//    var csrf = express.csrf();
 
 //    var admin_re = new RegExp("^/admin");
 //    var conditionalCSRF = function (req, res, next) {
@@ -416,14 +416,14 @@ module.exports = function (suppressLogs, dbTestUrl) {
         
         //<input type="hidden" name="_csrf" value="{{csrf_token}}" />
 		// middleware for common locals with request-specific values
-        app.use(function (req, res, next) {
-        	//res.locals({
-        	//	csrf_token: req.csrfToken()
-        	//});
-        	//res.locals.csrf_token = req.csrfToken();
-        	res.locals.csrf_token = 'test';
-        	next();
-        });
+//        app.use(function (req, res, next) {
+//        	//res.locals({
+//        	//	csrf_token: req.csrfToken()
+//        	//});
+//        	//res.locals.csrf_token = req.csrfToken();
+//        	res.locals.csrf_token = 'test';
+//        	next();
+//        });
         
         app.use(passport.initialize());
         app.use(passport.session());

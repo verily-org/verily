@@ -169,7 +169,7 @@ module.exports = function (db, cb) {
                     this.viewCount++;
                     this.save();
                 }
-            }, autoFetch:true, autoFetchLimit: 3
+            }
         },
         {
             validations:{
@@ -223,7 +223,7 @@ module.exports = function (db, cb) {
                 return this.type == "reject";
             }
         },autoFetch: true,
-        autoFetchLimit: 4
+        autoFetchLimit: 3
     }), Comment = db.define('comment',{
         date: {
             type: 'date',
