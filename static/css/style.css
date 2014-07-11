@@ -786,10 +786,13 @@ fa.breadcrumb {
 /*    font-size: 100%*/
 }
 
-ul.team {
-    font-size: 1.5em;
+.team {
+    font-size: 1.2em;
 }
 
+.team div {
+    padding-bottom: 1em;
+}
 
 
 .olControlAttribution {
