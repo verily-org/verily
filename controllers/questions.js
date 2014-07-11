@@ -169,90 +169,112 @@ var new_questions = function (req, res) {
         var fs = require('fs');
         var key = req.body.key;
 
-        s3.get(key, function(err, data){
-            if (err) {
-                console.log('error in getting from S3:');
-                console.log(err);
-                res.render('question/createMultiple', {
-                    page: {
-                        title: 'Add multiple questions'
-                    },
-                    crisis: crisis,
-                    error: 'Unable to get file with key: "' + key + '"'
-                });
-                return;
-            }
-                        
-            // Get the string (UTF-8) encoding of the data.
-            var buffer = data.Body;
-            var string = buffer.toString('utf8');
-            var json = JSON.parse(string);
-            
-            async.eachSeries(json.questions,
-                function(question, callback){
-                    //Prepare data
-                    var date;
-                    if(question.targetDateTimeOccurred){
-                        date = new Date(question.targetDateTimeOccurred);
-                    }
-                    req.body.formSelectImage = "link";
-                    
-                    if (date) {
-                        req.body.targetDateTimeOccurred = [date.getDate(), (date.getMonth()+1), date.getFullYear(), date.getHours(), date.getMinutes()];
-                    }
-
-
-                    if(!question.title || question.title == ""){
-                        callback("Title needed on question: " + question.key);
-                        return;
-                    }
-                    req.body.title = question.title;
-                    req.body.text = question.text;
-                    req.body.targetImageUrl = question.targetImage;
-                    req.body.targetVideoUrl = question.targetVideoUrl;
-                    req.body.targetLocality = question.targetLocality;
-                    req.body.targetLat = question.targetLat;
-                    req.body.targetLong = question.targetLong;
-                    req.body.tags = question.tags;
-                    req.body.automaticLocation = question.automaticLocation;
-
-                    generic.create(req.models.Question, {}, req, function (err, question) {
-                        if (!err && question) {
-                            question.setCrisis(crisis, function (err) {
-                                if (err) throw err;
-                                generic.get(req.models.Question, question.id, undefined, function (err, question2) {
-                                    if (!err && question2) {
-                                        callback();
-                                    } else {
-                                        callback(err);
-                                        //special err: if 404 then it means the create just executed is invalid.
-
-                                    }
-                                });
-                            });
-                        } else {
-                            callback(err);
-                        }
+        if (mode.isHeroku()) {
+            s3.get(key, function(err, data){
+                if (err) {
+                    console.log('error in getting from S3:');
+                    console.log(err);
+                    console.log(data);
+                    res.render('question/createMultiple', {
+                        page: {
+                            title: 'Add multiple questions'
+                        },
+                        crisis: crisis,
+                        error: 'Unable to get file with key: "' + key + '"'
                     });
-                }, function(err){
-                    if (err) {
-                        res.status(500);
-                        res.end('Error 500: Server Error - '+ err);
-                        console.r.error(req, 500, err);
-                    }
-                    else{
-                        res.redirect('/crisis/' + req.params.crisis_id);
-                        res.end();
-                    }
-                });
-
+                    return;
+                }
+                // Get the string (UTF-8) encoding of the data.
+                var buffer = data.Body;
+                var string = buffer.toString('utf8');
+                var json = JSON.parse(string);
+                createBulkQuestions(res, req, json, crisis);
         });
-
+        }
+        else{
+            //read file frpm static/backups/questions/
+            fs.readFile(req.body.key, function(err, data){
+                if (err) {
+                    console.log('error in getting from S3:');
+                    console.log(err);
+                    console.log(data);
+                    res.render('question/createMultiple', {
+                        page: {
+                            title: 'Add multiple questions'
+                        },
+                        crisis: crisis,
+                        error: 'Unable to get file with key: "' + key + '"'
+                    });
+                    return;
+                }
+                var json = JSON.parse(data);
+                createBulkQuestions(res, req, json, crisis);
+            });
+        }
     });
 }
 
 var checkRole = role.can('create multiple questions');
+function createBulkQuestions(res, req, json, crisis){
 
+    async.eachSeries(json.questions,
+        function(question, callback){
+            //Prepare data
+            var date;
+            if(question.targetDateTimeOccurred){
+                date = new Date(question.targetDateTimeOccurred);
+            }
+            req.body.formSelectImage = "link";
+
+            if (date) {
+                req.body.targetDateTimeOccurred = [date.getDate(), (date.getMonth()+1), date.getFullYear(), date.getHours(), date.getMinutes()];
+            }
+
+
+            if(!question.title || question.title == ""){
+                callback("Title needed on question: " + question.key);
+                return;
+            }
+            req.body.title = question.title;
+            req.body.text = question.text;
+            req.body.targetImageUrl = question.targetImage;
+            req.body.targetVideoUrl = question.targetVideoUrl;
+            req.body.targetLocality = question.targetLocality;
+            req.body.targetLat = question.targetLat;
+            req.body.targetLong = question.targetLong;
+            req.body.tags = question.tags;
+            req.body.automaticLocation = question.automaticLocation;
+
+            generic.create(req.models.Question, {}, req, function (err, question) {
+                if (!err && question) {
+                    question.setCrisis(crisis, function (err) {
+                        if (err) throw err;
+                        generic.get(req.models.Question, question.id, undefined, function (err, question2) {
+                            if (!err && question2) {
+                                callback();
+                            } else {
+                                callback(err);
+                                //special err: if 404 then it means the create just executed is invalid.
+
+                            }
+                        });
+                    });
+                } else {
+                    callback(err);
+                }
+            });
+        }, function(err){
+            if (err) {
+                res.status(500);
+                res.end('Error 500: Server Error - '+ err);
+                console.r.error(req, 500, err);
+            }
+            else{
+                res.redirect('/crisis/' + req.params.crisis_id);
+                res.end();
+            }
+        });
+}
 exports.newQuestions = [checkRole, new_questions];
 
 // View to edit a question
