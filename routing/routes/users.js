@@ -29,6 +29,9 @@ exports.route = function (app, controllers, doc) {
     route('get', '/adminAnswers', 'getAdminAnswers', 'Get all the answers for the admin page');
     route('post', '/adminAnswers', 'postAdminAnswers', 'Post answers that should be hidden');
 
+    route('get', '/hideQuestions', 'getAdminQuestions', 'Get all the questions for the admin');
+    route('post', '/handleQuestions', 'handleQuestions', 'Handle questions');
+
     route('get', '/banUser', 'getBanUsers', 'Get User ban view');
     route('get', specific + '/userContentList', 'getUserContentList', 'Get all the answers for the admin page');
     route('post', '/banUser', 'postBanUser', 'Post to Ban a specific user');

@@ -604,3 +604,26 @@ exports.sendMailtoLocal = function (req, token, local, scenario, cb) {
 
 };
 
+
+exports.showHideItem = function (model, itemIds, show, callback) {
+    if (itemIds) {
+        model.find({id: itemIds, show: !show}, function (err, items) {
+            if (err) {
+                console.log(err);
+                callback(err);
+            } else {
+                async.each(items, function (item, cb) {
+                    item.show = show;
+                    item.save(function (err) {
+                        cb(err);
+                    }); 
+                }, function (err) {
+                    callback(err);
+                });
+            }
+        }); 
+    } else {
+        callback();
+    }
+};
+

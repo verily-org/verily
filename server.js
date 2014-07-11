@@ -319,8 +319,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
             // Do not count favicon.ico requests.
             // Record the metadata of the impression.
             
-            console.log('==================== IMPRESSION ' + req.path +  ' ====================');
-            
+            console.log('==================== IMPRESSION ' + req.path +  ' ====================' + req.method);
+            console.log(req.body);
             console.log('---- REFCODES -----');
             console.log(req.session.refcodes);
             
@@ -369,7 +369,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
     //after logging in or signing up 
     var saveRedirectUrl = function (req, res, next) {
         
-        if (~req.path.indexOf('/crisis')) {
+        if (req.path.indexOf('/crisis') !== -1) {
             req.session.redirectUrl = req.path;
         }
         next();

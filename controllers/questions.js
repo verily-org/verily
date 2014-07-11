@@ -14,8 +14,15 @@ var common = require('../static/js/common');
 var userController = require('./users');
 var role = require('../lib/roles').user;
 
-var words;
-var relevantQuestions = [];
+var trueValue;
+var falseValue;
+if (mode.isHeroku()) {
+    trueValue = true;
+    falseValue = false;
+} else {
+    trueValue = 1;
+    falseValue = 0;
+}
 
 // Enables discovery of questions – this is the questions spotlight.
 exports.index = function (req, res) {
@@ -54,7 +61,7 @@ var renderSearchResults = function(req, res, questions) {
 };
 
 var searchQuestionsByWords = function (req, res, words, relevantQuestions) {
-    req.models.Question.find({}, function (err, questions) {
+    req.models.Question.find({show: trueValue}, function (err, questions) {
         if (err) {
             console.log(err);
             generic.genericErrorHandler(req, res, err);
