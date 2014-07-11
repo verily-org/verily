@@ -232,8 +232,7 @@ module.exports = function (db, cb) {
             isAgainst: function(){
                 return this.type == "reject";
             }
-        },autoFetch: true,
-        autoFetchLimit: 3
+        }
     }), Comment = db.define('comment',{
         date: {
             type: 'date',
@@ -393,7 +392,7 @@ module.exports = function (db, cb) {
 
     Question.hasOne('post', Post, {reverse: 'questions', autoFetch: true});
 
-    Answer.hasOne('post', Post, {reverse: 'answers', autoFetch: true, autoFetchLimit: 3});
+    Answer.hasOne('post', Post, {reverse: 'answers', autoFetch: true});
 
     Rating.hasOne('post', Post, {reverse: 'ratings', autoFetch: true});
 

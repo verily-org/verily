@@ -34,29 +34,22 @@ var create = function (req, res) {
                 if (!err && answer) {
                     //answer exists
                     create_answer_comment(req, answer, function (err, comment2) {
-                        if (!err && comment2) {
-                           if (!err && comment2) {
-                                var answercomment = {
-                                    id: comment2.id,
-                                    text: comment2.text,
-                                    date: comment2.date,
-                                    author: comment2.author,
-                                    updated: comment2.updated
-                                }, wrapper = {
-                                    answer_comment: answercomment
-                                };
-                                res.redirect('/crisis/'+ crisis_id +'/question/' + answer.question_id + '/answer/' + answer.id);
-                                res.end();
-                            } else {
-                                generic.genericErrorHandler(req, res, err);
-                            }
-
+                       if (!err && comment2) {
+                            var answercomment = {
+                                id: comment2.id,
+                                text: comment2.text,
+                                date: comment2.date,
+                                author: comment2.author,
+                                updated: comment2.updated
+                            }, wrapper = {
+                                answer_comment: answercomment
+                            };
+                            res.redirect('/crisis/'+ crisis_id +'/question/' + answer.question_id + '/answer/' + answer.id);
+                            res.end();
                         } else {
-                            //special err: if 404 then it means the create just executed is invalid.
-                            res.status(500);
-                            res.end('Error 500: Server Error');
-                            console.r.error(req, 500, err);
+                            generic.genericErrorHandler(req, res, err);
                         }
+
                     });
                 }
             });

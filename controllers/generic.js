@@ -472,7 +472,7 @@ exports.load_crisis_extra_fields = function(crisis, callback){
 }
 exports.load_question_extra_fields = function(question, callback){
     if(question.answers == undefined){
-        question.getAnswers(function(err, answers){
+        question.getAnswers({autoFetch:true,autoFetchLimit:3}, function(err, answers){
             if (!err && answers) {
                 question.rejectedAnswerCount = question.getRejectedAnswerCount();
                 question.supportedAnswerCount = question.getSupportedAnswerCount();

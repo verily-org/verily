@@ -597,19 +597,13 @@ var getUserContentList = function (req, res) {
     var datetime = new Date();
     console.log('entered: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     req.models.User.get(req.params.user_id, function (err, user) {
-        var datetime = new Date();
-        console.log('got User: ' + datetime.getMinutes() +":"+datetime.getSeconds());
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {
             req.models.Answer.findByPost({user_id: user.id},function(err, answers){
                 if(err)generic.genericErrorHandler(req, res, err);
-                var datetime = new Date();
-                console.log('got answers: ' + datetime.getMinutes() +":"+datetime.getSeconds());
                 req.models.Comment.find({user_id: user.id},function(err, comments){
                     if(err)generic.genericErrorHandler(req, res, err);
-                    var datetime = new Date();
-                    console.log('got comments: ' + datetime.getMinutes() +":"+datetime.getSeconds());
                     res.render('user/contentList', {
                         page: {
                             title: 'User Content List'

@@ -301,7 +301,7 @@ var getQuestion = function (req, addView, callback) {
 
     generic.get(req.models.Question, questionId, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
-            
+
             var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
             
             var relativeTargetDateTimeOccurred = generic.relativeTime(question.post.targetDateTimeOccurred);
@@ -310,27 +310,33 @@ var getQuestion = function (req, addView, callback) {
             if(addView){
                 question.post.addViewCount();
             }
-            
-            question.getAnswers(function (err, answers) {
-               if (!err && answers) {
-                    var answersShown = [];
-                    for (var i = 0; i < answers.length; i++) {
-                        if (answers[i].show && common.isUserContentShow(answers[i].post.user)){
-                            //Filter hidden comments
-                            answers[i].comments = answers[i].comments.filter(
-                                function(answerComment){
-                                    return common.isUserContentShow(answerComment.comment.user)
-                                        && answerComment.comment.show;
-                                }
-                            );
 
-                            answersShown.push(answers[i]);
-                        }
-                    }
+            question.getAnswers({autoFetch:true,autoFetchLimit:3},function(err,answers){
+               if (!err && answers) {
+                   question.answers = answers.filter(function(answer){
+                       answer.comments = answer.comments.filter(function(answerComment){
+                           return common.isUserContentShow(answerComment.comment.user)
+                               && answerComment.comment.show;
+                       });
+                       return answer.show && common.isUserContentShow(answer.post.user);
+                   });
+//                    for (var i = 0; i < answers.length; i++) {
+//                        if (answers[i].show && ){
+//                            //Filter hidden comments
+//                            answers[i].comments = answers[i].comments.filter(
+//                                function(answerComment){
+//                                    return common.isUserContentShow(answerComment.comment.user)
+//                                        && answerComment.comment.show;
+//                                }
+//                            );
+//
+//                            answersShown.push(answers[i]);
+//                        }
+//                    }
 
                    generic.load_question_extra_fields(question, function(err){
                        if (!err) {
-                           
+
                            // Canonicalise the path to the pretty format
                            // that works well for bookmarks.
                            var canonicalPath = common.prettyPath({
@@ -361,16 +367,16 @@ var getQuestion = function (req, addView, callback) {
                                updated: question.post.updated,
                                importanceCount: question.importanceCount,
                                canonicalPath: canonicalPath,
-                               post: question.post,
+                               post: question.post
                            }, wrapper = {
                                question: questionTmp
                            };
                            // Answers present.
-                           async.each(answersShown, generic.load_answers_extra_fields, function (err) {
+                           async.each(question.answers, generic.load_answers_extra_fields, function (err) {
                                if (err) {
                                    callback(err);
                                } else {
-                                   questionTmp.answers = answersShown;
+                                   questionTmp.answers = question.answers;
                                    callback(err, questionTmp);
                                }
                            });
