@@ -38,6 +38,8 @@ exports.route = function (app, controllers, doc) {
 
     route('get', '/changePass', 'passChangeView', 'Get view to change the password');
     route('post', '/changePass', 'passChange', 'Change user\'s password');
+    route('get', '/changeUsername', 'changeUsernameView', 'Get view to change the username');
+    route('post', '/changeUsername', 'changeUsername', 'Change user\'s username');
 
     route('get', '/forgot', 'forgotView', 'Get the view to request password reset');
     route('post', '/forgot', 'forgot', 'Send an email to user to reset password');

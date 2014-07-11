@@ -1,0 +1,24 @@
+{% set type = 'user' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<div id="form-reg" class="form">
+    <p class="lead">
+        Choose your new username
+    </p>
+    <form id="signup" role="form" action="/changeUsername" method="POST">
+		<!-- <input type="hidden" name="_method" value="POST">
+		<input type="hidden" id="form-question-type" name="type"> -->
+
+		<div class="form-group">
+			<input type="text" class="form-control input-lg" id="form-name" name="username" placeholder="Choose a username">
+		</div>
+
+		<button type="submit" class="btn btn-primary btn-lg">Change my Username</button>
+	</form>
+
+</div>
+
+{% endblock %}

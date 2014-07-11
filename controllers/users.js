@@ -12,7 +12,6 @@ assignedPoints = require('../points.json');
 require('../lib/passport')(passport);
 
 var smtpTransport = config.mailer;
-var redirectUrl = '/';
 var trueValue;
 var falseValue;
 if (mode.isHeroku()) {
@@ -60,7 +59,9 @@ exports.profile = function (req, res) {
                     points: user.getTotalPoints(),
                     posts: postAnswers,
                     upvotes: upvotes,
-                    downvotes: downvotes
+                    downvotes: downvotes,
+                    error: req.flash('error'),
+                    info: req.flash('info')
                 })    
             });
         });
@@ -128,9 +129,6 @@ exports.registerView = function (req, res) {
 exports.loginView = function (req, res) {
     if (!req.user || req.user.type === 'provisional') {
         // No user currently logged in, or a provisional user is logged in.
-        if (!req.session.redirectUrl) {
-            req.session.redirectUrl = redirectUrl;
-        }
         res.status(200);
         res.render('user/login', {
             page: {
@@ -212,24 +210,39 @@ exports.login = function (req, res) {
     })(req, res);
 };
 
-exports.clearSession = function(req) {
+exports.clearSession = function(req, cb) {
+    var destroySession = true;
+    if (req.user.type === 'provisional') {
+        destroySession = false;
+    }
+
     // Destroy PassportJS login session.
     req.logout();
-    
-    // Delete refcodes in session.
-    // We are not getting a new session ID like in req.session.destroy
-    // so that we can preserve redirectUrl within the session
-    // and allow login from a provisional user to a chosen-username user.
-    req.session.refcodes = null;
-    delete req.session.refcodes;
+    //if user is not provisional destroy the session
+    if (destroySession) {
+        req.session.destroy(function (err) {
+            if (err) {
+                console.log(err);
+            }
+            cb(err);
+        });
+    } else {
+        // Delete refcodes in session.
+        // We are not getting a new session ID like in req.session.destroy
+        // so that we can preserve redirectUrl within the session
+        // and allow login from a provisional user to a chosen-username user.
+        req.session.refcodes = null;
+        delete req.session.refcodes;
+        cb();  
+    }
+        
 }
 
 // If next is 'login', the session will be regnerated
 exports.logout = function(req, callback) {
-    exports.clearSession(req);
-    
-    callback();
-    
+    exports.clearSession(req, function (err) {
+        callback();    
+    });
     
     // Now clear the whole session as PassportJS only clears login session, 
     // namespaced under session.user, and not the entire session state for the user.        
@@ -375,6 +388,47 @@ var chooseUsernamef = function (req, res) {
 
 exports.chooseUsername = [canChooseUsername, chooseUsernamef];
 
+var changeUsernameViewf = function (req, res) {
+    res.render('user/change-username', {
+        page: {
+            title: 'Choose Username'
+        },
+        info: req.flash('info'),
+        error: req.flash('error')
+    });
+};
+
+exports.changeUsernameView = [role.can('change username'), changeUsernameViewf];
+
+var changeUsernamef = function (req, res) {
+    if (!req.body.username) {
+        req.flash('error', 'Choose a username');
+        res.redirect('/changeUsername');
+    }
+    req.models.User.exists({name: req.body.username}, function (err, flag) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            if (flag) {
+                req.flash('error', 'That username is not available. Please choose a different one.');
+                res.redirect('/changeUsername');           
+            } else {
+                var user = req.user;
+                user.name = req.body.username;
+                user.save(function (err) {
+                    if (err) {
+                        req.flash('error', 'Your username could not be changed!');
+                        res.redirect('/user');
+                    }
+                    req.flash('info', 'Your username has been changed to ' + user.name + '!');
+                    res.redirect('/user');
+                });
+            }
+        }
+    });    
+};
+
+exports.changeUsername = [role.can('change username'), changeUsernamef];
 
 var isAdmin = generic.isAdmin();
 
@@ -706,62 +760,63 @@ var postEditEvidenceShow = function (req, res) {
 };
 exports.postEditEvidenceShow = [isAdmin, postEditEvidenceShow];
 
-exports.passChangeView = function (req, res) {
+var changePassView = function (req, res) {
     if (req.user) {
         res.render('user/change-pass', {
             page: {
                 title: 'Change Password'
-            }
+            },
+            error: req.flash('error'),
+            info: req.flash('info')
         });    
     } else {
         res.redirect('/login');
     }
 };
 
-exports.passChange = function (req, res) {
-    if (req.user) {
-        var user = req.user,
-        oldPassword = req.body.old_password,
-        newPassword = req.body.new_password,
-        confirmPassword = req.body.confirm_password;
-        var message = '';
+exports.passChangeView = [role.can('change password'), changePassView];
 
-        if (newPassword !== confirmPassword) {
-            res.render('user/change-pass', {
-                page: {
-                    title: 'Change Password'
-                }, message: 'The new passwords do not match!'
-            });    
+var changePass = function (req, res) {
+    var user = req.user,
+    oldPassword = req.body.old_password,
+    newPassword = req.body.new_password,
+    confirmPassword = req.body.confirm_password;
+    var message = '';
+
+    if (newPassword !== confirmPassword) {
+        req.flash('error', 'The new passwords do not match!');
+        res.redirect('/changePass');    
+    } else {
+        if (!validatePassword(newPassword)) {
+            req.flash('error', 'Password must contain at least one letter, ' + 
+                                                        'at least one number, '+
+                                                        'no special characters '+
+                                                        'and be longer than six characters.');
+            res.redirect('/changePass'); 
         } else {
             user.getLocal(function (err, local) {
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 }
                 if (!local.validPassword(oldPassword)) {
-                    res.render('user/change-pass', {
-                        page: {
-                            title: 'Change Password'
-                        }, message: 'The password is wrong.'
-                    });    
+                    req.flash('error', 'The password is wrong.');
+                    res.redirect('/changePass');  
                 } else {
                     local.password = local.generateHash(newPassword);
                     local.save(function (err) {
                         if (err) {
                             generic.genericErrorHandler(req, res, err);
                         } 
-                        res.render('user/change-pass', {
-                            page: {
-                                title: 'Change Password'
-                            }, messageCorrect: 'Your password has been changed!'
-                        });
+                        req.flash('info', 'Your password has been changed!');
+                        res.redirect('/user');
                     });
                 }
-            });    
-        }       
-    } else {
-        res.redirect('/login');
-    }
+            });
+        }   
+    }       
 };
+
+exports.passChange = [role.can('change password'), changePass];
 
 exports.forgotView = function (req, res) {
     if (!req.user) {    

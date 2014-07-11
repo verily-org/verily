@@ -8,6 +8,12 @@
 		<div class="container">
 			<h2>{{user.name}}</h2>
 			<p class="lead">You have <span class="label label-success">{{points}} Points!</span></p>
+			{% if user.type !== 'provisional' %}
+				<p><a href="/changeUsername">Change your Username</a></p>
+			{% endif %}
+			{% if user.local_id %}
+				<p><a href="/changePass">Change your Password</a></p>
+			{% endif %}
 		</div>
 	</div>
 
