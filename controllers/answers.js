@@ -21,7 +21,7 @@ function oneAnswerResponse(res, req, crisis, question, answer, user) {
             title: answer.post.title
         },
         user: user,
-        properuser: (req.user.type !== 'provisional' || process.argv.block_provisional_users === false)
+        properUser: common.properUser(req)
     });
 }
 
@@ -56,6 +56,9 @@ var getOne = function (req, res) {
                         if (!err && answer) {
                             if (req.user){var user = req.user; }
                             answer.getComments(function(err){
+                                //Filter hidden comments
+                                answer.comments = answer.comments.filter(function(answerComment){ return common.isUserContentShow(answerComment.comment.user)&& answerComment.comment.show;});
+
                                 if(answer.post.targetVideoUrl) {
 
                                     oembed.fetch(answer.post.targetVideoUrl, {}, function(err, result){
@@ -164,26 +167,15 @@ var createAnswer = function (req, res) {
             }, req, function (err, answer) {
                 if (!err && answer) {
                     answer.setQuestion(question, function (err) {
-                        generic.get(req.models.Answer, answer.id, undefined, function (err, answer2) {
-                            if (!err && answer2) {
-                                var answerTmp = {
-                                    id: answer2.id,
-                                    text: answer2.text,
-                                    date: answer2.date,
-                                    author: answer2.author,
-                                    updated: answer2.updated
-                                }, wrapper = {
-                                    answer: answerTmp
-                                };
-                                var link_string = '<a href="/crisis/'+crisis_id +'/question/' + answer2.question_id +'/answer/'+answer2.id+'">View evidence</a>';
-                                req.flash('info', 'Thanks, your evidence has been posted! ' + link_string);
-                                res.redirect('/crisis/' + crisis_id +'/question/' + answer2.question_id);
-                                //res.json(wrapper);
-                                res.end();
-                            } else {
-                                generic.genericErrorHandler(req, res, err);
-                            }
-                        });
+                        if (!err) {
+                            var link_string = '<a href="/crisis/'+crisis_id +'/question/' + answer.question_id +'/answer/'+answer.id+'">View evidence</a>';
+                            req.flash('info', 'Thanks, your evidence has been posted! ' + link_string);
+                            res.redirect('/crisis/' + crisis_id +'/question/' + answer.question_id);
+                            //res.json(wrapper);
+                            res.end();
+                        } else {
+                            generic.genericErrorHandler(req, res, err);
+                        }
                     });
 
                 } else {

@@ -4,23 +4,57 @@
 
 {% block content %}
 
-    <h2>Posts</h2>
-    {% if posts && posts | length > 0 %}
+    <h2>All posts of user: "{{ contentUser.name }}"</h2>
+    <div style="text-align: right; padding-bottom:10px;">
+        <form method="post" action="/editUserEvidenceShow" class="single-button-form">
+            <input type="hidden" name="user_id" value="{{ contentUser.id }}">
+            <input type="hidden" name="show" value="1">
+            <button class="btn btn-default">Show all</button>
+        </form>
+        <form method="post" action="/editUserEvidenceShow" class="single-button-form">
+            <input type="hidden" name="user_id" value="{{ contentUser.id }}">
+            <input type="hidden" name="show" value="0">
+            <button class="btn btn-danger">Hide all</button>
+        </form>
+    </div>
+    <h3>Evidence</h3>
+    {% if evidences && evidences | length > 0 %}
         <table id="evidence-table" class="table table-responsive table-bordered">
             <thead>
+                <th>id</th>
                 <th>title</th>
+                <th>showing</th>
                 <th>text</th>
+                <th>question</th>
                 <th>date</th>
                 <th>Actions</th>
             </thead>
             <tbody>
-                {% for post in posts %}
-                    <tr {% if post.answer.show == false %}class="danger"{% endif %}>
-                        <td>{{ post.title }}</td>
-                        <td>{{ post.text }}</td>
-                        <td>{{ post.date | date('Y-m-d') }}</td>
+                {% for evidence in evidences %}
+                    <tr {% if evidence.show == false %}class="danger"{% endif %}>
+                        <td>{{ evidence.id }}</td>
+                        <td>{{ evidence.post.title }}</td>
+                        <td>{{ evidence.show }}</td>
+                        <td>{{ evidence.post.text }}</td>
+                        <td>
+                            <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}" class="">{{ evidence.question.post.title }}</a>
+                        </td>
+                        <td>{{ evidence.post.date | date('Y-m-d h:i:s') }}</td>
                         <td style="text-align: right">
-                            <a class="btn"></a>
+                            <form method="post" action="/editEvidenceShow" class="single-button-form">
+                                <input type="hidden" name="user_id" value="{{ contentUser.id }}">
+                                <input type="hidden" name="evidence_id" value="{{ evidence.id }}">
+                            {% if evidence.show == true %}
+                                <input type="hidden" name="show" value="0">
+                                <button class="btn btn-danger">Hide </button>
+                            {% else %}
+                                <input type="hidden" name="show" value="1">
+                                <button class="btn btn-default">Show</button>
+                            {% endif %}
+                            {% if evidence.show == true %}
+                                <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}/answer/{{ evidence.id }}" class="btn btn-primary">View</a>
+                            {% endif %}
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}
@@ -28,11 +62,55 @@
         </table>
         <script>
             $(function(){
-                $('#evidence-table').dataTable({bPaginate: false});
+                $('#evidence-table').dataTable({"order": [[ 3, "desc" ]]});
             })
         </script>
     {% else %}
         <div class="alert alert-info">No evidence to show!</div>
     {% endif %}
+    <br/>
+        <h3>Comments</h3>
+        {% if comments && comments | length > 0 %}
+            <table id="comment-table" class="table table-responsive table-bordered">
+                <thead>
+                    <th>id</th>
+                    <th>showing</th>
+                    <th>text</th>
+                    <th>date</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                {% for comment in comments %}
+                    <tr {% if comment.show == false %}class="danger"{% endif %}>
+                        <td>{{ comment.id }}</td>
+                        <td>{{ comment.show }}</td>
+                        <td>{{ comment.text }}</td>
+                        <td>{{ comment.date | date('Y-m-d h:i:s') }}</td>
+                        <td style="text-align: right">
+                            <form method="post" action="/editCommentShow" class="single-button-form">
+                                <input type="hidden" name="user_id" value="{{ contentUser.id }}">
+                                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                {% if comment.show == true %}
+                                    <input type="hidden" name="show" value="0">
+                                    <button class="btn btn-danger">Hide </button>
+                                {% else %}
+                                    <input type="hidden" name="show" value="1">
+                                    <button class="btn btn-default">Show </button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <script>
+                $(function(){
+                    $('#comment-table').dataTable({ "order": [[ 3, "desc" ]]});
+                })
+            </script>
+        {% else %}
+            <div class="alert alert-info">No comments to show!</div>
+        {% endif %}
 
 {% endblock %}

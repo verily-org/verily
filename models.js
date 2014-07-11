@@ -1,4 +1,5 @@
 var bcrypt   = require('bcrypt-nodejs'),
+    common   = require('./static/js/common'),
     orm = require('orm');
 
 module.exports = function (db, cb) {
@@ -155,30 +156,30 @@ module.exports = function (db, cb) {
         {
             methods: {
                 getUpvoteCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isUpvote()}).length;
+                    return this.ratings.filter(function(rating){return rating.isUpvote() && common.isUserContentShow(rating.user) && rating.show;}).length;
                 },
                 getDownvoteCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isDownvote()}).length;
+                    return this.ratings.filter(function(rating){return rating.isDownvote() && common.isUserContentShow(rating.user) && rating.show;}).length;
                 },
                 getImportanceCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isImportance()}).length;
+                    return this.ratings.filter(function(rating){return rating.isImportance() && common.isUserContentShow(rating.user) && rating.show;}).length;
                 },
                 isUpvotedBy: function(user){
-                    var ratings = this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isUpvote()});
+                    var ratings = this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isUpvote() && common.isUserContentShow(rating.user) && rating.show;});
 
                     return ratings.length > 0;
                 },
                 isDownvotedBy: function(user){
-                    return this.ratings.filter(function(rating){return (user.id === rating.user_id) && rating.isDownvote()}).length > 0;
+                    return this.ratings.filter(function(rating){return (user.id === rating.user_id) && rating.isDownvote() && common.isUserContentShow(rating.user) && rating.show;}).length > 0;
                 },
                 isMarkedImportantBy: function(user){
-                    return this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isImportance()}).length > 0;
+                    return this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isImportance() && common.isUserContentShow(rating.user) && rating.show;}).length > 0;
                 },
                 addViewCount: function(){
                     this.viewCount++;
                     this.save();
                 }
-            }
+            }, autoFetch:true, autoFetchLimit: 3
         },
         {
             validations:{
@@ -187,14 +188,18 @@ module.exports = function (db, cb) {
         }), Question = db.define('question', {
             // knownAnswer: {
             //     type: 'text'
-            // }
+            // },
+            show: {
+                type: 'boolean',
+                defaultValue: '1'
+            }
     },
         {
             methods: {
                 getSupportedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Support, else not loaded returns 0!
                     if(this.answers != undefined){
-                        return this.answers.filter(function(a){return a.isSupport() && a.show}).length;
+                        return this.answers.filter(function(a){return a.isSupport() && a.show && common.isUserContentShow(a.post.user)}).length;
                     }
                     else{
                         return 0;
@@ -203,7 +208,7 @@ module.exports = function (db, cb) {
                 getRejectedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Reject, else not loaded returns 0!
                     if(this.answers != undefined){
-                        return this.answers.filter(function(a){return a.isAgainst() && a.show}).length;
+                        return this.answers.filter(function(a){return a.isAgainst() && a.show && common.isUserContentShow(a.post.user)}).length;
                     }
                     else{
                         return 0;
@@ -218,7 +223,7 @@ module.exports = function (db, cb) {
         show: {
             type: 'boolean',
             defaultValue: '1'
-        } 
+        }
     }, {
         methods: {
             isSupport: function(){
@@ -227,7 +232,8 @@ module.exports = function (db, cb) {
             isAgainst: function(){
                 return this.type == "reject";
             }
-        }, autoFetchLimit: 2
+        },autoFetch: true,
+        autoFetchLimit: 4
     }), Comment = db.define('comment',{
         date: {
             type: 'date',
@@ -263,6 +269,10 @@ module.exports = function (db, cb) {
         },
         author: {
             type: 'text'
+        },
+        show: {
+            type: 'boolean',
+            defaultValue: '1'
         }
     },
         {
@@ -371,6 +381,10 @@ module.exports = function (db, cb) {
         },{validations: {
         name: [orm.enforce.unique("name already taken!"),orm.enforce.ranges.length(1, undefined, "missing")],
     }}), Crisis = db.define('crisis', {
+        show: {
+            type: 'boolean',
+            defaultValue: '1'
+        }
     });
 
     Answer.hasOne('question', Question, {
@@ -379,11 +393,11 @@ module.exports = function (db, cb) {
 
     Question.hasOne('post', Post, {reverse: 'questions', autoFetch: true});
 
-    Answer.hasOne('post', Post, {reverse: 'answers', autoFetch: true});
+    Answer.hasOne('post', Post, {reverse: 'answers', autoFetch: true, autoFetchLimit: 3});
 
     Rating.hasOne('post', Post, {reverse: 'ratings', autoFetch: true});
 
-    Rating.hasOne('user', User, {reverse: 'ratings'});
+    Rating.hasOne('user', User, {reverse: 'ratings', autoFetch: true});
 
     Comment.hasOne('user', User, {reverse: 'comments'}, {
         autoFetch: true

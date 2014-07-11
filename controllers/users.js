@@ -594,20 +594,24 @@ var postBanUser = function (req, res) {
 exports.postBanUser = [isAdmin, postBanUser];
 
 var getUserContentList = function (req, res) {
-    req.models.User.get(req.params.user_id, function (err, user) {
+    req.models.User.get(req.params.user_id, {autoFetch:true, autoFetchLimit:4}, function (err, user) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {
-            user.getPosts(function(err, posts){
+            req.models.Answer.findByPost({user_id: user.id},function(err, answers){
                 if(err)generic.genericErrorHandler(req, res, err);
-                res.render('user/contentList', {
-                    page: {
-                        title: 'User Content List'
-                    },
-                    info: req.flash('info'),
-                    //user: req.user,
-                    posts: user.posts,
-                    comments: user.comments
+                req.models.Comment.find({user_id: user.id},function(err, comments){
+                    if(err)generic.genericErrorHandler(req, res, err);
+                    res.render('user/contentList', {
+                        page: {
+                            title: 'User Content List'
+                        },
+                        info: req.flash('info'),
+                        //user: req.user,
+                        contentUser: user,
+                        evidences: answers,
+                        comments: comments
+                    });
                 });
             });
 
@@ -616,6 +620,77 @@ var getUserContentList = function (req, res) {
 };
 exports.getUserContentList = [isAdmin, getUserContentList];
 
+var postEditUserEvidenceShow = function (req, res) {
+    req.models.User.get(req.body.user_id, {autoFetch:true, autoFetchLimit:4}, function (err, user) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            var bool_value = falseValue;
+            if(req.body.show == "1"){
+                bool_value = trueValue;
+            }
+            req.models.Answer.findByPost({user_id: user.id}).each(function(answer){
+                answer.show = bool_value;
+            }).save(function(err){
+                        if(err)generic.genericErrorHandler(req, res, err);
+                        req.models.Comment.find({user_id: user.id}).each(function(comment){
+                            comment.show = bool_value;
+                        }).save(function(err){
+                                if(err)generic.genericErrorHandler(req, res, err);
+                                req.models.Rating.find({user_id: user.id}).each(function(rating){
+                                    rating.show = bool_value;
+                                }).save(function(err){
+                                    if(err)generic.genericErrorHandler(req, res, err);
+
+                                    req.flash('info', 'User content updated successfully.');
+                                    res.redirect('user/'+user.id+'/userContentList');
+                                });
+                        });
+                });
+        }
+    });
+};
+exports.postEditUserEvidenceShow = [isAdmin, postEditUserEvidenceShow];
+
+var postEditCommentShow = function (req, res) {
+    req.models.Comment.get(req.body.comment_id, function (err, comment) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            var bool_value = falseValue;
+            if(req.body.show == "1"){
+                bool_value = trueValue;
+            }
+            comment.show = bool_value;
+            comment.save(function(err){
+                if(err)generic.genericErrorHandler(req, res, err);
+                req.flash('info', 'Comment updated successfully.');
+                res.redirect('user/'+req.body.user_id+'/userContentList');
+            });
+        }
+    });
+};
+exports.postEditCommentShow = [isAdmin, postEditCommentShow];
+
+var postEditEvidenceShow = function (req, res) {
+    req.models.Answer.get(req.body.evidence_id, function (err, answer) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        } else {
+            var bool_value = falseValue;
+            if(req.body.show == "1"){
+                bool_value = trueValue;
+            }
+            answer.show = bool_value;
+            answer.save(function(err){
+                if(err)generic.genericErrorHandler(req, res, err);
+                req.flash('info', 'Evidence updated successfully.');
+                res.redirect('user/'+req.body.user_id+'/userContentList');
+            });
+        }
+    });
+};
+exports.postEditEvidenceShow = [isAdmin, postEditEvidenceShow];
 
 exports.passChangeView = function (req, res) {
     if (req.user) {

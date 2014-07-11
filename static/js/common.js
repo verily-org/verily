@@ -164,7 +164,6 @@ var getAllFromRange = exports.getAllFromRange = common.getAllFromRange = functio
 var validateVideoImage = exports.validateVideoImage = common.validateVideoImage = function(values, elemsParent, elemsIsArray, callback) {
     var error = null,
         i = 0;
-    console.log(values);
     for(var key in values){
         if(values[key].length > 0){
             i++;
@@ -294,13 +293,14 @@ var secondDefault = exports.secondDefault = common.secondDefault = function() {
     return "Seconds";
 };
 
-exports.properUser = function(req) {
-    console.log("BLOCK_PROVISIONAL_USERS variable: ",process.env.BLOCK_PROVISIONAL_USERS);
-    // return !(req.user.type === 'provisional' && process.env.BLOCK_PROVISIONAL_USERS == 1) && req.user.active;
-    return true;
-};
+var properUser = exports.properUser = common.properUser = function(req) {
+    return !(req.user.type === 'provisional' && process.env.BLOCK_PROVISIONAL_USERS == 1) && req.user.active;
+}
 
 var isUserContentShow = exports.isUserContentShow = common.isUserContentShow = function(user) {
     return !(user.type === 'provisional' && process.env.HIDE_PROVISIONAL_USERS_CONTENT == 1);
-};
+}
 
+var isItemShow = exports.isItemShow = common.isItemShow = function(item){
+    return !(item.hasOwnProperty('show') && !item.show);
+}
