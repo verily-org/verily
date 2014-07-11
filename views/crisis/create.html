@@ -9,6 +9,7 @@
 
     <form id="create-crisis" class="post-form" role="form" action="/crisis" method="POST" enctype="multipart/form-data">
         <!-- <input type="hidden" name="_method" value="POST"> -->
+        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
         <input type="hidden" id="form-question-type" name="type">
 
         {% include '../post/form.html' %}

@@ -54,7 +54,6 @@ module.exports = function (suppressLogs, dbTestUrl) {
     app.use(connect.json());
 
 //    var csrf = express.csrf();
-
 //    var admin_re = new RegExp("^/admin");
 //    var conditionalCSRF = function (req, res, next) {
 //        //compute needCSRF here as appropriate based on req.path or whatever
@@ -65,7 +64,6 @@ module.exports = function (suppressLogs, dbTestUrl) {
 //            next();
 //        }
 //    };
-//    app.use(express.csrf());
     
     // To allow use of all HTTP methods in the browser through use of _method variable
     app.use(express.methodOverride());
@@ -396,7 +394,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         
         // Call the cleaner now!
         app.use(cleaner);
-        
+
         // 10 years in millseconds.
         var cookieExpireAfter = 10 * 365 * ONE_DAY_MSECS;
         
@@ -416,17 +414,6 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 
         app.use(session(sess));
         
-        //<input type="hidden" name="_csrf" value="{{csrf_token}}" />
-		// middleware for common locals with request-specific values
-//        app.use(function (req, res, next) {
-//        	//res.locals({
-//        	//	csrf_token: req.csrfToken()
-//        	//});
-//        	//res.locals.csrf_token = req.csrfToken();
-//        	res.locals.csrf_token = 'test';
-//        	next();
-//        });
-        
         app.use(passport.initialize());
         app.use(passport.session());
 
@@ -434,9 +421,22 @@ module.exports = function (suppressLogs, dbTestUrl) {
         app.use(flash());
         app.use(analytics);
         app.use(saveRedirectUrl);
+        
+        app.use(express.csrf());
+        
+		// middleware for common locals with request-specific values
+        app.use(function (req, res, next) {
+        	//console.log('csrf middleware');
+        	//res.locals({
+        	//	csrf_token: req.csrfToken()
+        	//});
+        	res.locals.csrf_token = req.csrfToken();
+        	//res.locals.csrf_token = 'test';
+        	next();
+        });
+        
         app.use(app.router);
         
-
     //    app.listen();
     //
     //    if (!suppressLogs) {

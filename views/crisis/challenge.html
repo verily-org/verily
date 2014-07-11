@@ -144,6 +144,7 @@
             show_alert_message('warning', 5000, "Atention", "Submit under construction ");
             return false;
             $.post('/challenge',
+                    {_csrf: "{{csrf_token}}" },
                     function(data){
                         var answer = data;
                         show_alert_message('success', 5000, "Email sent", "Thank you! We're looking forward to your contributions!");

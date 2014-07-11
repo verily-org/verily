@@ -7,6 +7,7 @@
             $("div").on('click', '.btn_downvote', function(){
                 var button = $(this);
                 $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
+                		{_csrf: "{{csrf_token}}" },
                         function(data){
                             var answer = data;
                             update_votes(answer, button);
@@ -17,6 +18,7 @@
             $("div").on('click', '.btn_upvote', function(){
                 var button = $(this);
                 $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
+                        {_csrf: "{{csrf_token}}" },
                         function(data){
                             var answer = data;
                             update_votes(answer, button);

@@ -20,6 +20,7 @@
 </script>
 
 <form action="/adminAnswers" method="POST" onsubmit="getShown();">
+    <input type="hidden" name="_csrf" value="{{csrf_token}}" />
 	<input type="hidden" name="shownAnswers" id="shownAnswers">
 
 	<div class="row question-answers">

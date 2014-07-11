@@ -99,6 +99,7 @@ map = map_init('map');
         $(".mark-important-crisis-btn").click(function(){
             var button = $(this);
             $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',
+                    {_csrf: "{{csrf_token}}" },
                     function(data){
                         var crisis = data;
                         update_markedImportant(crisis, button);

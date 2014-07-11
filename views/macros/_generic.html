@@ -23,7 +23,11 @@
             $(video_wrapper).find('.video-spinner').show();
             $(video_wrapper).find('.video-container').hide();
             $(video_wrapper).find('.video-error-message').hide();
-            $.post('/getVideoHtml', {videoUrl: target_url},
+            $.post('/getVideoHtml', 
+            		{
+                videoUrl: target_url,
+                _csrf: "{{csrf_token}}"
+                     },
                     function(result){
                         if(result.html){
                             var video_html = result.html;

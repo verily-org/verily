@@ -9,6 +9,7 @@
         Choose your username
     </p>
     <form id="signup" role="form" action="/username" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
 		<!-- <input type="hidden" name="_method" value="POST">
 		<input type="hidden" id="form-question-type" name="type"> -->
 
