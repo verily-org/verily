@@ -319,8 +319,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
             // Do not count favicon.ico requests.
             // Record the metadata of the impression.
             
-            console.log('==================== IMPRESSION ' + req.path +  ' ====================' + req.method);
-            console.log(req.body);
+            console.log('==================== IMPRESSION ' + req.path +  ' ====================');
             console.log('---- REFCODES -----');
             console.log(req.session.refcodes);
             
