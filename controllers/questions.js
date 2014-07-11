@@ -170,6 +170,8 @@ var new_questions = function (req, res) {
         var key = req.body.key;
 
         s3.get(key, function(err, data){
+            console.log('s3 data');
+            console.log(data);
             if (err) {
                 console.log('error in getting from S3:');
                 console.log(err);
