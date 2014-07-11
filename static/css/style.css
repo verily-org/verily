@@ -154,6 +154,12 @@ div.welcome p.challenge-description {
     color: #dddddd;
 }
 
+div.welcome ul.challenge-description {
+    color: #dddddd;
+}
+
+
+
 .well.challenge-description {
 /*        background-color: rgba(255, 255, 255, .5);*/
 }
@@ -258,6 +264,9 @@ div.welcome p.lead.stay-large {
     font-size: 21px !important;
 }
 
+div.welcome ul.lead.stay-large {
+    font-size: 21px !important;
+}
 
 
 div.welcome p.event-date {
