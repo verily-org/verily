@@ -174,6 +174,72 @@ div.welcome p.challenge-description {
     color: #007f80;
 }
 
+.navbar-form.nav-search {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav-search .input-group {
+/*    width: 100%;*/
+}
+
+
+@media (min-width: 768px) {    
+    .nav-search .input-group {
+        width: 10vw;
+        transition: all 0.25s ease;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar-form.nav-search {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+.nav-search input {
+    background-color: #71c7c7;
+    color: #000000;
+    border-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding-left: 6px;
+    padding-right: 3px;
+}
+
+.nav-search button {
+    background-color: #71c7c7;
+    color: #009c9c;
+    border-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 6px;
+}
+
+.nav-search button:hover,
+.nav-search button:focus {
+    background-color: #71c7c7;
+    border-color: transparent;
+}
+
+.nav-search input:focus {
+    background-color: #ffffff;
+    border-color: transparent;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.nav-search button.focused {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+
 
 div.welcome .well {
     padding-top: 0;
@@ -786,8 +852,12 @@ fa.breadcrumb {
 /*    font-size: 100%*/
 }
 
-ul.team {
-    font-size: 1.5em;
+.team {
+    font-size: 1.2em;
+}
+
+.team div {
+    padding-bottom: 1em;
 }
 
 

@@ -4,6 +4,7 @@
 
 {% block content %}
 
+{% if questions and questions.length !== 0 %}
 <h2 class="title">
 	Search Results
 </h2>
@@ -18,6 +19,7 @@
         </select>
     </div>
 </div>
+{% endif %}
 
 <div class="row question-answers crisis-questions">
     {% for question in questions | reverse %}

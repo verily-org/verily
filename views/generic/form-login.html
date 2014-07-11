@@ -9,6 +9,15 @@
     <div class="form-group">
 		<input type="password" class="form-control input-lg form-password" name="password" placeholder="Password" tabindex="2">
     </div>
+    
+    {% if user.type === 'provisional' %}
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Associate content posted as a guest user under {{ user.name }} with this account.
+        </label>
+    </div>
+    {% endif %}
 	
 	<div>
 		<a href="/forgot">Forgot Password</a>

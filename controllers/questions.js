@@ -7,6 +7,7 @@ var oembed = require('oembed');
 var fs = require('fs');
 var s3 = require('../s3');
 var mode = require('../mode');
+var path = require('path');
 
 var common = require('../static/js/common');
 
@@ -41,9 +42,21 @@ var getQuestionRelevance = function (question, cb) {
     cb();
 };
 
+var renderSearchResults = function(req, res, questions) {
+    res.render('question/search', {
+        page: {
+            title: 'Search Questions'
+        },
+        info: req.flash('info'),
+        error: req.flash('error'),
+        questions: questions
+    });
+};
+
 //Search Questions
 exports.searchQuestions = function (req, res) {
-    words = req.body.search.toLowerCase().split(' ');
+    var query = req.body.search;
+    words = query.toLowerCase().split(' ');
     req.models.Question.find({}, function (err, questions) {
         if (err) {
             console.log(err);
@@ -63,26 +76,19 @@ exports.searchQuestions = function (req, res) {
                                 var questionsTmp = relevantQuestions;
                                 relevantQuestions = [];
 
-                                res.render('question/search', {
-                                    page: {
-                                        title: 'Search Questions'
-                                    },
-                                    info: req.flash('info'),
-                                    error: req.flash('error'),
-                                    questions: questionsTmp
-                                });
+                                renderSearchResults(req, res, questionsTmp);
                             }
                         });
                     } else {
-                        req.flash('info', 'No matches were found!');
-                        res.redirect('back');
+                        req.flash('info', 'No results for "' + query + '"');
+                        renderSearchResults(req, res, null);
                     }    
                 });
 
                     
             } else {
-                req.flash('info', 'No matches were found!');
-                res.redirect('back'); 
+                req.flash('info', 'No results for "' + query + '"');
+                renderSearchResults(req, res, null);
             }
         }
     });
@@ -185,14 +191,16 @@ var new_questions = function (req, res) {
             async.eachSeries(json.questions,
                 function(question, callback){
                     //Prepare data
+                    var date;
                     if(question.targetDateTimeOccurred){
-                        var date = new Date(question.targetDateTimeOccurred);
+                        date = new Date(question.targetDateTimeOccurred);
                     }
-                    else{
-                        var date = new Date();
-                       }
                     req.body.formSelectImage = "link";
-                    req.body.targetDateTimeOccurred = [date.getDate(), (date.getMonth()+1), date.getFullYear(), date.getHours(), date.getMinutes()];
+                    
+                    if (date) {
+                        req.body.targetDateTimeOccurred = [date.getDate(), (date.getMonth()+1), date.getFullYear(), date.getHours(), date.getMinutes()];
+                    }
+
 
                     if(!question.title || question.title == ""){
                         callback("Title needed on question: " + question.key);
@@ -287,8 +295,11 @@ exports.edit = [checkRole, editQuestion];
 var getQuestion = function (req, addView, callback) {
     // ETag support.
     var reqIfNoneMatch = req.get(enums.ifNoneMatch) || null;
+    
+    // Works for pretty question URLs
+    var questionId = parseInt(req.params.question_id);
 
-    generic.get(req.models.Question, req.params.question_id, reqIfNoneMatch, function (err, question) {
+    generic.get(req.models.Question, questionId, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
             
             var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
@@ -310,6 +321,15 @@ var getQuestion = function (req, addView, callback) {
 
                    generic.load_question_extra_fields(question, function(err){
                        if (!err) {
+                           
+                           // Canonicalise the path to the pretty format
+                           // that works well for bookmarks.
+                           var canonicalPath = common.prettyPath({
+                               req: req,
+                               id: question.id,
+                               string: question.post.title
+                           });
+                                                      
                            var questionTmp = {
                                title: question.post.title,
                                id: question.id,
@@ -331,7 +351,8 @@ var getQuestion = function (req, addView, callback) {
                                supportedAnswerCount: question.supportedAnswerCount,
                                updated: question.post.updated,
                                importanceCount: question.importanceCount,
-                               post: question.post
+                               canonicalPath: canonicalPath,
+                               post: question.post,
                            }, wrapper = {
                                question: questionTmp
                            };
@@ -419,33 +440,37 @@ var getOne = function (req, res) {
                 // Set the ETag header.
                 //res.set(enums.eTag, question.updated);
                 
-                generic.generateRefCodes(4, function(refcodeArray) {
-                    var refcodes = {
-                        twitter: refcodeArray[0],
-                        facebook: refcodeArray[1],
-                        email: refcodeArray[2],
-                        link: refcodeArray[3]
-                    };
+                if (req.path !== question.canonicalPath) {
+                    // Redirect the user to the canonical path
+                    res.redirect(question.canonicalPath);
+                    res.end();
+                } else {
+                    // Already using the canonical path!
+                    generic.generateRefCodes(4, function(refcodeArray) {
+                        var refcodes = {
+                            twitter: refcodeArray[0],
+                            facebook: refcodeArray[1],
+                            email: refcodeArray[2],
+                            link: refcodeArray[3]
+                        };
                     
-                    if(question.post.targetVideoUrl){
-                        oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
+                        if(question.post.targetVideoUrl){
+                            oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
 
-                            if (!err){
-                                question.post.targetVideoHtml = result.html;
-                            } else {
-                                question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
-                            }
+                                if (!err){
+                                    question.post.targetVideoHtml = result.html;
+                                } else {
+                                    question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
+                                }
 
 
+                                applyUserAndRespond(req, res, crisis, question, refcodes);
+                            });
+                        } else{
                             applyUserAndRespond(req, res, crisis, question, refcodes);
-                        });
-                    } else{
-                        applyUserAndRespond(req, res, crisis, question, refcodes);
-                    }
-                });
-                
-
-
+                        }
+                    });
+                }
             }
         });
     });

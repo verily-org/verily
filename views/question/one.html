@@ -89,7 +89,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                 <p class="metadata">
                     Posted
                     <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> ago </span>
-                    by user {{ question.author }}
+                    by {{ question.author }}
                 </p>
 
                 {% if question.tags and question.tags.length !== 0 %}
