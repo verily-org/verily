@@ -222,6 +222,7 @@
 						{% if challengePublished or (path !== '/' and path !== '/about')%}
 							<li>
 								<form action="/search" method="POST" class="navbar-form nav-search">
+								<input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="search" id="search" data-placeholder="Search Questions">
                                         <span class="input-group-btn">

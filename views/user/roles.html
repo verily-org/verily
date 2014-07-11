@@ -8,6 +8,7 @@
 <script type="text/javascript" src="/static/js/search.js"></script>
 
 <form action="/roles" method="POST" onsubmit="finalPlace('|', 'basic', 'basics', 'editor', 'editors', 'admin', 'admins');">
+    <input type="hidden" name="_csrf" value="{{csrf_token}}" />
 	<input type="hidden" name="basics" id="basics">
 	<input type="hidden" name="editors" id="editors">
 	<input type="hidden" name="admins" id="admins">

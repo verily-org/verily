@@ -4,7 +4,7 @@
     <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
 
     <form id="create-answer-comment" class="post-form" role="form" action="/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/{{ answer.id }}/comments" method="POST" enctype="multipart/form-data">
-
+        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
         {% include '../post/comment_form.html' %}
     
         <button id="submit" type="submit" class="btn btn-sm btn-primary {% if !properUser %} user-required-action{% endif %}">Submit Comment</button>

@@ -10,6 +10,7 @@
     </p>
     
 	<form id="forgot" role="form" action="/forgot" method="POST">
+	   <input type="hidden" name="_csrf" value="{{csrf_token}}" />
 
 	<div class="form-group">
         <input type="text" class="form-control input-lg" id="form-email" name="email" placeholder="Email">
