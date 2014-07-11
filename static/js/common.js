@@ -106,11 +106,11 @@ var prettyPath = exports.prettyPath = common.prettyPath = function(data) {
         }
         
         if (prefix) {
-            path = pathHelper.join(prefix, path);
+            path = prefix + '/' + path;
         }
         
         if (postPrefix) {
-            path = pathHelper.join(path, postPrefix);
+            path += '/' + postPrefix;
         }
     }
     
