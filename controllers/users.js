@@ -864,7 +864,7 @@ exports.forgot = function (req, res) {
             }
             ], function(err, local) {
                 if (err) {
-                    req.flash('info', 'There has been an error');
+                    req.flash('info', 'There has been an error' + err);
                     res.redirect('/forgot');
                     return; 
                 };
@@ -889,15 +889,15 @@ exports.resetView = function (req, res) {
                         title: 'Forgotten Password'
                     }, error: error
                 }); 
-            }
-
-            res.render('user/reset', {
-                page: {
-                    title: 'Reset Password'
-                }, 
-                token: token,
-                error: req.flash('error')
-            });
+            } else {
+                res.render('user/reset', {
+                    page: {
+                        title: 'Reset Password'
+                    }, 
+                    token: token,
+                    error: req.flash('error')
+                }); 
+            }   
         });
     } else {
         res.redirect('/changePass');
@@ -943,7 +943,9 @@ exports.reset = function (req, res) {
                 });
             },
             function(local, done) {
-                generic.sendMailtoLocal(req, null, local, 'reset', done);
+                generic.sendMailtoLocal(req, null, local, 'reset', function (err, local) {
+                    done(err, local, 'done');
+                });
             }
         ], function(err, local) {
             if (err) {
@@ -962,7 +964,7 @@ exports.reset = function (req, res) {
                                 res.redirect('/reset/'+token); 
                             } else {
                                 req.flash('info', 'Your password has been changed!');
-                                res.redirect('/');
+                                res.redirect('/user');
                             }
                         });    
                     }
