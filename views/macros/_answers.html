@@ -42,21 +42,21 @@
     {% import '_generic.html' as generic_macros %}
     {{ vote_script() }}
     {% for answer in answers | reverse %}
-		{% if (!adminFlag && answer.show) || (adminFlag) %}
+		{% if (!adminFlag and answer.show) || (adminFlag) %}
 			{% if loop.index % 3 == 1 %}
 				<div class="row">
 			{% endif %}
 			<div class="col-sm-4 answer-wrapper" data-date="{{ answer.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ answer.popularityCoefficient }}" data-upvotes="{{ answer.post.upvoteCount }}">
 				<div class="panel panel-default verily-panel question-answer">
-					<div class="question-answer-bar {% if answer.type === 'support' %}label-success{% else %}label-danger{% endif %}">
+					<div class="question-answer-bar">
 						{% if answer.type === 'support' %}
 							<span class="metric">
-								<i class="fa fa-check"></i>
+								<i class="fa fa-check text-success"></i>
 								<span class="">Yes because
 							</span>
 						{% else %}
 							<span class="metric">
-								<i class="fa fa-times"></i>
+								<i class="fa fa-times text-danger"></i>
 								<span class="">No because
 							</span>
 

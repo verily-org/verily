@@ -779,11 +779,10 @@ fa.breadcrumb {
 .question-answer-bar {
     margin: 0;
     padding: 0;
-    color: #ffffff;
 }
 
 .question-answer-bar .metric {
-    color: #ffffff;
+
 }
 
 .question-answer-bar > span {
