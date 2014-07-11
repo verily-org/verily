@@ -233,9 +233,17 @@
                             <script>
                             
                             $('#search').focus(function(e) {
+                                var headerWidth = $('.navbar-header').css('width');
+                                var searchBoxWidth = $('.nav-search .input-group').css('width');
+                                
                                 $('#search').attr('placeholder', $('#search').data('placeholder'));
                                 $('.nav-search button').toggleClass('focused');
-                                $('.nav-search .input-group').width('20vw');
+                                if (headerWidth !== searchBoxWidth) {
+                                    // search box is not full viewport width,
+                                    // so not on mobile or xs devices.
+                                    $('.nav-search .input-group').width('20vw');
+                                }
+
                             });
                             $('#search').blur(function(e) {
                                 $('#search').attr('placeholder', '');

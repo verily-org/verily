@@ -235,8 +235,7 @@
                             </div>
                         </div>
                     {% elseif question.post.targetImage %}
-                        <div class="row">
-                            <img src="{{ question.post.targetImage }}" class="img-responsive center-block">
+                        <div class="row question-image" style="background-image: url({{ question.post.targetImage }});">
                         </div>
                     {% endif %}
                     <div class="posted">
