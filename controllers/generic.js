@@ -148,7 +148,7 @@ exports.create = function (model, data, req, cb) {
                         	// TODO: resize image
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
                             var resizedStream = imagick(fileReadStream, req.files.targetImageUpload.name
-                            		).resize(500,500).stream();
+                            		).resize(500,500).stream('jpg');
                             //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
                             s3Upload(s3, targetImagePath, resizedStream, imageHandled);
                             
@@ -343,7 +343,7 @@ exports.update = function (model, id, req, cb) {
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
 							///////
                             var resizedStream = imagick(fileReadStream, req.files.targetImageUpload.name
-                            		).resize(500,500).stream();
+                            		).resize(500,500).stream('jpg');
                             //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
                             s3Upload(s3, targetImagePath, resizedStream, imageHandled);
 
