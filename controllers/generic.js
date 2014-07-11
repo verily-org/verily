@@ -153,11 +153,11 @@ exports.create = function (model, data, req, cb) {
                             		).write(tmpImagePath, function (resizeErr) {
                             	  if (resizeErr) {
                             		  console.log('resizeErr:', resizeErr);
-                            		  return;
+                            	  } else {
+	                            	  console.log('resize ok!');
+	                            	  var resizedStream = fs.createReadStream(tmpImagePath);
+	                            	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
                             	  }
-                            	  console.log('resize ok!');
-                            	  var resizedStream = fs.createReadStream(tmpImagePath);
-                            	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
                             	});
                             //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
                             //s3Upload(s3, targetImagePath, resizedStream, imageHandled);
@@ -360,11 +360,11 @@ exports.update = function (model, id, req, cb) {
 	                    		).write(tmpImagePath, function (resizeErr) {
 	                    	  if (resizeErr) {
 	                    		  console.log('resizeErr:', resizeErr);
-	                    		  return;
+	                    	  } else {
+		                    	  console.log('resize ok!');
+		                    	  var resizedStream = fs.createReadStream(tmpImagePath);
+		                    	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
 	                    	  }
-	                    	  console.log('resize ok!');
-	                    	  var resizedStream = fs.createReadStream(tmpImagePath);
-	                    	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
 	                    	});
                             //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
                             //s3Upload(s3, targetImagePath, resizedStream, imageHandled);
