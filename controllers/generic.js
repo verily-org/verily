@@ -266,9 +266,12 @@ exports.get = function (model, id, reqIfNoneMatch, cb) {
         if (!err) {
             // Add the post fields to the output.
             item.getPost(function (err, post) {
-                if (!err && post) {
+                //Check if the item is not hidden
+                    if(common.isUserContentShow(item.post.user) && common.isItemShow(item)){
+
+                    if (!err && post) {
 //                    Used for caching
-                    // If reqIfNoneMatch is present, compare with it.
+                        // If reqIfNoneMatch is present, compare with it.
 //                    if (reqIfNoneMatch && post.updated === cutQuotes(reqIfNoneMatch)) {
 //                        // Client has latest version:
 //                        // resource has NOT changed
@@ -276,17 +279,22 @@ exports.get = function (model, id, reqIfNoneMatch, cb) {
 //                    } else {
                         // Client does not have latest version:
                         // resource has changed.
-                    exports.load_post_ratings_count(item, function(err){
-                        if(err){
-                            cb(err, null);
-                        }
-                        else{
-                            cb(null, item);
-                        }
-                    });
+                        exports.load_post_ratings_count(item, function(err){
+                            if(err){
+                                cb(err, null);
+                            }
+                            else{
+                                cb(null, item);
+                            }
+                        });
 //                    }
-                } else {
-                    cb({}, null);
+                    } else {
+                        cb({}, null);
+                    }
+                }
+                else{
+                    var err = {code:2};
+                    cb(err, null);
                 }
             });
         } else {
@@ -499,6 +507,7 @@ exports.load_question_extra_fields = function(question, callback){
     }
 }
 var load_post_ratings_count_function = function(item, callback){
+
     //item.post.getUser(function(a,d){});
     item.post.getRatings(function(err, ratings){
         if (!err && ratings) {

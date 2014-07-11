@@ -132,7 +132,6 @@ var getAllFromRange = exports.getAllFromRange = common.getAllFromRange = functio
 var validateVideoImage = exports.validateVideoImage = common.validateVideoImage = function(values, elemsParent, elemsIsArray, callback) {
     var error = null,
         i = 0;
-    console.log(values);
     for(var key in values){
         if(values[key].length > 0){
             i++;
@@ -180,7 +179,7 @@ var validateComment = exports.validateComment = common.validateComment = functio
 
 // --- CHALLENGE PUBLISHED SETTING ---
 var challengePublished = exports.challengePublished = common.challengePublished = function() {
-    return false;
+    return true;
 }
 
 // Used at client and server side.
@@ -270,3 +269,6 @@ var isUserContentShow = exports.isUserContentShow = common.isUserContentShow = f
     return !(user.type === 'provisional' && process.env.HIDE_PROVISIONAL_USERS_CONTENT == 1);
 }
 
+var isItemShow = exports.isItemShow = common.isItemShow = function(item){
+    return !(item.hasOwnProperty('show') && !item.show);
+}
