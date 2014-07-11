@@ -106,11 +106,11 @@ var prettyPath = exports.prettyPath = common.prettyPath = function(data) {
         }
         
         if (prefix) {
-            path = pathHelper.join(prefix, path);
+            path = prefix + '/' + path;
         }
         
         if (postPrefix) {
-            path = pathHelper.join(path, postPrefix);
+            path += '/' + postPrefix;
         }
     }
     
@@ -219,47 +219,49 @@ var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validat
     var error = null;
     var date = null;
     
-    // We are dealing with an array of values (dd, mm, yyyy, h, m, s)
-    var day = value[0];
-    var month = value[1];
-    var year = value[2];
-    var hour = value[3];
-    var minute = value[4];
-    // var second = value[5];
+    if (value && Object.prototype.toString.call(value) === '[object Array]') {
+        // We are dealing with an array of values (dd, mm, yyyy, h, m, s)
+        var day = value[0];
+        var month = value[1];
+        var year = value[2];
+        var hour = value[3];
+        var minute = value[4];
+        // var second = value[5];
             
-    // If they didn't select a date at all, that's fine -- the date is optional.
-    if (day !== common.dayDefault() ||
-        month !== common.monthDefault() ||
-        year !== common.yearDefault() ||
-        hour !== common.hourDefault() ||
-        minute !== common.minuteDefault()) {
-        // second !== common.secondDefault()) {
-            // There is at least one field not set to its default (placeholder), so
-            // try to construct a date object.
+        // If they didn't select a date at all, that's fine -- the date is optional.
+        if (day !== common.dayDefault() ||
+            month !== common.monthDefault() ||
+            year !== common.yearDefault() ||
+            hour !== common.hourDefault() ||
+            minute !== common.minuteDefault()) {
+            // second !== common.secondDefault()) {
+                // There is at least one field not set to its default (placeholder), so
+                // try to construct a date object.
             
-            day = parseInt(day);
-            month = parseInt(month);
-            year = parseInt(year);
-            hour = parseInt(hour);
-            minute = parseInt(minute);
-            // second = parseInt(second);
+                day = parseInt(day);
+                month = parseInt(month);
+                year = parseInt(year);
+                hour = parseInt(hour);
+                minute = parseInt(minute);
+                // second = parseInt(second);
             
-            // Try to construct a date object out of these fields' values.
-            // var date = new Date(year, month, day, hour, minute, second);
-            date = new Date();
-            date.setUTCFullYear(year);
-            date.setUTCMonth(month - 1);
-            date.setUTCDate(day);
-            date.setUTCHours(hour);
-            date.setUTCMinutes(minute);
-            // date.setUTCSeconds(second);
+                // Try to construct a date object out of these fields' values.
+                // var date = new Date(year, month, day, hour, minute, second);
+                date = new Date();
+                date.setUTCFullYear(year);
+                date.setUTCMonth(month - 1);
+                date.setUTCDate(day);
+                date.setUTCHours(hour);
+                date.setUTCMinutes(minute);
+                // date.setUTCSeconds(second);
                     
-            if (isNaN(date.getTime()) || date.getUTCDate() !== day || date.getUTCMonth() + 1 !== month || date.getUTCFullYear() !== year || date.getUTCHours() !== hour || date.getUTCMinutes() !== minute) {
-             // date.getUTCSeconds() !== second) {
-                // Invalid date.
-                error = 'not valid!';
+                if (isNaN(date.getTime()) || date.getUTCDate() !== day || date.getUTCMonth() + 1 !== month || date.getUTCFullYear() !== year || date.getUTCHours() !== hour || date.getUTCMinutes() !== minute) {
+                 // date.getUTCSeconds() !== second) {
+                    // Invalid date.
+                    error = 'not valid!';
+                }
             }
-        }
+    }
     
     callback(error, date);
 };
