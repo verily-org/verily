@@ -168,8 +168,17 @@ var createAnswer = function (req, res) {
                 if (!err && answer) {
                     answer.setQuestion(question, function (err) {
                         if (!err) {
-                            var link_string = '<a href="/crisis/'+crisis_id +'/question/' + answer.question_id +'/answer/'+answer.id+'">View evidence</a>';
-                            req.flash('info', 'Thanks, your evidence has been posted! ' + link_string);
+                            var link_string = '<a href="/crisis/'+crisis_id +'/question/' + answer.question_id +'/answer/'+answer.id+'">View evidence</a>.';
+                            
+                            var signupLinkString = '<a href="/register">Sign up</a>';
+                            
+                            var message = 'Thanks, your evidence has been posted! ' + link_string;
+                            
+                            if (req.user.type === 'provisional') {
+                                message += '<br>You are currently posting as a guest as ' + req.user.name + '. ' + signupLinkString + ' to keep this content associated with your identity and earn reputation points on the platform.';
+                            }
+                            
+                            req.flash('info', message);
                             res.redirect('/crisis/' + crisis_id +'/question/' + answer.question_id);
                             //res.json(wrapper);
                             res.end();
