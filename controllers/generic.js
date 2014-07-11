@@ -2,6 +2,9 @@ var fs = require('fs');
 var path = require('path');
 var utils = require('utilities');
 
+var gm = require('gm');
+var imagick = gm.subClass({ imageMagick: true });
+
 var enums = require('../enums');
 var config = require('../config');
 var common = require('../static/js/common');
@@ -142,9 +145,12 @@ exports.create = function (model, data, req, cb) {
                         
                         if (mode.isHeroku()) {
                             // Running on Heroku, so store in S3.
+                        	// TODO: resize image
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
-                            s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
-
+                            var resizedStream = imagick(fileReadStream, req.files.targetImageUpload.name
+                            		).resize(500,500);
+                            //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
+                            s3Upload(s3, targetImagePath, resizedStream, imageHandled);
                             
                         } else {
                             // Not running on Heroku, so store in filesystem.
@@ -333,9 +339,13 @@ exports.update = function (model, id, req, cb) {
                         if (mode.isHeroku()) {
                             console.log('before s3 upload');
                             // Running on Heroku, so store in S3.
+                        	// TODO: resize image
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
-                            s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
-
+							///////
+                            var resizedStream = imagick(fileReadStream, req.files.targetImageUpload.name
+                            		).resize(500,500);
+                            //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
+                            s3Upload(s3, targetImagePath, resizedStream, imageHandled);
 
                         } else {
                             // Not running on Heroku, so store in filesystem.
