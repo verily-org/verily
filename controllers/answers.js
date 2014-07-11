@@ -3,6 +3,7 @@ var generic = require('./generic');
 var enums = require('../enums');
 var oembed = require('oembed');
 var common = require('../static/js/common');
+var raiting_controller = require('./ratings');
 
 var async = require('async');
 
@@ -276,24 +277,18 @@ var remove = function (req, res) {
 exports.remove = [role.can('edit an answer'), remove];
 
 var upvote = function (req, res) {
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
-        if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
-                if (!err && answer) {
-                    require('./ratings').upvote(req, answer.post, function(err, rating){
-                        generic.load_answers_extra_fields(answer, function(){
-                            if(!err){
-                                res.status(200);
-                                //Return answer for ajax update
-                                res.json(answer);
-                            } else {
-                                generic.genericErrorHandler(req, res, err);
-                            }
-                        });
-                    });
-                } else {
-                    generic.genericErrorHandler(req, res, err);
-                }
+    generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+        if (!err && answer) {
+            raiting_controller.upvote(req, answer.post, function(err, rating){
+                generic.load_answers_extra_fields(answer, function(){
+                    if(!err){
+                        res.status(200);
+                        //Return answer for ajax update
+                        res.json(answer);
+                    } else {
+                        generic.genericErrorHandler(req, res, err);
+                    }
+                });
             });
         } else {
             generic.genericErrorHandler(req, res, err);
@@ -304,26 +299,20 @@ var upvote = function (req, res) {
 exports.upvote = [role.can('upvote downvote'), upvote];
 
 var downvote = function (req, res) {
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
-        if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
-                if (!err && answer) {
-                    answer.getPost(function(err, post){
-                        require('./ratings').downvote(req, post, function(err, rating){
-                            generic.load_answers_extra_fields(answer, function(){
-                                if(!err){
-                                    res.status(200);
-                                    //Return answer for ajax update
-                                    res.json(answer);
-                                } else {
-                                    generic.genericErrorHandler(req, res, err);
-                                }
-                            });
-                        });
+    generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+        if (!err && answer) {
+            answer.getPost(function(err, post){
+                require('./ratings').downvote(req, post, function(err, rating){
+                    generic.load_answers_extra_fields(answer, function(){
+                        if(!err){
+                            res.status(200);
+                            //Return answer for ajax update
+                            res.json(answer);
+                        } else {
+                            generic.genericErrorHandler(req, res, err);
+                        }
                     });
-                } else {
-                    generic.genericErrorHandler(req, res, err);
-                }
+                });
             });
         } else {
             generic.genericErrorHandler(req, res, err);

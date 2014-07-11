@@ -4,7 +4,7 @@
     <script type="text/javascript">
         $(function(){
             {% if user %}
-            $("div").on('click', '.btn_downvote', function(){
+            $("div .btn_downvote").click( function(){
                 var button = $(this);
                 $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/downvote',
                 		{_csrf: "{{csrf_token}}" },
@@ -15,7 +15,7 @@
                             show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
                         });
             });
-            $("div").on('click', '.btn_upvote', function(){
+            $("div .btn_upvote").click(function(){
                 var button = $(this);
                 $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id') +'/answer/'+button.attr('data-answer-id')+'/upvote',
                         {_csrf: "{{csrf_token}}" },
@@ -59,7 +59,7 @@
 						{% else %}
 							<span class="metric">
 								<i class="fa fa-times text-danger"></i>
-								<span class="">No because
+								<span class="">No because</span>
 							</span>
 
 						{% endif %}
@@ -80,7 +80,7 @@
 								
 							{% if adminFlag %}	
 								<div class="input-group">
-									<input type="checkbox" name="hiddenAnswers" value="{{ answer.id }}" {% if !answer.show %} checked {% endif %}>
+									<input type="checkbox" name="hiddenAnswers" value="{{ answer.id }}" {% if answer.show != true %} checked {% endif %}>
 									Check to hide
 								</div><!-- /input-group -->
 							{% endif %}
