@@ -8,6 +8,7 @@ nodemailer = require('nodemailer'),
 crypto = require('crypto'),
 config = require('../lib/auth'),
 mode = require('../mode'),
+utils = require('utilities'),
 assignedPoints = require('../points.json');
 require('../lib/passport')(passport);
 
@@ -1071,47 +1072,14 @@ var postAllAnswers = function (req, res) {
 
         async.waterfall([
             function (done) {
-                if (hidden) {
-                    req.models.Answer.find({id: hidden, show: trueValue}, function (err, hiddenAnswers) {
-                        if (err) {
-                            done(err);  
-                        } else {
-                            async.each(hiddenAnswers, function (hiddenAnswer, cb) {
-                                hiddenAnswer.show = falseValue;
-                                hiddenAnswer.save(function (err) {
-                                    cb(err);
-                                });
-                            }, function (err) {
-                                done(err);
-                            });
-                        }
-                    }); 
-                } else {
-                    done(null);
-                }
-                    
+                generic.showHideItem(req.models.Answer, shown, trueValue, function (err) {
+                    done(err);
+                });   
             },
             function (done) {
-                if (shown[0]) {
-                    req.models.Answer.find({id: shown, show: falseValue}, function (err, shownAnswers) {
-                        if (err) {
-                            console.log(err);
-                            done(err, 'done');
-                        } else {
-                            async.each(shownAnswers, function (shownAnswer, cb) {
-                                shownAnswer.show = trueValue;
-                                shownAnswer.save(function (err) {
-
-                                    cb(err);
-                                }); 
-                            }, function (err) {
-                                done(err, 'done');
-                            });
-                        }
-                    }); 
-                } else {
-                    done(null, 'done');
-                }                  
+                generic.showHideItem(req.models.Answer, hidden, falseValue, function (err) {
+                    done(err, 'done');
+                });                  
             }], 
             function (err) {
                 if (err) {
@@ -1130,3 +1098,69 @@ var postAllAnswers = function (req, res) {
 };
 
 exports.postAdminAnswers = [isAdmin, postAllAnswers];
+
+
+var getAllQuestions = function (req, res) {
+    req.models.Question.find({}, function (err, questions) {
+        if (err) {
+            generic.genericErrorHandler(req, res, err);
+        }
+        async.each(questions, generic.load_question_extra_fields, function (err) {
+            if (err) {
+                generic.genericErrorHandler(req, res, err);  
+            } else {
+                questions.forEach(function(question) {
+                    var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
+                    question.relativeCreatedDate = relativeCreatedDate;
+                });
+                res.render('user/hideQuestions', {
+                    page: {
+                        title: 'Questions'
+                    },
+                    questions: questions,
+                    error: req.flash('error'),
+                    info: req.flash('info')
+                });
+            }
+        });
+    });
+};
+
+exports.getAdminQuestions = [isAdmin, getAllQuestions];
+
+exports.handleQuestions = function (req, res) {
+    console.log('here');
+    var shown = req.body.shownQuestions.split("|").map(function(i){
+        return parseInt(i, 10);
+    });
+    var hidden = req.body.hiddenQuestions;
+    if (hidden || shown) {
+
+        async.waterfall([
+            function (done) {
+                generic.showHideItem(req.models.Question, shown, trueValue, function (err) {
+                    done(err);
+                });   
+            },
+            function (done) {
+                generic.showHideItem(req.models.Question, hidden, falseValue, function (err) {
+                    done(err, 'done');
+                });                  
+            }], 
+            function (err) {
+                if (err) {
+                    req.flash('error', 'An error occurred: ' + err);
+                    res.redirect('/hideQuestions');  
+                } else {
+                    req.flash('info', 'Your changes have been made');
+                    res.redirect('/hideQuestions');
+                }
+            }
+        );
+
+    } else {
+        res.redirect('/hideQuestions');
+    }
+};
+
+//exports.handleQuestions = [isAdmin, postAllQuestions];

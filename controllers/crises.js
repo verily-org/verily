@@ -3,11 +3,23 @@ var enums = require('../enums');
 var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
+var mode = require('../mode');
 
 var common = require('../static/js/common');
 var userController = require('./users');
 
 var role = require('../lib/roles').user;
+
+var trueValue;
+var falseValue;
+if (mode.isHeroku()) {
+    trueValue = true;
+    falseValue = false;
+} else {
+    trueValue = 1;
+    falseValue = 0;
+}
+
 
 // View to create crisis
 var createCrisis = function (req, res) {
@@ -128,7 +140,7 @@ var getOne = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         
         if (!err){
-            crisis.getQuestions({}, function (err, questions) {
+            req.models.Question.find({show: trueValue}, function (err, questions) {
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
