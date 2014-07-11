@@ -142,15 +142,25 @@ exports.create = function (model, data, req, cb) {
                     
                         // Base target image path.
                         var targetImagePath = 'images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
+                        var tmpImagePath = 'tmp/' + imageId + path.extname(req.files.targetImageUpload.name);
                         
                         if (mode.isHeroku()) {
                             // Running on Heroku, so store in S3.
                         	// TODO: resize image
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
-                            var resizedStream = imagick(fileReadStream, req.files.targetImageUpload.name
-                            		).resize(500,500, {bufferStream: true}).stream('jpg');
+                            imagick(fileReadStream, req.files.targetImageUpload.name
+                            		).resize(500,500
+                            		).write(tmpImagePath, function (resizeErr) {
+                            	  if (resizeErr) {
+                            		  console.log('resizeErr:', resizeErr);
+                            		  return;
+                            	  }
+                            	  console.log('resize ok!');
+                            	  var resizedStream = fs.createReadStream(tmpImagePath);
+                            	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
+                            	});
                             //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
-                            s3Upload(s3, targetImagePath, resizedStream, imageHandled);
+                            //s3Upload(s3, targetImagePath, resizedStream, imageHandled);
                             
                         } else {
                             // Not running on Heroku, so store in filesystem.
@@ -335,6 +345,7 @@ exports.update = function (model, id, req, cb) {
 
                         // Base target image path.
                         var targetImagePath = 'images/submissions/' + imageId + path.extname(req.files.targetImageUpload.name);
+                        var tmpImagePath = 'tmp/' + imageId + path.extname(req.files.targetImageUpload.name);
 
                         if (mode.isHeroku()) {
                             console.log('before s3 upload');
@@ -342,10 +353,21 @@ exports.update = function (model, id, req, cb) {
                         	// TODO: resize image
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
 							///////
-                            var resizedStream = imagick(fileReadStream, req.files.targetImageUpload.name
-                            		).resize(500,500, {bufferStream: true}).stream('jpg');
+//                            var resizedStream = imagick(fileReadStream, req.files.targetImageUpload.name
+//                            		).resize(500,500).stream('jpg');
+                            imagick(fileReadStream, req.files.targetImageUpload.name
+	                    		).resize(500,500
+	                    		).write(tmpImagePath, function (resizeErr) {
+	                    	  if (resizeErr) {
+	                    		  console.log('resizeErr:', resizeErr);
+	                    		  return;
+	                    	  }
+	                    	  console.log('resize ok!');
+	                    	  var resizedStream = fs.createReadStream(tmpImagePath);
+	                    	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
+	                    	});
                             //s3Upload(s3, targetImagePath, fileReadStream, imageHandled);
-                            s3Upload(s3, targetImagePath, resizedStream, imageHandled);
+                            //s3Upload(s3, targetImagePath, resizedStream, imageHandled);
 
                         } else {
                             // Not running on Heroku, so store in filesystem.
