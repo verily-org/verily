@@ -156,10 +156,10 @@ module.exports = function (db, cb) {
         {
             methods: {
                 getUpvoteCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isUpvote() && common.isUserContentShow(rating.user) && rating.show;}).length;
+                    return this.ratings.filter(function(rating){return rating.isUpvote() && rating.show && common.isUserContentShow(rating.user);}).length;
                 },
                 getDownvoteCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isDownvote() && common.isUserContentShow(rating.user) && rating.show;}).length;
+                    return this.ratings.filter(function(rating){return rating.isDownvote() && rating.show && common.isUserContentShow(rating.user);}).length;
                 },
                 getImportanceCount: function(){
                     return this.ratings.filter(function(rating){return rating.isImportance() && common.isUserContentShow(rating.user) && rating.show;}).length;
@@ -423,7 +423,7 @@ module.exports = function (db, cb) {
     });
 
     Post.hasOne('user', User, {
-        reverse: 'posts', autoFetch: true
+        reverse: 'posts', autoFetch: true, autoFetchLimit:2
     });
     
     // Referrals and impressions keep their existing users
