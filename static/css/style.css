@@ -182,7 +182,7 @@ div.welcome p.challenge-description {
 }
 
 .nav-search .input-group {
-/*    width: 100%;*/
+    width: 100%;
 }
 
 
@@ -776,14 +776,24 @@ fa.breadcrumb {
     background-color: #ffffff;
 }
 
+.row.question-image {
+    height: 200px;
+    background-repeat: no-repeat;
+    background-position: center, center;
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
 .question-answer-bar {
     margin: 0;
     padding: 0;
-    color: #ffffff;
 }
 
 .question-answer-bar .metric {
-    color: #ffffff;
+
 }
 
 .question-answer-bar > span {
