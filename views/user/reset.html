@@ -11,6 +11,7 @@
 
     <div class="row">
 		<form class="reset-form" role="form" action="/reset" method="POST">
+		  <input type="hidden" name="_csrf" value="{{csrf_token}}" />
 		
 			<input type="hidden" name="token" value="{{ token }}">
 			

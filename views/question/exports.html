@@ -18,6 +18,7 @@
         <div class="alert alert-info">No export files at the moment</div>
     {% endif %}
     <form method="post" action="/crisis/{{ crisis.id }}/questions/export">
+        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
         <button class="btn btn-primary">Export Current Questions</button>
     </form>
 

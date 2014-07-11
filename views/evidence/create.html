@@ -4,6 +4,7 @@
     <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
 
     <form id="create-evidence" class="post-form" role="form" action="/crisis/{{ crisis.id }}/question/{{ question.id }}/answers" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
         <!-- <input type="hidden" name="_method" value="POST"> -->
         <input type="hidden" id="form-question-type" name="type">
 

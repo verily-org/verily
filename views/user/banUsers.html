@@ -23,6 +23,7 @@
                         <td style="text-align: center">{{ thisUser.comments | length }}</td>
                         <td style="text-align: right">
                             <form method="post" action="/banUser" class="single-button-form">
+                                <input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                 <input type="hidden" name="user_id" value="{{ thisUser.id }}">
                                 {% if thisUser.active %}
                                     <input type="hidden" name="active" value="0">
@@ -34,11 +35,13 @@
                                 {% endif %}
                             </form>
                             <form method="post" action="/editUserEvidenceShow" class="single-button-form">
+                                <input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                 <input type="hidden" name="user_id" value="{{ thisUser.id }}">
                                 <input type="hidden" name="show" value="0">
                                 <button class="btn btn-danger">Hide All Content</button>
                             </form>
                             <form method="post" action="/editUserEvidenceShow" class="single-button-form">
+                                <input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                 <input type="hidden" name="user_id" value="{{ thisUser.id }}">
                                 <input type="hidden" name="show" value="1">
                                 <button class="btn btn-default">Show All Content</button>

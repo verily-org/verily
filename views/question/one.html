@@ -372,6 +372,7 @@ function initActionButtons() {
     $(".btn_markImportant").click(function(){
         var button = $(this);
         $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id')+'/markImportant',
+                {_csrf: "{{csrf_token}}" },
                 function(data){
                     var question = data;
                     update_markedImportant(question, button);
@@ -487,6 +488,7 @@ function intent (medium, intentEvent) {
       type: 'POST',
       url: refUrl,
       data: {
+    	  _csrf: "{{csrf_token}}",
           destinationPath: '{{ path }}',
           medium: medium
       }

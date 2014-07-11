@@ -11,6 +11,7 @@
 
     <div class="row">
 		<form class="change-pass-form" role="form" action="/changePass" method="POST">
+		    <input type="hidden" name="_csrf" value="{{csrf_token}}" />
 
 			<div class="alert alert-danger change-pass-alert" style="display: {% if !message or message.length === 0 %}none;{% else %}block{% endif %}">
 				{{ message }}

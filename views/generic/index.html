@@ -81,6 +81,7 @@
     {% if !challengePublished %}
     <div class="signup-form-for-updates">
         <form role="form" action="/subscriber" method="POST">
+            <input type="hidden" name="_csrf" value="{{csrf_token}}" />
             <input type="email" class="form-control input-lg" name="email" placeholder="Email">
             <input type="submit" class="btn btn-primary btn-lg btn-block" value="Subscribe to updates">
         </form>
