@@ -126,7 +126,8 @@ exports.registerView = function (req, res) {
 };
 
 exports.loginView = function (req, res) {
-    if (!req.user) {
+    if (!req.user || req.user.type === 'provisional') {
+        // No user currently logged in, or a provisional user is logged in.
         if (!req.session.redirectUrl) {
             req.session.redirectUrl = redirectUrl;
         }
@@ -143,10 +144,6 @@ exports.loginView = function (req, res) {
         // logout-login cycle.
         // log them out (/logout), then take them to login view (/login)
         res.redirect('/logout?next=/login');
-    } else {
-        // If they are already logged in,
-        // don't let them log in again.
-        res.redirect('/crisis');
     }
 
 };
@@ -154,7 +151,7 @@ exports.loginView = function (req, res) {
 // Helper to create a provisional user.
 exports.newProvisionalUser = function(req, callback) {
     generic.generateUsernameDigits(function(digits) {
-        var username = 'anon-' + digits;
+        var username = 'user-' + digits;
         var type = 'provisional';
         var role = 'simple';
         
@@ -215,26 +212,34 @@ exports.login = function (req, res) {
     })(req, res);
 };
 
-// If next is 'login', the session will be regnerated
-exports.logout = function(req, callback) {
+exports.clearSession = function(req) {
     // Destroy PassportJS login session.
     req.logout();
-    if (req.query.next === '/login') {
-        redirectUrl = req.session.redirectUrl;    
-    } else {
-        redirectUrl = '/';
-    }
+    
+    // Delete refcodes in session.
+    // We are not getting a new session ID like in req.session.destroy
+    // so that we can preserve redirectUrl within the session
+    // and allow login from a provisional user to a chosen-username user.
+    req.session.refcodes = null;
+    delete req.session.refcodes;
+}
+
+// If next is 'login', the session will be regnerated
+exports.logout = function(req, callback) {
+    exports.clearSession(req);
+    
+    callback();
     
     
     // Now clear the whole session as PassportJS only clears login session, 
     // namespaced under session.user, and not the entire session state for the user.        
     // Destroy the session.
-    req.session.destroy(function (err) {
-        if (err) {
-            console.log(err);
-        }
-        callback(err);
-    });
+    // req.session.destroy(function (err) {
+    //     if (err) {
+    //         console.log(err);
+    //     }
+    //     callback(err);
+    // });
 };
 
 exports.logoutView = function (req, res) {
@@ -288,10 +293,12 @@ exports.twitterAuthenticate = function (req, res) {
             res.redirect('/register');
         } else {
             if (!user.name) {
+                // New user on Verily.
                 req.session.user = user;
                 req.flash('info', 'You have registered successfully with Twitter. Please choose your Verily username.');
                 res.redirect('/chooseUsername');        
             } else {
+                // Existing user on Verily.
                 req.logIn(user, function (err) {
                     if (err) {
                         generic.genericErrorHandler(req, res, err);

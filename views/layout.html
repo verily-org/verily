@@ -165,6 +165,8 @@
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
+                    
+
 
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
@@ -176,6 +178,17 @@
                     <a class="navbar-brand active logo {% if path === '/' %}welcome{% endif %}" href="/" title="Home">
                         <span class="first-char">V</span>erily
                     </a>
+                    
+                    <ul class="nav navbar-nav pull-right">
+                        <li>
+                            <a href="/user" {% if userIs('provisional user') %}title="provisional username"{% endif %}>
+                                {% if userIs('provisional user') %}
+                                <i class="fa fa-ticket"></i>
+                                {% endif %}
+                                {{ user.name or user }}
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
                     <ul class="nav navbar-nav">
@@ -202,28 +215,50 @@
                                         <li><a href="/crisis/{{ crisis.id }}/questions/export"><span class="fa fa-hdd-o"></span>&nbsp;<span class="sr-only">Exports</span>Exports</a></li>
                                     {% endif %}
                                 </ul>
+                                                                
                             </li>
                         {% endif %}
+                        
+						{% if challengePublished or (path !== '/' and path !== '/about')%}
+							<li>
+								<form action="/search" method="POST" class="navbar-form nav-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="search" id="search" data-placeholder="Search Questions">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div>
+								</form>
+							</li>
+                            <script>
+                            
+                            $('#search').focus(function(e) {
+                                $('#search').attr('placeholder', $('#search').data('placeholder'));
+                                $('.nav-search button').toggleClass('focused');
+                                $('.nav-search .input-group').width('20vw');
+                            });
+                            $('#search').blur(function(e) {
+                                $('#search').attr('placeholder', '');
+                                $('.nav-search button').toggleClass('focused');
+                                if (!e.relatedTarget || e.relatedTarget.nodeName != 'BUTTON') {
+                                    $('.nav-search .input-group').removeAttr('style');
+                                }
+                            });
+                            </script>
+						{% endif %}
 
                     </ul>
                     <ul class="nav navbar-nav pull-right">
                         {% if user %}
 
-                            <li>
-                                <a href="/user" {% if userIs('provisional user') %}title="provisional username"{% endif %}>
-                                    {% if userIs('provisional user') %}
-                                    <i class="fa fa-ticket"></i>
-                                    {% endif %}
-                                    {{ user.name or user }}
-                                </a>
-                            </li>
+
                             {% if userIs('provisional user') %}
                             <li>
                                 <a href="/register">
                                     Signup
                                 </a>
                             </li>
-                            <li><a href="" data-toggle="modal" data-target="#provisionalUserConfirmLoginModal">Login</a></li>
+                            <li><a href="/login">Login</a></li>
                             {% endif %}
 							{% if userCan('assign roles') %}
                                 <li class="dropdown">
@@ -243,16 +278,6 @@
                             <li><a href="/register">Signup</a></li>
                             <li><a href="/login">Login</a></li>
                         {% endif %}
-						{% if challengePublished or (path !== '/' and path !== '/about')%}
-							<li>
-								<form action="/search" method="POST" class="navbar-form navbar-right" role="search">
-									<div class="form-group input-group-sm btn-group-sm">
-										<input type="text" class="form-control" placeholder="Search Questions" name="search" id="search">
-										<button class="btn" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-									</div>
-								</form>
-							</li>
-						{% endif %}
                     </ul>
 
                 </div>

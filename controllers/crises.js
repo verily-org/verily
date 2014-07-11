@@ -144,6 +144,16 @@ var getOne = function (req, res) {
                                 questions.forEach(function(question) {
                                     var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
                                     question.relativeCreatedDate = relativeCreatedDate;
+                                    
+                                    // Canonicalise the path to the pretty format
+                                    // that works well for bookmarks.
+                                    question.canonicalPath = common.prettyPath({
+                                        req: req,
+                                        postPrefix: 'question',
+                                        id: question.id,
+                                        string: question.post.title
+                                    });
+                                    
                                 })
                                 
                                 var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});

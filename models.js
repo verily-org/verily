@@ -13,6 +13,16 @@ module.exports = function (db, cb) {
         }
     });
     
+    // Tracks a transfer from provisional user to a chosen-username user
+    // on login. Does not track signups the user **is** the provisional user
+    // with a change in username and some other account details.
+    var UserHistory = db.define('userHistory', {
+        transferDate: {
+            type: 'date',
+            time: true
+        }
+    });
+    
     // Stores a referral at the point of its instantiation
     var Referral = db.define('referral', {
         refCode: {
@@ -417,16 +427,28 @@ module.exports = function (db, cb) {
         reverse: 'posts', autoFetch: true
     });
     
+    // Referrals and impressions keep their existing users
+    // if the user logs in and transfers to a chosen-username account.
+    // A link from a provisional user to a chosen-username user
+    // is tracked in the UserHistory model.
     Referral.hasOne('user', User, {
         reverse: 'authoredReferrals', autoFetch: true
+    });
+    
+    Impression.hasOne('user', User, {
+        reverse: 'impressions', autoFetch: true
     });
     
     Impression.hasMany('referrals', Referral, {}, {
         key: true, reverse: 'impressions', autoFetch: true
     });
     
-    Impression.hasOne('user', User, {
-        reverse: 'impressions', autoFetch: true
+    UserHistory.hasOne('fromUser', User, {
+        reverse: 'withinFroms', autoFetch: true
+    });
+    
+    UserHistory.hasOne('toUser', User, {
+        reverse: 'withinTos', autoFetch: true
     });
     
 

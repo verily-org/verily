@@ -8,6 +8,12 @@ if (typeof module !== 'undefined') {
     isNodeJS = true;
 }
 
+var path;
+
+if (isNodeJS) {
+    pathHelper = require('path');
+}
+
 // Common namespace for browsers
 var common = {};
 
@@ -81,11 +87,37 @@ var splitIntoTags = exports.splitIntoTags = common.splitIntoTags = function(stri
 // Make tags friendly for URIs.
 // Replace multiple instances of whitespace with '-'.
 // e.g. turn " " into "-".
-var normalizeTag = exports.normalizeTag = common.normalizeTag = function(tag) {
+var normalizeTag = exports.normalizeTag = common.normalizeTag = exports.normalizeString = common.normalizeString = function(tag) {
     // Just remove apostrophes, don't replace them with '-'.
     // If after the first replace there is just 1 '-' at start or end, remove it, or if there are 2 or more hyphens (-), trim to 1 '-'.
     return tag.trim().toLowerCase().replace(/'/g, '').replace(/[\s/\\#._!@$£€%^?<>{}\[\]&*+=:;"`~]+/g, '-').replace(/-{2,}/g, '-' ).replace(/(^-)?(-$)?/g, '');    
 };
+
+// Pretty paths for canonical URLs
+var prettyPath = exports.prettyPath = common.prettyPath = function(data) {
+    var path = data.path;
+    var prefix = data.prefix;
+    var postPrefix = data.postPrefix;
+    if (isNodeJS && pathHelper && data.hasOwnProperty('req')) {
+        if (data.sameLevel || !postPrefix) {
+            path = pathHelper.dirname(data.req.path);
+        } else {
+            path = data.req.path;
+        }
+        
+        if (prefix) {
+            path = pathHelper.join(prefix, path);
+        }
+        
+        if (postPrefix) {
+            path = pathHelper.join(path, postPrefix);
+        }
+    }
+    
+    return path + '/' + common.normalizeString(data.id + '-' + data.string);
+};
+
+
 
 
 var getYears = exports.getYears = common.getYears = function() {
@@ -239,27 +271,27 @@ var maxTitleLength = exports.maxTitleLength = common.maxTitleLength = 100;
 
 var dayDefault = exports.dayDefault = common.dayDefault = function() {
     return "Day";
-}
+};
 
 var monthDefault = exports.monthDefault = common.monthDefault = function() {
     return "Month";
-}
+};
 
 var yearDefault = exports.yearDefault = common.yearDefault = function() {
     return "Year";
-}
+};
 
 var hourDefault = exports.hourDefault = common.hourDefault = function() {
     return "Hours";
-}
+};
 
 var minuteDefault = exports.minuteDefault = common.minuteDefault = function() {
     return "Minutes";
-}
+};
 
 var secondDefault = exports.secondDefault = common.secondDefault = function() {
     return "Seconds";
-}
+};
 
 var properUser = exports.properUser = common.properUser = function(req) {
     return !(req.user.type === 'provisional' && process.env.BLOCK_PROVISIONAL_USERS == 1) && req.user.active;

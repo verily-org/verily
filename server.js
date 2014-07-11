@@ -153,6 +153,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 models.Referral = db.models.referral;
                 models.Session = db.models.session;
                 models.SocialEvent = db.models.socialEvent;
+                models.UserHistory = db.models.userHistory;
 
                 models.Local.sync(function () {console.log("Local synced")});
                 models.QuestionComment.sync(function () {console.log("QuestionComment synced")});
@@ -170,6 +171,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 models.Referral.sync(function () {console.log("Referral synced")});
                 models.Session.sync(function () {console.log("Session synced")});
                 models.SocialEvent.sync(function () {console.log("SocialEvent synced")});
+                models.UserHistory.sync(function () {console.log("UserHistory synced")});
 
                 // Post is the base class.
                 // Questions, answers and comments are types of Post.

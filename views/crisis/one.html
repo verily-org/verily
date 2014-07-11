@@ -192,7 +192,7 @@
             <div class="row">
         {% endif %}
         <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
-            <div data-href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}" style="cursor:pointer"
+            <div data-href="{{ question.canonicalPath }}" style="cursor:pointer"
                  class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
                 <div class="panel-heading">
                         {% if question.post.targetLocality %}
@@ -204,7 +204,7 @@
                         {% endif %}
 
                     <h3 class="panel-title" >
-                        <a href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
+                        <a href="{{ question.canonicalPath }}">
                             {{ question.post.title }}
                         </a>
                     </h3>
@@ -219,7 +219,7 @@
 
                             <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">{{ question.rejectedAnswerCount }}</span></span>
                         </div>
-                        <a style="font-size:.8em" title="help answer this question" class="btn btn-sm btn-default pull-right" href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
+                        <a style="font-size:.8em" title="help answer this question" class="btn btn-sm btn-default pull-right" href="{{ question.canonicalPath }}">
                             Answer this
                         </a>
                     </div>
