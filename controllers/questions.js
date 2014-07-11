@@ -23,17 +23,17 @@ exports.index = function (req, res) {
     res.end();
 };
 
-var getQuestionRelevance = function (question, cb) {
+var getQuestionRelevance = function (words, relevantQuestions, question, cb) {
     var word;
     var relevance = 0;
     // measure the relevenace of a question to the search text
     // similarities with the tags and locality are more important than text ant title.
     for (var i = 0; i < words.length; i++) {
         word = words[i];
-        if (~question.post.title.toLowerCase().indexOf(word)) relevance++;
-        if (~question.post.text.toLowerCase().indexOf(word)) relevance++;
-        if (~question.post.tags.indexOf(word)) relevance += 3;
-        if (~question.post.targetLocality.toLowerCase().indexOf(word)) relevance += 3;
+        if (question.post.title.toLowerCase().indexOf(word) !== -1) relevance++;
+        if (question.post.text.toLowerCase().indexOf(word) !== -1) relevance++;
+        if (question.post.tags.indexOf(word) !== -1) relevance += 3;
+        if (question.post.targetLocality.toLowerCase().indexOf(word) !== -1) relevance += 3;
     }
     if (relevance > 0) {
         question.relevance = relevance;
@@ -53,17 +53,14 @@ var renderSearchResults = function(req, res, questions) {
     });
 };
 
-//Search Questions
-exports.searchQuestions = function (req, res) {
-    var query = req.body.search;
-    words = query.toLowerCase().split(' ');
+var searchQuestionsByWords = function (req, res, words, relevantQuestions) {
     req.models.Question.find({}, function (err, questions) {
         if (err) {
             console.log(err);
             generic.genericErrorHandler(req, res, err);
         } else {
             if (questions.length > 0) {
-                async.each(questions, getQuestionRelevance, function (err) {
+                async.each(questions, getQuestionRelevance.bind(null, words, relevantQuestions), function (err) {
                     if (relevantQuestions.length > 0) {
                         async.each(relevantQuestions, generic.load_question_extra_fields, function (err) {
                             if (err) {
@@ -92,6 +89,24 @@ exports.searchQuestions = function (req, res) {
             }
         }
     });
+};
+
+//Search Questions
+exports.searchQuestions = function (req, res) {
+    var query = req.body.search;
+    var words = query.toLowerCase().split(' ');
+    var relevantQuestions = [];
+    searchQuestionsByWords(req, res, words, relevantQuestions);
+};
+
+exports.searchTag = function (req, res) {
+    if (req.params.tag) {
+        var tag = [req.params.tag];
+        var relevantQuestions = [];
+        searchQuestionsByWords(req, res, tag, relevantQuestions);
+    } else {
+        res.redirect('/');
+    }
 };
 
 
