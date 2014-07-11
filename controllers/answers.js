@@ -57,7 +57,7 @@ var getOne = function (req, res) {
                             if (req.user){var user = req.user; }
                             answer.getComments(function(err){
                                 //Filter hidden comments
-                                answer.comments = answer.comments.filter(function(answerComment){ return common.isUserContentShow(answerComment.comment.user);});
+                                answer.comments = answer.comments.filter(function(answerComment){ return common.isUserContentShow(answerComment.comment.user)&& answerComment.comment.show;});
 
                                 if(answer.post.targetVideoUrl) {
 

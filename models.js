@@ -146,24 +146,24 @@ module.exports = function (db, cb) {
         {
             methods: {
                 getUpvoteCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isUpvote() && common.isUserContentShow(rating.user);}).length;
+                    return this.ratings.filter(function(rating){return rating.isUpvote() && common.isUserContentShow(rating.user) && rating.show;}).length;
                 },
                 getDownvoteCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isDownvote() && common.isUserContentShow(rating.user);}).length;
+                    return this.ratings.filter(function(rating){return rating.isDownvote() && common.isUserContentShow(rating.user) && rating.show;}).length;
                 },
                 getImportanceCount: function(){
-                    return this.ratings.filter(function(rating){return rating.isImportance() && common.isUserContentShow(rating.user);}).length;
+                    return this.ratings.filter(function(rating){return rating.isImportance() && common.isUserContentShow(rating.user) && rating.show;}).length;
                 },
                 isUpvotedBy: function(user){
-                    var ratings = this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isUpvote() && common.isUserContentShow(rating.user);});
+                    var ratings = this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isUpvote() && common.isUserContentShow(rating.user) && rating.show;});
 
                     return ratings.length > 0;
                 },
                 isDownvotedBy: function(user){
-                    return this.ratings.filter(function(rating){return (user.id === rating.user_id) && rating.isDownvote() && common.isUserContentShow(rating.user);}).length > 0;
+                    return this.ratings.filter(function(rating){return (user.id === rating.user_id) && rating.isDownvote() && common.isUserContentShow(rating.user) && rating.show;}).length > 0;
                 },
                 isMarkedImportantBy: function(user){
-                    return this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isImportance() && common.isUserContentShow(rating.user);}).length > 0;
+                    return this.ratings.filter(function(rating){return (user.id == rating.user_id) && rating.isImportance() && common.isUserContentShow(rating.user) && rating.show;}).length > 0;
                 },
                 addViewCount: function(){
                     this.viewCount++;

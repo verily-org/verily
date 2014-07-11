@@ -179,7 +179,7 @@ var validateComment = exports.validateComment = common.validateComment = functio
 
 // --- CHALLENGE PUBLISHED SETTING ---
 var challengePublished = exports.challengePublished = common.challengePublished = function() {
-    return true;
+    return false;
 }
 
 // Used at client and server side.

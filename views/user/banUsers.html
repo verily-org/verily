@@ -15,16 +15,16 @@
                 <th>Actions</th>
             </thead>
             <tbody>
-                {% for user in users %}
-                    <tr {% if user.active == false %}class="danger"{% endif %}>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.active }}</td>
-                        <td>{{ user.posts | length }}</td>
-                        <td>{{ user.comments | length }}</td>
+                {% for thisUser in users %}
+                    <tr {% if thisUser.active == false %}class="danger"{% endif %}>
+                        <td>{{ thisUser.name }}</td>
+                        <td style="text-align: center">{{ thisUser.active }}</td>
+                        <td style="text-align: center">{{ thisUser.posts | length }}</td>
+                        <td style="text-align: center">{{ thisUser.comments | length }}</td>
                         <td style="text-align: right">
                             <form method="post" action="/banUser" class="single-button-form">
-                                <input type="hidden" name="user_id" value="{{ user.id }}">
-                                {% if user.active %}
+                                <input type="hidden" name="user_id" value="{{ thisUser.id }}">
+                                {% if thisUser.active %}
                                     <input type="hidden" name="active" value="0">
                                     <button class="btn btn-danger">Block</button>
 
@@ -33,11 +33,17 @@
                                     <button class="btn btn-default">Activate</button>
                                 {% endif %}
                             </form>
-                            <form method="post" action="/hideUserEvidence" class="single-button-form">
-                                <input type="hidden" name="user_id" value="{{ user.id }}">
-                                <button class="btn btn-danger">Hide Content</button>
+                            <form method="post" action="/editUserEvidenceShow" class="single-button-form">
+                                <input type="hidden" name="user_id" value="{{ thisUser.id }}">
+                                <input type="hidden" name="show" value="0">
+                                <button class="btn btn-danger">Hide All Content</button>
                             </form>
-                            <a href="/user/{{ user.id }}/userContentList" class="btn btn-default">Content List</a>
+                            <form method="post" action="/editUserEvidenceShow" class="single-button-form">
+                                <input type="hidden" name="user_id" value="{{ thisUser.id }}">
+                                <input type="hidden" name="show" value="1">
+                                <button class="btn btn-default">Show All Content</button>
+                            </form>
+                            <a href="/user/{{ thisUser.id }}/userContentList" class="btn btn-default">Content List</a>
                         </td>
                     </tr>
                 {% endfor %}

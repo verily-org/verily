@@ -306,7 +306,12 @@ var getQuestion = function (req, addView, callback) {
                     for (var i = 0; i < answers.length; i++) {
                         if (answers[i].show && common.isUserContentShow(answers[i].post.user)){
                             //Filter hidden comments
-                            answers[i].comments = answers[i].comments.filter(function(answerComment){ return common.isUserContentShow(answerComment.comment.user);});
+                            answers[i].comments = answers[i].comments.filter(
+                                function(answerComment){
+                                    return common.isUserContentShow(answerComment.comment.user)
+                                        && answerComment.comment.show;
+                                }
+                            );
 
                             answersShown.push(answers[i]);
                         }
