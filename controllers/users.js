@@ -9,6 +9,7 @@ crypto = require('crypto'),
 config = require('../lib/auth'),
 mode = require('../mode'),
 utils = require('utilities'),
+common = require('../static/js/common'),
 assignedPoints = require('../points.json');
 require('../lib/passport')(passport);
 
@@ -32,41 +33,42 @@ exports.profile = function (req, res) {
     if (req.user) {
         res.status(200);
         var user = req.user;
-        user.getPosts(function (err, posts) {
-            if (err) {
-                generic.genericErrorHandler(req, res, err);
-            }
+        req.models.Rating.findByPost({user_id:user.id}, function(err, ratingsArr){
+
+            if(err)throw err;
+//            var datetime = new Date();
+//            console.log('Posts gotten: ' + datetime.getMinutes() +":"+datetime.getSeconds());
+
             var upvotes = 0;
             var downvotes = 0;
             var postAnswers = 0;
-            for (var i = 0; i < posts.length; i++) {
-                upvotes += posts[i].getUpvoteCount();
-                downvotes += posts[i].getDownvoteCount();
-                if (posts[i].answers.length > 0) {
-                    postAnswers += 1;
-                }    
-            }
-            user.postPoints = postAnswers * assignedPoints.postEvidence;
-            user.votingPoints = upvotes * assignedPoints.voteUp;
-            user.save(function (err) {
-                if (err) {
-                    generic.genericErrorHandler(req, res, err);       
-                }
-                res.render('user/profile', {
-                    page: {
-                        title: 'Profile'
-                    },
-                    user: user,
-                    points: user.getTotalPoints(),
-                    posts: postAnswers,
-                    upvotes: upvotes,
-                    downvotes: downvotes,
-                    error: req.flash('error'),
-                    info: req.flash('info')
-                })    
+            upvotes = ratingsArr.filter(function(rating){return rating.isUpvote() && rating.show && common.isUserContentShow(rating.user);}).length;
+            downvotes = ratingsArr.filter(function(rating){return rating.isDownvote() && rating.show && common.isUserContentShow(rating.user);}).length;
+            req.models.Answer.findByPost({user_id:user.id}, function(err, answersArr){
+                if(err)throw err;
+                postAnswers = answersArr.length;
+                user.postPoints = postAnswers * assignedPoints.postEvidence;
+                user.votingPoints = upvotes * assignedPoints.voteUp;
+                user.save(function (err) {
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);
+                    }
+                    res.render('user/profile', {
+                        page: {
+                            title: 'Profile'
+                        },
+                        user: user,
+                        points: user.getTotalPoints(),
+                        posts: postAnswers,
+                        upvotes: upvotes,
+                        downvotes: downvotes,
+                        error: req.flash('error'),
+                        info: req.flash('info')
+                    })
+                });
             });
+
         });
-        ;
     } else {
         // Not logged in.
         res.redirect('/login/');
@@ -858,11 +860,13 @@ exports.forgot = function (req, res) {
                 });
             },
             function(token, local, done) {
-                generic.sendMailtoLocal(req, token, local, 'forgot', done);
+                generic.sendMailtoLocal(req, token, local, 'forgot', function (err, local) {
+                    done(err, local, 'done');
+                });
             }
             ], function(err, local) {
                 if (err) {
-                    req.flash('info', 'There has been an error');
+                    req.flash('info', 'There has been an error' + err);
                     res.redirect('/forgot');
                     return; 
                 };
@@ -887,15 +891,15 @@ exports.resetView = function (req, res) {
                         title: 'Forgotten Password'
                     }, error: error
                 }); 
-            }
-
-            res.render('user/reset', {
-                page: {
-                    title: 'Reset Password'
-                }, 
-                token: token,
-                error: req.flash('error')
-            });
+            } else {
+                res.render('user/reset', {
+                    page: {
+                        title: 'Reset Password'
+                    }, 
+                    token: token,
+                    error: req.flash('error')
+                }); 
+            }   
         });
     } else {
         res.redirect('/changePass');
@@ -941,7 +945,9 @@ exports.reset = function (req, res) {
                 });
             },
             function(local, done) {
-                generic.sendMailtoLocal(req, null, local, 'reset', done);
+                generic.sendMailtoLocal(req, null, local, 'reset', function (err, local) {
+                    done(err, local, 'done');
+                });
             }
         ], function(err, local) {
             if (err) {
@@ -960,7 +966,7 @@ exports.reset = function (req, res) {
                                 res.redirect('/reset/'+token); 
                             } else {
                                 req.flash('info', 'Your password has been changed!');
-                                res.redirect('/');
+                                res.redirect('/user');
                             }
                         });    
                     }

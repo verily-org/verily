@@ -364,19 +364,6 @@ var getQuestion = function (req, addView, callback) {
                        });
                        return answer.show && common.isUserContentShow(answer.post.user);
                    });
-//                    for (var i = 0; i < answers.length; i++) {
-//                        if (answers[i].show && ){
-//                            //Filter hidden comments
-//                            answers[i].comments = answers[i].comments.filter(
-//                                function(answerComment){
-//                                    return common.isUserContentShow(answerComment.comment.user)
-//                                        && answerComment.comment.show;
-//                                }
-//                            );
-//
-//                            answersShown.push(answers[i]);
-//                        }
-//                    }
 
                    generic.load_question_extra_fields(question, function(err){
                        if (!err) {
@@ -446,6 +433,9 @@ var getQuestion = function (req, addView, callback) {
 
 function oneQuestionResponse(req, res, crisis, question, user, refcodes){
     res.status(200);
+
+    var datetime = new Date();
+    console.log('Rendering GetOne Question View: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     res.render('question/one', {
         crisis: crisis,
         question: question,
@@ -480,6 +470,9 @@ var applyUserAndRespond = function(req, res, crisis, question, refcodes) {
 // Get a specific question.
 var getOne = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
+
+    var datetime = new Date();
+    console.log('Entered GetOne Question: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         getQuestion(req, true, function(err, question) {
