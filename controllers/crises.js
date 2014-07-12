@@ -145,6 +145,12 @@ var getOne = function (req, res) {
         
         if (!err){
             req.models.Question.find({show: trueValue}, function (err, questions) {
+                // Sort questions by created date with latest first.
+                questions.sort(function(a, b) {
+                    return a.post.date.getTime() - b.post.date.getTime();
+                });
+                
+                
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
@@ -175,31 +181,43 @@ var getOne = function (req, res) {
                                 var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
                                 crisis.relativeCreatedDate = relativeCreatedDate;
                                 
-                                var responseData = {
-                                    crisis: crisis,
-                                    questions: questions,
-                                    page: {
-                                        title: crisis.post.title
-                                    },
-                                    info: req.flash('info'),
-                                    error: req.flash('error')
-                                };
+                                generic.generateRefCodes(4, function(refcodeArray) {
+                                    var refcodes = {
+                                        twitter: refcodeArray[0],
+                                        facebook: refcodeArray[1],
+                                        email: refcodeArray[2],
+                                        link: refcodeArray[3]
+                                    };
+                                    
+                                    var responseData = {
+                                        crisis: crisis,
+                                        questions: questions,
+                                        page: {
+                                            title: crisis.post.title
+                                        },
+                                        path: req.path,
+                                        refcodes: refcodes,
+                                        info: req.flash('info'),
+                                        error: req.flash('error')
+                                    };
                                 
-                                if (req.user) {
-                                    responseData.user = req.user;
-                                    // Respond.
-                                    oneCrisisResponse(req, res, responseData);
-                                } else {
-                                    // User is not currently logged in --
-                                    // let's make them a provisional account
-                                    // so they can immediately do stuff.
-                                    userController.newProvisionalUser(req, function(err, user) {
-                                        // Provisional user account created.
+                                    if (req.user) {
+                                        responseData.user = req.user;
                                         // Respond.
-                                        responseData.user = user;
                                         oneCrisisResponse(req, res, responseData);
-                                    });   
-                                }
+                                    } else {
+                                        // User is not currently logged in --
+                                        // let's make them a provisional account
+                                        // so they can immediately do stuff.
+                                        userController.newProvisionalUser(req, function(err, user) {
+                                            // Provisional user account created.
+                                            // Respond.
+                                            responseData.user = user;
+                                            oneCrisisResponse(req, res, responseData);
+                                        });   
+                                    }
+                                
+                                });
 
                             });
                         }

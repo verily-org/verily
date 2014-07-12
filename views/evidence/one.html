@@ -8,15 +8,6 @@
 <!-- question -->
 
 
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&appId=1430472757228218&version=v2.0";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
 <div class="page-header">
 
     <div class="row">
@@ -98,17 +89,6 @@
     </div>
     <!-- / question header row -->
 
-    <!-- Twitter Tweet button -->
-    <a href="https://twitter.com/share" class="twitter-share-button btn-group" data-size="large">Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-    <!-- / Twitter Tweet button -->
-	
-	<!-- Facebook Share button -->
-	<div class="btn-group">
-		<a class="btn btn-default btn-large text-action-button share-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
-	</div>
-	<!-- / Facebook Share button -->
-
 
     <div class="btn-group">
         <div class="additional-button-ctr">
@@ -183,18 +163,6 @@ if (window.location.search.indexOf('action=comment') !== -1) {
     focusForm();
 }
 
-</script>
-
-<script type="text/javascript">
-var facebookShareButton = document.getElementById('facebook-share-button');
-facebookShareButton.addEventListener('click', function(e) {
-    FB.ui({
-      method: 'share',
-      href: 'https://veri.ly{{path}}',
-    }, function(response){
-        
-    });
-});
 </script>
 
 

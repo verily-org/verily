@@ -191,12 +191,25 @@ div.welcome ul.challenge-description {
     width: 100%;
 }
 
+#modal-share-question-link .modal-body {
+    padding: 15px;
+}
+
+#modal-share-question-link .modal-body input {
+    text-align: center;
+} 
+
 
 @media (min-width: 768px) {    
     .nav-search .input-group {
         width: 10vw;
         transition: all 0.25s ease;
     }
+    
+    #modal-share-question-link .modal-body {
+        padding: 0;
+    }
+    
 }
 
 @media (min-width: 992px) {
@@ -206,6 +219,20 @@ div.welcome ul.challenge-description {
     }
 }
 
+/* If username wraps it has some margin, rather than -15px */
+.hero-cover .navbar-nav {
+    margin: 7.5px 0;
+}
+
+.hero-cover .navbar-default .nav-search {
+    margin-top: 28px;
+}
+
+a.username {
+    padding-left: 15px !important;
+}
+
+
 .nav-search input {
     background-color: #71c7c7;
     color: #000000;
@@ -214,6 +241,7 @@ div.welcome ul.challenge-description {
     box-shadow: none;
     padding-left: 6px;
     padding-right: 3px;
+    border-right: none;
 }
 
 .nav-search button {
@@ -224,6 +252,8 @@ div.welcome ul.challenge-description {
     box-shadow: none;
     padding-left: 0;
     padding-right: 6px;
+    border-left: none;
+    margin-left: 0 !important;
 }
 
 .nav-search button:hover,
@@ -232,7 +262,8 @@ div.welcome ul.challenge-description {
     border-color: transparent;
 }
 
-.nav-search input:focus {
+.nav-search input:focus,
+.hero-cover .nav-search input:focus {
     background-color: #ffffff;
     border-color: transparent;
     outline: none;
@@ -240,9 +271,30 @@ div.welcome ul.challenge-description {
     box-shadow: none;
 }
 
-.nav-search button.focused {
+.nav-search button.focused,
+.hero-cover .nav-search button.focused {
     background-color: #ffffff;
     color: #000000;
+}
+
+
+.hero-cover .nav-search input,
+.hero-cover .nav-search button {
+    border-color: #ffffff;
+    background-color: transparent;
+}
+
+.hero-cover .nav-search input {
+    color: #ffffff;
+    border-right: none;
+}
+
+.hero-cover .nav-search input:focus {
+    color: #000000;
+}
+
+.hero-cover .nav-search button {
+    border-left: none;
 }
 
 
@@ -381,6 +433,8 @@ fa.breadcrumb {
     line-height: 60px;
 }
 
+
+
 .hero-cover .navbar-default {
     margin-bottom: 3.85em;
 }
@@ -420,7 +474,7 @@ fa.breadcrumb {
     margin-right: 0;
 }
 .answer-buttons{
-    text-align: center;
+
 }
 .action-button-ctr {
     margin-top: 1em;
@@ -567,7 +621,7 @@ fa.breadcrumb {
     text-align: center;
 }
 
-#field-share-question-link {
+#field-share-link {
     border: none;
 }
 
@@ -898,6 +952,7 @@ fa.breadcrumb {
     right:50px;
     z-index:10000;
 }
+.crisis .twitter-share-button,
 .question .twitter-share-button {
     margin-top: 11px;
 /*    height:31px;*/

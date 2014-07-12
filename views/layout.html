@@ -181,7 +181,7 @@
                     
                     <ul class="nav navbar-nav pull-right">
                         <li>
-                            <a href="/user" {% if userIs('provisional user') %}title="provisional username"{% endif %}>
+                            <a href="/user" class="username" {% if userIs('provisional user') %}title="provisional username"{% endif %}>
                                 {% if userIs('provisional user') %}
                                 <i class="fa fa-ticket"></i>
                                 {% endif %}

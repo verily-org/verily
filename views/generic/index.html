@@ -85,7 +85,7 @@ Can a coordinated collective effort be effective in quickly discerning true answ
         <form role="form" action="/subscriber" method="POST">
             <input type="hidden" name="_csrf" value="{{csrf_token}}" />
             <input type="email" class="form-control input-lg" name="email" placeholder="Email">
-            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Get notified when the challenge starts">
+            <button type="submit" class="btn btn-primary btn-lg btn-block"><span class="visible-xs">Notify me</span><span class="hidden-xs">Get notified when the challenge starts</span></button>
         </form>
     </div>
     {% endif %}
@@ -114,7 +114,7 @@ Have a question in mind? Send it to us and we may include it in the competition.
 </p>
 
 <p class="lead stay-large challenge-description">
-If you have any questions or comments before the challenge please email contact@veri.ly
+If you have any questions or comments before the challenge please email <a href="mailto:contact@veri.ly">contact@veri.ly</a>
 </p> 
 
     
@@ -126,28 +126,22 @@ If you have any questions or comments before the challenge please email contact@
 // (c) 2014 Alex Greenland. MIT Licence.
 
 // In UTC:
-var year = 2014;
-var month = 7;
-var startDate = 12;
-var endDate = 13;
-var startHour = 9;
-var endHour = 16;
-var minutes = seconds = msecs = 0;
+
 
 var momentFormat = 'dddd D MMMM ha';
 
 
 var eventStart = new Date();
-eventStart.setUTCFullYear(year);
-eventStart.setUTCMonth(month - 1);
-eventStart.setUTCDate(startDate);
-eventStart.setUTCHours(startHour, minutes, seconds, msecs);
+eventStart.setUTCFullYear(common.challenge.year);
+eventStart.setUTCMonth(common.challenge.month - 1);
+eventStart.setUTCDate(common.challenge.startDate);
+eventStart.setUTCHours(common.challenge.startHour, common.challenge.minutes, common.challenge.seconds, common.challenge.msecs);
 
 var eventEnd = new Date();
-eventEnd.setUTCFullYear(year);
-eventEnd.setUTCMonth(month - 1);
-eventEnd.setUTCDate(endDate);
-eventEnd.setUTCHours(endHour, minutes, seconds, msecs);
+eventEnd.setUTCFullYear(common.challenge.year);
+eventEnd.setUTCMonth(common.challenge.month - 1);
+eventEnd.setUTCDate(common.challenge.endDate);
+eventEnd.setUTCHours(common.challenge.endHour, common.challenge.minutes, common.challenge.seconds, common.challenge.msecs);
 
 var eventStartFormatted = moment(eventStart);
 var eventEndFormatted = moment(eventEnd);

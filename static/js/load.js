@@ -17,17 +17,41 @@ $(function(){
         return false;
     });
     
-    $('#map').css('display', 'none');
+    // $('#map').css('display', 'none');
+    
+    $('#map').addClass('hidden-xs');
+    
+    var updateViewMapText = function() {
+        if ($('#map').is(':visible')) {
+            $('#view-map').text('Hide map');
+        } else {
+            $('#view-map').text('Show map');
+        }
+    }
 
     var viewMapDefaultText = $('#view-map').text();
+    
+    updateViewMapText();
+    
+    $(window).resize(function() {
+        updateViewMapText();
+    })
 
     $('#view-map').click(function(e){
         e.preventDefault();
+        
         $('#map').toggle();
+        
+        $('#map.hidden-xs').removeClass('hidden-xs');
+        
+        // $('#map:hidden').css('display', 'block');
+        // $('#map:visible').css('display', 'none');
+        
+        updateViewMapText();
 
         // Toggle view map text
-        var viewMapText = $('#view-map').text();
-        $('#view-map').text(viewMapText === viewMapDefaultText ? 'Hide map' : viewMapDefaultText);
+        // var viewMapText = $('#view-map').text();
+        // $('#view-map').text(viewMapText === viewMapDefaultText ? 'Hide map' : viewMapDefaultText);
     
     });
     

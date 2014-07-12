@@ -10,8 +10,18 @@ if (typeof module !== 'undefined') {
 
 var path;
 
+// normalized moment library access.
+var normMoment;
+
 if (isNodeJS) {
     pathHelper = require('path');
+    normMoment = require('moment');
+} else {
+    document.addEventListener('DOMContentLoaded', function(e) {
+        if (typeof moment !== 'undefined') {
+           normMoment = moment; 
+        }
+    });
 }
 
 // Common namespace for browsers
@@ -209,9 +219,48 @@ var validateComment = exports.validateComment = common.validateComment = functio
     callback(error, value);
 };
 
+var challenge = {};
+
+challenge.year = 2014;
+challenge.month = 7;
+challenge.startDate = 12;
+challenge.endDate = 13;
+challenge.startHour = 9;
+challenge.endHour = 16;
+challenge.minutes = challenge.seconds = challenge.msecs = 0;
+
+exports.challenge = common.challenge = challenge;
+
 // --- CHALLENGE PUBLISHED SETTING ---
+// Automatic challenge publication at set challenge time.
+// Set publishedOverride = true to publish challenge regardless.
 var challengePublished = exports.challengePublished = common.challengePublished = function() {
-    return false;
+    var publishedOverride = false;
+    
+    
+    var isAfter = false;
+    
+    // Automatic challenge publication.
+    if (normMoment) {
+        // All in UTC.
+        var nowMoment = normMoment.utc();
+        
+        // For the start date.
+        var challengeStartMoment;
+        
+        challengeStartMoment = normMoment.utc().year(challenge.year);
+        challengeStartMoment.utc().month(challenge.month - 1);
+        challengeStartMoment.utc().date(challenge.startDate);
+        challengeStartMoment.utc().hour(challenge.startHour);
+        challengeStartMoment.utc().minute(challenge.minutes);
+        challengeStartMoment.utc().second(challenge.seconds);
+        challengeStartMoment.utc().millisecond(challenge.msecs);
+        
+        isAfter = nowMoment.isAfter(challengeStartMoment);
+        console.log('now is after challenge start moment: ' + isAfter);
+    }
+    
+    return isAfter || publishedOverride;
 }
 
 // Used at client and server side.

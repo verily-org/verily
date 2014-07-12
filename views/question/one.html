@@ -13,14 +13,15 @@
 {% set numResponses = question.answers | length %}
 
 <script>
-var questionTitle = '{{ questionTitleForSharing }}';
+var title = '{{ questionTitleForSharing }}';
+var path = '{{ path }}';
+var csrf_token = '{{ csrf_token }}';
 var refPathPrefix = '/r/';
 var refUrlPrefix = window.location.origin + refPathPrefix;
 var refUrlTwitter = refUrlPrefix + '{{ refcodes.twitter }}';
 var refUrlFacebook = refUrlPrefix + '{{ refcodes.facebook }}';
 var refUrlEmail = refUrlPrefix + '{{ refcodes.email }}';
 var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
-
 </script>
 
 <div id="fb-root"></div>
@@ -127,7 +128,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
                     
                     {% if question.targetLat %}
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
-                        <div id="map" class="smallmap" style="height: 200px;"></div>
+                        <div id="map" class="smallmap" style="height: 200px;" class="hidden-xs"></div>
                     </div>
                     {% endif %}
 
@@ -162,8 +163,9 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         <!-- / button-mark-false -->
     
         <!-- button-mark-important -->
-        <!-- Comment for Challenge!
-        {% set questionMarkedImportant = question.post | isMarkedImportantBy(user) %}
+        {# Comment for Challenge! #}
+        {# set questionMarkedImportant = question.post | isMarkedImportantBy(user) #}
+        {#
         <div class="action-button-ctr btn-group">
             <button data-crisis-id="{{ crisis.id }}"
                     data-question-id="{{ question.id }}"
@@ -175,27 +177,27 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
             </button>
             <a href="#" class="btn btn-default action-button-count disabled">{{ question.importanceCount }}</a>
         </div>
-        -->
+        #}
         <!-- / button-mark-important -->
         
         <div class="sharing-buttons">
             Ask your social network to help with this question<br/>
             <!-- button-email -->
             <div class="action-button-ctr btn-group">
-                <a class="btn btn-default btn-large text-action-button" id="button-share-question-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
+                <a class="btn btn-default btn-large text-action-button share-button" id="button-share-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
             </div>
             <script>
-            var buttonShareQuestionEmail = document.getElementById('button-share-question-email');
+            var buttonShareQuestionEmail = document.getElementById('button-share-email');
             var emailMessage = common.campaigner('email', '{{ questionTitleForSharing }}', refUrlEmail);
             buttonShareQuestionEmail.href = 'mailto:?subject=' + emailMessage.subject + '&body=' + emailMessage.body;
             </script>
             <!-- / button-email -->
 
-            <!-- button-share-question-link -->
+            <!-- button-share-link -->
             <div class="action-button-ctr btn-group">
-                <a class="btn btn-default btn-large text-action-button" id="button-share-question-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
+                <a class="btn btn-default btn-large text-action-button share-button" id="button-share-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
             </div>
-            <!-- / button-share-question-link -->
+            <!-- / button-share-link -->
 			
 			<!-- Facebook Share button -->
             <div class="action-button-ctr btn-group">
@@ -262,7 +264,7 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
 </div>
 
 {% if numResponses !== 0 %}
-<h3>{{ numResponses }} responses</h3>
+<h3>{{ numResponses }} response{% if numResponses !== 1 %}s{% endif %}</h3>
 
 
 <div class="row">
@@ -290,7 +292,13 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         <h4 class="modal-title">Share link</h4>
       </div>
       <div class="modal-body">
-        <span id="field-share-question-link"></span>
+        <input type="text" class="form-control hidden-xs" id="field-share-link">
+        <div class="visible-xs text-center">
+            On a mobile device, long-press the link and select a sharing option or press <strong>Copy</strong> to save it to your clipboard.
+            <br>
+            <a id="link-share-link"></a>
+        </div>
+        
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -442,89 +450,7 @@ function displayForm() {
 
 </script>
 
-<script>
-window.twttr = (function (d, s, id) {
-  var t, js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id; js.src= "https://platform.twitter.com/widgets.js";
-  fjs.parentNode.insertBefore(js, fjs);
-  return window.twttr || (t = { _e: [], ready: function (f) { t._e.push(f) } });
-}(document, "script", "twitter-wjs"));
-
-var tweetButton = document.getElementById('tweet-button');
-
-var twitterCampaigner = common.campaigner('twitter');
-
-tweetButton.dataset.url = refUrlTwitter;
-tweetButton.dataset.counturl = window.location.origin + '{{ path }}';
-tweetButton.dataset.text = questionTitle;
-tweetButton.dataset.hashtags = twitterCampaigner.hashtags;
-
-var facebookShareButton = document.getElementById('facebook-share-button');
-
-var emailButton = document.getElementById('button-share-question-email');
-
-var linkButton = document.getElementById('button-share-question-link');
-
-
-function intent (medium, intentEvent) {
-  
-  var refUrl = refUrlLink;
-    
-  if (medium === 'twitter') {
-      console.log('twitter');
-      refUrl = refUrlTwitter;
-  } else if (medium === 'facebook') {
-      console.log('facebook');
-      refUrl = refUrlFacebook;
-  } else if (medium === 'email') {
-      console.log('email');
-      refUrl = refUrlEmail;
-  } else {
-    console.log('link');
-  }
-  
-  $.ajax({
-      type: 'POST',
-      url: refUrl,
-      data: {
-    	  _csrf: "{{csrf_token}}",
-          destinationPath: '{{ path }}',
-          medium: medium
-      }
-  });
-}
-
-// Wait for the asynchronous resources to load
-twttr.ready(function (twttr) {
-  // Now bind our custom intent events
-  twttr.events.bind('click', function(intentEvent) {
-      intent('twitter', intentEvent);
-  });
-});
-
-facebookShareButton.addEventListener('click', function(e) {
-	intent('facebook');
-    FB.ui({
-      method: 'share',
-      href: refUrlFacebook,
-    }, function(response){
-        
-    });
-});
-
-emailButton.addEventListener('click', function(e) {
-    intent('email');
-});
-
-linkButton.addEventListener('click', function(e) {
-    // TODO: do input for everything other than xs devices.
-    var shareQuestionLinkHtml = '<span class="hidden-xs">' + refUrlLink + '</span><span class="visible-xs">Hold to copy</span>';
-    
-    document.getElementById('field-share-question-link').innerHTML = refUrlLink;
-    intent('link');
-});
-</script>
+<script src="/static/js/sharing.js"></script>
 
 <script src="/static/js/openlayers/OpenLayers-https.js"></script>
 <script src="/static/js/maps.js"></script>
