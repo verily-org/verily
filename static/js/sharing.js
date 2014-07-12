@@ -112,20 +112,20 @@ twttr.ready(function (twttr) {
 
 facebookShareButton.addEventListener('click', function(e) {
 	intent('facebook');
-    // FB.ui({
-//       method: 'share',
-//       href: refUrlFacebook,
-//     }, function(response){
-//         // A Open Graph story published on Facebook.
-//         // Reference: https://developers.facebook.com/docs/sharing/reference/share-dialog
-//
-//         try {
-//             socialEvent('facebook', 'open-graph-story', response);
-//
-//         } catch (e) {
-//             console.log("couldn't handle open-graph-story event");
-//         }
-//     });
+    FB.ui({
+      method: 'share',
+      href: refUrlFacebook,
+    }, function(response){
+        // A Open Graph story published on Facebook.
+        // Reference: https://developers.facebook.com/docs/sharing/reference/share-dialog
+        
+        try {
+            socialEvent('facebook', 'open-graph-story', response);
+        
+        } catch (e) {
+            console.log("couldn't handle open-graph-story event");
+        }
+    });
 });
 
 emailButton.addEventListener('click', function(e) {
