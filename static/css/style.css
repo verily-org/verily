@@ -980,6 +980,11 @@ fa.breadcrumb {
 .verily-panel .posted{
     padding-top:9px;
 }
+
+.verily-panel.question-answer {
+    word-wrap: break-word;
+}
+
 .panel-body{
     padding-bottom: 6px;
 }
