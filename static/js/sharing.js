@@ -113,17 +113,20 @@ twttr.ready(function (twttr) {
 facebookShareButton.addEventListener('click', function(e) {
 	intent('facebook');
     FB.ui({
-      method: 'share',
-      href: refUrlFacebook,
+      method: 'feed',
+      link: refUrlFacebook,
+      name: postTitle,
+      picture: imageUrl,
+      description: description
     }, function(response){
         // A Open Graph story published on Facebook.
         // Reference: https://developers.facebook.com/docs/sharing/reference/share-dialog
         
         try {
-            socialEvent('facebook', 'open-graph-story', response);
+            socialEvent('facebook', 'post', response);
         
         } catch (e) {
-            console.log("couldn't handle open-graph-story event");
+            console.log("couldn't handle facebook post event");
         }
     });
 });
