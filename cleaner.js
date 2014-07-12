@@ -32,7 +32,7 @@ module.exports = function() {
     // The cleaner must be called as soon as possible,
     // and ensure before the router and impression/analytics handling.
     return function(req, res, next) {
-        console.log('Cleaner request: ' + req.path)
+        //console.log('Cleaner request: ' + req.path)
         
         var newReqQuery = {};
         var newReqBody = {};

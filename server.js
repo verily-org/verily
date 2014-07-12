@@ -243,9 +243,9 @@ module.exports = function (suppressLogs, dbTestUrl) {
                         callback();
                     } else if (referrals && referrals.length !== 0) {
                         // There are referrals.
-                        console.log('in setReferralOfImpression');
-                        console.log('refcodes produce referrals:')
-                        console.log(referrals);
+//                        console.log('in setReferralOfImpression');
+//                        console.log('refcodes produce referrals:')
+//                        console.log(referrals);
                         
                         createdImpression.addReferrals(referrals, function(err) {
                             if (err) {

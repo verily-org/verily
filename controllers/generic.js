@@ -154,7 +154,6 @@ exports.create = function (model, data, req, cb) {
                             	  if (resizeErr) {
                             		  console.log('resizeErr:', resizeErr);
                             	  } else {
-	                            	  console.log('resize ok!');
 	                            	  var resizedStream = fs.createReadStream(tmpImagePath);
 	                            	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
                             	  }
@@ -255,7 +254,7 @@ function s3Upload(s3, targetImagePath, fileReadStream, done){
             console.log('Error in AWS S3 upload:')
             console.log(err);
         } else {
-            console.log('AWS S3 -- successful upload');
+            //console.log('AWS S3 -- successful upload');
         }
 
         // URL that the file is available on S3.
@@ -348,7 +347,6 @@ exports.update = function (model, id, req, cb) {
                         var tmpImagePath = 'tmp/' + imageId + path.extname(req.files.targetImageUpload.name);
 
                         if (mode.isHeroku()) {
-                            console.log('before s3 upload');
                             // Running on Heroku, so store in S3.
                         	// TODO: resize image
                             var fileReadStream = fs.createReadStream(req.files.targetImageUpload.path);
@@ -361,7 +359,6 @@ exports.update = function (model, id, req, cb) {
 	                    	  if (resizeErr) {
 	                    		  console.log('resizeErr:', resizeErr);
 	                    	  } else {
-		                    	  console.log('resize ok!');
 		                    	  var resizedStream = fs.createReadStream(tmpImagePath);
 		                    	  s3Upload(s3, targetImagePath, resizedStream, imageHandled);
 	                    	  }
