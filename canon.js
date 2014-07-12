@@ -32,10 +32,7 @@ module.exports = function() {
             // Also remove a trailing slash.
             workingUrl = workingUrl.replace(/\/{2,}/g, '/');
             
-            console.log('workingUrl');
-            console.log(workingUrl);
-            
-            if (workingUrl !== '/' && workingUrl.indexOf('/') === workingUrl.length - 1) {
+            if (workingUrl !== '/' && workingUrl.charAt(workingUrl.length - 1) === '/') {
                 // Not root but there is a trailing slash.
                 workingUrl = workingUrl.substring(0, workingUrl.length - 1);
             }
