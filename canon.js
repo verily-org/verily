@@ -20,6 +20,17 @@ module.exports = function() {
         }
 
     };
+    
+    var removeExtraSlashes = function(req, res, path) {
+        // Remove instances of multiple slashes where they feature twice or more.
+        var pathWithExtraSlashesRemoved = path.replace(/\/{2,}/, '/');
+        
+        if (path !== pathWithExtraSlashesRemoved) {
+            // If slashes were removed, redirect to the canonical path.
+            res.redirect(productionUrl);
+            res.end();
+        }
+    };
         
     // The canon should be called as early as possible.
     return function(req, res, next) {
@@ -38,17 +49,32 @@ module.exports = function() {
                 productionUrlObject.pathname = req.url;
             
                 var productionUrl = url.format(productionUrlObject);
+                
+                removeExtraSlashes(req, res, productionUrl);
             
-                res.redirect(productionUrl);
-                res.end();
             } else {
                 // The URL is already canonical in terms of using HTTPS at the apex.
+                
+                removeExtraSlashes(req, res, productionUrl);
+                
                 crisis1Canon(req, res, next);
             }
         
         } else {
             // Running on development.
+            
+            removeExtraSlashes(req, res, productionUrl);
+            
+            // The URL is already canonical in terms of using HTTPS at the apex.
             crisis1Canon(req, res, next);
         }
+        
+
+        
+        
+        
+
+
+
     };
 };
