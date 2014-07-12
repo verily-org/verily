@@ -29,7 +29,8 @@ module.exports = function() {
     
         var slashCanon = function() {
             // Remove instances of multiple slashes where they feature twice or more.
-            workingUrl = workingUrl.replace(/\/{2,}/, '/');
+            // Also remove a trailing slash.
+            workingUrl = workingUrl.replace(/\/{2,}/, '/').replace(/\/$/, '');
         };
         
         slashCanon();
