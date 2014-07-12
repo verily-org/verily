@@ -8,32 +8,35 @@ var common = require('./static/js/common');
 // (c) 2014 Alex Greenland. MIT Licence.
 module.exports = function() {
     
-    var crisis1Canon = function(req, res, next) {
-        if (common.challengePublished()) {
-            if (req.url === '/live' || req.url === '/verilylive' || req.url === '/challenge') {
-                res.redirect('/crisis/1');
-            } else {
-                next();
-            }
-        } else {
-            next();
-        }
-
-    };
-    
-    var removeExtraSlashes = function(req, res, path) {
-        // Remove instances of multiple slashes where they feature twice or more.
-        var pathWithExtraSlashesRemoved = path.replace(/\/{2,}/, '/');
-        
-        if (path !== pathWithExtraSlashesRemoved) {
-            // If slashes were removed, redirect to the canonical path.
-            res.redirect(productionUrl);
-            res.end();
-        }
-    };
         
     // The canon should be called as early as possible.
-    return function(req, res, next) {
+    return function(req, res, next) {        
+        // req.url from Express returns the relative URL (path) after the hostname.
+        var workingUrl = req.url;
+        
+        var crisis1Canon = function() {
+            if (common.challengePublished()) {
+                if (workingUrl === '/live' || workingUrl === '/verilylive' || workingUrl === '/challenge') {
+                    workingUrl = '/crisis/1';
+                } else {
+
+                }
+            } else {
+
+            }
+
+        };
+    
+        var slashCanon = function() {
+            // Remove instances of multiple slashes where they feature twice or more.
+            workingUrl = workingUrl.replace(/\/{2,}/, '/');
+        };
+        
+        slashCanon();
+        
+        crisis1Canon();
+    
+        
         // req.host from Express returns just the hostname (no port number).
         // See: http://expressjs.com/api.html#req.host
         
@@ -45,36 +48,27 @@ module.exports = function() {
                 // Compose the expected canonical absolute URL.
                 var productionUrlObject = enums.production;
             
-                // req.url from Express returns the relative URL (path) after the hostname.
-                productionUrlObject.pathname = req.url;
+                productionUrlObject.pathname = workingUrl;
             
-                var productionUrl = url.format(productionUrlObject);
+                workingUrl = url.format(productionUrlObject);
                 
-                removeExtraSlashes(req, res, productionUrl);
-            
             } else {
                 // The URL is already canonical in terms of using HTTPS at the apex.
-                
-                removeExtraSlashes(req, res, productionUrl);
-                
-                crisis1Canon(req, res, next);
             }
         
         } else {
             // Running on development.
-            
-            removeExtraSlashes(req, res, productionUrl);
-            
-            // The URL is already canonical in terms of using HTTPS at the apex.
-            crisis1Canon(req, res, next);
+
         }
         
 
+        if (workingUrl !== req.url) {
+            res.redirect(workingUrl);
+            res.end();
+        } else {
+            next();
+        }
         
-        
-        
-
-
 
     };
 };
