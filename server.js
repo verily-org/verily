@@ -445,6 +445,68 @@ module.exports = function (suppressLogs, dbTestUrl) {
     //    // Configure the routes.
         router(app, controllers);
         
+        // New social event.
+        app.post('/social-event', function(req, res) {
+            console.log('register social event');
+            
+            console.log('req.body');
+            console.log(req.body);
+            
+            console.log('raw event');
+            console.log(req.body.rawEvent);
+            
+            var rawEvent = req.body.rawEvent;
+            
+            var socialEvent = {
+                refCode: req.body.refCode,
+                path: req.body.path,
+                medium: req.body.medium,
+                type: req.body.type,
+                rawEvent: rawEvent,
+                date: new Date(Date.now()),
+                ip: req.ip,
+                userAgent: req.headers['user-agent']
+            };
+            
+            // Twitter
+            // Reference: https://dev.twitter.com/docs/tfw/events
+            if (rawEvent.tweet_id) {
+                socialEvent.eventSourceId = rawEvent.tweet_id;
+            }
+                        
+            if (rawEvent.screen_name) {
+                socialEvent.authorSourceUsername = rawEvent.screen_name;
+            }
+            
+            if (rawEvent.user_id) {
+                socialEvent.authorSourceId = rawEvent.user_id;
+            }
+            
+            // Facebook.
+            // Reference: https://developers.facebook.com/docs/sharing/reference/share-dialog
+            if (rawEvent.object_id) {
+                socialEvent.eventSourceId = rawEvent.object_id;
+            }
+            
+            req.models.SocialEvent.create([socialEvent], function(err, items) {
+                if (err) {
+                    console.log(err);
+                }
+                var createdSocialEvent = items[0];
+                createdSocialEvent.save(function(err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    
+                    console.log('created social event');
+                    res.status(201);
+                    res.end();
+                });
+            });
+                
+            
+        });
+        
     
         // New referral code being registered by a click on a sharing button.
         // Once referral code has been registered (PUT), it cannot be PUT again.

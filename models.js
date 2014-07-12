@@ -89,6 +89,12 @@ module.exports = function (db, cb) {
         content: {
             type: 'text'
         },
+        rawEvent: {
+            type: 'text'
+        },
+        refCode: {
+            type: 'text'
+        },
         date: {
             type: 'date',
             time: true

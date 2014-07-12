@@ -21,23 +21,45 @@ var emailButton = document.getElementById('button-share-email');
 
 var linkButton = document.getElementById('button-share-link');
 
+function getRefCode(medium) {
+    var refCode = refCodeLink;
+    
+    if (medium === 'twitter') {
+        refCode = refCodeTwitter;
+        
+    } else if (medium === 'facebook') {
+        refCode = refCodeFacebook;
+        
+    } else if (medium === 'email') {
+        refCode = refCodeEmail;
+        
+    }
+    
+    return refCode;
+}
+
+function getRefUrl(medium) {
+    var refUrl = refUrlLink;
+    
+    if (medium === 'twitter') {
+        console.log('twitter');
+        refUrl = refUrlTwitter;
+    } else if (medium === 'facebook') {
+        console.log('facebook');
+        refUrl = refUrlFacebook;
+    } else if (medium === 'email') {
+        console.log('email');
+        refUrl = refUrlEmail;
+    } else {
+      console.log('link');
+    }
+    
+    return refUrl;
+}
+
 
 function intent (medium, intentEvent) {
-
-  var refUrl = refUrlLink;
-
-  if (medium === 'twitter') {
-      console.log('twitter');
-      refUrl = refUrlTwitter;
-  } else if (medium === 'facebook') {
-      console.log('facebook');
-      refUrl = refUrlFacebook;
-  } else if (medium === 'email') {
-      console.log('email');
-      refUrl = refUrlEmail;
-  } else {
-    console.log('link');
-  }
+  var refUrl = getRefUrl(medium);
 
   $.ajax({
       type: 'POST',
@@ -50,13 +72,38 @@ function intent (medium, intentEvent) {
   });
 }
 
+function socialEvent(medium, type, event) {
+    var refCode = getRefCode(medium);
+    
+    $.ajax({
+        type: 'POST',
+        url: '/social-event',
+        data: {
+            _csrf: csrf_token,
+            refCode: refCode,
+            path: path,
+            medium: medium,
+            type: type,
+            rawEvent: event
+        }
+    });
+}
+
 // Wait for the asynchronous resources to load
 twttr.ready(function (twttr) {
   // Now bind our custom intent events
   twttr.events.bind('click', function(intentEvent) {
       intent('twitter', intentEvent);
   });
+  
+  twttr.events.bind('tweet', function (event) {
+    // Triggered when the user publishes a Tweet (either new, or a reply) through the Tweet Web Intent.
+    // Reference: https://dev.twitter.com/docs/tfw/events
+    socialEvent('twitter', 'tweet', event);
+  });
+  
 });
+
 
 facebookShareButton.addEventListener('click', function(e) {
 	intent('facebook');
@@ -64,7 +111,9 @@ facebookShareButton.addEventListener('click', function(e) {
       method: 'share',
       href: refUrlFacebook,
     }, function(response){
-
+        // A Open Graph story published on Facebook.
+        // Reference: https://developers.facebook.com/docs/sharing/reference/share-dialog
+        socialEvent('facebook', 'open-graph-story', response);
     });
 });
 
