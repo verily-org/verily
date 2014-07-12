@@ -459,7 +459,10 @@ exports.load_crisis_extra_fields = function(crisis, callback){
     crisis.relativeCreatedDate = exports.relativeTime(crisis.post.date);
         
     crisis.relativeTargetDateTimeOccurred = exports.relativeTime(crisis.post.targetDateTimeOccurred);
-    
+
+    var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
+    crisis.relativeCreatedDate = relativeCreatedDate;
+
     crisis.getPost(function(err, post){
         if (!err && post) {
             crisis.importanceCount = crisis.post.getImportanceCount();
@@ -472,26 +475,36 @@ exports.load_crisis_extra_fields = function(crisis, callback){
 }
 exports.load_question_extra_fields = function(question, callback){
     if(question.answers == undefined){
-        question.getAnswers({autoFetch:true,autoFetchLimit:3}, function(err, answers){
+        question.getAnswers(function(err, answers){
             if (!err && answers) {
-                question.rejectedAnswerCount = question.getRejectedAnswerCount();
-                question.supportedAnswerCount = question.getSupportedAnswerCount();
-                if(question.post.ratings == undefined){
-                    question.getPost(function(err, post){
-                        if (!err && answers) {
-                            question.importanceCount = question.post.getImportanceCount();
-                            question.popularityCoefficient = getQuestionPopularityCoefficient(question);
-                            callback();
+                async.each(question.answers,
+                    function(answer, callback2){
+                        answer.getPost(function(err){
+                            if(err) callback2(err);
+                            callback2();
+                        });},
+                    function(err){
+                        if(err){callback(err)}
+                        question.rejectedAnswerCount = question.getRejectedAnswerCount();
+                        question.supportedAnswerCount = question.getSupportedAnswerCount();
+                        if(question.post.ratings == undefined){
+                            question.getPost(function(err, post){
+                                if (!err && answers) {
+                                    question.importanceCount = question.post.getImportanceCount();
+                                    question.popularityCoefficient = getQuestionPopularityCoefficient(question);
+                                    callback();
+                                }
+                                else{
+                                    callback(err);
+                                }
+                            });
                         }
                         else{
-                            callback(err);
+                            question.importanceCount = question.post.getImportanceCount();
+                            callback();
                         }
                     });
-                }
-                else{
-                    question.importanceCount = question.post.getImportanceCount();
-                    callback();
-                }
+
             }
             else{
                 callback(err);
@@ -505,6 +518,7 @@ exports.load_question_extra_fields = function(question, callback){
         question.popularityCoefficient = getQuestionPopularityCoefficient(question);
         callback();
     }
+
 }
 var load_post_ratings_count_function = function(item, callback){
 

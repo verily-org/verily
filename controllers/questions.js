@@ -434,8 +434,7 @@ var getQuestion = function (req, addView, callback) {
 function oneQuestionResponse(req, res, crisis, question, user, refcodes){
     res.status(200);
 
-    var datetime = new Date();
-    console.log('Rendering GetOne Question View: ' + datetime.getMinutes() +":"+datetime.getSeconds());
+    console.log('-------------Rendering GetOne Question View-----------');
     res.render('question/one', {
         crisis: crisis,
         question: question,
@@ -471,8 +470,7 @@ var applyUserAndRespond = function(req, res, crisis, question, refcodes) {
 var getOne = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
 
-    var datetime = new Date();
-    console.log('Entered GetOne Question: ' + datetime.getMinutes() +":"+datetime.getSeconds());
+    console.log('----------Entered GetOne Question----------');
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         getQuestion(req, true, function(err, question) {
