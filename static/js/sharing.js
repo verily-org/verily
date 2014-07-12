@@ -96,11 +96,16 @@ twttr.ready(function (twttr) {
       intent('twitter', intentEvent);
   });
   
-  twttr.events.bind('tweet', function (event) {
-    // Triggered when the user publishes a Tweet (either new, or a reply) through the Tweet Web Intent.
-    // Reference: https://dev.twitter.com/docs/tfw/events
-    socialEvent('twitter', 'tweet', event);
-  });
+  try {
+      twttr.events.bind('tweet', function (event) {
+        // Triggered when the user publishes a Tweet (either new, or a reply) through the Tweet Web Intent.
+        // Reference: https://dev.twitter.com/docs/tfw/events
+        socialEvent('twitter', 'tweet', event);
+      });
+  
+    } catch (e) {
+        console.log("couldn't handle tweet event");
+    }
   
 });
 
@@ -113,7 +118,13 @@ facebookShareButton.addEventListener('click', function(e) {
     }, function(response){
         // A Open Graph story published on Facebook.
         // Reference: https://developers.facebook.com/docs/sharing/reference/share-dialog
-        socialEvent('facebook', 'open-graph-story', response);
+        
+        try {
+            socialEvent('facebook', 'open-graph-story', response);
+        
+        } catch (e) {
+            console.log("couldn't handle open-graph-story event");
+        }
     });
 });
 

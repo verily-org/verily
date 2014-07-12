@@ -246,9 +246,9 @@ var getChallengeStartMoment = function() {
     return challengeStartMoment;
 };
 
-var isNowAfterMoment = function(challengeStartMoment) {
+var isNowAfterMoment = function(targetMoment) {
     var nowMoment = normMoment.utc();
-    return nowMoment.isAfter(challengeStartMoment);
+    return nowMoment.isAfter(targetMoment);
 }
 
 
@@ -280,6 +280,13 @@ var challengeCountdown = exports.challengeCountdown = common.challengeCountdown 
         if (challengePublished()) {
             return 'has begun!';
         }
+        
+        // if (isNowAfterMoment(challengeStartMoment) && !challengePublished()) {
+        //     // User's browser clock is probably wrong.
+        //     // User's clock reports that now is after the challenge start time,
+        //     // but the challenge has not actually started yet according to server time
+        //     return 'starts soon';
+        // }
                 
         var fromNow = challengeStartMoment.fromNow();
 
