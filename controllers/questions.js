@@ -522,7 +522,7 @@ var getOne = function (req, res) {
                             oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
 
                                 if (!err){
-                                    question.post.targetVideoHtml = result.html;
+                                    question.post.targetVideoHtml = result.html.replace('http:', 'https:');
                                 } else {
                                     question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
                                 }
