@@ -150,8 +150,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 models.Impression = db.models.impression;
                 models.Referral = db.models.referral;
                 models.Session = db.models.session;
-                models.SocialEvent = db.models.socialEvent;
-                models.UserHistory = db.models.userHistory;
+                models.SocialEvent = db.models.social_event;
+                models.UserHistory = db.models.user_history;
 
                 models.Local.sync(function () {console.log("Local synced")});
                 models.QuestionComment.sync(function () {console.log("QuestionComment synced")});

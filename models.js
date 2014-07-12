@@ -16,7 +16,7 @@ module.exports = function (db, cb) {
     // Tracks a transfer from provisional user to a chosen-username user
     // on login. Does not track signups the user **is** the provisional user
     // with a change in username and some other account details.
-    var UserHistory = db.define('userHistory', {
+    var UserHistory = db.define('user_history', {
         transferDate: {
             type: 'date',
             time: true
@@ -67,7 +67,7 @@ module.exports = function (db, cb) {
     });
     
     // Social event, such as a Tweet, Facebook post
-    var SocialEvent = db.define('socialEvent', {
+    var SocialEvent = db.define('social_event', {
         eventSourceId: {
             type: 'text'
         },
