@@ -100,7 +100,7 @@ var splitIntoTags = exports.splitIntoTags = common.splitIntoTags = function(stri
 var normalizeTag = exports.normalizeTag = common.normalizeTag = exports.normalizeString = common.normalizeString = function(tag) {
     // Just remove apostrophes, don't replace them with '-'.
     // If after the first replace there is just 1 '-' at start or end, remove it, or if there are 2 or more hyphens (-), trim to 1 '-'.
-    return tag.trim().toLowerCase().replace(/'/g, '').replace(/[\s/\\#._!@$£€%^?<>{}\[\]&*+=:;"`~]+/g, '-').replace(/-{2,}/g, '-' ).replace(/(^-)?(-$)?/g, '');    
+    return tag.trim().toLowerCase().replace(/'/g, '').replace(/[\s/\\#.,_!@$£€%^?<>(){}\[\]&*+=:;"`~]+/g, '-').replace(/-{2,}/g, '-' ).replace(/(^-)?(-$)?/g, '');    
 };
 
 // Pretty paths for canonical URLs
