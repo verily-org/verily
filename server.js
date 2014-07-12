@@ -445,6 +445,33 @@ module.exports = function (suppressLogs, dbTestUrl) {
     //    // Configure the routes.
         router(app, controllers);
         
+        // Post timezone offset from user.
+        app.post('/timezone-offset', function(req, res) {
+            // Ensure user first.
+            if (req.user) {
+                var user = req.user;                
+                user.timezoneOffset = parseInt(req.body.timezoneOffset);
+                
+                user.save(function(err) {
+                    if (err) {
+                        console.log(err);
+                    }                
+                    
+                    res.status(200);
+                    res.end();
+                });
+                
+                res.status(200);
+                res.end();
+                
+            } else {
+                res.status(200);
+                res.end();
+            }
+            
+            
+        });
+        
         // New social event.
         app.post('/social-event', function(req, res) {
             console.log('register social event');
@@ -491,11 +518,15 @@ module.exports = function (suppressLogs, dbTestUrl) {
             req.models.SocialEvent.create([socialEvent], function(err, items) {
                 if (err) {
                     console.log(err);
+                    res.status(200);
+                    res.end();
                 }
                 var createdSocialEvent = items[0];
                 createdSocialEvent.save(function(err) {
                     if (err) {
                         console.log(err);
+                        res.status(200);
+                        res.end();
                     }
                     
                     console.log('created social event');

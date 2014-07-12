@@ -266,7 +266,7 @@ var challengePublished = exports.challengePublished = common.challengePublished 
         var challengeStartMoment = getChallengeStartMoment();
         
         isAfter = isNowAfterMoment(challengeStartMoment);
-        console.log('now is after challenge start moment: ' + isAfter);
+        // console.log('now is after challenge start moment: ' + isAfter);
     }
     
     return isAfter || publishedOverride;

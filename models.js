@@ -1,6 +1,8 @@
 var bcrypt   = require('bcrypt-nodejs'),
     common   = require('./static/js/common'),
     orm = require('orm');
+    
+    var NOT_SET_TIMEZONE_OFFSET = 9999999999;
 
 module.exports = function (db, cb) {
     
@@ -351,6 +353,10 @@ module.exports = function (db, cb) {
             role: {
                 type: 'enum',
                 values: ['editor', 'simple', 'admin']
+            },
+            timezoneOffset: {
+                type: 'number',
+                defaultValue: NOT_SET_TIMEZONE_OFFSET
             },
             signupPoints: {
                 type: 'number',
