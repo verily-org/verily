@@ -256,7 +256,7 @@ var isNowAfterMoment = function(targetMoment) {
 // Automatic challenge publication at set challenge time.
 // Set publishedOverride = true to publish challenge regardless.
 var challengePublished = exports.challengePublished = common.challengePublished = function() {
-    var publishedOverride = false;
+    var publishedOverride = true;
     
     var isAfter = false;
     
