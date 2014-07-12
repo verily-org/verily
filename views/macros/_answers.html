@@ -94,8 +94,7 @@
 						{{ answer.post.text | cropString(300)  }}
 						
 						{% if answer.post.targetImage %}
-							<div class="row">
-								<img src="{{ answer.post.targetImage }}" class="img-responsive center-block answer-image">
+							<div class="row card-image" style="background-image: url({{ answer.post.targetImage }});">
 							</div>
 
 						{% elseif answer.post.targetVideoUrl %}
