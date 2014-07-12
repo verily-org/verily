@@ -1,9 +1,9 @@
-<form class="login-form" role="form" action="/login" method="POST">
+<form class="login-form" role="form" action="/login" method="POST" novalidate>
     <input type="hidden" name="_csrf" value="{{csrf_token}}" />
     <!-- <input type="hidden" name="_method" value="POST">
     <input type="hidden" id="form-question-type" name="type"> -->
 
-    <div class="form-group">
+    <div class="form-group" >
         <input type="email" class="form-control input-lg form-email" name="email" placeholder="Email" tabindex="1">
     </div>
 
