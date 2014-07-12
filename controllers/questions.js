@@ -812,7 +812,7 @@ function getQuestionsJson(crisis, callback){
                     "targetLat": questions[key].post.targetLat,
                     "targetLong": questions[key].post.targetLong,
                     "tags": questions[key].post.tags.join(),
-                    "targetDateTimeOccurred": questions[key].targetDateTimeOccurred,
+                    "targetDateTimeOccurred": questions[key].post.targetDateTimeOccurred,
                     "automaticLocation": questions[key].post.automaticLocation,
                     "user_id": questions[key].post.user_id
                 });
