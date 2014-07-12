@@ -27,7 +27,7 @@
     
     <div class="well transparent challenge-info-box">
         <h2>
-            <strong>#VerilyLive</strong>
+            <strong>#VerilyLive</strong> <span id="challenge-countdown">{{ null|challengeCountdown() }}</span>
         </h2>
         <p class="lead stay-large">
              The global crowdsourcing challenge for evidence collection and verification
@@ -122,8 +122,34 @@ If you have any questions or comments before the challenge please email <a href=
 
 <script src="/static/js/moment.js"></script>
 <script type="text/javascript">
-// Calculate local time.
+
+// Calculate local time and countdown.
 // (c) 2014 Alex Greenland. MIT Licence.
+
+document.addEventListener('DOMContentLoaded', function(e) {
+    // To stop infinite reloads!
+    var isChallengePublishedInitially = common.challengePublished();
+    
+    if (!isChallengePublishedInitially) {
+        $('#challenge-countdown').text(common.challengeCountdown());
+
+        setInterval(function() {
+            $('#challenge-countdown').text(common.challengeCountdown());
+            
+
+        
+            // Check if the challenge has been published. If it has now been published, reload,
+            // so the user doesn't need to reload at the challenge start time.
+            var isChallengeNowPublished = common.challengePublished();
+            
+            if (isChallengeNowPublished) {
+                window.location.reload(true);
+            }
+        
+        }, 1000);
+    }
+});
+
 
 // In UTC:
 

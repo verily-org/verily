@@ -231,23 +231,10 @@ challenge.minutes = challenge.seconds = challenge.msecs = 0;
 
 exports.challenge = common.challenge = challenge;
 
-// --- CHALLENGE PUBLISHED SETTING ---
-// Automatic challenge publication at set challenge time.
-// Set publishedOverride = true to publish challenge regardless.
-var challengePublished = exports.challengePublished = common.challengePublished = function() {
-    var publishedOverride = false;
-    
-    
-    var isAfter = false;
-    
-    // Automatic challenge publication.
+var getChallengeStartMoment = function() {
+    // For the start date.
+    var challengeStartMoment = null;
     if (normMoment) {
-        // All in UTC.
-        var nowMoment = normMoment.utc();
-        
-        // For the start date.
-        var challengeStartMoment;
-        
         challengeStartMoment = normMoment.utc().year(challenge.year);
         challengeStartMoment.utc().month(challenge.month - 1);
         challengeStartMoment.utc().date(challenge.startDate);
@@ -255,13 +242,53 @@ var challengePublished = exports.challengePublished = common.challengePublished 
         challengeStartMoment.utc().minute(challenge.minutes);
         challengeStartMoment.utc().second(challenge.seconds);
         challengeStartMoment.utc().millisecond(challenge.msecs);
+    }
+    return challengeStartMoment;
+};
+
+var isNowAfterMoment = function(challengeStartMoment) {
+    var nowMoment = normMoment.utc();
+    return nowMoment.isAfter(challengeStartMoment);
+}
+
+
+// --- CHALLENGE PUBLISHED SETTING ---
+// Automatic challenge publication at set challenge time.
+// Set publishedOverride = true to publish challenge regardless.
+var challengePublished = exports.challengePublished = common.challengePublished = function() {
+    var publishedOverride = false;
+    
+    var isAfter = false;
+    
+    // Automatic challenge publication.
+    if (normMoment) {
+        // All in UTC.        
+        var challengeStartMoment = getChallengeStartMoment();
         
-        isAfter = nowMoment.isAfter(challengeStartMoment);
+        isAfter = isNowAfterMoment(challengeStartMoment);
         console.log('now is after challenge start moment: ' + isAfter);
     }
     
     return isAfter || publishedOverride;
-}
+};
+
+var challengeCountdown = exports.challengeCountdown = common.challengeCountdown = function() {
+    var returner = '';
+    if (normMoment) {
+        var challengeStartMoment = getChallengeStartMoment();
+        
+        if (challengePublished()) {
+            return 'has begun!';
+        }
+                
+        var fromNow = challengeStartMoment.fromNow();
+
+        if (fromNow) {
+            returner = 'starts ' + fromNow;
+        }
+    }
+    return returner;
+};
 
 // Used at client and server side.
 var validateDateTimeOccurred = exports.validateDateTimeOccurred = common.validateDateTimeOccurred = function(value, elemsParent, elemsIsArray, callback) {
