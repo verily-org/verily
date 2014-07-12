@@ -30,7 +30,7 @@
             </div>
             <h2 class="question-title">{{ answer.post.title }}</h2>
 
-            <p class="lead">
+            <p class="lead description-text">
                 {{ answer.post.text }}
             </p>
 
@@ -162,6 +162,24 @@ if (window.location.search.indexOf('action=comment') !== -1) {
     // focus comment box
     focusForm();
 }
+
+</script>
+
+<script type="text/javascript">
+	function urlify(text) {
+		var urlRegex = /(https?:\/\/[^\s]+)/g;
+		return text.replace(urlRegex, function(url) {
+			return '<a href="' + url + '">' + url + '</a>';
+		})
+		// or alternatively
+		// return text.replace(urlRegex, '<a href="$1">$1</a>')
+		
+	}
+
+	$(document).ready(function(){
+		$(".description-text").html(urlify($(".description-text").text()));
+		$(".question-title").html(urlify($(".question-title").text()));
+	});
 
 </script>
 
