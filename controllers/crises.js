@@ -127,16 +127,12 @@ exports.terms = function (req, res) {
 };
 
 var oneCrisisResponse = function(req, res, responseData) {
-    var datetime = new Date();
-    console.log('-------------Rendering GetOne Crisis View-----------'+ datetime.getMinutes() +":"+datetime.getSeconds());
     res.render('crisis/one', responseData);
 }
 
 //get a specific crisis
 var getOne = function (req, res) {
     //Redirection if different than 1 for Challenge purpose
-    var datetime = new Date();
-    console.log('----------Entered GetOne Crisis----------' + datetime.getMinutes() +":"+datetime.getSeconds());
     if(req.params.crisis_id != 1){
         res.redirect('/crisis/1');
         res.end();
@@ -148,8 +144,6 @@ var getOne = function (req, res) {
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
-                    var datetime = new Date();
-                    console.log('----------Question Found----------' + datetime.getMinutes() +":"+datetime.getSeconds());
 
                     // Questions with Post data included in each question.
                     async.each(questions, generic.load_question_extra_fields, function (err) {
@@ -174,9 +168,6 @@ var getOne = function (req, res) {
                                     });
 
                                 })
-
-                                var datetime = new Date();
-                                console.log('----------Question extra loaded Found----------' + datetime.getMinutes() +":"+datetime.getSeconds());
 
                                 var responseData = {
                                     crisis: crisis,

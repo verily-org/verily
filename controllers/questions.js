@@ -355,67 +355,82 @@ var getQuestion = function (req, addView, callback) {
                 question.post.addViewCount();
             }
 
-            question.getAnswers({autoFetch:true,autoFetchLimit:3},function(err,answers){
+            question.getAnswers(function(err,answers){
                if (!err && answers) {
-                   question.answers = answers.filter(function(answer){
-                       answer.comments = answer.comments.filter(function(answerComment){
-                           return common.isUserContentShow(answerComment.comment.user)
-                               && answerComment.comment.show;
-                       });
-                       return answer.show && common.isUserContentShow(answer.post.user);
+                   req.models.Post.findByAnswers({question_id: question.id}, function(err, posts){
+                        //console.log(posts);
                    });
-
-                   generic.load_question_extra_fields(question, function(err){
-                       if (!err) {
-
-                           // Canonicalise the path to the pretty format
-                           // that works well for bookmarks.
-                           var canonicalPath = common.prettyPath({
-                               req: req,
-                               id: question.id,
-                               string: question.post.title
+                   async.each(question.answers,
+                       function(answer, callback2){
+                           answer.getPost(function(err){
+                               if(err) callback2(err);
+                                   answer.getComments(function(err){
+                                       if(err) callback2(err);
+                                       callback2();
+                                   });
+                           });},
+                       function(err){
+                           if(err){callback(err)}
+                           question.answers = answers.filter(function(answer){
+                               answer.comments = answer.comments.filter(function(answerComment){
+                                   return common.isUserContentShow(answerComment.comment.user)
+                                       && answerComment.comment.show;
+                               });
+                               return answer.show && common.isUserContentShow(answer.post.user);
                            });
-                                                      
-                           var questionTmp = {
-                               title: question.post.title,
-                               id: question.id,
-                               text: question.post.text,
-                               targetLocality: question.post.targetLocality,
-                               targetLat: question.post.targetLat,
-                               targetLong: question.post.targetLong,
-                               targetImage: question.post.targetImage,
-                               targetYoutubeVideoId: question.post.targetYoutubeVideoId,
-                               targetYoutubeVideoUrl: question.post.targetYoutubeVideoUrl,
-                               targetDateTimeOccurred: question.post.targetDateTimeOccurred,
-                               relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
-                               date: question.post.date,
-                               relativeCreatedDate: relativeCreatedDate,
-                               author: question.post.author,
-                               tags: question.post.tags,
-                               viewCount: question.post.viewCount,
-                               rejectedAnswerCount: question.rejectedAnswerCount,
-                               supportedAnswerCount: question.supportedAnswerCount,
-                               updated: question.post.updated,
-                               importanceCount: question.importanceCount,
-                               canonicalPath: canonicalPath,
-                               post: question.post
-                           }, wrapper = {
-                               question: questionTmp
-                           };
-                           // Answers present.
-                           async.each(question.answers, generic.load_answers_extra_fields, function (err) {
-                               if (err) {
-                                   callback(err);
+
+                           generic.load_question_extra_fields(question, function(err){
+                               if (!err) {
+
+                                   // Canonicalise the path to the pretty format
+                                   // that works well for bookmarks.
+                                   var canonicalPath = common.prettyPath({
+                                       req: req,
+                                       id: question.id,
+                                       string: question.post.title
+                                   });
+
+                                   var questionTmp = {
+                                       title: question.post.title,
+                                       id: question.id,
+                                       text: question.post.text,
+                                       targetLocality: question.post.targetLocality,
+                                       targetLat: question.post.targetLat,
+                                       targetLong: question.post.targetLong,
+                                       targetImage: question.post.targetImage,
+                                       targetYoutubeVideoId: question.post.targetYoutubeVideoId,
+                                       targetYoutubeVideoUrl: question.post.targetYoutubeVideoUrl,
+                                       targetDateTimeOccurred: question.post.targetDateTimeOccurred,
+                                       relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
+                                       date: question.post.date,
+                                       relativeCreatedDate: relativeCreatedDate,
+                                       author: question.post.author,
+                                       tags: question.post.tags,
+                                       viewCount: question.post.viewCount,
+                                       rejectedAnswerCount: question.rejectedAnswerCount,
+                                       supportedAnswerCount: question.supportedAnswerCount,
+                                       updated: question.post.updated,
+                                       importanceCount: question.importanceCount,
+                                       canonicalPath: canonicalPath,
+                                       post: question.post
+                                   }, wrapper = {
+                                       question: questionTmp
+                                   };
+                                   // Answers present.
+                                   async.each(question.answers, generic.load_answers_extra_fields, function (err) {
+                                       if (err) {
+                                           callback(err);
+                                       } else {
+                                           questionTmp.answers = question.answers;
+                                           callback(err, questionTmp);
+                                       }
+                                   });
                                } else {
-                                   questionTmp.answers = question.answers;
-                                   callback(err, questionTmp);
+                                   callback(err);
                                }
-                           });
-                       } else {
-                           callback(err);
-                       }
 
-                    });
+                            });
+                       });
                } else {
                    callback(err);
                }
