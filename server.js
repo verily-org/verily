@@ -511,9 +511,12 @@ module.exports = function (suppressLogs, dbTestUrl) {
             
             // Facebook.
             // Reference: https://developers.facebook.com/docs/sharing/reference/share-dialog
-            if (rawEvent.object_id) {
+            if (rawEvent.post_id) {
+                socialEvent.eventSourceId = rawEvent.post_id;
+            } else if (rawEvent.object_id) {
                 socialEvent.eventSourceId = rawEvent.object_id;
             }
+
             
             req.models.SocialEvent.create([socialEvent], function(err, items) {
                 if (err) {
