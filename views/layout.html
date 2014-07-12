@@ -13,12 +13,10 @@
 		{% if crisis %}
 			{% set title = crisis.post.title %}
 			{% set imageurl = crisis.post.targetImage || imageurl %}
-			{% set description = crisis.post.text || description %}
 		{% endif %}
 		{% if question %}
 			{% set title = question.post.title %}
 			{% set imageurl = question.post.targetImage || imageurl %}
-			{% set description = question.post.text || description %}
 		{% endif %}
 		{% if answer %}
 			{% set title = answer.post.title %}

@@ -31,7 +31,6 @@
                     function(result){
                         if(result.html){
                             var video_html = result.html;
-                            console.log(result);
                             video_html = video_html.replace('http:', 'https:');
                             update_container(video_html, $(video_wrapper));
                         }

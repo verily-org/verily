@@ -127,16 +127,12 @@ exports.terms = function (req, res) {
 };
 
 var oneCrisisResponse = function(req, res, responseData) {
-    var datetime = new Date();
-    console.log('Rendering GetOne Crisis View: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     res.render('crisis/one', responseData);
 }
 
 //get a specific crisis
 var getOne = function (req, res) {
     //Redirection if different than 1 for Challenge purpose
-    var datetime = new Date();
-    console.log('Entered GetOne Crisis: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     if(req.params.crisis_id != 1){
         res.redirect('/crisis/1');
         res.end();
@@ -154,6 +150,7 @@ var getOne = function (req, res) {
                 if (err) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
+
                     // Questions with Post data included in each question.
                     async.each(questions, generic.load_question_extra_fields, function (err) {
                         if (err) {
@@ -166,7 +163,7 @@ var getOne = function (req, res) {
                                 questions.forEach(function(question) {
                                     var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
                                     question.relativeCreatedDate = relativeCreatedDate;
-                                    
+
                                     // Canonicalise the path to the pretty format
                                     // that works well for bookmarks.
                                     question.canonicalPath = common.prettyPath({
@@ -175,7 +172,7 @@ var getOne = function (req, res) {
                                         id: question.id,
                                         string: question.post.title
                                     });
-                                    
+
                                 })
                                 
                                 var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});

@@ -651,8 +651,8 @@ var postBanUser = function (req, res) {
 exports.postBanUser = [isAdmin, postBanUser];
 
 var getUserContentList = function (req, res) {
-    var datetime = new Date();
-    console.log('entered: ' + datetime.getMinutes() +":"+datetime.getSeconds());
+//    var datetime = new Date();
+//    console.log('entered: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     req.models.User.get(req.params.user_id, function (err, user) {
         if (err) {
             generic.genericErrorHandler(req, res, err);

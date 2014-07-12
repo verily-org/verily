@@ -27,33 +27,30 @@ exports.all = function (req, res) {
 // Create comment and add it to answer.
 var create = function (req, res) {
     var crisis_id = req.params.crisis_id;
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
-        if (!err && question) {
-            //question exists
-            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
-                if (!err && answer) {
-                    //answer exists
-                    create_answer_comment(req, answer, function (err, comment2) {
-                       if (!err && comment2) {
-                            var answercomment = {
-                                id: comment2.id,
-                                text: comment2.text,
-                                date: comment2.date,
-                                author: comment2.author,
-                                updated: comment2.updated
-                            }, wrapper = {
-                                answer_comment: answercomment
-                            };
-                            res.redirect('/crisis/'+ crisis_id +'/question/' + answer.question_id + '/answer/' + answer.id);
-                            res.end();
-                        } else {
-                            generic.genericErrorHandler(req, res, err);
-                        }
 
-                    });
+    generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+        if (!err && answer) {
+            //answer exists
+            create_answer_comment(req, answer, function (err, comment2) {
+               if (!err && comment2) {
+                    var answercomment = {
+                        id: comment2.id,
+                        text: comment2.text,
+                        date: comment2.date,
+                        author: comment2.author,
+                        updated: comment2.updated
+                    }, wrapper = {
+                        answer_comment: answercomment
+                    };
+                    res.redirect('/crisis/'+ crisis_id +'/question/' + answer.question_id + '/answer/' + answer.id);
+                    res.end();
+                } else {
+                    generic.genericErrorHandler(req, res, err);
                 }
+
             });
-        } else {
+        }
+        else {
             generic.genericErrorHandler(req, res, err);
         }
     });
