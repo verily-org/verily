@@ -130,7 +130,15 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
         </div>
         
 
-
+                
+        <!-- small buttons -->
+		{% if userCan('edit a crisis') %}
+			<div class="btn-group">
+				<div class="additional-button-ctr">
+					<a href="/crisis/{{ crisis.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
+				</div>
+			</div>
+		{% endif %}
         
         <div class="btn-group">
             <div class="additional-button-ctr">
@@ -138,7 +146,11 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
             </div>
         </div>
         <!-- / small buttons -->
+        
 
+        
+                
+        
     </div>
     
 </div>
@@ -151,6 +163,8 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
 
 <div class="row crisis-questions-header">
     <div class="col-sm-9">
+        
+    </div>
 
     
     <div class="col-sm-3 text-right">
@@ -257,10 +271,8 @@ var refUrlLink = refUrlPrefix + '{{ refcodes.link }}';
 {{ generic_macro.video_html_script() }}
 {{ generic_macro.rearrange_children_script() }}
 
-{#
 <script src="/static/js/openlayers/OpenLayers-https.js"></script>
     <script src="/static/js/maps.js"></script>
-#}
 <script type="text/javascript">
 var map, layer;
 
