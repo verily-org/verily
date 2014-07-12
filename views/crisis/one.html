@@ -14,7 +14,7 @@
 {% block content %}
 
 <script>
-var title = '{{ crisis.title }}';
+var postTitle = '{{ crisis.title }}';
 var path = '{{ path }}';
 var csrf_token = '{{ csrf_token }}';
 var refPathPrefix = '/r/';
@@ -120,7 +120,7 @@ $.ajax({
                 Ask your social network to help with these questions<br/>
                 <!-- button-email -->
                 <div class="action-button-ctr btn-group">
-                    <a class="btn btn-default btn-large text-action-button share-button" id="button-share-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
+                    <a class="btn btn-default btn-large text-action-button share-button" id="button-share-email" href="mailto:?subject={{ crisis.post.title }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
                 </div>
                 <script>
                 var buttonShareQuestionEmail = document.getElementById('button-share-email');

@@ -12,7 +12,7 @@ var twitterCampaigner = common.campaigner('twitter');
 
 tweetButton.dataset.url = refUrlTwitter;
 tweetButton.dataset.counturl = window.location.origin + path;
-tweetButton.dataset.text = title;
+tweetButton.dataset.text = postTitle;
 tweetButton.dataset.hashtags = twitterCampaigner.hashtags;
 
 var facebookShareButton = document.getElementById('facebook-share-button');
