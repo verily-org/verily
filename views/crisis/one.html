@@ -205,7 +205,7 @@ $.ajax({
         {% endif %}
         <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
             <div data-href="{{ question.canonicalPath }}" style="cursor:pointer"
-                 class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
+                 class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === question.rejectedAnswerCount %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
                 <div class="panel-heading">
                         {% if question.post.targetLocality %}
                             <div class="">
