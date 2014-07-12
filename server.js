@@ -252,8 +252,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
                                 console.log(err);
                             }
 
-                            console.log('added referrals to impression. Impression:');
-                            console.log(createdImpression);
+//                            console.log('added referrals to impression. Impression:');
+//                            console.log(createdImpression);
 
 
                             callback();
@@ -295,8 +295,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 refCode: refCode
             }, 1, function(err, referrals) {
                 var referral = referrals[0];
-                console.log('get referral');
-                console.log(referral);
+//                console.log('get referral');
+//                console.log(referral);
                 if (!err && referral) {
                     // Add to refcodes in session.
                     if (req.session.refcodes && Array.isArray(req.session.refcodes)) {
@@ -319,9 +319,9 @@ module.exports = function (suppressLogs, dbTestUrl) {
             // Do not count favicon.ico requests.
             // Record the metadata of the impression.
             
-            console.log('==================== IMPRESSION ' + req.path +  ' ====================');
-            console.log('---- REFCODES -----');
-            console.log(req.session.refcodes);
+//            console.log('==================== IMPRESSION ' + req.path +  ' ====================');
+//            console.log('---- REFCODES -----');
+//            console.log(req.session.refcodes);
             
             req.models.Impression.create([impression], function (err, items) {
                 if (err) {
@@ -474,13 +474,13 @@ module.exports = function (suppressLogs, dbTestUrl) {
         
         // New social event.
         app.post('/social-event', function(req, res) {
-            console.log('register social event');
-            
-            console.log('req.body');
-            console.log(req.body);
-            
-            console.log('raw event');
-            console.log(req.body.rawEvent);
+//            console.log('register social event');
+//
+//            console.log('req.body');
+//            console.log(req.body);
+//
+//            console.log('raw event');
+//            console.log(req.body.rawEvent);
             
             var rawEvent = req.body.rawEvent;
             
@@ -532,7 +532,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                         res.end();
                     }
                     
-                    console.log('created social event');
+//                    console.log('created social event');
                     res.status(201);
                     res.end();
                 });
@@ -545,7 +545,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         // New referral code being registered by a click on a sharing button.
         // Once referral code has been registered (PUT), it cannot be PUT again.
         app.post('/r/:refCode', function(req, res) {
-            console.log('register refcode route')
+//            console.log('register refcode route')
         
             var refCode = req.params.refCode;
         
@@ -580,7 +580,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                                        console.log(err);
                                    }
                            
-                                   console.log('created referral');
+//                                   console.log('created referral');
                            
                                    res.status(201);
                                    res.end();
