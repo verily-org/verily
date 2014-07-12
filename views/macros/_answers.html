@@ -91,7 +91,7 @@
 					<div class="panel-body">
 
 
-						{{ answer.post.text | cropString(300)  }}
+						<p class="description-text">{{ answer.post.text | cropString(300)  }}</p>
 						
 						{% if answer.post.targetImage %}
 							<div class="row card-image" style="background-image: url({{ answer.post.targetImage }});">
