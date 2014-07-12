@@ -292,9 +292,6 @@ $.ajax({
 {#<script src="/static/js/openlayers/OpenLayers-https.js"></script>#}
 {#<script src="/static/js/maps.js"></script>#}
 <script type="text/javascript">
-var map, layer;
-
-map = map_init('map');
     $(function(){
         var cntrlIsPressed = false;
         $(document).keydown(function(event){
@@ -341,9 +338,6 @@ map = map_init('map');
             //trigger change if the initial selected index is not 0
             $('#select_filter_questions').change();
         }
-        {% if crisis.post.targetLat and crisis.post.targetLong %}
-        if(map_add_marker) map_add_marker(map,{{ crisis.post.targetLat }}, {{ crisis.post.targetLong }} );
-        {% endif %}
 
     });
 
