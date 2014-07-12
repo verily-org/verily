@@ -31,6 +31,11 @@ module.exports = function() {
             // Remove instances of multiple slashes where they feature twice or more.
             // Also remove a trailing slash.
             workingUrl = workingUrl.replace(/\/{2,}/g, '/');
+            
+            if (workingUrl !== '/' && workingUrl.indexOf('/') === workingUrl.length - 1) {
+                // Not root but there is a trailing slash.
+                workingUrl = workingUrl.substring(0, workingUrl.length - 1);
+            }
         };
         
         slashCanon();
