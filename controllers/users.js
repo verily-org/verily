@@ -1070,22 +1070,38 @@ exports.getAdminAnswers = [isAdmin, getAllAnswers];
 
 
 var postAllAnswers = function (req, res) {
-    var shown = req.body.shownAnswers.split("|").map(function(i){
-        return parseInt(i, 10);
-    });
+    if (req.body.shownAnswers !== '') {
+        var shown = req.body.shownAnswers.split("|").map(function(i){
+            return parseInt(i, 10);
+        });   
+    } else {
+        var shown = null;
+    }
+
     var hidden = req.body.hiddenAnswers;
+
     if (hidden || shown) {
 
         async.waterfall([
             function (done) {
-                generic.showHideItem(req.models.Answer, shown, trueValue, function (err) {
-                    done(err);
-                });   
+                if (shown) {
+                    generic.showHideItem(req.models.Answer, shown, trueValue, function (err) {
+                        done(err);
+                    });   
+                } else {
+                    done(null);
+                }
+                   
             },
             function (done) {
-                generic.showHideItem(req.models.Answer, hidden, falseValue, function (err) {
-                    done(err, 'done');
-                });                  
+                if (hidden) {
+                    generic.showHideItem(req.models.Answer, hidden, falseValue, function (err) {
+                        done(err, 'done');
+                    });    
+                } else {
+                    done(null, 'done');
+                }
+                                 
             }], 
             function (err) {
                 if (err) {
