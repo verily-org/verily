@@ -226,7 +226,7 @@ challenge.month = 7;
 challenge.startDate = 12;
 challenge.endDate = 13;
 challenge.startHour = 9;
-challenge.endHour = 16;
+challenge.endHour = 23;
 challenge.minutes = challenge.seconds = challenge.msecs = 0;
 
 exports.challenge = common.challenge = challenge;
