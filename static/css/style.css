@@ -839,6 +839,10 @@ fa.breadcrumb {
     background-color: #ffffff;
 }
 
+.crisis-question-metrics-answer-button {
+    margin-top: 0.5em;
+}
+
 .row.card-image {
     height: 200px;
     background-repeat: no-repeat;
