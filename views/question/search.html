@@ -105,7 +105,7 @@ map = map_init('map');
                         update_markedImportant(crisis, button);
                     }).fail(function(){
                         var error_message = 'There was an unknown error, please try again later.';
-                        if (!common.challengePublished) {
+                        if (!common.challengePublished()) {
                             error_message = 'The Verily Challenge has now closed. Thank you for taking part!';
                         }
                         show_alert_message('danger', 5000, "Error", error_message);
