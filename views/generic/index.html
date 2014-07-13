@@ -43,6 +43,10 @@
         <div class="enter-challenge-ctr">
             <a class="btn btn-primary btn-lg btn-block" href="/crisis/1">Enter Challenge</a>
         </div>
+        {% else %}
+        <div class="enter-challenge-ctr">
+            <a class="btn btn-primary btn-lg btn-block" href="/crisis/1">View Challenge</a>
+        </div>
         {% endif %}
         <div class="share-buttons">
             <a href="https://twitter.com/intent/tweet?button_hashtag=VerilyLive&text=12%E2%80%9313%20July%3A%20Global%20crowdsourcing%20challenge%20for%20evidence%20collection%20and%20verification" class="twitter-hashtag-button twitter-share-button btn-group share-button" data-size="large" data-url="https://veri.ly/">Tweet #VerilyLive</a>
@@ -70,6 +74,11 @@
         
     </div>
 
+{% if !challengePublished %}
+<p class="lead stay-large challenge-description">
+The Verily challenge is now closed. Thank you for taking part! You have contributed great evidence and answered way more questions correctly than we expected. Follow us on Twitter <a href="https://twitter.com/veridotly">@VeriDotLy</a> or watch this space for updates and information on next deployment.
+</p>
+{% endif %}
 
 <p class="lead stay-large challenge-description">
 We live in the Information Age... or the Disinformation Age. Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult for everyone. 
@@ -85,7 +94,7 @@ Can a coordinated collective effort be effective in quickly discerning true answ
         <form role="form" action="/subscriber" method="POST">
             <input type="hidden" name="_csrf" value="{{csrf_token}}" />
             <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
-            <button type="submit" class="btn btn-primary btn-lg btn-block"><span class="visible-xs">Notify me</span><span class="hidden-xs">Get notified when the challenge starts</span></button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
         </form>
     </div>
     {% endif %}
