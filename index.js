@@ -2,10 +2,7 @@ require('newrelic');
 var fs = require('fs'),
     http = require('http');
 
-//memwatch.on('leak', function(info) { console.log(info) });
-memwatch.on('stats', function(stats) {
-//    console.log(stats);
-    });
+
 function start() {
     require('./server')(false, null);
 }
