@@ -223,7 +223,7 @@ $.ajax({
                             {{ question.post.title }}
                         </a>
                     </h3>
-                    <div class="clearfix">
+                    <div class="crisis-question-metrics-answer-button clearfix">
                         <div class="crisis-question-metrics pull-left">
                             {#
                             <!-- Comment for Challenge!
@@ -322,6 +322,11 @@ $.ajax({
                         show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
                     });
         });
+		
+		rearrange_children($('.crisis-questions'), function(a,b){
+            return new Date($(b).data('date')) - new Date($(a).data('date'));
+        });
+		
         $('#select_filter_questions').change(function(){
             if($('#select_filter_questions').val() == "Recent"){
                 rearrange_children($('.crisis-questions'), function(a,b){
