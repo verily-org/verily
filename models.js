@@ -421,12 +421,11 @@ module.exports = function (db, cb) {
     QuestionComment.hasOne('comment', Comment);
 
     AnswerComment.hasOne('answer', Answer, {
-        reverse: 'comments', autoFetch: true
+        reverse: 'comments'
     });
 
     AnswerComment.hasOne('comment', Comment, {
-        reverse: 'answerComment',
-        autoFetch: true
+        reverse: 'answerComment'
     });
 
     Crisis.hasOne('post', Post, {reverse: 'crisis', autoFetch: true});

@@ -1,7 +1,6 @@
 require('newrelic');
 var fs = require('fs'),
     http = require('http');
-var memwatch = require('memwatch');
 
 //memwatch.on('leak', function(info) { console.log(info) });
 memwatch.on('stats', function(stats) {
