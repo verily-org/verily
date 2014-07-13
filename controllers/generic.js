@@ -583,7 +583,11 @@ function getQuestionPopularityCoefficient(question){
 }
 
 function getAnswerPopularityCoefficient(answer){
-    var popularityCoefficient = answer.post.upvoteCount + answer.post.downvoteCount + answer.post.importanceCount + answer.comments.length;
+	var n_comments = 0;
+	if (answer.comments) {
+		n_comments = answer.comments.length;
+	}
+    var popularityCoefficient = answer.post.upvoteCount + answer.post.downvoteCount + answer.post.importanceCount + n_comments;
     return popularityCoefficient;
 }
 
