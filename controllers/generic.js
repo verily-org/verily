@@ -506,7 +506,7 @@ exports.load_question_extra_fields = function(question, callback){
     if(question.answers == undefined){
         question.getAnswers(function(err, answers){
             if (!err && answers) {
-                async.each(question.answers,
+                async.eachSeries(question.answers,
                     function(answer, callback2){
                         answer.getPost(function(err){
                             if(err) callback2(err);
@@ -547,7 +547,6 @@ exports.load_question_extra_fields = function(question, callback){
         question.popularityCoefficient = getQuestionPopularityCoefficient(question);
         callback();
     }
-
 }
 var load_post_ratings_count_function = function(item, callback){
 

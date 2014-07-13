@@ -1008,62 +1008,87 @@ exports.verifyAccount = function (req, res) {
 
 
 var getAllAnswers = function (req, res) {
-    req.models.Crisis.find({}, function (err, crises) {
-        if (err) {
-            generic.genericErrorHandler(req, res, err); 
+    req.models.Answer.find({}, function (err, answers) {
+        if  (err) {
+            generic.genericErrorHandler(req, res, err);
         } else {
-            if (crises) {
-                async.each(crises, function (crisis, cb) {
-                    crisis.getQuestions(function (err, questions) {
-                        if (err) {
-                            cb(err); 
-                        } else {
-                            if (questions) {
-                                async.each(questions, function (question, cb2) {
-                                    question.getAnswers(function (err, answers) {
-                                       if (!err) {
-                                               // Answers present.
-                                               async.each(answers, generic.load_answers_extra_fields, function (err) {
-                                                   if (err) {
-                                                       cb2(err);
-                                                   } else {
-                                                       question.answers = answers;
-                                                       cb2(null);
-                                                   }
-                                               });
-                                               
-                                       } else {
-                                           cb2(err);
-                                       }
-                                    });
-                                }, function (err) {
-                                    if (err) {
-                                        cb(err);
-                                    } else {
-                                        crisis.questions = questions;
-                                        cb(null);
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }, function (err) {
-                    if (err) {
-                        generic.genericErrorHandler(req, res, err);   
-                    } else {
-                        res.render('user/adminAnswers', {
-                            page: {
-                                title: 'Answers'
-                            },
-                            crises: crises,
-                            error: req.flash('error'),
-                            info: req.flash('info')
-                        });
-                    }
+            async.eachSeries(answers, function (answer, cb) {
+
+                answer.getPost(function(err){
+                    cb(err);
                 });
-            }
+            }, function (err) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                } else {
+                    res.render('user/adminAnswers', {
+                        page: {
+                            title: 'Answers'
+                        },
+                        answers: answers,
+                        error: req.flash('error'),
+                        info: req.flash('info')
+                    });
+                }
+            });
         }
     });
+//    req.models.Crisis.find({}, function (err, crises) {
+//       if  (err) {
+//           generic.genericErrorHandler(req, res, err);
+//       } else {
+//            if (crises) {
+//                async.eachSeries(crises, function (crisis, cb) {
+//                    crisis.getQuestions(function (err, questions) {
+//                        if (err) {
+//                            cb(err);
+//                        } else {
+//                            if (questions) {
+//                                async.eachSeries(questions, function (question, cb2) {
+//                                    question.getAnswers(function (err, answers) {
+//                                       if (!err) {
+//                                               // Answers present.
+//                                               async.each(answers, generic.load_answers_extra_fields, function (err) {
+//                                                   if (err) {
+//                                                       cb2(err);
+//                                                   } else {
+//                                                       question.answers = answers;
+//                                                       cb2(null);
+//                                                   }
+//                                               });
+//
+//                                       } else {
+//                                           cb2(err);
+//                                       }
+//                                    });
+//                                }, function (err) {
+//                                    if (err) {
+//                                        cb(err);
+//                                    } else {
+//                                        crisis.questions = questions;
+//                                        cb(null);
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    });
+//                }, function (err) {
+//                    if (err) {
+//                        generic.genericErrorHandler(req, res, err);
+//                    } else {
+//                        res.render('user/adminAnswers', {
+//                            page: {
+//                                title: 'Answers'
+//                            },
+//                            crises: crises,
+//                            error: req.flash('error'),
+//                            info: req.flash('info')
+//                        });
+//                    }
+//                });
+//            }
+//        }
+//    });
 };
 
 exports.getAdminAnswers = [isAdmin, getAllAnswers];
