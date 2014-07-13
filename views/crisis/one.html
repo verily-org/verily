@@ -119,7 +119,8 @@ $.ajax({
         </div>
         <!-- / question header row -->
         
-            <div class="question sharing-buttons">
+        {% if challengePublished %}
+        <div class="question sharing-buttons">
                 Ask your social network to help with these questions<br/>
                 <!-- button-email -->
                 <div class="action-button-ctr btn-group">
@@ -149,6 +150,7 @@ $.ajax({
                 <!-- / Twitter Tweet button -->
         
         </div>
+        {% endif %}
         
 
                 

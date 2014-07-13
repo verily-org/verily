@@ -189,6 +189,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
         #}
         <!-- / button-mark-important -->
         
+        {% if challengePublished %}
         <div class="sharing-buttons">
             Ask your social network to help with this question<br/>
             <!-- button-email -->
@@ -219,7 +220,8 @@ var refUrlLink = refUrlPrefix + refCodeLink;
             <!-- / Twitter Tweet button -->
 			
 
-        
+            </div>
+            {% endif %}
                 
             <!-- small buttons -->
             <br/>
@@ -231,7 +233,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
     			</div>
     		{% endif %}
         
-        </div>
+
         
         <div class="btn-group">
             <div class="additional-button-ctr">

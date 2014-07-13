@@ -4,7 +4,11 @@
 
 {% if action %}
 	<div class="alert alert-danger">
+        {% if challengePublished %}
         You don't have permission to {{action}}
+        {% else %}
+        The Verily Challenge has now closed. Thank you for taking part!
+        {% endif %}
     </div>
 {% endif %}
 
