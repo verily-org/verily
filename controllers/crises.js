@@ -150,6 +150,8 @@ var getOne = function (req, res) {
         res.redirect('/crisis/1');
         res.end();
     }
+    var datetime = new Date();
+    console.log('-----Entered crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         
         if (!err){
@@ -164,14 +166,16 @@ var getOne = function (req, res) {
                     generic.genericErrorHandler(req, res, err);
                 } else {
 
+                    var datetime = new Date();
+                    console.log('-----Question Found-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
                     // Questions with Post data included in each question.
-                    async.each(questions, generic.load_question_extra_fields, function (err) {
+                    async.eachSeries(questions, generic.load_question_extra_fields, function (err) {
                         if (err) {
                             generic.genericErrorHandler(req, res, err);
                         } else {
                             crisis.post.addViewCount();
                             generic.load_crisis_extra_fields(crisis, function(err){
-                                
+
                                 // For each question, add relative created date.
                                 questions.forEach(function(question) {
                                     var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
@@ -186,11 +190,11 @@ var getOne = function (req, res) {
                                         string: question.post.title
                                     });
 
-                                })
+                                });
                                 
                                 var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
                                 crisis.relativeCreatedDate = relativeCreatedDate;
-                                
+
                                 generic.generateRefCodes(4, function(refcodeArray) {
                                     var refcodes = {
                                         twitter: refcodeArray[0],
@@ -210,8 +214,9 @@ var getOne = function (req, res) {
                                         info: req.flash('info'),
                                         error: req.flash('error')
                                     };
-                                
                                     if (req.user) {
+                                        var datetime = new Date();
+                                        console.log('-----Responding crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
                                         responseData.user = req.user;
                                         // Respond.
                                         oneCrisisResponse(req, res, responseData);
