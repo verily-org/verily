@@ -119,7 +119,8 @@ $.ajax({
         </div>
         <!-- / question header row -->
         
-            <div class="question sharing-buttons">
+        {% if challengePublished %}
+        <div class="question sharing-buttons">
                 Ask your social network to help with these questions<br/>
                 <!-- button-email -->
                 <div class="action-button-ctr btn-group">
@@ -149,6 +150,7 @@ $.ajax({
                 <!-- / Twitter Tweet button -->
         
         </div>
+        {% endif %}
         
 
                 
@@ -319,7 +321,11 @@ $.ajax({
                         var crisis = data;
                         update_markedImportant(crisis, button);
                     }).fail(function(){
-                        show_alert_message('danger', 5000, "Error", "There was an unknown error, please try again later. ");
+                        var error_message = 'There was an unknown error, please try again later.';
+                        if (!common.challengePublished()) {
+                            error_message = 'The Verily Challenge has now closed. Thank you for taking part!';
+                        }
+                        show_alert_message('danger', 5000, "Error", error_message);
                     });
         });
 		

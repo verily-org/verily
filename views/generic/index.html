@@ -27,7 +27,7 @@
     
     <div class="well transparent challenge-info-box">
         <h2>
-            <strong>#VerilyLive</strong> <span id="challenge-countdown">{{ null|challengeCountdown() }}</span>
+            <strong>#VerilyLive</strong> <span id="challenge-countdown"></span>
         </h2>
         <p class="lead stay-large">
              The global crowdsourcing challenge for evidence collection and verification
@@ -76,8 +76,18 @@
 
 {% if !challengePublished %}
 <p class="lead stay-large challenge-description">
-The Verily challenge is now closed. Thank you for taking part! You have contributed great evidence and answered way more questions correctly than we expected. Follow us on Twitter <a href="https://twitter.com/veridotly">@VeriDotLy</a> or watch this space for updates and information on next deployment.
+The Verily Challenge has now closed. Thank you for taking part! You have contributed great evidence and answered way more questions correctly than we expected. Follow us on Twitter <a href="https://twitter.com/veridotly">@VeriDotLy</a> or watch this space for updates and information on next deployment.
 </p>
+{% endif %}
+
+{% if !challengePublished %}
+<div class="signup-form-for-updates">
+    <form role="form" action="/subscriber" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
+        <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
+    </form>
+</div>
 {% endif %}
 
 <p class="lead stay-large challenge-description">
@@ -85,21 +95,11 @@ We live in the Information Age... or the Disinformation Age. Finding out the tru
 </p>
 
 <p class="lead stay-large challenge-description">
-Can a coordinated collective effort be effective in quickly discerning true answers to key questions?  We designed the Verily Challenge to test this. Questions will be posted on the platform covering different locations around the world.
+Can a coordinated collective effort be effective in quickly discerning true answers to key questions?  We designed the Verily Challenge to test this. {% if challengePublished %}Questions will be posted on the platform covering different locations around the world.{% endif %}
 </p>
 
-    
-    {% if !challengePublished %}
-    <div class="signup-form-for-updates">
-        <form role="form" action="/subscriber" method="POST">
-            <input type="hidden" name="_csrf" value="{{csrf_token}}" />
-            <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
-            <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
-        </form>
-    </div>
-    {% endif %}
 
-
+{% if challengePublished %}
 <p class="lead stay-large challenge-description">
 Example questions include:
 <ul class="lead stay-large challenge-description">
@@ -107,24 +107,28 @@ Example questions include:
 <li>Are there any skateboarders on the Burnquist Mega Ramp today?  
 </ul>
 </p>
+{% endif %}
 
 <p class="lead stay-large challenge-description">
 Accurate information is life-saving in extreme situations such as natural disasters. This fun challenge is a pilot to prove feasibility of timely verification. The same platform will soon be used to gather evidence during natural disasters, which will enable more effective disaster response. Your participation will help design the best platform.
 </p>
 
 
-
+{% if challengePublished %}
 <p class="lead stay-large challenge-description">
 You will earn points and observe the collective progress as the competition goes on. The best participants will be acknowledged with certificates.
 </p>
+{% endif %}
 
+{% if challengePublished %}
 <p class="lead stay-large challenge-description">
 Have a question in mind? Send it to us and we may include it in the competition.
 </p>
 
 <p class="lead stay-large challenge-description">
 If you have any questions or comments before the challenge please email <a href="mailto:contact@veri.ly">contact@veri.ly</a>
-</p> 
+</p>
+{% endif %}
 
     
 </div>
@@ -137,26 +141,26 @@ If you have any questions or comments before the challenge please email <a href=
 
 document.addEventListener('DOMContentLoaded', function(e) {
     // To stop infinite reloads!
-    var isChallengePublishedInitially = common.challengePublished();
-    
-    if (!isChallengePublishedInitially) {
-        $('#challenge-countdown').text(common.challengeCountdown());
-
-        setInterval(function() {
-            $('#challenge-countdown').text(common.challengeCountdown());
-            
-
-        
-            // Check if the challenge has been published. If it has now been published, reload,
-            // so the user doesn't need to reload at the challenge start time.
-            var isChallengeNowPublished = common.challengePublished();
-            
-            if (isChallengeNowPublished) {
-                window.location.reload(true);
-            }
-        
-        }, 1000);
-    }
+    // var isChallengePublishedInitially = common.challengePublished();
+    //
+    // if (!isChallengePublishedInitially) {
+    //     $('#challenge-countdown').text(common.challengeCountdown());
+    //
+    //     setInterval(function() {
+    //         $('#challenge-countdown').text(common.challengeCountdown());
+    //
+    //
+    //
+    //         // Check if the challenge has been published. If it has now been published, reload,
+    //         // so the user doesn't need to reload at the challenge start time.
+    //         var isChallengeNowPublished = common.challengePublished();
+    //
+    //         if (isChallengeNowPublished) {
+    //             window.location.reload(true);
+    //         }
+    //
+    //     }, 1000);
+    // }
 });
 
 

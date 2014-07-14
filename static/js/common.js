@@ -258,18 +258,19 @@ var isNowAfterMoment = function(targetMoment) {
 var challengePublished = exports.challengePublished = common.challengePublished = function() {
     var publishedOverride = false;
     
-    var isAfter = false;
+    // var isAfter = false;
     
     // Automatic challenge publication.
-    if (normMoment) {
-        // All in UTC.        
-        var challengeStartMoment = getChallengeStartMoment();
-        
-        isAfter = isNowAfterMoment(challengeStartMoment);
-        // console.log('now is after challenge start moment: ' + isAfter);
-    }
+    // if (normMoment) {
+    //     // All in UTC.
+    //     var challengeStartMoment = getChallengeStartMoment();
+    //
+    //     isAfter = isNowAfterMoment(challengeStartMoment);
+    //     // console.log('now is after challenge start moment: ' + isAfter);
+    // }
     
-    return isAfter || publishedOverride;
+    // return isAfter || publishedOverride;
+    return publishedOverride;
 };
 
 var challengeCountdown = exports.challengeCountdown = common.challengeCountdown = function() {
