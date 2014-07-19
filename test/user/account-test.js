@@ -7,11 +7,13 @@ var app,
     global_db,
     global_accounts;
 
+
 describe('Accounts', function(){
-    before(function(done){
+    before(function (done){
         this.timeout(10000);
         //Ensure the connection is made before testings begin
-        test_utils.run_app(function(application, db){
+        test_utils.run_app(function (application, db) {
+            console.log('App started');
             app = application;
             global_db = db;
             done();
@@ -21,15 +23,16 @@ describe('Accounts', function(){
     after(function(done){
         this.timeout(10000);
         //Clear all the database
-        test_utils.drop_db(global_db, done);
+        test_utils.end_test(global_db, done);
     });
 
 
     var user1 = {
             email : 'asde@hotmail.com',
             name : 'asde.asde',
-            password : 'admin1',
-            verifyPassword : 'admin1'
+            password : 'admin123',
+            verifyPassword : 'admin123',
+            termsAgreement: true
         };
 
     describe('Local user account creation (POST /user)', function(){
@@ -85,7 +88,7 @@ describe('Accounts', function(){
                     .expect(200)
                     .end(function(err, res){
                         if(err) throw err;
-                        console.log('res.tex get user= ', res.text);
+                        //console.log('res.tex get user= ', res.text);
                         //console.log('user register res= ', res);
                         done();
                     });

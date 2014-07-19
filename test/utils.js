@@ -2,21 +2,42 @@
  * Commonly used test functions
  */
 var async = require('async'),
+    fs = require('fs'),
+    orm = require('orm'),
     app,
+    server,
     db_url = "test/app.db";
 
-exports.run_app = function( done){
+exports.run_app = function (done){
     //todo: Settings to test in production
     process.env.NODE_ENV = 'test';
-    require("../server.js")(false, 'sqlite://'+db_url, function(application, db){
-        done(application, db);
+    fs.unlink(db_url, function (err) {
+        if (err) {}
+        require("../server.js")(false, 'sqlite://'+db_url, function(application, db, app_server){
+            server = app_server;
+            done(application, db);
+        }); 
     });
+          
 }
+exports.end_test = function(db, done){
+    server.close(function () {
+        console.log('Server closed');
+        db.close(function () {
+            exports.drop_db(db, function () {
+                done();
+            }); 
+        });  
+    });
+        
+}
+
 exports.drop_db = function(db, done){
-    db.drop(function(){
+    db.drop(function () {
         done();
     });
 }
+
 exports.clear_model = function(model, callback){
     model.clear(function(err){
         if(err)callback(err);
@@ -32,23 +53,25 @@ exports.set_users_agents_account = function(request, app, db, done){
         editor_user = {
             email : 'editor@verily.com',
             name : 'editor',
-            password : 'admin1',
-            verifyPassword : 'admin1'
+            password : 'admin123',
+            verifyPassword : 'admin123',
+            termsAgreement: true
         },
         basic_user = {
             email : 'basic@verily.com',
             name : 'basic',
-            password : 'admin1',
-            verifyPassword : 'admin1'
+            password : 'admin123',
+            verifyPassword : 'admin123',
+            termsAgreement: true
         },
         admin_user = {
-            email : 'Admin',
+            email : 'verily',
             password : '1234'
         };
     editor_agent.post('/user').send(editor_user)
         .expect('Content-Type', /text/)
         .expect(302)
-        .expect('set-cookie', /connect.sid=/)
+        //.expect('set-cookie', /connect.sid=/)
         .expect('Location', '/')
         .end(function(err, res){
             if(err) throw err;

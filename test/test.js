@@ -6,20 +6,21 @@ var app,
     global_db;
 
 describe('Index', function(){
-    before(function(done){
+    before(function (done){
         this.timeout(10000);
         //Ensure the connection is made before testings begin
         test_utils.run_app(function(application, db){
+            console.log('App started');
             app = application;
             global_db = db;
             done();
         });
     });
 
-    after(function(done){
+    after(function (done){
         this.timeout(10000);
         //Clear all the database
-        test_utils.drop_db(global_db, done);
+        test_utils.end_test(global_db, done);
     });
 
     describe('get /', function(){

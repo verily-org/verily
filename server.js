@@ -1,6 +1,6 @@
 var ONE_DAY_MSECS = 86400000;
 
-module.exports = function (suppressLogs, dbTestUrl) {
+module.exports = function (suppressLogs, dbTestUrl, callback) {
     var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
@@ -29,7 +29,8 @@ module.exports = function (suppressLogs, dbTestUrl) {
         syncedModels,
         secureCookies,
         global_db,
-        db_url;
+        db_url,
+        server;
 
     //initial log functions.
     log.init(enums);
@@ -181,6 +182,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
                         console.logger.info("Model synchronised");
                         
                     }
+
                                         
                 });
                 global_db = db;
@@ -421,18 +423,24 @@ module.exports = function (suppressLogs, dbTestUrl) {
         app.use(analytics);
         app.use(saveRedirectUrl);
         
-        app.use(express.csrf());
+        //if not on testing, enable csrf
+        if (!dbTestUrl) {
+            app.use(express.csrf());
+
+            // middleware for common locals with request-specific values
+            app.use(function (req, res, next) {
+                //console.log('csrf middleware');
+                //res.locals({
+                //  csrf_token: req.csrfToken()
+                //});
+                res.locals.csrf_token = req.csrfToken();
+                //res.locals.csrf_token = 'test';
+                next();
+            });
+        }
+            
         
-		// middleware for common locals with request-specific values
-        app.use(function (req, res, next) {
-        	//console.log('csrf middleware');
-        	//res.locals({
-        	//	csrf_token: req.csrfToken()
-        	//});
-        	res.locals.csrf_token = req.csrfToken();
-        	//res.locals.csrf_token = 'test';
-        	next();
-        });
+		
         
         app.use(app.router);
         
@@ -640,10 +648,15 @@ module.exports = function (suppressLogs, dbTestUrl) {
 
         });
 
-    
-        http.createServer(app).listen(app.get('port'), function(){
+        server = http.createServer(app);
+        server.listen(app.get('port'), function(){
             console.log('Express server listening on port ' + app.get('port'));
+            if (dbTestUrl) {
+                callback(app, global_db, server);
+            }
         });
+
+
         
     }
     

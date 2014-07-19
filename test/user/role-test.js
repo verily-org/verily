@@ -14,6 +14,7 @@ describe('Roles', function(){
         this.timeout(10000);
         //Ensure the connection is made before testings begin
         test_utils.run_app(function(application, db){
+            console.log('App started');
             app = application;
             global_db = db;
             done();
@@ -23,7 +24,7 @@ describe('Roles', function(){
     after(function(done){
         this.timeout(10000);
         //Clear all the database
-        test_utils.drop_db(global_db, done);
+        test_utils.end_test(global_db, done);
     });
 
     describe('(Agents)', function(){
@@ -40,14 +41,16 @@ describe('Roles', function(){
         var user1 = {
                 email : 'asde@hotmail.com',
                 name : 'asde.asde',
-                password : 'admin1',
-                verifyPassword : 'admin1'
+                password : 'admin123',
+                verifyPassword : 'admin123',
+                termsAgreement: true
             },
             user2 = {
                 email : 'asde2@hotmail.com',
                 name : 'asde2',
-                password : 'admin1',
-                verifyPassword : 'admin1'
+                password : 'admin123',
+                verifyPassword : 'admin123',
+                termsAgreement: true
             };
         describe('post /admin', function(){
             beforeEach(function(done){
@@ -101,9 +104,9 @@ describe('Roles', function(){
                 var body = {
                     basics: user2.name,
                     editors: user1.name,
-                    admins : 'Admin'
+                    admins : 'verily'
                 }
-                global_accounts.editor_agent.post('/admin').send(body)
+                global_accounts.editor_agent.post('/roles').send(body)
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
@@ -115,9 +118,9 @@ describe('Roles', function(){
                 var body = {
                     basics: user2.name,
                     editors: user1.name,
-                    admins : 'Admin'
+                    admins : 'verily'
                 }
-                global_accounts.admin_agent.post('/admin').send(body)
+                global_accounts.admin_agent.post('/roles').send(body)
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function(err, res){
