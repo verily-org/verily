@@ -132,7 +132,10 @@ describe('Crisis', function(){
                 title : "Test Crisis title",
                 targetDateTimeOccurred: [10, 2, 2014, 10, 20]
             };
-            beforeEach(function(done){
+            var updated_crisis_post = {
+                title: "New title"
+            };
+            before(function(done){
                 //Add 1 crisis using the app
                 global_accounts.editor_agent.post('/crisis').send(crisis_post)
                     .expect('Content-Type', /text/)
@@ -143,7 +146,7 @@ describe('Crisis', function(){
                         done();
                     });
             });
-            afterEach(function(done){
+            after(function(done){
                 //Clear crisis and post table
                 global_db.models.crisis.clear(function(err){
                     if(err) throw err;
@@ -151,26 +154,47 @@ describe('Crisis', function(){
                 });
             });
 
-            describe('GET crisis/{id}', function(){
-                it('Should return a Crisis page', function(done){
-                    global_db.models.post.find({title: crisis_post.title}, function(err, result){
+            
+            it('Should return a Crisis page', function(done){
+                global_db.models.post.find({title: crisis_post.title}, function(err, result){
+                    if(err) throw err;
+                    var post_result = result[0];
+                    post_result.should.have.property('title', crisis_post.title);
+                    post_result.getCrisis(function(err, crisis){
                         if(err) throw err;
-                        var post_result = result[0];
-                        post_result.getCrisis(function(err, crisis){
+                        request(app).get('/crisis/'+crisis[0].id)
+                        .expect('Content-Type', /text/)
+                        .expect(302)
+                        .expect('Location', '/crisis/1')
+                        .end(function(err, res){
                             if(err) throw err;
-                            request(app).get('/crisis/'+crisis[0].id)
-                                .expect('Content-Type', /text/)
-                                .expect(302)
-                                .expect('Location', '/crisis/1')
-                                .end(function(err, res){
-                                    if(err) throw err;
-                                    done();
-                                });
-                        })
+                            done();
+                        });
+                    })
+                });
+            });
+
+            
+            it('Should update the crisis and return a Crisis page', function(done){
+                global_accounts.editor_agent.post('/crisis/1')
+                .send(updated_crisis_post)
+                .expect('Content-Type', /text/)
+                .expect(302)
+                .expect('Location', '/crisis/1')
+                .end(function(err, res){
+                    if(err) throw err;
+                    request(app).get('/crisis/1')
+                    .expect('Content-Type', /text/)
+                    .expect(200)
+                    .end(function(err, res){
+                        if(err) throw err;
+                        res.text.should.containEql(updated_crisis_post.title);
+                        done();
                     });
                 });
             });
-            describe('POST crisis/{id}/markImportant', function(){
+
+            /*describe('POST crisis/{id}/markImportant', function(){
                 it('Should not allow non-users to mark important', function(done){
                     global_db.models.post.find({title: crisis_post.title}, function(err, result){
                         if(err) throw err;
@@ -188,7 +212,7 @@ describe('Crisis', function(){
                         });
                     });
                 });
-            });
+            });*/
         });
     });
 
