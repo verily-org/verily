@@ -6,8 +6,11 @@ var should  = require('should'),
 var app,
     global_db,
     crisis_post,
-    global_accounts,
-    questions_file = {key: 'static/backups/questions/crisis-1.json'};
+    global_accounts;
+
+var questions_file = {
+        key: 'static/backups/questions/crisis-1.json'
+    };
 
 var question_post_1 = {
     title : "Why am I here?",
@@ -184,7 +187,6 @@ describe('Questions', function(){
         });
         describe('Specific question', function(){
             before('create a question', function (done) {
-                
                 global_accounts.editor_agent.post('/crisis/1/question').send(question_post_1)
                 .expect('Content-Type', /text/)
                 .expect(302)
@@ -207,6 +209,8 @@ describe('Questions', function(){
                 });
             });
 
+            
+
 
             it('Should return a question page', function(done){
                 global_db.models.post.find({title: question_post_1.title}, function(err, result){
@@ -221,8 +225,12 @@ describe('Questions', function(){
                         .expect('Location', /crisis\/1\/question\/[0-9]/)
                         .end(function(err, res){
                             if(err) throw err;
-                            res.text.should.containEql(question_post_1.title);
-                            done();
+                            request(app).get(res.headers.location)
+                            .expect(200)
+                            .end(function (err, res) {
+                                res.text.should.containEql(question_post_1.title);  
+                                done();
+                            });
                         });
                     })
                 });
@@ -238,7 +246,7 @@ describe('Questions', function(){
                     if(err) throw err;
                     var post_result = result[0];
                     post_result.should.have.property('title', question_post_1.title);
-                    post_result.getQuestion(function(err, question){
+                    post_result.getQuestions(function(err, question){
                         if(err) throw err;
                         global_accounts.editor_agent.post('/crisis/1/question/'+question[0].id)
                         .send(updated_question_post)
@@ -253,14 +261,38 @@ describe('Questions', function(){
                             .expect('Location', /crisis\/1\/question\/[0-9]/)
                             .end(function(err, res){
                                 if(err) throw err;
-                                res.text.should.containEql(updated_question_post.title);
-                                done();
+                                request(app).get(res.headers.location)
+                                .expect(200)
+                                .end(function (err, res) {
+                                    res.text.should.containEql(updated_question_post.title);  
+                                    done();
+                                });
                             });
                         });
                     });
                 });
             });
         });
+        
+        describe('Create bulk of questions', function () {
+            this.timeout(10000);
+            it('Should create 79 questions', function (done) {
+                global_accounts.admin_agent.post('/crisis/1/questions/create').send(questions_file)
+                .expect(302)
+                .expect('Location', '/crisis/1')
+                .end(function (err, res) {
+                    if (err) throw err;
+                    global_db.models.question.count({}, function (err, count) {
+                        if (err) throw err;
+                        count.should.be.above(78);
+                        done();
+                    });
+                });
+            });
+
+        });
+
+
     });
 });
 
