@@ -116,3 +116,31 @@ exports.clear_account_models = function(db, done){
         done();
     });
 }
+
+exports.create_crisis = function (user, agent, db, done) {
+    var crisis_post_1 = {
+        title : "Verily 1st Crisis",
+        targetDateTimeOccurred: [10, 2, 2014, 10, 20]
+    }
+
+    agent.post('/crisis').send(crisis_post_1)
+    .expect('Content-Type', /text/)
+    .expect(302)
+    .expect('Location', '/crisis/1')
+    .end(function(err, res){
+        if(err) throw err;
+        db.models.post.find({title: crisis_post_1.title}, function (err, result) {
+            if(err) throw err;
+            var post = result[0];
+            post.getCrisis(function(err, crisis){
+                if(err) throw err;
+                post.should.have.property('title', crisis_post_1.title);
+                post.getUser(function(err, user){
+                    if(err) throw err;
+                    user.should.have.property('name',  user.name);
+                    done(crisis_post_1);
+                });
+            });
+        });
+    });
+}; 
