@@ -6,7 +6,8 @@ var async = require('async'),
     orm = require('orm'),
     app,
     server,
-    db_url = "test/app.db";
+    db_url = "test/app.db",
+    should = require('should');
 
 var questions_file = {
     key: 'static/backups/questions/crisis-1.json'
@@ -162,19 +163,23 @@ exports.set_anon_agent = function (request, app, db, done) {
     .end(function (err, res) {
         if(err) throw err;
         db.models.user.count({}, function (err, count) {
-            if (err) throw err;
+            should.not.exist(err);
             count.should.not.be.below(4);
             anon_agent.post('/crisis/1/question/1/answers').send(myAnswer)
             .expect(302)
             .expect('Location', /crisis\/1\/question\/1/)
             .end(function (err, res) {
-                if (err) throw err;
+                should.not.exist(err);
                 db.models.post.find({title: myAnswer.title}, function (err, result) {
-                    if (err) throw err;
+                    should.not.exist(err);
                     var post = result[0];
-                    post.getUser(function (err, user) {
-                        user.type.should.eql('provisional');
-                        done(anon_agent);
+                    post.getAnswers(function (err, answers) {
+                        should.not.exist(err);
+                        post.getUser(function (err, user) {
+                            should.not.exist(err);
+                            user.type.should.eql('provisional');
+                            done(anon_agent, answers[0]);
+                        });
                     });
                 });
             });
@@ -182,14 +187,36 @@ exports.set_anon_agent = function (request, app, db, done) {
     });
 }; 
 
+exports.create_question = function (agent, db, done) {
+    var question_post = {
+        title: 'My first question',
+        targetDateTimeOccurred: [10, 2, 2014, 10, 20]
+    };
+
+    agent.post('/crisis/1/question').send(question_post)
+    .expect(302)
+    .expect('Location', /crisis\/1\/question\/[0-9]/)
+    .end(function (err, res) {
+        should.not.exist(err);
+        db.models.post.find({title: question_post.title}, function (err, result) {
+            should.not.exist(err);
+            var post = result[0];
+            post.getQuestions(function (err, questions) {
+                should.not.exist(err);
+                done(questions[0]);
+            });
+        });
+    });
+};
+
 exports.create_questions = function (agent, db, done) {
     agent.post('/crisis/1/questions/create').send(questions_file)
     .expect(302)
     .expect('Location', '/crisis/1')
     .end(function (err, res) {
-        if (err) throw err;
+        should.not.exist(err);
         db.models.question.find({}, function (err, questions) {
-            if (err) throw err;
+            should.not.exist(err);
             questions.length.should.not.be.below(78);
             done(questions);
         });

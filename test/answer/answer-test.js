@@ -36,7 +36,7 @@ function getRandomInt(min, max) {
 var question_id = getRandomInt(0, 79);
 
 
-describe('Questions', function(){
+describe('Answers', function(){
 
     before(function(done){
         this.timeout(10000);
