@@ -68,7 +68,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -78,7 +78,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -88,7 +88,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -98,7 +98,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -108,7 +108,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -118,7 +118,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -128,7 +128,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -138,7 +138,7 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -152,7 +152,7 @@ describe('Questions', function(){
                 global_accounts.editor_agent.post('/crisis').send(crisis_post_1)
                     .expect(500)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });*/
@@ -164,7 +164,7 @@ describe('Questions', function(){
                 global_accounts.basic_agent.post('/crisis/1/question').send(crisis_post_1)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -172,7 +172,7 @@ describe('Questions', function(){
                 global_accounts.basic_agent.post('/crisis/1/questions/create').send(questions_file)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -180,7 +180,7 @@ describe('Questions', function(){
                 global_accounts.editor_agent.post('/crisis/1/questions/create').send(questions_file)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -192,15 +192,15 @@ describe('Questions', function(){
                 .expect(302)
                 .expect('Location', /crisis\/1\/question\/[0-9]/)
                 .end(function(err, res){
-                    if(err) throw err;
+                    should.not.exist(err);
                     global_db.models.post.find({title: question_post_1.title}, function (err, result) {
-                        if(err) throw err;
+                        should.not.exist(err);
                         var post = result[0];
                         post.getQuestions(function(err, question){
-                            if(err) throw err;
+                            should.not.exist(err);
                             post.should.have.property('title', question_post_1.title);
                             post.getUser(function(err, user){
-                                if(err) throw err;
+                                should.not.exist(err);
                                 user.should.have.property('name',  global_accounts.editor_user.name);
                                 done();
                             });
@@ -214,16 +214,16 @@ describe('Questions', function(){
 
             it('Should return a question page', function(done){
                 global_db.models.post.find({title: question_post_1.title}, function(err, result){
-                    if(err) throw err;
+                    should.not.exist(err);
                     var post_result = result[0];
                     post_result.should.have.property('title', question_post_1.title);
                     post_result.getQuestions(function(err, question){
-                        if(err) throw err;
+                        should.not.exist(err);
                         request(app).get('/crisis/1/question/'+question[0].id)
                         .expect('Content-Type', /text/)
                         .expect(200)
                         .end(function(err, res){
-                            if(err) throw err;
+                            should.not.exist(err);
                             res.text.should.containEql(question_post_1.title);  
                             done();
                         });
@@ -238,23 +238,23 @@ describe('Questions', function(){
                 };
 
                 global_db.models.post.find({title: question_post_1.title}, function(err, result){
-                    if(err) throw err;
+                    should.not.exist(err);
                     var post_result = result[0];
                     post_result.should.have.property('title', question_post_1.title);
                     post_result.getQuestions(function(err, question){
-                        if(err) throw err;
+                        should.not.exist(err);
                         global_accounts.editor_agent.post('/crisis/1/question/'+question[0].id)
                         .send(updated_question_post)
                         .expect('Content-Type', /text/)
                         .expect(302)
                         .expect('Location', '/crisis/1/question/'+question[0].id)
                         .end(function(err, res){
-                            if(err) throw err;
+                            should.not.exist(err);
                             request(app).get('/crisis/1/question/'+question[0].id)
                             .expect('Content-Type', /text/)
                             .expect(200)
                             .end(function(err, res){
-                                if(err) throw err;
+                                should.not.exist(err);
                                 res.text.should.containEql(updated_question_post.title);  
                                 done();
                             });

@@ -34,7 +34,7 @@ describe('Crisis', function(){
                 .expect('Content-Type', /text/)
                 .expect(403)
                 .end(function(err, res){
-                    if(err) throw err;
+                    should.not.exist(err);
                     done();
                 });
         });
@@ -68,7 +68,7 @@ describe('Crisis', function(){
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -77,7 +77,7 @@ describe('Crisis', function(){
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -91,7 +91,7 @@ describe('Crisis', function(){
                 global_accounts.editor_agent.post('/crisis').send(crisis_post_1)
                     .expect(500)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });*/
@@ -103,7 +103,7 @@ describe('Crisis', function(){
                 global_accounts.basic_agent.post('/crisis').send(crisis_post_1)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
@@ -111,16 +111,16 @@ describe('Crisis', function(){
         describe('Specific crisis', function(){
             it('Should return a Crisis page', function(done){
                 global_db.models.post.find({title: crisis_post.title}, function(err, result){
-                    if(err) throw err;
+                    should.not.exist(err);
                     var post_result = result[0];
                     post_result.should.have.property('title', crisis_post.title);
                     post_result.getCrisis(function(err, crisis){
-                        if(err) throw err;
+                        should.not.exist(err);
                         request(app).get('/crisis/1')
                         .expect('Content-Type', /text/)
                         .expect(200)
                         .end(function(err, res){
-                            if(err) throw err;
+                            should.not.exist(err);
                             res.text.should.containEql(crisis_post.title);
                             done();
                         });
@@ -140,12 +140,12 @@ describe('Crisis', function(){
                 .expect(302)
                 .expect('Location', '/crisis/1')
                 .end(function(err, res){
-                    if(err) throw err;
+                    should.not.exist(err);
                     request(app).get('/crisis/1')
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         res.text.should.containEql(updated_crisis_post.title);
                         done();
                     });

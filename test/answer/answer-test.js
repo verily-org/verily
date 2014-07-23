@@ -89,7 +89,7 @@ describe('Questions', function(){
 
         describe('Post to crisis/1/question/'+question_id+'/answers', function(){
             this.timeout(10000);
-            it('Should create a support answer to a question', function(done){
+            it('Should create a support answer to question '+question_id, function(done){
                 global_accounts.basic_agent.post('/crisis/1/question/'+question_id+'/answers')
                 .send(support_answer)
                 .expect('Content-Type', /text/)
@@ -101,14 +101,14 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function (err, res) {
-                        if (err) throw err;
+                        should.not.exist(err);
                         res.text.should.containEql(support_answer.title); 
                         done();
                     });
                 });
             });
 
-            it('Should create a reject answer to a question', function(done){
+            it('Should create a reject answer to question '+question_id, function(done){
                 global_accounts.basic_agent.post('/crisis/1/question/'+question_id+'/answers')
                 .send(reject_answer)
                 .expect('Content-Type', /text/)
@@ -120,154 +120,56 @@ describe('Questions', function(){
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function (err, res) {
-                        if (err) throw err;
+                        should.not.exist(err);
                         res.text.should.containEql(reject_answer.title); 
                         done();
                     });
                 });
             });
 
+            it('should upvote answer', function (done) {
+                global_db.models.post.find({title: support_answer.title}, function (err, result) {
+                    should.not.exist(err);
+                    var post = result[0];
+                    post.getAnswers(function (err, answers) {
+                        should.not.exist(err);
+                        var answer = answers[0];
+                        global_accounts.basic_agent
+                        .post('/crisis/1/question/'+question_id+'/answer/'+answer.id+'/upvote')
+                        .send()
+                        .expect(200)
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            res.body.post.upvoteCount.should.be.exactly(1);
+                            res.body.post.downvoteCount.should.be.exactly(0);
+                            done();
+                        });
+                    });
+                });
+            });
+
+            it('should downvote answer', function (done) {
+                global_db.models.post.find({title: support_answer.title}, function (err, result) {
+                    should.not.exist(err);
+                    var post = result[0];
+                    post.getAnswers(function (err, answers) {
+                        should.not.exist(err);
+                        var answer = answers[0];
+                        global_accounts.basic_agent
+                        .post('/crisis/1/question/'+question_id+'/answer/'+answer.id+'/downvote')
+                        .send()
+                        .expect(200)
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            res.body.post.upvoteCount.should.be.exactly(0);
+                            res.body.post.downvoteCount.should.be.exactly(1);
+                            done();
+                        });
+                    });
+                });
+            });
+
         });
-
-        /*describe('post /crisis/1/question', function(){
-        
-            it('Should return 403 Forbidden when a basic user requests question creation', function(done){
-                var crisis_post_1 = {
-                    title : "Crisis title",
-                    targetDateTimeOccurred: [10, 2, 2014, 10, 20]
-                }
-                global_accounts.basic_agent.post('/crisis/1/question').send(crisis_post_1)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-            it('Should return 403 Forbidden when a basic user requests questions creation', function(done){
-                global_accounts.basic_agent.post('/crisis/1/questions/create').send(questions_file)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-            it('Should return 403 Forbidden when an editor user requests questions creation', function(done){
-                global_accounts.editor_agent.post('/crisis/1/questions/create').send(questions_file)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-        });*/
-
-        /*describe('Specific question', function(){
-            before('create a question', function (done) {
-                global_accounts.editor_agent.post('/crisis/1/question').send(question_post_1)
-                .expect('Content-Type', /text/)
-                .expect(302)
-                .expect('Location', /crisis\/1\/question\/[0-9]/)
-                .end(function(err, res){
-                    if(err) throw err;
-                    global_db.models.post.find({title: question_post_1.title}, function (err, result) {
-                        if(err) throw err;
-                        var post = result[0];
-                        post.getQuestions(function(err, question){
-                            if(err) throw err;
-                            post.should.have.property('title', question_post_1.title);
-                            post.getUser(function(err, user){
-                                if(err) throw err;
-                                user.should.have.property('name',  global_accounts.editor_user.name);
-                                done();
-                            });
-                        });
-                    });
-                });
-            });
-
-            
-
-
-            it('Should return a question page', function(done){
-                global_db.models.post.find({title: question_post_1.title}, function(err, result){
-                    if(err) throw err;
-                    var post_result = result[0];
-                    post_result.should.have.property('title', question_post_1.title);
-                    post_result.getQuestions(function(err, question){
-                        if(err) throw err;
-                        request(app).get('/crisis/1/question/'+question[0].id)
-                        .expect('Content-Type', /text/)
-                        .expect(302)
-                        .expect('Location', /crisis\/1\/question\/[0-9]/)
-                        .end(function(err, res){
-                            if(err) throw err;
-                            request(app).get(res.headers.location)
-                            .expect(200)
-                            .end(function (err, res) {
-                                res.text.should.containEql(question_post_1.title);  
-                                done();
-                            });
-                        });
-                    })
-                });
-            });
-
-            
-            it('Should update the question and return a question page', function(done){
-                var updated_question_post = {
-                    title: "New Question title"
-                };
-
-                global_db.models.post.find({title: question_post_1.title}, function(err, result){
-                    if(err) throw err;
-                    var post_result = result[0];
-                    post_result.should.have.property('title', question_post_1.title);
-                    post_result.getQuestions(function(err, question){
-                        if(err) throw err;
-                        global_accounts.editor_agent.post('/crisis/1/question/'+question[0].id)
-                        .send(updated_question_post)
-                        .expect('Content-Type', /text/)
-                        .expect(302)
-                        .expect('Location', '/crisis/1/question/'+question[0].id)
-                        .end(function(err, res){
-                            if(err) throw err;
-                            request(app).get('/crisis/1/question/'+question[0].id)
-                            .expect('Content-Type', /text/)
-                            .expect(302)
-                            .expect('Location', /crisis\/1\/question\/[0-9]/)
-                            .end(function(err, res){
-                                if(err) throw err;
-                                request(app).get(res.headers.location)
-                                .expect(200)
-                                .end(function (err, res) {
-                                    res.text.should.containEql(updated_question_post.title);  
-                                    done();
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });*/
-        
-        /*describe('Create bulk of questions', function () {
-            this.timeout(10000);
-            it('Should create 79 questions', function (done) {
-                global_accounts.admin_agent.post('/crisis/1/questions/create').send(questions_file)
-                .expect(302)
-                .expect('Location', '/crisis/1')
-                .end(function (err, res) {
-                    if (err) throw err;
-                    global_db.models.question.count({}, function (err, count) {
-                        if (err) throw err;
-                        count.should.be.above(78);
-                        done();
-                    });
-                });
-            });
-
-        });*/
-
 
     });
 });
