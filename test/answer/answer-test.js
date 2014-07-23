@@ -6,16 +6,34 @@ var should  = require('should'),
 var app,
     global_db,
     crisis_post,
-    global_accounts;
+    global_accounts,
+    global_questions,
+    global_anon_agent;
 
 var questions_file = {
-    key: 'static/backups/questions/crisis-1.json'
-};
+        key: 'static/backups/questions/crisis-1.json'
+    };
 
 var question_post_1 = {
     title : "Why am I here?",
     targetDateTimeOccurred: [10, 2, 2014, 10, 20]
 };
+
+var support_answer = {
+    title: 'This is an answer that supports the question',
+    type: 'support'
+};
+
+var reject_answer = {
+    title: 'This is an answer that rejects the question',
+    type: 'reject'
+};
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+var question_id = getRandomInt(0, 79);
 
 
 describe('Questions', function(){
@@ -42,16 +60,23 @@ describe('Questions', function(){
 
     describe('(Agents)', function(){
         //agents to save session cookies in order to test users and authenticated requests
-        before('Create users and a crisis', function(done){
+        before('Create users, a crisis and 79 questions', function(done){
             this.timeout(10000);
-            test_utils.set_users_agents_account(request, app, global_db, function(accounts){
+            test_utils.set_users_agents_account(request, app, global_db, function (accounts){
                 global_accounts = accounts;
-                var agent = global_accounts.editor_agent;
+                var editor_agent = global_accounts.editor_agent;
                 var user = global_accounts.editor_user;
                 //create a crisis
-                test_utils.create_crisis(user, agent, global_db, function (crisis) {
+                test_utils.create_crisis(user, editor_agent, global_db, function (crisis) {
                     crisis_post = crisis;
-                    done();
+                    var admin_agent = global_accounts.admin_agent;
+                    test_utils.create_questions(admin_agent, global_db, function (questions) {
+                        global_questions = questions;
+                        test_utils.set_anon_agent(request, app, global_db, function (anon_agent) {
+                            global_anon_agent = anon_agent;
+                            done();
+                        });
+                    });
                 });
             });
         });
@@ -62,100 +87,50 @@ describe('Questions', function(){
             test_utils.drop_db(global_db, done);
         });
 
-        describe('get crisis/1/question/create', function(){
-            it('Should return 403 Forbidden when non-users try to access question create page', function(done){
-                request(app).get('/crisis/1/question/create')
-                    .expect('Content-Type', /text/)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-
-            it('Should return 403 Forbidden when non-users try to access questions create page', function(done){
-                request(app).get('/crisis/1/questions/create')
-                    .expect('Content-Type', /text/)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-
-            it('Should return 403 Forbidden when basic users try to access question create page', function(done){
-                global_accounts.basic_agent.get('/crisis/1/question/create')
-                    .expect('Content-Type', /text/)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-
-            it('Should return 403 Forbidden when basic users try to access questions create page', function(done){
-                global_accounts.basic_agent.get('/crisis/1/questions/create')
-                    .expect('Content-Type', /text/)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-
-            it('Should grant access to create page to editors', function(done){
-                global_accounts.editor_agent.get('/crisis/1/question/create')
+        describe('Post to crisis/1/question/'+question_id+'/answers', function(){
+            this.timeout(10000);
+            it('Should create a support answer to a question', function(done){
+                global_accounts.basic_agent.post('/crisis/1/question/'+question_id+'/answers')
+                .send(support_answer)
+                .expect('Content-Type', /text/)
+                .expect(302)
+                .expect('Location', '/crisis/1/question/'+question_id)
+                .end(function(err, res){
+                    if(err) throw err;
+                    request(app).get('/crisis/1/question/'+question_id)
                     .expect('Content-Type', /text/)
                     .expect(200)
-                    .end(function(err, res){
-                        if(err) throw err;
+                    .end(function (err, res) {
+                        if (err) throw err;
+                        res.text.should.containEql(support_answer.title); 
                         done();
                     });
+                });
             });
 
-            it('Should return 403 Forbidden when editor users try to access questions create page', function(done){
-                global_accounts.editor_agent.get('/crisis/1/questions/create')
-                    .expect('Content-Type', /text/)
-                    .expect(403)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-
-            it('Should grant access to create page to admins', function(done){
-                global_accounts.admin_agent.get('/crisis/1/question/create')
-                    .expect('Content-Type', /text/)
-                    .expect(200)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });
-
-            it('Should grant access to questions create page to admins', function(done){
-                global_accounts.admin_agent.get('/crisis/1/questions/create')
+            it('Should create a reject answer to a question', function(done){
+                global_accounts.basic_agent.post('/crisis/1/question/'+question_id+'/answers')
+                .send(reject_answer)
+                .expect('Content-Type', /text/)
+                .expect(302)
+                .expect('Location', '/crisis/1/question/'+question_id)
+                .end(function(err, res){
+                    if(err) throw err;
+                    request(app).get('/crisis/1/question/'+question_id)
                     .expect('Content-Type', /text/)
                     .expect(200)
-                    .end(function(err, res){
-                        if(err) throw err;
+                    .end(function (err, res) {
+                        if (err) throw err;
+                        res.text.should.containEql(reject_answer.title); 
                         done();
                     });
+                });
             });
+
         });
-        describe('post /crisis/1/question', function(){
-            /*it('Should return a status code 500 when a Crisis with wrong targetDateTimeOccurred is sent', function(done){
-                var crisis_post_1 = {
-                    title : "Crisis title",
-                    targetDateTimeOccurred: new Date()
-                }
-                global_accounts.editor_agent.post('/crisis').send(crisis_post_1)
-                    .expect(500)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
-            });*/
+
+        /*describe('post /crisis/1/question', function(){
+        
             it('Should return 403 Forbidden when a basic user requests question creation', function(done){
                 var crisis_post_1 = {
                     title : "Crisis title",
@@ -184,8 +159,9 @@ describe('Questions', function(){
                         done();
                     });
             });
-        });
-        describe('Specific question', function(){
+        });*/
+
+        /*describe('Specific question', function(){
             before('create a question', function (done) {
                 global_accounts.editor_agent.post('/crisis/1/question').send(question_post_1)
                 .expect('Content-Type', /text/)
@@ -221,11 +197,16 @@ describe('Questions', function(){
                         if(err) throw err;
                         request(app).get('/crisis/1/question/'+question[0].id)
                         .expect('Content-Type', /text/)
-                        .expect(200)
+                        .expect(302)
+                        .expect('Location', /crisis\/1\/question\/[0-9]/)
                         .end(function(err, res){
                             if(err) throw err;
-                            res.text.should.containEql(question_post_1.title);  
-                            done();
+                            request(app).get(res.headers.location)
+                            .expect(200)
+                            .end(function (err, res) {
+                                res.text.should.containEql(question_post_1.title);  
+                                done();
+                            });
                         });
                     })
                 });
@@ -252,29 +233,40 @@ describe('Questions', function(){
                             if(err) throw err;
                             request(app).get('/crisis/1/question/'+question[0].id)
                             .expect('Content-Type', /text/)
-                            .expect(200)
+                            .expect(302)
+                            .expect('Location', /crisis\/1\/question\/[0-9]/)
                             .end(function(err, res){
                                 if(err) throw err;
-                                res.text.should.containEql(updated_question_post.title);  
-                                done();
+                                request(app).get(res.headers.location)
+                                .expect(200)
+                                .end(function (err, res) {
+                                    res.text.should.containEql(updated_question_post.title);  
+                                    done();
+                                });
                             });
                         });
                     });
                 });
             });
-        });
+        });*/
         
-        describe('Create bulk of questions', function () {
+        /*describe('Create bulk of questions', function () {
             this.timeout(10000);
             it('Should create 79 questions', function (done) {
-                var agent = global_accounts.admin_agent;
-                var db = global_db;
-                test_utils.create_questions(agent, db, function (questions) {
-                    done();
+                global_accounts.admin_agent.post('/crisis/1/questions/create').send(questions_file)
+                .expect(302)
+                .expect('Location', '/crisis/1')
+                .end(function (err, res) {
+                    if (err) throw err;
+                    global_db.models.question.count({}, function (err, count) {
+                        if (err) throw err;
+                        count.should.be.above(78);
+                        done();
+                    });
                 });
             });
 
-        });
+        });*/
 
 
     });

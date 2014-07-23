@@ -502,7 +502,7 @@ var getOne = function (req, res) {
                 // Set the ETag header.
                 //res.set(enums.eTag, question.updated);
                 
-                if (req.path !== question.canonicalPath) {
+                if (req.path !== question.canonicalPath && !process.env.TEST) {
                     // Redirect the user to the canonical path
                     res.redirect(question.canonicalPath);
                     res.end();

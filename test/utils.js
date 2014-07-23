@@ -8,9 +8,13 @@ var async = require('async'),
     server,
     db_url = "test/app.db";
 
+var questions_file = {
+    key: 'static/backups/questions/crisis-1.json'
+};
+
 exports.run_app = function (done){
     //todo: Settings to test in production
-    process.env.NODE_ENV = 'test';
+    process.env.TEST = true;
     fs.unlink(db_url, function (err) {
         if (err) {}
         require("../server.js")(false, 'sqlite://'+db_url, function(application, db, app_server){
@@ -109,6 +113,7 @@ exports.set_users_agents_account = function(request, app, db, done){
             });
         });
 }
+
 exports.clear_account_models = function(db, done){
     var arr = [db.models.user, db.models.local];
     async.each(arr, this.clear_model , function(err){
@@ -143,4 +148,50 @@ exports.create_crisis = function (user, agent, db, done) {
             });
         });
     });
+};
+
+exports.set_anon_agent = function (request, app, db, done) {
+    var anon_agent = request.agent(app);
+    var myAnswer = {
+        title: 'My only answer',
+        type: 'support',
+        targetDateTimeOccurred: [10, 2, 2014, 10, 20]
+    };
+    anon_agent.get('/crisis/1')
+    .expect(200)
+    .end(function (err, res) {
+        if(err) throw err;
+        db.models.user.count({}, function (err, count) {
+            if (err) throw err;
+            count.should.not.be.below(4);
+            anon_agent.post('/crisis/1/question/1/answers').send(myAnswer)
+            .expect(302)
+            .expect('Location', /crisis\/1\/question\/1/)
+            .end(function (err, res) {
+                if (err) throw err;
+                db.models.post.find({title: myAnswer.title}, function (err, result) {
+                    if (err) throw err;
+                    var post = result[0];
+                    post.getUser(function (err, user) {
+                        user.type.should.eql('provisional');
+                        done(anon_agent);
+                    });
+                });
+            });
+        });   
+    });
 }; 
+
+exports.create_questions = function (agent, db, done) {
+    agent.post('/crisis/1/questions/create').send(questions_file)
+    .expect(302)
+    .expect('Location', '/crisis/1')
+    .end(function (err, res) {
+        if (err) throw err;
+        db.models.question.find({}, function (err, questions) {
+            if (err) throw err;
+            questions.length.should.not.be.below(78);
+            done(questions);
+        });
+    });
+};
