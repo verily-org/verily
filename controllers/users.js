@@ -1176,10 +1176,13 @@ var getAllQuestions = function (req, res) {
 exports.getAdminQuestions = [isAdmin, getAllQuestions];
 
 exports.handleQuestions = function (req, res) {
-    console.log('here');
-    var shown = req.body.shownQuestions.split("|").map(function(i){
-        return parseInt(i, 10);
-    });
+    if (req.body.shownQuestions !== '') {
+        var shown = req.body.shownQuestions.split("|").map(function(i){
+            return parseInt(i, 10);
+        });   
+    } else {
+        var shown = null;
+    }
     var hidden = req.body.hiddenQuestions;
     if (hidden || shown) {
 
