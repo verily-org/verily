@@ -60,13 +60,13 @@ describe('Roles', function(){
                     .expect(302)
                     .expect('Location', '/')
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         request(app).post('/user').send(user2)
                             .expect('Content-Type', /text/)
                             .expect(302)
                             .expect('Location', '/')
                             .end(function(err, res){
-                                if(err) throw err;
+                                should.not.exist(err);
                                 done();
                             });
                     });
@@ -74,21 +74,21 @@ describe('Roles', function(){
             afterEach(function(done){
                 //Remove both users, can't clear the model because of the global_accounts used in other tests
                 global_db.models.local.find({email: user1.email}, function(err, result){
-                    if(err) throw err;
+                    should.not.exist(err);
                     result[0].remove(function(err, result){
-                        if(err) throw err;
+                        should.not.exist(err);
                         global_db.models.user.find({name: user1.name}, function(err, result){
-                            if(err) throw err;
+                            should.not.exist(err);
                             result[0].remove(function(err, result){
-                                if(err) throw err;
+                                should.not.exist(err);
                                 global_db.models.local.find({email: user2.email}, function(err, result){
-                                    if(err) throw err;
+                                    should.not.exist(err);
                                     result[0].remove(function(err, result){
-                                        if(err) throw err;
+                                        should.not.exist(err);
                                         global_db.models.user.find({name: user2.name}, function(err, result){
-                                            if(err) throw err;
+                                            should.not.exist(err);
                                             result[0].remove(function(err, result){
-                                                if(err) throw err;
+                                                should.not.exist(err);
                                                 done();
                                             });
                                         });
@@ -100,7 +100,7 @@ describe('Roles', function(){
                 });
             });
 
-            it('Should return 403 Forbidden to non-Admin users', function(done){
+            it('Should return 403 Forbidden to editor users', function(done){
                 var body = {
                     basics: user2.name,
                     editors: user1.name,
@@ -110,10 +110,26 @@ describe('Roles', function(){
                     .expect('Content-Type', /text/)
                     .expect(403)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         done();
                     });
             });
+
+            it('Should return 403 Forbidden to basic users', function(done){
+                var body = {
+                    basics: user2.name,
+                    editors: user1.name,
+                    admins : 'verily'
+                }
+                global_accounts.basic_agent.post('/roles').send(body)
+                    .expect('Content-Type', /text/)
+                    .expect(403)
+                    .end(function(err, res){
+                        should.not.exist(err);
+                        done();
+                    });
+            });
+
             it('Should change role of a user (even with a "." on its name) from basic to editor', function(done){
                 var body = {
                     basics: user2.name,
@@ -124,9 +140,9 @@ describe('Roles', function(){
                     .expect('Content-Type', /text/)
                     .expect(200)
                     .end(function(err, res){
-                        if(err) throw err;
+                        should.not.exist(err);
                         global_db.models.user.find({name: user1.name}, function (err, result) {
-                            if(err) throw err;
+                            should.not.exist(err);
                             var user = result[0];
                             user.should.have.property('role', 'editor');
                         });

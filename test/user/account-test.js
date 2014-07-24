@@ -5,7 +5,8 @@ var should  = require('should'),
 
 var app,
     global_db,
-    global_accounts;
+    global_accounts,
+    anon;
 
 
 describe('Accounts', function(){
@@ -16,6 +17,7 @@ describe('Accounts', function(){
             console.log('App started');
             app = application;
             global_db = db;
+            anon = request.agent(app);
             done();
         });
     });
@@ -43,7 +45,7 @@ describe('Accounts', function(){
                 .expect(302)
                 .expect('Location', '/')
                 .end(function(err, res){
-                    if(err) throw err;
+                    should.not.exist(err);
                     done();
                 });
         });
@@ -53,9 +55,19 @@ describe('Accounts', function(){
         //agents to save session cookies in order to test users and authenticated requests
         before(function(done){
             this.timeout(10000);
-            test_utils.set_users_agents_account(request, app, global_db, function(accounts){
+            test_utils.set_users_agents_account(request, app, global_db, function (accounts){
                 global_accounts = accounts;
-                done();
+                var editor_agent = global_accounts.editor_agent;
+                var user = global_accounts.editor_user;
+                //create a crisis
+                test_utils.create_crisis(user, editor_agent, global_db, function (crisis) {
+                    crisis_post = crisis;
+                    var admin_agent = global_accounts.admin_agent;
+                    test_utils.create_questions(admin_agent, global_db, function (questions) {
+                        global_questions = questions;
+                        done();
+                    });
+                });
             });
         });
         after(function(done){
@@ -68,13 +80,13 @@ describe('Accounts', function(){
         describe('Local user account creation (POST /user)', function(){
             it('Should redirect to login because of email had been taken', function(done){
                 request(app).post('/user').send(global_accounts.basic_user)
-                    .expect('Content-Type', /text/)
-                    .expect(302)
-                    .expect('Location', '/register')
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
+                .expect('Content-Type', /text/)
+                .expect(302)
+                .expect('Location', '/register')
+                .end(function(err, res){
+                    should.not.exist(err);
+                    done();
+                });
             });
         });
 
@@ -84,51 +96,76 @@ describe('Accounts', function(){
             //Currently a json response, should be changed
             it('Should show the user profile', function(done){
                 global_accounts.editor_agent.get('/user')
-                    .expect('Content-Type', /text/)
-                    .expect(200)
-                    .end(function(err, res){
-                        if(err) throw err;
-                        //console.log('res.tex get user= ', res.text);
-                        //console.log('user register res= ', res);
-                        done();
-                    });
+                .expect('Content-Type', /text/)
+                .expect(200)
+                .end(function(err, res){
+                    should.not.exist(err);
+                    done();
+                });
             });
+
         });
 
         describe('Account Login (POST /login)', function(){
             it('Should login as Admin and redirect to the previous page', function(done){
                 request(app).post('/login').send(global_accounts.admin_user)
-                    .expect('Content-Type', /text/)
-                    .expect('set-cookie', /connect.sid=/)
-                    .expect(302)
-                    .expect('Location', '/')
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
+                .expect('Content-Type', /text/)
+                //.expect('set-cookie', /connect.sid=/)
+                .expect(302)
+                .expect('Location', '/')
+                .end(function(err, res){
+                    should.not.exist(err);
+                    done();
+                });     
             });
+
             it('Should login as editor and redirect to the previous page', function(done){
                 request(app).post('/login').send(global_accounts.editor_user)
-                    .expect('Content-Type', /text/)
-                    .expect('set-cookie', /connect.sid=/)
-                    .expect(302)
-                    .expect('Location', '/')
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
+                .expect('Content-Type', /text/)
+                //.expect('set-cookie', /connect.sid=/)
+                .expect(302)
+                .expect('Location', '/')
+                .end(function(err, res){
+                    should.not.exist(err);
+                    done();
+                });
             });
+
             it('Should login as basic user and redirect to the previous page', function(done){
                 request(app).post('/login').send(global_accounts.basic_user)
-                    .expect('Content-Type', /text/)
-                    .expect('set-cookie', /connect.sid=/)
-                    .expect(302)
-                    .expect('Location', '/')
-                    .end(function(err, res){
-                        if(err) throw err;
-                        done();
-                    });
+                .expect('Content-Type', /text/)
+                //.expect('set-cookie', /connect.sid=/)
+                .expect(302)
+                .expect('Location', '/')
+                .end(function(err, res){
+                    should.not.exist(err);
+                    done();
+                });
             });
+
+        });
+
+        describe('Anonymous user', function () {
+
+            it('Should get /crisis/1 in order to log in anonymous user', function (done) {
+                anon.get('/crisis/1')
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    should.exist(res.headers['set-cookie']);
+                    done();
+                });
+            });
+
+            it('Should get the user profile of the anonymous user', function (done) {
+                anon.get('/user')
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    done();
+                });
+            });
+
         });
     });
 
