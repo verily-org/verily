@@ -6,7 +6,8 @@ var should  = require('should'),
 var app,
     global_db,
     global_accounts,
-    anon;
+    anon,
+    global_user;
 
 
 describe('Accounts', function(){
@@ -163,6 +164,57 @@ describe('Accounts', function(){
                 .end(function (err, res) {
                     should.not.exist(err);
                     done();
+                });
+            });
+
+        });
+
+        describe('Control users', function () {
+            before('Get user', function (done) {
+                global_db.models.user.find({name: global_accounts.basic_user.name}, function (err, result) {
+                    should.not.exist(err);
+                    global_user = result[0];
+                    done();
+                });
+            });
+
+            it('Should ban the basic user', function (done) {
+                var banned_user = {
+                    user_id: global_user.id,
+                    active: '0'
+                };
+
+                global_accounts.admin_agent.post('/banUser')
+                .send(banned_user)
+                .expect(302)
+                .expect('Location', '/banUser')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    global_db.models.user.get(global_user.id, function (err, user) {
+                        should.not.exist(err);
+                        user.active.should.be.eql(0);
+                        done();
+                    });
+                });
+            });
+
+            it('Should unban the basic user', function (done) {
+                var banned_user = {
+                    user_id: global_user.id,
+                    active: '1'
+                };
+
+                global_accounts.admin_agent.post('/banUser')
+                .send(banned_user)
+                .expect(302)
+                .expect('Location', '/banUser')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    global_db.models.user.get(global_user.id, function (err, user) {
+                        should.not.exist(err);
+                        user.active.should.be.eql(1);
+                        done();
+                    });
                 });
             });
 
