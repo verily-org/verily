@@ -6,7 +6,8 @@ var should  = require('should'),
 var app,
     global_db,
     crisis_post,
-    global_accounts;
+    global_accounts,
+    global_question;
 
 var questions_file = {
     key: 'static/backups/questions/crisis-1.json'
@@ -17,11 +18,11 @@ var question_post_1 = {
     targetDateTimeOccurred: [10, 2, 2014, 10, 20]
 };
 
-function getRandomInt(min, max) {
+var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-var question_id = getRandomInt(0, 79);
+var question_id;
 
 
 describe('Questions', function(){
@@ -57,6 +58,7 @@ describe('Questions', function(){
                 //create a crisis
                 test_utils.create_crisis(user, agent, global_db, function (crisis) {
                     crisis_post = crisis;
+                    question_id = getRandomInt(0, 79);
                     done();
                 });
             });
@@ -272,17 +274,19 @@ describe('Questions', function(){
         
         describe('Create bulk of questions', function () {
             this.timeout(10000);
+
             it('Should create 79 questions', function (done) {
                 var agent = global_accounts.admin_agent;
                 var db = global_db;
                 test_utils.create_questions(agent, db, function (questions) {
+                    global_question = questions[question_id];
                     done();
                 });
             });
 
             it('Should hide question '+question_id, function (done) {
                 var manage_questions = {
-                    hiddenQuestions: [question_id],
+                    hiddenQuestions: [global_question.id],
                     shownQuestions: ''
                 };
 
@@ -292,9 +296,11 @@ describe('Questions', function(){
                 .expect('Location', '/hideQuestions')
                 .end(function (err, res) {
                     should.not.exist(err);
-                    global_db.models.question.get(question_id, function (err, question) {
+                    request(app).get('/crisis/1')
+                    .expect(200)
+                    .end(function (err, res) {
                         should.not.exist(err);
-                        question.show.should.be.eql(0);
+                        res.text.should.not.containEql(global_question.post.title);
                         done();
                     });
                 });
@@ -303,7 +309,7 @@ describe('Questions', function(){
             it('Should show the hidden question '+question_id, function (done) {
                 var manage_questions = {
                     hiddenQuestions: null,
-                    shownQuestions: question_id.toString()
+                    shownQuestions: global_question.id.toString()
                 };
 
                 global_accounts.admin_agent.post('/handleQuestions')
@@ -312,9 +318,11 @@ describe('Questions', function(){
                 .expect('Location', '/hideQuestions')
                 .end(function (err, res) {
                     should.not.exist(err);
-                    global_db.models.question.get(question_id, function (err, question) {
+                    request(app).get('/crisis/1')
+                    .expect(200)
+                    .end(function (err, res) {
                         should.not.exist(err);
-                        question.show.should.be.eql(1);
+                        res.text.should.containEql(global_question.post.title);
                         done();
                     });
                 });
