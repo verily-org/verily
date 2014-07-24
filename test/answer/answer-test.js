@@ -8,7 +8,8 @@ var app,
     crisis_post,
     global_accounts,
     global_questions,
-    global_anon_agent;
+    global_anon_agent,
+    global_answer;
 
 var questions_file = {
         key: 'static/backups/questions/crisis-1.json'
@@ -127,13 +128,14 @@ describe('Answers', function(){
                 });
             });
 
-            it('should upvote answer', function (done) {
+            it('Should upvote answer', function (done) {
                 global_db.models.post.find({title: support_answer.title}, function (err, result) {
                     should.not.exist(err);
                     var post = result[0];
                     post.getAnswers(function (err, answers) {
                         should.not.exist(err);
                         var answer = answers[0];
+                        global_answer = answer;
                         global_accounts.basic_agent
                         .post('/crisis/1/question/'+question_id+'/answer/'+answer.id+'/upvote')
                         .send()
@@ -148,23 +150,55 @@ describe('Answers', function(){
                 });
             });
 
-            it('should downvote answer', function (done) {
-                global_db.models.post.find({title: support_answer.title}, function (err, result) {
+            it('Should downvote answer', function (done) {
+                global_accounts.basic_agent
+                .post('/crisis/1/question/'+question_id+'/answer/'+global_answer.id+'/downvote')
+                .send()
+                .expect(200)
+                .end(function (err, res) {
                     should.not.exist(err);
-                    var post = result[0];
-                    post.getAnswers(function (err, answers) {
+                    res.body.post.upvoteCount.should.be.exactly(0);
+                    res.body.post.downvoteCount.should.be.exactly(1);
+                    done();
+                });
+            });
+
+            it('Should hide answer', function (done) {
+                var manage_answer = {
+                    hiddenAnswers: [global_answer.id],
+                    shownAnswers: ''
+                };
+
+                global_accounts.admin_agent.post('/adminAnswers')
+                .send(manage_answer)
+                .expect(302)
+                .expect('Location', '/adminAnswers')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    global_db.models.answer.get(global_answer.id, function (err, answer) {
                         should.not.exist(err);
-                        var answer = answers[0];
-                        global_accounts.basic_agent
-                        .post('/crisis/1/question/'+question_id+'/answer/'+answer.id+'/downvote')
-                        .send()
-                        .expect(200)
-                        .end(function (err, res) {
-                            should.not.exist(err);
-                            res.body.post.upvoteCount.should.be.exactly(0);
-                            res.body.post.downvoteCount.should.be.exactly(1);
-                            done();
-                        });
+                        answer.show.should.be.eql(0);
+                        done();
+                    });
+                });
+            });
+
+            it('Should show answer', function (done) {
+                var manage_answer = {
+                    hiddenAnswers: null,
+                    shownAnswers: global_answer.id.toString()
+                };
+
+                global_accounts.admin_agent.post('/adminAnswers')
+                .send(manage_answer)
+                .expect(302)
+                .expect('Location', '/adminAnswers')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    global_db.models.answer.get(global_answer.id, function (err, answer) {
+                        should.not.exist(err);
+                        answer.show.should.be.eql(1);
+                        done();
                     });
                 });
             });
