@@ -7,7 +7,8 @@ var app,
     global_db,
     global_accounts,
     anon,
-    global_user;
+    global_user,
+    reset_token;
 
 
 describe('Accounts', function(){
@@ -161,6 +162,79 @@ describe('Accounts', function(){
             it('Should get the user profile of the anonymous user', function (done) {
                 anon.get('/user')
                 .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    done();
+                });
+            });
+
+        });
+
+        describe('Forgotten password', function () {
+
+            it('POST to /forgot should generate reset token', function (done) {
+                request(app).post('/forgot')
+                .send({email: global_accounts.basic_user.email})
+                .expect(302)
+                .expect('Location', '/forgot')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    global_db.models.local.find({email: global_accounts.basic_user.email}, function (err, result) {
+                        should.not.exist(err);
+                        var local = result[0];
+                        should.exist(local.resetPasswordToken);
+                        reset_token = local.resetPasswordToken;
+                        done();
+                    });
+                });
+            });
+
+            it('Should allow the user to see the view create new password', function (done) {
+                request(app).get('/reset/'+reset_token)
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    res.text.should.containEql('Reset Password');
+                    done();
+                });
+            });
+
+            it('Should not allow the user to see the view create new password', function (done) {
+                request(app).get('/reset/12345')
+                .expect(302)
+                .expect('Location', '/forgot')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    done();
+                });
+            });
+
+            it('Should create a new password for the basic user', function (done) {
+                var post_data = {
+                    token: reset_token,
+                    password: '123qwe',
+                    confirm: '123qwe'
+                };
+
+                request(app).post('/reset').send(post_data)
+                .expect(302)
+                .expect('Location', '/user')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    done();
+                });
+            });
+
+            it('Should login with the new password', function (done) {
+                var user_data = {
+                    email: global_accounts.basic_user.email,
+                    password: '123qwe'
+                }
+
+                request(app).post('/login')
+                .send(user_data)
+                .expect(302)
+                .expect('Location', '/')
                 .end(function (err, res) {
                     should.not.exist(err);
                     done();
