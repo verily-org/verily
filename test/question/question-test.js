@@ -17,6 +17,12 @@ var question_post_1 = {
     targetDateTimeOccurred: [10, 2, 2014, 10, 20]
 };
 
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+var question_id = getRandomInt(0, 79);
+
 
 describe('Questions', function(){
 
@@ -271,6 +277,46 @@ describe('Questions', function(){
                 var db = global_db;
                 test_utils.create_questions(agent, db, function (questions) {
                     done();
+                });
+            });
+
+            it('Should hide question '+question_id, function (done) {
+                var manage_questions = {
+                    hiddenQuestions: [question_id],
+                    shownQuestions: ''
+                };
+
+                global_accounts.admin_agent.post('/handleQuestions')
+                .send(manage_questions)
+                .expect(302)
+                .expect('Location', '/hideQuestions')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    global_db.models.question.get(question_id, function (err, question) {
+                        should.not.exist(err);
+                        question.show.should.be.eql(0);
+                        done();
+                    });
+                });
+            });
+
+            it('Should show the hidden question '+question_id, function (done) {
+                var manage_questions = {
+                    hiddenQuestions: null,
+                    shownQuestions: question_id.toString()
+                };
+
+                global_accounts.admin_agent.post('/handleQuestions')
+                .send(manage_questions)
+                .expect(302)
+                .expect('Location', '/hideQuestions')
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    global_db.models.question.get(question_id, function (err, question) {
+                        should.not.exist(err);
+                        question.show.should.be.eql(1);
+                        done();
+                    });
                 });
             });
 
