@@ -885,12 +885,8 @@ exports.resetView = function (req, res) {
         req.models.Local.find({ resetPasswordToken: token }, 1, function(err, locals) {
             var local = locals[0];
             if (local === undefined || local.resetPasswordExpires < Date.now()) {
-                var error = 'Password reset token is invalid or has expired.';
-                res.render('user/forgot', {
-                    page: {
-                        title: 'Forgotten Password'
-                    }, error: error
-                }); 
+                var error = req.flash('error', 'Password reset token is invalid or has expired.');
+                res.redirect('/forgot'); 
             } else {
                 res.render('user/reset', {
                     page: {
@@ -950,7 +946,7 @@ exports.reset = function (req, res) {
                 });
             }
         ], function(err, local) {
-            if (err) {
+            if (err && !local) {
                 req.flash('error', 'Your password did not change.');
                 res.redirect('/reset/'+token);
             } else {
