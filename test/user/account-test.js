@@ -8,7 +8,8 @@ var app,
     global_accounts,
     anon,
     global_user,
-    reset_token;
+    reset_token,
+    new_user_agent;
 
 
 describe('Accounts', function(){
@@ -20,6 +21,7 @@ describe('Accounts', function(){
             app = application;
             global_db = db;
             anon = request.agent(app);
+            new_user_agent = request.agent(app);
             done();
         });
     });
@@ -32,17 +34,22 @@ describe('Accounts', function(){
 
 
     var user1 = {
-            email : 'asde@hotmail.com',
-            name : 'asde.asde',
-            password : 'admin123',
-            verifyPassword : 'admin123',
-            termsAgreement: true
-        };
+        email : 'asde@hotmail.com',
+        name : 'asde.asde',
+        password : 'admin123',
+        verifyPassword : 'admin123',
+        termsAgreement: true
+    };
+
+    var updated_user1 = {
+        name: 'newName',
+        password: '123qwe'
+    }
 
     describe('Local user account creation (POST /user)', function(){
-
+        this.timeout(10000);
         it('Should create 1 user and redirect to the previous page', function(done){
-            request(app).post('/user').send(user1)
+            new_user_agent.post('/user').send(user1)
                 .expect('Content-Type', /text/)
                 .expect(302)
                 .expect('Location', '/')
@@ -51,6 +58,61 @@ describe('Accounts', function(){
                     done();
                 });
         });
+
+        it('Should change the user\'s password', function (done) {
+            var post_data = {
+                old_password: user1.password,
+                new_password: updated_user1.password,
+                confirm_password: updated_user1.password
+            };
+            new_user_agent.post('/changePass').send(post_data)
+            .expect(302)
+            .expect('Location', '/user')
+            .end(function (err, res) {
+                should.not.exist(err);
+                done();
+            });
+        });
+
+        it('Should login with the new password', function (done) {
+            var user_data = {
+                email: user1.email,
+                password: updated_user1.password
+            };
+
+            request(app).post('/login')
+            .send(user_data)
+            .expect(302)
+            .expect('Location', '/')
+            .end(function (err, res) {
+                should.not.exist(err);
+                done();
+            });
+        });
+
+        it('Should change the user\'s username', function (done) {
+            var post_data = {
+                username: updated_user1.name
+            };
+            new_user_agent.post('/changeUsername').send(post_data)
+            .expect(302)
+            .expect('Location', '/user')
+            .end(function (err, res) {
+                should.not.exist(err);
+                done();
+            });
+        });
+
+        it('Should show the new username', function (done) {
+            new_user_agent.get('/user')
+            .expect(200)
+            .end(function (err, res) {
+                should.not.exist(err);
+                res.text.should.containEql(updated_user1.name);
+                done();
+            });
+        });
+
     });
     describe('(Agents)', function(){
 

@@ -651,9 +651,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         server = http.createServer(app);
         server.listen(app.get('port'), function(){
             console.log('Express server listening on port ' + app.get('port'));
-            if (dbTestUrl) {
-                callback(app, global_db, server);
-            }
+            
         });
 
 
@@ -692,12 +690,18 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                             admin.setLocal(local, function (err) {
                                 if (err) {throw err;}
                                 console.log('Admin user has been created.');
+                                if (dbTestUrl) {
+                                    callback(app, global_db, server);
+                                }
                             });
                         });
                     });
                 });
             } else {
                 console.log('Admin user already exists.');
+                if (dbTestUrl) {
+                    callback(app, global_db, server);
+                }
             }
         });
     }
