@@ -517,14 +517,17 @@ exports.findQueryItem = function (db, cb) {
 };
 
 exports.load_question_extra_fields = function (db, question, callback) {
-    var sql = 'SELECT count(*) FROM answer WHERE answer.question_id = ' + question.id +
-                'AND type = ';
+    var sql = 'SELECT count(*) as num FROM answer WHERE answer.question_id = ' + question.id +
+                ' AND answer.show = 1 AND type = ';
+    /*var sqlImportance = 'SELECT count(*) as num FROM rating, post WHERE rating.post_id = post.id '+
+                'AND post.id = '+question.id+' AND rating.type = "importance"';*/
     db.driver.execQuery(sql + '"reject"', function (err, rejected) {
         if (rejected)
-            question.rejectedAnswerCount = rejected;
+            question.rejectedAnswerCount = rejected[0].num;
         db.driver.execQuery(sql + '"support"', function (err, supported) {
             if (supported)
-                question.supportedAnswerCount = supported;
+                question.supportedAnswerCount = supported[0].num;
+            question.popularityCoefficient = question.rejectedAnswerCount + question.supportedAnswerCount;
             callback();  
         });  
     });

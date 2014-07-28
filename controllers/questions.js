@@ -379,7 +379,7 @@ var getQuestion = function (req, addView, callback) {
                                return answer.show && common.isUserContentShow(answer.post.user);
                            });
 
-                           generic.load_question_extra_fields(question, function(err){
+                           generic.load_question_extra_fields(req.db, question, function(err){
                                if (!err) {
 
                                    // Canonicalise the path to the pretty format

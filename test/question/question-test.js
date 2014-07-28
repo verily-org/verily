@@ -18,12 +18,11 @@ var question_post_1 = {
     targetDateTimeOccurred: [10, 2, 2014, 10, 20]
 };
 
-var getRandomInt = function (min, max) {
+getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-var question_id;
-
+var question_id = getRandomInt(0, 79);
 
 describe('Questions', function(){
 
@@ -58,7 +57,6 @@ describe('Questions', function(){
                 //create a crisis
                 test_utils.create_crisis(user, agent, global_db, function (crisis) {
                     crisis_post = crisis;
-                    question_id = getRandomInt(0, 79);
                     done();
                 });
             });

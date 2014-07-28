@@ -183,8 +183,9 @@ var getOne = function (req, res) {
 
                                     // For each question, add relative created date.
                                     questions.forEach(function(question) {
-                                        /*var relativeCreatedDate = utils.date.relativeTime(question.date, {abbreviated: true});
-                                        question.relativeCreatedDate = relativeCreatedDate;*/
+                                        question.date = new Date(question.date);
+                                        var relativeCreatedDate = utils.date.relativeTime(question.date, {abbreviated: true});
+                                        question.relativeCreatedDate = relativeCreatedDate;
 
                                         // Canonicalise the path to the pretty format
                                         // that works well for bookmarks.
