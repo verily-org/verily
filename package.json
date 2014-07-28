@@ -36,13 +36,15 @@
     "passport-twitter": "1.0.2",
     "pg": "2.5.0",
     "sanitizer": "0.1.1",
+    "should": "4.0.4",
     "sqlite3": "2.2.0",
     "supertest": "0.8.1",
     "swig": "~1.3.2",
     "urlsafe-base64": "0.0.2",
     "utilities": "0.0.31",
     "validator": "3.16.0",
-    "winston": "0.7.2"
+    "winston": "0.7.2",
+    "memwatch": "0.2.2"
   },
   "devDependencies": {},
   "scripts": {
