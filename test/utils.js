@@ -18,7 +18,7 @@ exports.run_app = function (done){
     process.env.TEST = true;
     fs.unlink(db_url, function (err) {
         if (err) {}
-        require("../server.js")(false, 'sqlite://'+db_url, function(application, db, app_server){
+        require("../server")(false, 'sqlite://'+db_url, function(application, db, app_server){
             server = app_server;
             done(application, db);
         }); 

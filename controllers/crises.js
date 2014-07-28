@@ -4,12 +4,13 @@ var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
 var mode = require('../mode');
+var memwatch = require('memwatch');
 
 var common = require('../static/js/common');
 var userController = require('./users');
 
 var role = require('../lib/roles').user;
-
+var hd;
 var trueValue;
 var falseValue;
 if (mode.isHeroku()) {
@@ -141,10 +142,13 @@ exports.help = function (req, res) {
 
 var oneCrisisResponse = function(req, res, responseData) {
     res.render('crisis/one', responseData);
+    var diff = hd.end();
+    //console.log(diff.change.details);
 }
 
 //get a specific crisis
 var getOne = function (req, res) {
+    hd = new memwatch.HeapDiff();
     //Redirection if different than 1 for Challenge purpose
     if(req.params.crisis_id != 1){
         res.redirect('/crisis/1');
@@ -155,90 +159,93 @@ var getOne = function (req, res) {
     generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         
         if (!err){
-            req.models.Question.find({show: trueValue}, function (err, questions) {
-                // Sort questions by created date with latest first.
-                questions.sort(function(a, b) {
-                    return a.post.date.getTime() - b.post.date.getTime();
-                });
-                
-                
-                if (err) {
-                    generic.genericErrorHandler(req, res, err);
-                } else {
+            generic.findQueryItem(req.db, function (err, questions) {
+                /*req.models.Question.find({show: trueValue}, function (err, questions) {
+                    // Sort questions by created date with latest first.
+                    questions.sort(function(a, b) {
+                        return a.post.date.getTime() - b.post.date.getTime();
+                    });*/
+                    
+                    
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);
+                    } else {
 
-                    var datetime = new Date();
-                    console.log('-----Question Found-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
-                    // Questions with Post data included in each question.
-                    async.eachSeries(questions, generic.load_question_extra_fields, function (err) {
-                        if (err) {
-                            generic.genericErrorHandler(req, res, err);
-                        } else {
-                            crisis.post.addViewCount();
-                            generic.load_crisis_extra_fields(crisis, function(err){
+                        var datetime = new Date();
+                        console.log('-----Question Found-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
+                        // Questions with Post data included in each question.
+                        async.eachSeries(questions, generic.load_question_extra_fields.bind(null, req.db), function (err) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err);
+                            } else {
+                                crisis.post.addViewCount();
+                                generic.load_crisis_extra_fields(crisis, function(err){
 
-                                // For each question, add relative created date.
-                                questions.forEach(function(question) {
-                                    var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
-                                    question.relativeCreatedDate = relativeCreatedDate;
+                                    // For each question, add relative created date.
+                                    questions.forEach(function(question) {
+                                        /*var relativeCreatedDate = utils.date.relativeTime(question.date, {abbreviated: true});
+                                        question.relativeCreatedDate = relativeCreatedDate;*/
 
-                                    // Canonicalise the path to the pretty format
-                                    // that works well for bookmarks.
-                                    question.canonicalPath = common.prettyPath({
-                                        req: req,
-                                        postPrefix: 'question',
-                                        id: question.id,
-                                        string: question.post.title
+                                        // Canonicalise the path to the pretty format
+                                        // that works well for bookmarks.
+                                        question.canonicalPath = common.prettyPath({
+                                            req: req,
+                                            postPrefix: 'question',
+                                            id: question.id,
+                                            string: question.title
+                                        });
+
+                                    });
+                                    
+                                    var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
+                                    crisis.relativeCreatedDate = relativeCreatedDate;
+
+                                    generic.generateRefCodes(4, function(refcodeArray) {
+                                        var refcodes = {
+                                            twitter: refcodeArray[0],
+                                            facebook: refcodeArray[1],
+                                            email: refcodeArray[2],
+                                            link: refcodeArray[3]
+                                        };
+                                        
+                                        var responseData = {
+                                            crisis: crisis,
+                                            questions: questions,
+                                            page: {
+                                                title: crisis.post.title
+                                            },
+                                            path: req.path,
+                                            refcodes: refcodes,
+                                            info: req.flash('info'),
+                                            error: req.flash('error')
+                                        };
+                                        if (req.user) {
+                                            var datetime = new Date();
+                                            console.log('-----Responding crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
+                                            responseData.user = req.user;
+                                            // Respond.
+                                            oneCrisisResponse(req, res, responseData);
+                                        } else {
+                                            // User is not currently logged in --
+                                            // let's make them a provisional account
+                                            // so they can immediately do stuff.
+                                            userController.newProvisionalUser(req, function(err, user) {
+                                                // Provisional user account created.
+                                                // Respond.
+                                                responseData.user = user;
+                                                oneCrisisResponse(req, res, responseData);
+                                            });   
+                                        }
+                                    
                                     });
 
                                 });
-                                
-                                var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
-                                crisis.relativeCreatedDate = relativeCreatedDate;
-
-                                generic.generateRefCodes(4, function(refcodeArray) {
-                                    var refcodes = {
-                                        twitter: refcodeArray[0],
-                                        facebook: refcodeArray[1],
-                                        email: refcodeArray[2],
-                                        link: refcodeArray[3]
-                                    };
-                                    
-                                    var responseData = {
-                                        crisis: crisis,
-                                        questions: questions,
-                                        page: {
-                                            title: crisis.post.title
-                                        },
-                                        path: req.path,
-                                        refcodes: refcodes,
-                                        info: req.flash('info'),
-                                        error: req.flash('error')
-                                    };
-                                    if (req.user) {
-                                        var datetime = new Date();
-                                        console.log('-----Responding crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
-                                        responseData.user = req.user;
-                                        // Respond.
-                                        oneCrisisResponse(req, res, responseData);
-                                    } else {
-                                        // User is not currently logged in --
-                                        // let's make them a provisional account
-                                        // so they can immediately do stuff.
-                                        userController.newProvisionalUser(req, function(err, user) {
-                                            // Provisional user account created.
-                                            // Respond.
-                                            responseData.user = user;
-                                            oneCrisisResponse(req, res, responseData);
-                                        });   
-                                    }
-                                
-                                });
-
-                            });
-                        }
-                    });
-                }
+                            }
+                        });
+                    }
+                //});
             });
+                
         }
         else{
             generic.genericErrorHandler(req, res, err);

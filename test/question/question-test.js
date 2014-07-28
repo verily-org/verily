@@ -284,6 +284,15 @@ describe('Questions', function(){
                 });
             });
 
+            it('Should get crisis page', function (done) {
+                request(app).get('/crisis/1')
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    done();
+                });
+            });
+
             it('Should hide question '+question_id, function (done) {
                 var manage_questions = {
                     hiddenQuestions: [global_question.id],

@@ -11,6 +11,7 @@ var common = require('../static/js/common');
 var role = require('../lib/roles').user;
 var mode = require('../mode');
 var s3 = require('../s3');
+var orm = require('orm');
 
 var urlSafeBase64 = require('urlsafe-base64');
 
@@ -443,6 +444,8 @@ exports.update = function (model, id, req, cb) {
     });
 };
 
+
+
 // only remove one item and its post
 exports.removeOne = function (item, req, cb) {
     req.models.Post.get(item.post_id, function (err, post) {
@@ -502,7 +505,32 @@ exports.load_crisis_extra_fields = function(crisis, callback){
         }
     });
 }
-exports.load_question_extra_fields = function(question, callback){
+
+exports.findQueryItem = function (db, cb) {
+    var sql = 'SELECT qs.*,rating.type AS type FROM '+
+            '(SELECT * FROM question, post '+
+                'WHERE question.post_id = post.id AND question.show = 1) AS qs '+
+            'LEFT OUTER JOIN rating ON qs.post_id = rating.post_id';
+    db.driver.execQuery(sql, function (err, data) {
+        cb(err, data);
+    });
+};
+
+exports.load_question_extra_fields = function (db, question, callback) {
+    var sql = 'SELECT count(*) FROM answer WHERE answer.question_id = ' + question.id +
+                'AND type = ';
+    db.driver.execQuery(sql + '"reject"', function (err, rejected) {
+        if (rejected)
+            question.rejectedAnswerCount = rejected;
+        db.driver.execQuery(sql + '"support"', function (err, supported) {
+            if (supported)
+                question.supportedAnswerCount = supported;
+            callback();  
+        });  
+    });
+};
+
+/*exports.load_question_extra_fields = function(question, callback){
     if(question.answers == undefined){
         question.getAnswers(function(err, answers){
             if (!err && answers) {
@@ -547,7 +575,8 @@ exports.load_question_extra_fields = function(question, callback){
         question.popularityCoefficient = getQuestionPopularityCoefficient(question);
         callback();
     }
-}
+}*/
+
 var load_post_ratings_count_function = function(item, callback){
 
     //item.post.getUser(function(a,d){});
