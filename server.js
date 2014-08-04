@@ -422,14 +422,14 @@ module.exports = function (suppressLogs, dbTestUrl) {
         app.use(analytics);
         app.use(saveRedirectUrl);
         
-        app.use(express.csrf());
+//        app.use(express.csrf());
         
 		// middleware for common locals with request-specific values
         app.use(function (req, res, next) {
         	//console.log('csrf middleware');
-        	res.locals({
-        		csrf_token: req.csrfToken()
-        	});
+        	//res.locals({
+        	//	csrf_token: req.csrfToken()
+        	//});
         	res.locals.csrf_token = req.csrfToken();
         	//res.locals.csrf_token = 'test';
         	next();
