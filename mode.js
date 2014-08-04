@@ -4,7 +4,7 @@ exports.DEV_MODE = 'DEVELOPMENT_MODE';
 exports.PROD_MODE = 'PRODUCTION_MODE';
 
 exports.isProduction = exports.isHeroku = function() {
-    return (process.env.HEROKU_POSTGRESQL_COBALT_URL !== undefined);
+    return (process.env.HEROKU_POSTGRESQL_ONYX_URL !== undefined);
 }
 exports.isPgSQL = function() {
     return true;
