@@ -625,21 +625,21 @@ module.exports = function (suppressLogs, dbTestUrl) {
 
         });
     
-        app.use(function(err, req, res, next) {
-            if (common.challengePublished()) {
-                res.send(500);
-                res.render('error/500', {
-                    page: {
-                        title: 'Server error'
-                    },
-                    user: req.user
-                });
-            } else {
-                res.redirect('/');
-                res.end();
-            }
-
-        });
+//        app.use(function(err, req, res, next) {
+//            if (common.challengePublished()) {
+//                res.send(500);
+//                res.render('error/500', {
+//                    page: {
+//                        title: 'Server error'
+//                    },
+//                    user: req.user
+//                });
+//            } else {
+//                res.redirect('/');
+//                res.end();
+//            }
+//
+//        });
 
     
         http.createServer(app).listen(app.get('port'), function(){
