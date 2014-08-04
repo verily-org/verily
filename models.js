@@ -412,7 +412,7 @@ module.exports = function (db, cb) {
 
     Question.hasOne('post', Post, {reverse: 'questions', autoFetch: true});
 
-    Answer.hasOne('post', Post, {reverse: 'answers'});
+    Answer.hasOne('post', Post, {reverse: 'answers', autoFetch: true});
 
     Rating.hasOne('post', Post, {reverse: 'ratings', autoFetch: true});
 
