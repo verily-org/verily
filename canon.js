@@ -74,7 +74,6 @@ module.exports = function() {
         } else {
             next();
         }
-        next();
 
     };
 };
