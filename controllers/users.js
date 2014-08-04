@@ -178,6 +178,7 @@ exports.newProvisionalUser = function(req, callback) {
 };
 
 exports.login = function (req, res) {
+    console.log('------ entered login!');
     passport.authenticate('local-login', function (err, user, info) {
         if (err || !user) {
             res.redirect('/login');
