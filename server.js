@@ -388,7 +388,7 @@ module.exports = function (suppressLogs, dbTestUrl) {
         }));
         
         // Redirect www URLs to the canonical non-www (apex) URLs.
-        app.use(canon);
+        //app.use(canon);
         
         app.use(robotstxt);
         
