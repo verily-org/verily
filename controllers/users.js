@@ -16,7 +16,7 @@ require('../lib/passport')(passport);
 var smtpTransport = config.mailer;
 var trueValue;
 var falseValue;
-if (mode.isHeroku()) {
+if (mode.isPgSQL()) {
     trueValue = true;
     falseValue = false;
 } else {
@@ -33,41 +33,25 @@ exports.profile = function (req, res) {
     if (req.user) {
         res.status(200);
         var user = req.user;
-        req.models.Rating.findByPost({user_id:user.id}, function(err, ratingsArr){
-
+        req.models.Answer.findByPost({user_id:user.id}, function(err, answersArr){
             if(err)throw err;
-//            var datetime = new Date();
-//            console.log('Posts gotten: ' + datetime.getMinutes() +":"+datetime.getSeconds());
-
-            var upvotes = 0;
-            var downvotes = 0;
-            var postAnswers = 0;
-            upvotes = ratingsArr.filter(function(rating){return rating.isUpvote() && rating.show && common.isUserContentShow(rating.user);}).length;
-            downvotes = ratingsArr.filter(function(rating){return rating.isDownvote() && rating.show && common.isUserContentShow(rating.user);}).length;
-            req.models.Answer.findByPost({user_id:user.id}, function(err, answersArr){
-                if(err)throw err;
-                postAnswers = answersArr.length;
-                user.postPoints = postAnswers * assignedPoints.postEvidence;
-                user.votingPoints = upvotes * assignedPoints.voteUp;
-                user.save(function (err) {
-                    if (err) {
-                        generic.genericErrorHandler(req, res, err);
-                    }
-                    res.render('user/profile', {
-                        page: {
-                            title: 'Profile'
-                        },
-                        user: user,
-                        points: user.getTotalPoints(),
-                        posts: postAnswers,
-                        upvotes: upvotes,
-                        downvotes: downvotes,
-                        error: req.flash('error'),
-                        info: req.flash('info')
-                    })
+            answersArr = answersArr.filter(function(answer){return answer.show;});
+            postAnswers = answersArr.length;
+            user.answers = answersArr;
+            generic.add_user_reputation_totals(user, req, function(err){
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                }
+                res.render('user/profile', {
+                    page: {
+                        title: 'Profile'
+                    },
+                    user: user,
+                    posts: postAnswers,
+                    error: req.flash('error'),
+                    info: req.flash('info')
                 });
             });
-
         });
     } else {
         // Not logged in.
@@ -650,46 +634,53 @@ var postBanUser = function (req, res) {
 };
 exports.postBanUser = [isAdmin, postBanUser];
 
-var getUserContentList = function (req, res) {
+var getUserDetails = function (req, res) {
 //    var datetime = new Date();
 //    console.log('entered: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     req.models.User.get(req.params.user_id, function (err, user) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {
-            req.models.Answer.findByPost({user_id: user.id},function(err, answers){
+            req.models.Answer.findByPost({user_id: user.id},{autoFetch:true, autoFetchLimit:1},function(err, answers){
                 if(err)generic.genericErrorHandler(req, res, err);
-                req.models.Comment.find({user_id: user.id},function(err, comments){
+                generic.load_answers_extra_fields_user_statistics(user, answers, function(err){
+                    //Random code to add a rating manually, Should be used for data tweaks only
+//                    req.models.Rating.create([{type:'upvote', date: new Date(), user_id: user.id, post_id: 58}], function(err, items){
+//
+//                    });
+                    //Random code to remove a rating manually, Should be used for data tweaks only
+//                    req.models.Rating.findByPost({id: 58}, function(err, posts){
+//                       posts[0].remove(function(err){
+//
+//                       }) ;
+//                    });
                     if(err)generic.genericErrorHandler(req, res, err);
-                    res.render('user/contentList', {
-                        page: {
-                            title: 'User Content List'
-                        },
-                        info: req.flash('info'),
-                        //user: req.user,
-                        contentUser: user,
-                        evidences: answers,
-                        comments: comments
+                    req.models.AnswerComment.findByComment({user_id: user.id},function(err, comments){
+                        if(err)generic.genericErrorHandler(req, res, err);
+                        user.answers = answers;
+                        generic.add_user_reputation_totals(user, req, function(err){
+
+                            res.render('user/userDetails', {
+                                page: {
+                                    title: 'User Details'
+                                },
+                                info: req.flash('info'),
+                                //user: req.user,
+                                contentUser: user,
+                                evidences: answers,
+                                comments: comments
+                            });
+                        });
                     });
                 });
+
             });
 
         }
     });
 };
-function msToTime(duration) {
-    var milliseconds = parseInt((duration%1000)/100)
-        , seconds = parseInt((duration/1000)%60)
-        , minutes = parseInt((duration/(1000*60))%60)
-        , hours = parseInt((duration/(1000*60*60))%24);
 
-    hours = (hours < 10) ? "0" + hours : hours;
-    minutes = (minutes < 10) ? "0" + minutes : minutes;
-    seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
-}
-exports.getUserContentList = [isAdmin, getUserContentList];
+exports.getUserDetails = [isAdmin, getUserDetails];
 
 var postEditUserEvidenceShow = function (req, res) {
     req.models.User.get(req.body.user_id, function (err, user) {
@@ -714,7 +705,7 @@ var postEditUserEvidenceShow = function (req, res) {
                                     if(err)generic.genericErrorHandler(req, res, err);
 
                                     req.flash('info', 'User content updated successfully.');
-                                    res.redirect('user/'+user.id+'/userContentList');
+                                    res.redirect('user/'+user.id+'/details');
                                 });
                         });
                 });
@@ -736,7 +727,7 @@ var postEditCommentShow = function (req, res) {
             comment.save(function(err){
                 if(err)generic.genericErrorHandler(req, res, err);
                 req.flash('info', 'Comment updated successfully.');
-                res.redirect('user/'+req.body.user_id+'/userContentList');
+                res.redirect('user/'+req.body.user_id+'/details');
             });
         }
     });
@@ -756,7 +747,7 @@ var postEditEvidenceShow = function (req, res) {
             answer.save(function(err){
                 if(err)generic.genericErrorHandler(req, res, err);
                 req.flash('info', 'Evidence updated successfully.');
-                res.redirect('user/'+req.body.user_id+'/userContentList');
+                res.redirect('user/'+req.body.user_id+'/details');
             });
         }
     });

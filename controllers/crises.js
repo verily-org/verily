@@ -12,7 +12,7 @@ var role = require('../lib/roles').user;
 
 var trueValue;
 var falseValue;
-if (mode.isHeroku()) {
+if (mode.isPgSQL()) {
     trueValue = true;
     falseValue = false;
 } else {

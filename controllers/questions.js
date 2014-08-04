@@ -16,7 +16,7 @@ var role = require('../lib/roles').user;
 
 var trueValue;
 var falseValue;
-if (mode.isHeroku()) {
+if (mode.isPgSQL()) {
     trueValue = true;
     falseValue = false;
 } else {
@@ -60,7 +60,7 @@ var renderSearchResults = function(req, res, questions) {
     });
 };
 
-var searchQuestionsByWords = function (req, res, words, relevantQuestions) {
+var searchQuestionsByWords = function (req, res, words, relevantQuestions, query) {
     req.models.Question.find({show: trueValue}, function (err, questions) {
         if (err) {
             console.log(err);
@@ -103,7 +103,7 @@ exports.searchQuestions = function (req, res) {
     var query = req.body.search;
     var words = query.toLowerCase().split(' ');
     var relevantQuestions = [];
-    searchQuestionsByWords(req, res, words, relevantQuestions);
+    searchQuestionsByWords(req, res, words, relevantQuestions, query);
 };
 
 exports.searchTag = function (req, res) {
@@ -335,6 +335,32 @@ var checkRole = role.can('edit a question');
 
 exports.edit = [checkRole, editQuestion];
 
+// Set the final answer
+var setFinalAnswer = function (req, res) {
+    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) throw err;
+        req.models.Question.get( req.params.question_id, function (err, question) {
+            if (err) {
+                // Error!
+                generic.genericErrorHandler(req, res, err);
+            } else {
+                // No errors.
+                res.status(200);
+                question.adminAnswer = req.body.answer;
+                question.save(function(err){
+                    if(err)generic.genericErrorHandler(req, res, err);
+                    req.flash('info', 'Updated successfully');
+                    res.redirect('/crisis/' + req.params.crisis_id + '/question/' + req.params.question_id);
+                });
+            }
+        });
+    });
+}
+
+var checkRole = role.can('edit a question');
+
+exports.setFinalAnswer = [checkRole, setFinalAnswer];
+
 // Used by get, edit functions etc.
 var getQuestion = function (req, addView, callback) {
     // ETag support.
@@ -357,10 +383,8 @@ var getQuestion = function (req, addView, callback) {
 
             question.getAnswers(function(err,answers){
                if (!err && answers) {
-                   req.models.Post.findByAnswers({question_id: question.id}, function(err, posts){
-                        //console.log(posts);
-                   });
-                   async.each(question.answers,
+
+                   async.eachSeries(question.answers,
                        function(answer, callback2){
                            answer.getPost(function(err){
                                if(err) callback2(err);
@@ -411,13 +435,14 @@ var getQuestion = function (req, addView, callback) {
                                        supportedAnswerCount: question.supportedAnswerCount,
                                        updated: question.post.updated,
                                        importanceCount: question.importanceCount,
+                                       adminAnswer: question.adminAnswer,
                                        canonicalPath: canonicalPath,
                                        post: question.post
                                    }, wrapper = {
                                        question: questionTmp
                                    };
                                    // Answers present.
-                                   async.each(question.answers, generic.load_answers_extra_fields, function (err) {
+                                   async.eachSeries(question.answers, generic.load_answers_extra_fields.bind(null, req), function (err) {
                                        if (err) {
                                            callback(err);
                                        } else {
@@ -488,14 +513,7 @@ var getOne = function (req, res) {
         if (err) throw err;
         getQuestion(req, true, function(err, question) {
             if (err) {
-                // Error!
-                if (err === enums.NOT_MODIFIED) {
-                    // 304 Not Modified.
-                    res.status(304);
-                    res.end();
-                } else {
-                    generic.genericErrorHandler(req, res, err);
-                }
+                generic.genericErrorHandler(req, res, err);
             } else {
                 // No errors.
                 

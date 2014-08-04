@@ -4,8 +4,30 @@
 
 {% block content %}
 
-    <h2>All posts of user: "{{ contentUser.name }}"</h2>
-    <div style="text-align: right; padding-bottom:10px;">
+    <h2>Details of user: "{{ contentUser.name }}"</h2>
+    <table class="table table-responsive">
+        <tr>
+            <td>Total Evidence:</td>
+            <td>{{ evidences | length }}</td>
+        </tr>
+        <tr>
+            <td>Voted Up:</td>
+            <td>{{ contentUser.upvoteCount }} times</td>
+        </tr>
+        <tr>
+            <td>Voted Down:</td>
+            <td>{{ contentUser.downvoteCount }} times</td>
+        </tr>
+        <tr>
+            <td>People commented on his evidence:</td>
+            <td>{{ contentUser.commentsOnEvidenceCount }} times</td>
+        </tr>
+        <tr>
+            <td>Average response time after question posted:</td>
+            <td>{{ contentUser.averageResponseTimeString  }}</td>
+        </tr>
+    </table>
+    <div style="text-align: right;">
         <form method="post" action="/editUserEvidenceShow" class="single-button-form">
             <input type="hidden" name="_csrf" value="{{csrf_token}}" />
             <input type="hidden" name="user_id" value="{{ contentUser.id }}">
@@ -25,21 +47,29 @@
             <thead>
                 <th>id</th>
                 <th>title</th>
-                <th>showing</th>
+                <th title="Showing"><i class="fa fa-eye"></i></th>
+                <th style="width:60px; "><i class="fa fa-arrow-up"></i>/<i class="fa fa-arrow-down"></i>/<i class="fa fa-comment"></i></th>
                 <th>text</th>
-                <th>question</th>
+                <th>Q#</th>
                 <th>date</th>
                 <th>Actions</th>
             </thead>
             <tbody>
                 {% for evidence in evidences %}
                     <tr {% if evidence.show == false %}class="danger"{% endif %}>
-                        <td>{{ evidence.id }}</td>
+                        <td>
+                            {% if evidence.show == true %}
+                            <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}/answer/{{ evidence.id }}" >{{ evidence.id }}</a>
+                            {% else %}
+                                {{ evidence.id }}
+                            {% endif %}
+                        </td>
                         <td>{{ evidence.post.title }}</td>
                         <td>{{ evidence.show }}</td>
+                        <td style="text-align:center">{{ evidence.post.getUpvoteCount() }}/{{ evidence.post.getDownvoteCount() }}/{{ evidence.comments | length }}</td>
                         <td>{{ evidence.post.text }}</td>
                         <td>
-                            <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}" class="">{{ evidence.question.post.title }}</a>
+                            <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}" class="">{{ evidence.question_id }}</a>
                         </td>
                         <td>{{ evidence.post.date | date('Y-m-d h:i:s') }}</td>
                         <td style="text-align: right">
@@ -53,9 +83,6 @@
                             {% else %}
                                 <input type="hidden" name="show" value="1">
                                 <button class="btn btn-default">Show</button>
-                            {% endif %}
-                            {% if evidence.show == true %}
-                                <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}/answer/{{ evidence.id }}" class="btn btn-primary">View</a>
                             {% endif %}
                             </form>
                         </td>
@@ -79,22 +106,24 @@
                     <th>id</th>
                     <th>showing</th>
                     <th>text</th>
+                    <th>E#</th>
                     <th>date</th>
                     <th>Actions</th>
                 </thead>
                 <tbody>
                 {% for comment in comments %}
-                    <tr {% if comment.show == false %}class="danger"{% endif %}>
-                        <td>{{ comment.id }}</td>
-                        <td>{{ comment.show }}</td>
-                        <td>{{ comment.text }}</td>
-                        <td>{{ comment.date | date('Y-m-d h:i:s') }}</td>
+                    <tr {% if comment.comment.show == false %}class="danger"{% endif %}>
+                        <td>{{ comment.comment.id }}</td>
+                        <td>{{ comment.comment.show }}</td>
+                        <td>{{ comment.comment.text }}</td>
+                        <td> <a href="/crisis/1/question/{{ comment.answer.question_id }}/answer/{{ comment.answer.id }}" >{{  comment.answer.id }}</a></td>
+                        <td>{{ comment.comment.date | date('Y-m-d h:i:s') }}</td>
                         <td style="text-align: right">
                             <form method="post" action="/editCommentShow" class="single-button-form">
                                 <input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                 <input type="hidden" name="user_id" value="{{ contentUser.id }}">
-                                <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                                {% if comment.show == true %}
+                                <input type="hidden" name="comment_id" value="{{ comment.comment.id }}">
+                                {% if comment.comment.show == true %}
                                     <input type="hidden" name="show" value="0">
                                     <button class="btn btn-danger">Hide </button>
                                 {% else %}

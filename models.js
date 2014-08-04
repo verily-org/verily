@@ -167,6 +167,7 @@ module.exports = function (db, cb) {
                     return this.ratings.filter(function(rating){return rating.isUpvote() && rating.show && common.isUserContentShow(rating.user);}).length;
                 },
                 getDownvoteCount: function(){
+
                     return this.ratings.filter(function(rating){return rating.isDownvote() && rating.show && common.isUserContentShow(rating.user);}).length;
                 },
                 getImportanceCount: function(){
@@ -200,6 +201,9 @@ module.exports = function (db, cb) {
             show: {
                 type: 'boolean',
                 defaultValue: '1'
+            },
+            adminAnswer: {
+                type: 'text'
             }
     },
         {
@@ -221,6 +225,9 @@ module.exports = function (db, cb) {
                     else{
                         return 0;
                     }
+                },
+                isAnswered: function(){
+                    return this.adminAnswer == "true" || this.adminAnswer == "false" || this.adminAnswer == "unknown";
                 }
             }
         }), Answer = db.define('answer', {
@@ -384,9 +391,10 @@ module.exports = function (db, cb) {
                 getDisplayName: function(){
                     return this.name;
                 },
-                getTotalPoints: function () {
-                    var points = this.signupPoints + this.votingPoints + this.postPoints;
-                    return points;
+                getReputationPoints: function () {
+//                    console.log(this.votingPoints);
+                    var reputationScore =  this.reputationScore;
+                    return reputationScore;
                 }
             }
         },{validations: {
@@ -442,11 +450,11 @@ module.exports = function (db, cb) {
     // A link from a provisional user to a chosen-username user
     // is tracked in the UserHistory model.
     Referral.hasOne('user', User, {
-        reverse: 'authoredReferrals', autoFetch: true
+        reverse: 'authoredReferrals'
     });
     
     Impression.hasOne('user', User, {
-        reverse: 'impressions', autoFetch: true
+        reverse: 'impressions'
     });
     
     Impression.hasMany('referrals', Referral, {}, {

@@ -37,6 +37,9 @@ exports.route = function (app, controllers, doc) {
     // View to edit question
     route('get', specific + '/edit', 'edit', 'Edit View; View to edit question');
 
+    // Action to set the final answer
+    route('post', specific + '/setFinalAnswer', 'setFinalAnswer', 'Set the final answer for a question');
+
     // API endpoint to update question
     route('post', specific, 'update', 'Update; Update question');
 

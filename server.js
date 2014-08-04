@@ -110,9 +110,10 @@ module.exports = function (suppressLogs, dbTestUrl) {
     }
     else if (heroku){
         // db_url = process.env.HEROKU_POSTGRESQL_CRIMSON_URL;
-        db_url = process.env.HEROKU_POSTGRESQL_COBALT_URL
+        // db_url = process.env.HEROKU_POSTGRESQL_COBALT_URL //URL for verily app
+        db_url = process.env.HEROKU_POSTGRESQL_ONYX_URL //URL for verily2
     } else {
-    	db_url = "sqlite://app.db";
+    	db_url = "postgresql://u3sk9sm0mgmbac:admin@localhost:5432/app";
     }
     
     // Set up the ORM to SQLite.

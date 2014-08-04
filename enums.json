@@ -12,7 +12,7 @@
     "apiDoc": "doc/api.md",
     "requestlogfile": "request.log",
     "serverlogfile": "server.log",
-    "productionMode": true,
+    "productionMode": false,
     "document": false,
     "NOT_MODIFIED": "NOT_MODIFIED",
     "ifNoneMatch": "If-None-Match",

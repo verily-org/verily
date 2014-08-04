@@ -1,6 +1,8 @@
+
 {
 	"signup": 10,
 	"referredSignup": 20,
 	"voteUp": 10,
-	"postEvidence": 20
+    "voteDown": -10,
+	"postEvidence": 0
 }

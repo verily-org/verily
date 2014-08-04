@@ -7,7 +7,7 @@
 	<div class="jumbotron">
 		<div class="container">
 			<h2>{{user.name}}</h2>
-			<p class="lead">You have <span class="label label-success">{{points}} Points!</span></p>
+			<p class="lead">You have <span class="label label-success">{{user.getReputationPoints()}} Points!</span></p>
 			{% if user.type !== 'provisional' %}
 				<p><a href="/changeUsername">Change your Username</a></p>
 			{% endif %}
@@ -23,10 +23,10 @@
 			<p>{{ posts }}</p>
 
 			<h4>Number of upvotes</h4>
-			<p> {{ upvotes }} </p>
+			<p> {{ user.upvoteCount }} </p>
 
 			<h4>Number of downvotes</h4>
-			<p>{{ downvotes }}</p>
+			<p>{{ user.upvoteCount }}</p>
 		</div>
 
 		<div class="col-lg-6">

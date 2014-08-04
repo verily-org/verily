@@ -33,7 +33,7 @@ exports.route = function (app, controllers, doc) {
     route('post', '/handleQuestions', 'handleQuestions', 'Handle questions');
 
     route('get', '/banUser', 'getBanUsers', 'Get User ban view');
-    route('get', specific + '/userContentList', 'getUserContentList', 'Get all the answers for the admin page');
+    route('get', specific + '/details', 'getUserDetails', 'Get user details: content list and statistics');
     route('post', '/banUser', 'postBanUser', 'Post to Ban a specific user');
     route('post', '/editUserEvidenceShow', 'postEditUserEvidenceShow', 'Post user that should have all content hidden or shown');
     route('post', '/editCommentShow', 'postEditCommentShow', 'Post to set comment hidden or shown');

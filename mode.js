@@ -6,6 +6,10 @@ exports.PROD_MODE = 'PRODUCTION_MODE';
 exports.isProduction = exports.isHeroku = function() {
     return (process.env.HEROKU_POSTGRESQL_COBALT_URL !== undefined);
 }
+exports.isPgSQL = function() {
+    return true;
+    //return exports.isHeroku();
+}
 
 exports.getRunningMode = function() {
     var mode;

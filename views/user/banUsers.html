@@ -17,7 +17,9 @@
             <tbody>
                 {% for thisUser in users %}
                     <tr {% if thisUser.active == false %}class="danger"{% endif %}>
-                        <td>{{ thisUser.name }}</td>
+                        <td>
+                            <a href="/user/{{ thisUser.id }}/details">{{ thisUser.name }}</a>
+                        </td>
                         <td style="text-align: center">{{ thisUser.active }}</td>
                         <td style="text-align: center">{{ thisUser.posts | length }}</td>
                         <td style="text-align: center">{{ thisUser.comments | length }}</td>
@@ -46,7 +48,6 @@
                                 <input type="hidden" name="show" value="1">
                                 <button class="btn btn-default">Show All Content</button>
                             </form>
-                            <a href="/user/{{ thisUser.id }}/userContentList" class="btn btn-default">Content List</a>
                         </td>
                     </tr>
                 {% endfor %}

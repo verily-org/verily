@@ -280,7 +280,7 @@ var upvote = function (req, res) {
     generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
         if (!err && answer) {
             raiting_controller.upvote(req, answer.post, function(err, rating){
-                generic.load_answers_extra_fields(answer, function(){
+                generic.load_answers_extra_fields( req, answer, function(){
                     if(!err){
                         res.status(200);
                         //Return answer for ajax update
@@ -303,7 +303,7 @@ var downvote = function (req, res) {
         if (!err && answer) {
             answer.getPost(function(err, post){
                 require('./ratings').downvote(req, post, function(err, rating){
-                    generic.load_answers_extra_fields(answer, function(){
+                    generic.load_answers_extra_fields(req, answer, function(){
                         if(!err){
                             res.status(200);
                             //Return answer for ajax update

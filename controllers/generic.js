@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var utils = require('utilities');
+assignedPoints = require('../points.json');
 
 var gm = require('gm');
 var imagick = gm.subClass({ imageMagick: true });
@@ -564,12 +565,19 @@ var load_post_ratings_count_function = function(item, callback){
     });
 }
 exports.load_post_ratings_count = load_post_ratings_count_function;
-exports.load_answers_extra_fields = function(answer, callback){
+exports.load_answers_extra_fields = load_answers_extra_fields = function( req, answer, callback){
     //item.post.getUser(function(a,d){});
     load_post_ratings_count_function(answer, function(err){
         if(!err){
             answer.popularityCoefficient = getAnswerPopularityCoefficient(answer);
-            callback();
+            req.models.Answer.findByPost({user_id:answer.post.user.id}, function(err, answersArr){
+                if(err)throw err;
+                answersArr = answersArr.filter(function(answer){return answer.show;});
+                answer.post.user.answers = answersArr;
+                add_user_reputation_totals(answer.post.user, req, function(err){
+                    callback(err);
+                });
+            });
         }
         else{
             callback(err);
@@ -589,6 +597,73 @@ function getAnswerPopularityCoefficient(answer){
 	}
     var popularityCoefficient = answer.post.upvoteCount + answer.post.downvoteCount + answer.post.importanceCount + n_comments;
     return popularityCoefficient;
+}
+exports.add_user_reputation_totals = add_user_reputation_totals = function(user, req, cb){
+    req.models.Rating.findByPost({user_id:user.id}, function(err, ratingsArr){
+        if(err)cb(err);
+        setRatingReputationScore(ratingsArr, user);
+        cb();
+    });
+}
+
+exports.load_answers_extra_fields_user_statistics = load_answers_extra_fields_user_statistics = function(user, answers, callback){
+    //TODO: Count only the first evidence submitted for each questions on averageResponseTimeMinutes calculation
+    //TODO: Exclude user's own comments on totalCommentsOnEvidence calculation
+    var totalCount = answers.length,
+        totalTime = 0,
+        totalCommentsOnEvidence = 0;
+    async.eachSeries(answers, function(answer, cb){
+        load_post_ratings_count_function(answer, function(err){
+            if(err)cb(err);
+            totalCommentsOnEvidence += answer.comments.length;
+            if(answer.question.post == undefined){
+                answer.question.getPost(function(err, post){
+                    totalTime += utils.date.diff(answer.post.date, answer.question.post.date, 'minute');
+                    cb(err);
+                });
+            }
+            else{
+                totalTime += utils.date.diff(answer.post.date, answer.question.post.date, 'minute');
+                cb(err);
+            }
+
+        });
+    }, function(err){
+        var avgResponseTimeMinutes = Math.abs(totalTime/totalCount);
+        //Transform time to human readable
+        user.averageResponseTimeMinutes = Math.floor(avgResponseTimeMinutes*100)/100;
+        user.averageResponseTimeString = timeToFormattedString(avgResponseTimeMinutes);
+        user.commentsOnEvidenceCount = totalCommentsOnEvidence;
+        callback(err);
+    });
+}
+function timeToFormattedString(time){
+    var minutesInADay = (60*24);
+    var minutesInAnHour = 60;
+    var time_string = "";
+    if(time > minutesInADay){//Larger than a day
+        time_string = Math.floor((time/minutesInADay)*100)/100 +" days";
+    }
+    else if(time > minutesInAnHour){
+        time_string = Math.floor((time/minutesInAnHour)*100)/100 +" hours";
+    }
+    else {
+        time_string= Math.floor(time*100)/100 +" minutes";
+    }
+    return time_string;
+}
+function setRatingReputationScore(ratingsArr, user){
+    var upvotes = ratingsArr.filter(function(rating){return rating.isUpvote() && rating.show && common.isUserContentShow(rating.user);}).length;
+    var downvotes = ratingsArr.filter(function(rating){return rating.isDownvote() && rating.show && common.isUserContentShow(rating.user);}).length;
+
+    var reputationScore = (upvotes * assignedPoints.voteUp) + (downvotes * assignedPoints.voteDown);
+//    var reputationScore = (upvotes * assignedPoints.voteUp)/ (1+ (downvotes*0.1));
+    reputationScore += (user.answers.length * assignedPoints.postEvidence); //add participation
+    //if(reputationScore < 0)reputationScore = 0;//No negative reputation
+
+    user.reputationScore = reputationScore;
+    user.upvoteCount = upvotes;
+    user.downvoteCount = downvotes;
 }
 
 exports.generateToken = function (done) {
