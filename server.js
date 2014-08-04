@@ -53,17 +53,17 @@ module.exports = function (suppressLogs, dbTestUrl) {
     app.use(connect.urlencoded());
     app.use(connect.json());
 
-    var csrf = express.csrf();
-    var admin_re = new RegExp("^/admin");
-    var conditionalCSRF = function (req, res, next) {
-        //compute needCSRF here as appropriate based on req.path or whatever
-        var needCSRF = (admin_re.test(req.path) === false);
-        if (needCSRF) {
-            csrf(req, res, next);
-        } else {
-            next();
-        }
-    };
+//    var csrf = express.csrf();
+//    var admin_re = new RegExp("^/admin");
+//    var conditionalCSRF = function (req, res, next) {
+//        //compute needCSRF here as appropriate based on req.path or whatever
+//        var needCSRF = (admin_re.test(req.path) === false);
+//        if (needCSRF) {
+//            csrf(req, res, next);
+//        } else {
+//            next();
+//        }
+//    };
     
     // To allow use of all HTTP methods in the browser through use of _method variable
     app.use(express.methodOverride());
@@ -427,9 +427,9 @@ module.exports = function (suppressLogs, dbTestUrl) {
 		// middleware for common locals with request-specific values
         app.use(function (req, res, next) {
         	//console.log('csrf middleware');
-        	//res.locals({
-        	//	csrf_token: req.csrfToken()
-        	//});
+        	res.locals({
+        		csrf_token: req.csrfToken()
+        	});
         	res.locals.csrf_token = req.csrfToken();
         	//res.locals.csrf_token = 'test';
         	next();
