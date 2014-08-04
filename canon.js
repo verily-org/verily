@@ -67,13 +67,13 @@ module.exports = function() {
 
         }
         
-
-        if (workingUrl !== req.url) {
-            res.redirect(workingUrl);
-            res.end();
-        } else {
-            next();
-        }
+//
+//        if (workingUrl !== req.url) {
+//            res.redirect(workingUrl);
+//            res.end();
+//        } else {
+//            next();
+//        }
         
 
     };
