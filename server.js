@@ -406,11 +406,12 @@ module.exports = function (suppressLogs, dbTestUrl) {
                 maxAge: cookieExpireAfter
             }
         };
-        
-        if (secureCookies && secureCookies === true) {
-            // Serve secure cookies
-            sess.cookie.secure = true;
-        }
+
+//        Disable secure cookies for new app.
+//        if (secureCookies && secureCookies === true) {
+//            // Serve secure cookies
+//            sess.cookie.secure = true;
+//        }
                 
         app.use(session(sess));
         
