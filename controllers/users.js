@@ -63,6 +63,8 @@ exports.profile = function (req, res) {
 exports.register = function (req, res) {
     passport.authenticate('local-register', function (err, user, info) {
         if (err || !user) {
+            console.log('------ register error! ', err);
+            console.log('------ register error info! ', info);
             res.redirect('/register');
         } else {
             req.logIn(user, function (err) {
