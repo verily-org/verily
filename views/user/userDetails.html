@@ -28,6 +28,7 @@
         </tr>
     </table>
     <div style="text-align: right;">
+    {% if userCan('assign roles') %}
         <form method="post" action="/editUserEvidenceShow" class="single-button-form">
             <input type="hidden" name="_csrf" value="{{csrf_token}}" />
             <input type="hidden" name="user_id" value="{{ contentUser.id }}">
@@ -40,6 +41,7 @@
             <input type="hidden" name="show" value="0">
             <button class="btn btn-danger">Hide all</button>
         </form>
+    {% endif %}
     </div>
     <h3>Evidence</h3>
     {% if evidences && evidences | length > 0 %}
@@ -73,6 +75,7 @@
                         </td>
                         <td>{{ evidence.post.date | date('Y-m-d h:i:s') }}</td>
                         <td style="text-align: right">
+        {% if userCan('assign roles') %}
                             <form method="post" action="/editEvidenceShow" class="single-button-form">
                                 <input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                 <input type="hidden" name="user_id" value="{{ contentUser.id }}">
@@ -85,6 +88,7 @@
                                 <button class="btn btn-default">Show</button>
                             {% endif %}
                             </form>
+        {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -119,6 +123,7 @@
                         <td> <a href="/crisis/1/question/{{ comment.answer.question_id }}/answer/{{ comment.answer.id }}" >{{  comment.answer.id }}</a></td>
                         <td>{{ comment.comment.date | date('Y-m-d h:i:s') }}</td>
                         <td style="text-align: right">
+            {% if userCan('assign roles') %}
                             <form method="post" action="/editCommentShow" class="single-button-form">
                                 <input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                 <input type="hidden" name="user_id" value="{{ contentUser.id }}">
@@ -129,6 +134,7 @@
                                 {% else %}
                                     <input type="hidden" name="show" value="1">
                                     <button class="btn btn-default">Show </button>
+                                {% endif %}
                                 {% endif %}
                             </form>
                         </td>
