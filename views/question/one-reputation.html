@@ -1,0 +1,519 @@
+{% extends '../layout.html' %}
+{% import '../macros/_answers.html' as answers_macro %}
+{% import '../macros/_generic.html' as generic_macro %}
+
+{% block content %}
+<!-- question -->
+
+{% set questionTitleForSharing = question.title %}
+{% if questionTitleForSharing.charAt(questionTitleForSharing.length - 1) !== '?' %}
+    {% set questionTitleForSharing = questionTitleForSharing + '?' %}
+{% endif %}
+
+{% set numResponses = question.answers | length %}
+
+<script>
+var postTitle = '{{ questionTitleForSharing }}';
+var imageUrl = '{{ imageurl }}';
+var description = '{{ description }}';
+
+var path = '{{ path }}';
+var csrf_token = '{{ csrf_token }}';
+var refPathPrefix = '/r/';
+var refUrlPrefix = window.location.origin + refPathPrefix;
+
+var refCodeTwitter = '{{ refcodes.twitter }}';
+var refCodeFacebook = '{{ refcodes.facebook }}';
+var refCodeEmail  = '{{ refcodes.email }}';
+var refCodeLink = '{{ refcodes.link }}';
+
+var refUrlTwitter = refUrlPrefix + refCodeTwitter;
+var refUrlFacebook = refUrlPrefix + refCodeFacebook;
+var refUrlEmail = refUrlPrefix + refCodeEmail;
+var refUrlLink = refUrlPrefix + refCodeLink;
+</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&appId=1430472757228218&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<div class="question page-header clearfix">
+    <div class="row">
+        {% if (question.targetLat and question.targetLong) and (question.post.targetImage) %}
+        {% set questionLeftSideCols = 12 %}
+        {% set questionRightSideIndiv = 6 %}
+        {% elif (question.targetLat and question.targetLong) or (question.post.targetImage) %} 
+        {% set questionLeftSideCols = 12 %}
+        {% set questionRightSideIndiv = 6 %}
+        {% else %}
+        {% set questionLeftSideCols = 12 %}
+        {% endif %}
+        <div class="col-sm-{{ questionLeftSideCols }}">
+            <div>
+                <a href="/crisis/{{ crisis.id }}" title="Crisis">
+                    <i class="fa fa-fw fa-dot-circle-o fa-breadcrumb"></i>{{ crisis.post.title }}
+                </a>
+                <span class="text-muted">/</span>
+            </div>
+            <h2 class="question-title">{{ question.title }}</h2>
+
+                <p class="lead">
+                    {{ question.text }}
+                </p>
+                
+                {% if question.targetDateTimeOccurred %}
+                <p class="metadata">
+                    <i class="fa fa-clock-o fa-lg fa-fw"></i>
+                    <span class="sr-only">Occurred:</span>
+                    <span class="">{{ question.relativeTargetDateTimeOccurred }}</span>
+                    <span class="text-muted">
+                        &middot;
+                    {{ question.targetDateTimeOccurred|date('D, d M Y H:i:s') }}
+                     <abbr title="Coordinated Universal Time" class="initialism">
+                         <a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
+                     </abbr>
+                     </span>
+                </p>
+                {% endif %}
+
+
+                {% if question.targetLocality or question.targetLat %}
+                <p class="metadata">
+                    {% if question.targetLocality %}
+                    <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ question.post.targetLocality }}</span>
+                    {% endif %}
+                    
+                    {% if question.targetLat and question.targetLong %}
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetLat }},{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.targetLong.toFixed(4) }}</span></a>
+                    <span class="text-muted">&middot;</span>
+                    <a href="" id="view-map">Show map</a>
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                <p class="metadata">
+                    Posted
+                    <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> ago </span>
+                    by {{ question.author }}
+                </p>
+
+                {% if question.tags and question.tags.length !== 0 %}
+                <p class="metadata tags">
+                    Tags:
+                        {% for tag in question.tags %}
+                            <a href="/tag/{{ tag }}" class="tag-ctr"><span class="label label-primary tag">{{ tag }}</span></a>
+                        {% endfor %}
+                </p>
+                {% endif %}
+                
+                
+                <div class="action-buttons">
+                    <div class="row">
+                    
+
+                                                    
+                    </div>
+                
+                    <!-- / action buttons row -->
+
+                                                    
+                </div>
+                <!-- / action-buttons -->
+                
+            </div>
+            
+            <div class="col-sm-{{ 12 - questionLeftSideCols }} question-image-and-map-ctr">
+                <div class="row">
+                    {% if question.post.targetImage %}
+                    <div class="col col-sm-{{ questionRightSideIndiv }}">
+                        <img src="{{ question.post.targetImage }}" class="img-responsive">
+                    </div>
+                    {% endif %}
+                    
+                    {% if question.targetLat %}
+                    <div class="col col-sm-{{ questionRightSideIndiv }}">
+                        <div id="map" class="smallmap" style="height: 200px;" class="hidden-xs"></div>
+                    </div>
+                    {% endif %}
+
+                        
+                </div>
+                <!-- / .row -->
+            </div>
+            <!-- / .question-image-and-map-ctr -->
+            
+            
+        </div>
+        <!-- / question header row -->
+        
+        {% if numResponses === 0 %}
+        <div>
+            <strong>No responses yet</strong>
+        </div>
+        {% endif %}
+        
+        <!-- button-mark-true -->
+        <div class="action-button-ctr btn-group">
+            <button class="btn btn-success btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
+            {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a> #}
+        </div>
+        <!-- / button-mark-true -->
+    
+        <!-- button-mark-false -->
+        <div class="action-button-ctr btn-group">
+            <button class="btn btn-danger btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No because&hellip;</span></button>
+            {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a> #}
+        </div>
+        <!-- / button-mark-false -->
+    
+        <!-- button-mark-important -->
+        {# Comment for Challenge! #}
+        {# set questionMarkedImportant = question.post | isMarkedImportantBy(user) #}
+        {#
+        <div class="action-button-ctr btn-group">
+            <button data-crisis-id="{{ crisis.id }}"
+                    data-question-id="{{ question.id }}"
+                    class="btn btn-default btn-large text-action-button btn_markImportant
+                    {% if !properUser %} user-required-action{% endif %}
+                    {% if questionMarkedImportant %}disabled{% endif %}"
+                    title="Mark as important"><i class="fa fa-star">
+                    </i> Important<span class="hidden-xs"></span> <span class="sr-only">Important</span>
+            </button>
+            <a href="#" class="btn btn-default action-button-count disabled">{{ question.importanceCount }}</a>
+        </div>
+        #}
+        <!-- / button-mark-important -->
+        
+        {% if challengePublished && false  %}
+        <div class="sharing-buttons">
+            Ask your social network to help with this question<br/>
+            <!-- button-email -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button share-button" id="button-share-email" href="mailto:?subject={{ questionTitleForSharing }}"><i class="fa fa-envelope-o"></i> <span class="hidden-xs">Email</span></a>
+            </div>
+            <script>
+            var buttonShareQuestionEmail = document.getElementById('button-share-email');
+            var emailMessage = common.campaigner('email', '{{ questionTitleForSharing }}', refUrlEmail);
+            buttonShareQuestionEmail.href = 'mailto:?subject=' + emailMessage.subject + '&body=' + emailMessage.body;
+            </script>
+            <!-- / button-email -->
+
+            <!-- button-share-link -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button share-button" id="button-share-link" data-toggle="modal" data-target="#modal-share-question-link"><i class="fa fa-link"></i> <span class="hidden-xs">Link</span></a>
+            </div>
+            <!-- / button-share-link -->
+			
+			<!-- Facebook Share button -->
+            <div class="action-button-ctr btn-group">
+                <a class="btn btn-default btn-large text-action-button share-button facebook-blue" id="facebook-share-button"><i class="fa fa-facebook-square fa-lg facebook-blue"></i> Share</a>
+            </div>
+			<!-- / Facebook Share button -->
+        
+            <!-- Twitter Tweet button -->
+            <a href="https://twitter.com/share" class="twitter-share-button btn-group" id="tweet-button" data-url data-size="large">Tweet</a>
+            <!-- / Twitter Tweet button -->
+			
+
+            </div>
+            {% endif %}
+                
+            <!-- small buttons -->
+            <br/>
+            {% if userCan('edit a question') && false %}
+                <div class="well">
+                    <h4 style="margin-top:0;">Admin</h4>
+                    <div class="btn-group">
+                        <div class="">
+                            <a href="/crisis/{{ crisis.id }}/question/{{ question.id }}/edit" class="btn btn-default btn-sm"><i class="fa fa-edit"></i> <strong>Edit</strong></a>
+                        </div>
+                    </div><br/><br/>
+                    Final answer:
+                    {% if question.adminAnswer %}
+                        <span class="label label-info">{{ question.adminAnswer }}</span>
+                    {% endif %}<br/>
+                    <div class="btn-group" style="margin-top: 5px;">
+                        <form method="post" action="/crisis/{{ crisis.id }}/question/{{ question.id }}/setFinalAnswer">
+                            <input type="hidden" name="_csrf" value="{{csrf_token}}" />
+                            <input type="hidden" name="answer" class="hidden-input-answer">
+                            <button class="btn btn-success btn-sm btn-choose-answer" data-answer="true"style="color:white !important"><strong>Yes</strong></button>
+                            <button class="btn btn-danger btn-sm btn-choose-answer" data-answer="false"><strong>No</strong></button>
+                            <button class="btn btn-default btn-sm btn-choose-answer" data-answer="unknown"><strong>Unknown</strong></button>
+                        </form>
+                    </div>
+                </div>
+    		{% endif %}
+
+
+
+    <!-- <div class="btn-group">
+        <div class="additional-button-ctr">
+            <button class="btn btn-default btn-sm" style="display: none;"><i class="fa fa-flag"></i> <strong>Flag</strong></button>
+        </div>
+    </div>-->
+    <!-- / small buttons -->
+
+        <!-- video -->
+    <div class="video" >
+        {% if question.post.targetVideoHtml %}
+            <div class="video-container">
+                {{ question.post.targetVideoHtml | raw }}
+            </div>
+        {% elseif question.post.VideoUrlNotEmbeddable %}
+            <div class="video-error-message alert alert-warning" >
+                Video link: <br/><a href="{{ question.post.VideoUrlNotEmbeddable }}" target="_blank">{{ question.post.VideoUrlNotEmbeddable }}</a>
+            </div>
+        {% endif %}
+    </div>
+        <!-- / video -->
+        
+        
+    </div>
+<!-- / question -->
+
+
+<!-- create evidence -->
+{% include '../evidence/create.html' %}
+<!-- / create evidence -->
+
+
+
+<div class="row">
+{#
+    <!-- <button class="btn btn-primary btn-large"><i class="fa fa-reply"></i> <strong>Verify</strong></button> -->
+#}    
+    
+</div>
+
+{% if numResponses !== 0 %}
+<h3>{{ numResponses }} response{% if numResponses !== 1 %}s{% endif %}</h3>
+
+
+<div class="row">
+    <div class="pull-right">
+        <label for="select_filter_evidence">Order by:</label>
+        <select id="select_filter_evidence">
+            <option value="Recent">Time</option>
+            <option value="Popular">Popularity</option>
+            <option value="Upvote">Upvotes</option>
+        </select>
+    </div>
+
+</div>
+<div class="question-answers">
+    {{ answers_macro.answers_embeded_reputation(question.answers, crisis.id, null) }}
+</div>
+{% endif %}
+
+
+<div class="modal fade" id="modal-share-question-link" role="dialog">
+  <div class="modal-dialog vertically-centred">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Share link</h4>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control hidden-xs" id="field-share-link">
+        <div class="visible-xs text-center">
+            On a mobile device, long-press the link and select a sharing option or press <strong>Copy</strong> to save it to your clipboard.
+            <br>
+            <a id="link-share-link"></a>
+        </div>
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+{{ generic_macro.rearrange_children_script() }}
+<script type="text/javascript">
+// Support/Reject handle
+
+// Hidden field of question type.
+var questionType = document.getElementById('form-question-type');
+
+// Display of question type
+var labelQuestionType = document.getElementById('form-label-question-type');
+var questionTypeClassName = labelQuestionType.className;
+
+// Remove all children from an element
+function resetElement(target) {
+    while (target.firstChild) {
+        labelQuestionType.removeChild(target.firstChild);
+    }
+}
+
+
+
+function initActionButtons() {
+    function displayQuestionTrueForm() {
+        questionType.value = 'support';
+
+        var supportIcon = document.createElement('i');
+        supportIcon.className = 'fa fa-check';
+        var content = document.createTextNode(' Yes because...');
+
+        resetElement(labelQuestionType);
+        labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+        labelQuestionType.insertBefore(supportIcon, content);
+        labelQuestionType.className = questionTypeClassName + ' label-success';
+        displayForm();
+    }
+    
+    var update_markedImportant = function(crisis, element){
+        element.next().html(crisis.importanceCount);
+        element.addClass('active').addClass('disabled');
+    }
+    
+    function displayQuestionFalseForm() {
+        questionType.value = 'reject';
+
+        var rejectIcon = document.createElement('i');
+        rejectIcon.className = 'fa fa-times';
+        var content = document.createTextNode(' No because...');
+
+        resetElement(labelQuestionType);
+        labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+        labelQuestionType.insertBefore(rejectIcon, content);
+
+        labelQuestionType.className = questionTypeClassName + ' label-danger';
+        displayForm();
+    }
+    
+    if (window.location.search.indexOf('action=true') !== -1) {
+        // Show the 'this is true' box.
+        displayQuestionTrueForm();
+    } else if (window.location.search.indexOf('action=false') !== -1) {
+        // Show the 'this is false' box.
+        displayQuestionFalseForm();
+    }
+    
+    $('#question-support').click(function(){
+        displayQuestionTrueForm();
+
+    });
+
+    $('#question-reject').click(function(){
+        displayQuestionFalseForm();
+    });
+
+    $(".btn_markImportant").click(function(){
+        var button = $(this);
+        $.post('/crisis/'+button.attr('data-crisis-id')+'/question/'+button.attr('data-question-id')+'/markImportant',
+                {_csrf: "{{csrf_token}}" },
+                function(data){
+                    var question = data;
+                    update_markedImportant(question, button);
+                }).fail(function(){
+                    var error_message = 'There was an unknown error, please try again later.';
+                    if (!common.challengePublished()) {
+                        error_message = 'The Verily Challenge has now closed. Thank you for taking part!';
+                    }
+                    show_alert_message('danger', 5000, "Error", error_message);
+                });
+    });
+}
+
+    $(function(){
+        {% if user %}
+            initActionButtons();
+        {% else %}
+            // $('.action-button-ctr .btn').tooltip();
+        {% endif %}
+
+        $('#select_filter_evidence').change(function(){
+            if($('#select_filter_evidence').val() == "Recent"){
+                rearrange_children($('.question-answers'), function(a,b){
+                    return new Date($(b).data('date')) - new Date($(a).data('date'));
+                });
+            }
+            else if($('#select_filter_evidence').val() == "Popular"){
+                rearrange_children($('.question-answers'), function(a,b){
+                    return $(b).data('popularity') - $(a).data('popularity') ;
+                });
+            }
+            else if($('#select_filter_evidence').val() == "Upvote"){
+                rearrange_children($('.question-answers'), function(a,b){
+                    return $(b).data('upvotes') - $(a).data('upvotes') ;
+                });
+            }
+
+        });
+        if($('#select_filter_evidence').prop("selectedIndex") != 0){
+            //trigger change if the initial selected index is not 0
+            $('#select_filter_evidence').change();
+        }
+        $("div").on('click', '.btn_comment', function(){
+            window.location = "/crisis/{{ crisis.id }}/question/{{ question.id }}/answer/"+$(this).data("answer-id")+"?action=comment";
+        });
+        {% if question.targetLat and question.targetLong %}
+            if(map_add_marker) map_add_marker(map,{{ question.targetLat }}, {{ question.targetLong }} );
+        {% endif %}
+        $('.btn-choose-answer').click(function(){
+            $(this).parent().find('.hidden-input-answer').val($(this).data('answer'));
+        });
+    });
+
+
+
+function displayForm() {
+    // Display the form.
+    if(!$('#question-support').hasClass('user-required-action')){
+        var formCtr = document.getElementById('form-ctr')
+        formCtr.style.display = 'block';
+        var formTitle = document.getElementById('form-title');
+        formTitle.focus();
+
+        // Update chars left
+        displayCharsLeft();
+    //    if(!map_form){
+    //        map_form_initialize();
+    //    }
+        // Scroll the top of the form into view.
+        //formCtr.scrollIntoView();
+    }
+}
+
+
+
+</script>
+
+<script src="/static/js/sharing.js"></script>
+
+
+<script src="/static/js/openlayers/OpenLayers-https.js"></script>
+<script src="/static/js/maps.js"></script>
+
+<script type="text/javascript">
+var map, layer;
+
+map = map_init('map');
+</script>
+
+<script type="text/javascript">
+	function urlify(text) {
+		var urlRegex = /(https?:\/\/[^\s]+)/g;
+		return text.replace(urlRegex, function(url) {
+			return '<a href="' + url + '" target="_blank">' + url + '</a>';
+		})
+		// or alternatively
+		// return text.replace(urlRegex, '<a href="$1">$1</a>')
+		
+	}
+
+	$(document).ready(function(){
+		$(".description-text").each(function (index) {
+			$(this).html(urlify($(this).text()));
+		});
+	});
+
+</script>
+
+{% endblock %}

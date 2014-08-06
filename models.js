@@ -220,7 +220,7 @@ module.exports = function (db, cb) {
                 getRejectedAnswerCount: function(){
                     //If the answers are loaded returns amount of them of type Reject, else not loaded returns 0!
                     if(this.answers != undefined){
-                        return this.answers.filter(function(a){console.log('Debug:: ', a.post.user_id);return a.isAgainst() && a.show && common.isUserContentShow(a.post.user);}).length;
+                        return this.answers.filter(function(a){return a.isAgainst() && a.show && common.isUserContentShow(a.post.user);}).length;
                     }
                     else{
                         return 0;

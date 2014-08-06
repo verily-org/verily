@@ -175,7 +175,6 @@ exports.newProvisionalUser = function(req, callback) {
         
         });
     });
-    
 
 };
 
@@ -682,7 +681,7 @@ var getUserDetails = function (req, res) {
     });
 };
 
-exports.getUserDetails = [isAdmin, getUserDetails];
+exports.getUserDetails = [role.can('view user details'), getUserDetails];
 
 var postEditUserEvidenceShow = function (req, res) {
     req.models.User.get(req.body.user_id, function (err, user) {

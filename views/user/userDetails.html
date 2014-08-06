@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <h2>Details of user: "{{ contentUser.name }}"</h2>
+    <h2>Details of user: "{{ contentUser.name }}" Reputation: <span class="label label-success">{{ contentUser.getReputationPoints() }} </span></h2>
     <table class="table table-responsive">
         <tr>
             <td>Total Evidence:</td>

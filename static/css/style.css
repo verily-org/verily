@@ -702,7 +702,7 @@ fa.breadcrumb {
 }
 
 .danger {
-    color: #d2322d;
+    color: #d2322d !important;
 }
 
 .crisis-question-metric.important {

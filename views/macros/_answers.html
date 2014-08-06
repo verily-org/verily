@@ -118,8 +118,7 @@
 								Posted
 								<span class=""><abbr title="{{ answer.post.date.toUTCString() }}">{{ answer.post.date | relativeTime }}</abbr> ago </span>
 								by {{ answer.post.user.name }}
-                                <br/>User Reputation: <span class="label label-success">{{ answer.post.user.getReputationPoints() }} </span>
-							</div>
+                            </div>
 						{% if !adminFlag %}
 							<!-- vote row -->
 							<div class="row" >
@@ -136,6 +135,115 @@
 				</div>
 			{% endif %}
 		{% endif %}
+    {% endfor %}
+    {{ generic_macros.video_html_script() }}
+{% endmacro %}
+{% macro answers_embeded_reputation(answers, crisis_id, adminFlag) %}
+    {% import '_generic.html' as generic_macros %}
+    {{ vote_script() }}
+    {% for answer in answers | reverse %}
+        {% if (!adminFlag and answer.show) || (adminFlag) %}
+        {% if loop.index % 3 == 1 %}
+            <div class="row">
+        {% endif %}
+    <div class="col-sm-4 answer-wrapper" data-date="{{ answer.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ answer.popularityCoefficient }}" data-upvotes="{{ answer.post.upvoteCount }}">
+        <div class="panel panel-default verily-panel question-answer">
+        <div class="question-answer-bar">
+            {% if answer.type === 'support' %}
+            <span class="metric">
+								<i class="fa fa-check text-success"></i>
+								<span class="">Yes because
+							</span>
+                {% else %}
+                    <span class="metric">
+								<i class="fa fa-times text-danger"></i>
+								<span class="">No because</span>
+							</span>
+
+                {% endif %}
+        </div>
+        <div class="panel-heading">
+            {% if answer.post.targetLocality %}
+                <div class="">
+                    <i class="fa fa-map-marker"></i>
+                    <span class="sr-only">Locality:</span>
+                    <span id="answer-locality">{{ answer.post.targetLocality }}</span>
+                </div>
+            {% endif %}
+
+            <h3 class="panel-title">
+                <a href="/crisis/{{ crisis.id }}/question/{{ answer.question_id }}/answer/{{ answer.id }}">
+                    {{ answer.post.title }}
+                </a>
+
+
+                {% if adminFlag %}
+                    <div class="input-group">
+                        <input type="checkbox" name="hiddenAnswers" value="{{ answer.id }}" {% if answer.show != true %} checked {% endif %}>
+                        Check to hide
+                    </div><!-- /input-group -->
+                {% endif %}
+            </h3>
+
+
+        </div>
+        <div class="panel-body">
+        <p class="description-text">{{ answer.post.text | cropString(300)  }}</p>
+
+        {% if answer.post.targetImage %}
+            <div class="row card-image" style="background-image: url({{ answer.post.targetImage }});">
+            </div>
+
+        {% elseif answer.post.targetVideoUrl %}
+            <div id="video-wrapper-{{ answer.post.id }}" class="video-wrapper video-wrapper-ajax"
+                 data-video-url="{{ answer.post.targetVideoUrl }}">
+                <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+                <div class="video-container" style="display: none"></div>
+                <div class="video-error-message alert alert-warning" style="display: none">
+                    Video link: <a target="_blank"></a>.
+                </div>
+            </div>
+        {% endif %}
+        <div class="posted">
+            Posted
+            <span class=""><abbr title="{{ answer.post.date.toUTCString() }}">{{ answer.post.date | relativeTime }}</abbr> ago </span>
+            by <a href="/user/{{ answer.post.user.id }}/details">{{ answer.post.user.name }}</a>
+            <br/>User Reputation: {{ user_reputation_label(answer.post.user.getReputationPoints()) }}
+        </div>
+        {% if !adminFlag %}
+        <!-- vote row -->
+        <div class="row" >
+            <div class="answer-buttons">
+
+                <!-- button-vote-up -->
+                {% set votes_aggregate = (answer.post.upvoteCount - answer.post.downvoteCount) %}
+                <div class="action-button-ctr btn-group">
+                    {% set answer_upvoted = answer | isUpvotedBy(user) %}
+                    {% set answer_downvoted = answer | isDownvotedBy(user) %}
+                    <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn-lg btn btn-default btn-large btn_upvote {% if !properUser %} user-required-action{% endif %} {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
+                    <a href="#" class="btn btn-default action-button-count disabled upvote_count btn-lg {% if votes_aggregate < 0 %}danger{% endif %}">{{ votes_aggregate }}</a>
+                    <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn-lg btn btn-default btn-large  btn_downvote {% if !properUser %} user-required-action{% endif %} {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
+                </div>
+
+                <!-- button-comment -->
+                <div class="mini action-button-ctr btn-group">
+                    <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" data-fragment="comment" class="btn btn-default btn-large mini-action-button btn_comment {% if !properUser %} user-required-action{% endif %}" title="Comment"><i class="fa fa-comment"></i></button>
+                    <a href="#" class="btn btn-default action-button-count disabled">{{ answer.comments | length }}</a>
+                </div>
+                <!-- / button-comment -->
+            </div>
+        </div>
+        <!-- / vote row -->
+        {% endif %}
+
+            </div>
+            </div>
+            </div>
+
+            {% if loop.index % 3 == 0 %}
+                </div>
+            {% endif %}
+        {% endif %}
     {% endfor %}
     {{ generic_macros.video_html_script() }}
 {% endmacro %}
@@ -173,4 +281,7 @@
     </div>
     <!-- / button-comment -->
 </div>
+{% endmacro %}
+{% macro user_reputation_label(reputation) %}
+    <span class=" label {% if reputation > 0 %}label-success{% elseif reputation < 0 %}label-warning{% else %}label-default{% endif %}">{{ reputation }} </span>
 {% endmacro %}
