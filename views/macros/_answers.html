@@ -51,7 +51,7 @@
 {% macro answers_embeded(answers, crisis_id, adminFlag) %}
     {% import '_generic.html' as generic_macros %}
     {{ vote_script() }}
-    {% for answer in answers | reverse %}
+    {% for answer in answers %}
 		{% if (!adminFlag and answer.show) || (adminFlag) %}
 			{% if loop.index % 3 == 1 %}
 				<div class="row">
@@ -141,7 +141,7 @@
 {% macro answers_embeded_reputation(answers, crisis_id, adminFlag) %}
     {% import '_generic.html' as generic_macros %}
     {{ vote_script() }}
-    {% for answer in answers | reverse %}
+    {% for answer in answers %}
         {% if (!adminFlag and answer.show) || (adminFlag) %}
         {% if loop.index % 3 == 1 %}
             <div class="row">
@@ -217,14 +217,26 @@
 
                 <!-- button-vote-up -->
                 {% set votes_aggregate = (answer.post.upvoteCount - answer.post.downvoteCount) %}
-                <div class="action-button-ctr btn-group">
+                <!--<div class="action-button-ctr btn-group">
                     {% set answer_upvoted = answer | isUpvotedBy(user) %}
                     {% set answer_downvoted = answer | isDownvotedBy(user) %}
                     <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn-lg btn btn-default btn-large btn_upvote {% if !properUser %} user-required-action{% endif %} {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
                     <a href="#" class="btn btn-default action-button-count disabled upvote_count btn-lg {% if votes_aggregate < 0 %}danger{% endif %}">{{ votes_aggregate }}</a>
                     <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn-lg btn btn-default btn-large  btn_downvote {% if !properUser %} user-required-action{% endif %} {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
+                </div> -->
+                <div class="mini action-button-ctr btn-group">
+                    {% set answer_upvoted = answer | isUpvotedBy(user) %}
+                    <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_upvote {% if !properUser %} user-required-action{% endif %} {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
+                    <a href="#" class="btn btn-default action-button-count disabled upvote_count">{{ answer.post.upvoteCount }}</a>
                 </div>
+                <!-- / button-vote-up -->
 
+                <!-- button-vote-down -->
+                <div class="mini action-button-ctr btn-group">
+                    {% set answer_downvoted = answer | isDownvotedBy(user) %}
+                    <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_downvote {% if !properUser %} user-required-action{% endif %} {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
+                    <a href="#" class="btn btn-default action-button-count disabled downvote_count answer_number_{{ answer.id }}">{{ answer.post.downvoteCount }}</a>
+                </div>
                 <!-- button-comment -->
                 <div class="mini action-button-ctr btn-group">
                     <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" data-fragment="comment" class="btn btn-default btn-large mini-action-button btn_comment {% if !properUser %} user-required-action{% endif %}" title="Comment"><i class="fa fa-comment"></i></button>

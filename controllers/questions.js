@@ -473,7 +473,6 @@ var getQuestion = function (req, addView, callback) {
 
 function oneQuestionResponse(req, res, crisis, question, user, refcodes){
     res.status(200);
-    console.log('reputation: ',req.query.reputation);
     var render_file = 'question/one';
     if(req.query.reputation == 1){
         render_file = 'question/one-reputation'
