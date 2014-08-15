@@ -148,11 +148,7 @@ var oneCrisisResponse = function(req, res, responseData) {
 
 //get a specific crisis
 var getOne = function (req, res) {
-    //Redirection if different than 1 for Challenge purpose
-    if(req.params.crisis_id != 1){
-        res.redirect('/crisis/1');
-        res.end();
-    }
+    
     var datetime = new Date();
     console.log('-----Entered crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
     generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
