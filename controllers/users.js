@@ -432,7 +432,7 @@ var getRoles = function (model, cb) {
     var admins = [];
     var role;
 
-    model.find({}, 'name', function (err, users) {
+    model.find({type: 'chosen-username'}, 'name', function (err, users) {
         if (err) {
             cb(err, null, null, null);
         } else {
