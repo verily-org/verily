@@ -5,7 +5,7 @@
 {% block content %}
 <!-- question -->
 
-{% set questionTitleForSharing = question.title %}
+{% set questionTitleForSharing = question.post.title %}
 {% if questionTitleForSharing.charAt(questionTitleForSharing.length - 1) !== '?' %}
     {% set questionTitleForSharing = questionTitleForSharing + '?' %}
 {% endif %}
@@ -44,10 +44,10 @@ var refUrlLink = refUrlPrefix + refCodeLink;
 
 <div class="question page-header clearfix">
     <div class="row">
-        {% if (question.targetLat and question.targetLong) and (question.post.targetImage) %}
+        {% if (question.post.targetLat and question.post.targetLong) and (question.post.targetImage) %}
         {% set questionLeftSideCols = 12 %}
         {% set questionRightSideIndiv = 6 %}
-        {% elif (question.targetLat and question.targetLong) or (question.post.targetImage) %} 
+        {% elif (question.post.targetLat and question.post.targetLong) or (question.post.targetImage) %} 
         {% set questionLeftSideCols = 12 %}
         {% set questionRightSideIndiv = 6 %}
         {% else %}
@@ -60,36 +60,36 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                 </a>
                 <span class="text-muted">/</span>
             </div>
-            <h2 class="question-title">{{ question.title }}</h2>
+            <h2 class="question-title">{{ question.post.title }}</h2>
 
                 <p class="lead">
-                    {{ question.text }}
+                    {{ question.post.text }}
                 </p>
                 
-                {% if question.targetDateTimeOccurred %}
+                <!-- {% if question.date %}
                 <p class="metadata">
                     <i class="fa fa-clock-o fa-lg fa-fw"></i>
                     <span class="sr-only">Occurred:</span>
-                    <span class="">{{ question.relativeTargetDateTimeOccurred }}</span>
+                    <span class="">{{ question.relativeCreatedDate }}</span>
                     <span class="text-muted">
                         &middot;
-                    {{ question.targetDateTimeOccurred|date('D, d M Y H:i:s') }}
+                    {{ question.date|date('D, d M Y H:i:s') }}
                      <abbr title="Coordinated Universal Time" class="initialism">
                          <a href="http://en.wikipedia.org/wiki/Coordinated_Universal_Time">UTC</a>
                      </abbr>
                      </span>
                 </p>
-                {% endif %}
+                {% endif %} -->
 
 
-                {% if question.targetLocality or question.targetLat %}
+                {% if question.post.targetLocality or question.post.targetLat %}
                 <p class="metadata">
-                    {% if question.targetLocality %}
+                    {% if question.post.targetLocality %}
                     <i class="fa fa-map-marker fa-lg fa-fw"></i><span class="sr-only">Locality:</span>&nbsp;<span id="question-locality">{{ question.post.targetLocality }}</span>
                     {% endif %}
                     
-                    {% if question.targetLat and question.targetLong %}
-                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetLat }},{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.targetLong.toFixed(4) }}</span></a>
+                    {% if question.post.targetLat and question.post.targetLong %}
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetLat }},{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetLong.toFixed(4) }}</span></a>
                     <span class="text-muted">&middot;</span>
                     <a href="" id="view-map">Show map</a>
                     {% endif %}
@@ -98,14 +98,14 @@ var refUrlLink = refUrlPrefix + refCodeLink;
 
                 <p class="metadata">
                     Posted
-                    <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> ago </span>
-                    by {{ question.author }}
+                    <span class=""><abbr title="{{ question.post.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> ago </span>
+                    by {{ question.post.author }}
                 </p>
 
-                {% if question.tags and question.tags.length !== 0 %}
+                {% if question.post.tags and question.post.tags.length !== 0 %}
                 <p class="metadata tags">
                     Tags:
-                        {% for tag in question.tags %}
+                        {% for tag in question.post.tags %}
                             <a href="/tag/{{ tag }}" class="tag-ctr"><span class="label label-primary tag">{{ tag }}</span></a>
                         {% endfor %}
                 </p>
@@ -135,7 +135,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                     </div>
                     {% endif %}
                     
-                    {% if question.targetLat %}
+                    {% if question.post.targetLat %}
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <div id="map" class="smallmap" style="height: 200px;" class="hidden-xs"></div>
                     </div>

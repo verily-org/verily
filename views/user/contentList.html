@@ -35,13 +35,13 @@
                 {% for evidence in evidences %}
                     <tr {% if evidence.show == false %}class="danger"{% endif %}>
                         <td>{{ evidence.id }}</td>
-                        <td>{{ evidence.post.title }}</td>
+                        <td>{{ evidence.title }}</td>
                         <td>{{ evidence.show }}</td>
-                        <td>{{ evidence.post.text }}</td>
+                        <td>{{ evidence.text }}</td>
                         <td>
-                            <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}" class="">{{ evidence.question.post.title }}</a>
+                            <a href="/crisis/{{ evidence.question.crisis_id }}/question/{{ evidence.question_id }}" class="">{{ evidence.question_id }}</a>
                         </td>
-                        <td>{{ evidence.post.date | date('Y-m-d h:i:s') }}</td>
+                        <td>{{ evidence.date | date('Y-m-d h:i:s') }}</td>
                         <td style="text-align: right">
                             <form method="post" action="/editEvidenceShow" class="single-button-form">
                                 <input type="hidden" name="_csrf" value="{{csrf_token}}" />

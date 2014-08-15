@@ -208,21 +208,21 @@ $.ajax({
         {% if loop.index % numColumns == 1 %}
             <div class="row">
         {% endif %}
-        <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
+        <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
             <div data-href="{{ question.canonicalPath }}" style="cursor:pointer"
                  class="panel panel-default verily-panel crisis-question-border {% if question.supportedAnswerCount === question.rejectedAnswerCount %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
                 <div class="panel-heading">
-                        {% if question.post.targetLocality %}
+                        {% if question.targetLocality %}
                             <div class="">
                                <i class="fa fa-map-marker"></i>
                                <span class="sr-only">Locality:</span>
-                               <span id="question-locality">{{ question.post.targetLocality }}</span>
+                               <span id="question-locality">{{ question.targetLocality }}</span>
                             </div>
                         {% endif %}
 
                     <h3 class="panel-title" >
                         <a href="{{ question.canonicalPath }}">
-                            {{ question.post.title }}
+                            {{ question.title }}
                         </a>
                     </h3>
                     <div class="crisis-question-metrics-answer-button clearfix">
@@ -242,23 +242,23 @@ $.ajax({
                     </div>
                 </div>
                 <div class="panel-body">
-                    {% if question.post.targetVideoUrl %}
-                        <div id="video-wrapper-{{ question.post.id }}" class="video-wrapper video-wrapper-ajax"
-                             data-video-url="{{ question.post.targetVideoUrl }}">
+                    {% if question.targetVideoUrl %}
+                        <div id="video-wrapper-{{ question.post_id }}" class="video-wrapper video-wrapper-ajax"
+                             data-video-url="{{ question.targetVideoUrl }}">
                             <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
                             <div class="video-container" style="display: none"></div>
                             <div class="video-error-message alert alert-warning" style="display: none">
-                                Video link: <a href="{{ question.post.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.post.targetVideoUrl }}</a>.
+                                Video link: <a href="{{ question.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.targetVideoUrl }}</a>.
                             </div>
                         </div>
-                    {% elseif question.post.targetImage %}
-                        <div class="row card-image" style="background-image: url({{ question.post.targetImage }});">
+                    {% elseif question.targetImage %}
+                        <div class="row card-image" style="background-image: url({{ question.targetImage }});">
                         </div>
                     {% endif %}
                     <div class="posted">
                         Posted
                         <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> ago </span>
-                        by {{ question.post.author }}
+                        by {{ question.author }}
                     </div>
                 </div>
 

@@ -31,17 +31,17 @@
 			<div class="col-sm-4 crisis-question-wrapper">
 				<div class="panel panel-default question-answer crisis-question-border {% if question.supportedAnswerCount === 0 and question.rejectedAnswerCount === 0 %}border-not-available{% elseif question.supportedAnswerCount > question.rejectedAnswerCount %}border-true{% else %}border-false{% endif %}">
 						<div class="panel-heading">
-								{% if question.post.targetLocality %}
+								{% if question.targetLocality %}
 									<div class="">
 									   <i class="fa fa-map-marker"></i>
 									   <span class="sr-only">Locality:</span>
-									   <span id="question-locality">{{ question.post.targetLocality }}</span>
+									   <span id="question-locality">{{ question.targetLocality }}</span>
 									</div>
 								{% endif %}
 
 							<h3 class="panel-title">
 								<a href="/crisis/{{ question.crisis_id }}/question/{{ question.id }}">
-									{{ question.post.title }}
+									{{ question.title }}
 								</a>
 							</h3>
 							<div class="input-group">
@@ -59,29 +59,29 @@
 						<div class="panel-body">
 
 
-							{{ question.post.text }}
+							{{ question.text }}
 
 
 
-							{% if question.post.targetVideoUrl %}
-								<div id="video-wrapper-{{ question.post.id }}" class="video-wrapper video-wrapper-ajax"
-									 data-video-url="{{ question.post.targetVideoUrl }}">
+							{% if question.targetVideoUrl %}
+								<div id="video-wrapper-{{ question.post_id }}" class="video-wrapper video-wrapper-ajax"
+									 data-video-url="{{ question.targetVideoUrl }}">
 									<div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
 									<div class="video-container" style="display: none"></div>
 									<div class="video-error-message alert alert-warning" style="display: none">
-										Video link: <a href="{{ question.post.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.post.targetVideoUrl }}</a>.
+										Video link: <a href="{{ question.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.targetVideoUrl }}</a>.
 									</div>
 								</div>
-							{% elseif question.post.targetImage %}
+							{% elseif question.targetImage %}
 								<div class="row">
-									<img src="{{ question.post.targetImage }}" class="img-responsive center-block">
+									<img src="{{ question.targetImage }}" class="img-responsive center-block">
 								</div>
 							{% endif %}
 						
 								<div class="">
 									<i class="fa fa-bullhorn"></i>
 									<span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr></span>
-									by {{ question.post.author }}
+									by {{ question.author }}
 								</div>
 
 						</div>

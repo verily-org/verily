@@ -8,6 +8,7 @@ var fs = require('fs');
 var s3 = require('../s3');
 var mode = require('../mode');
 var path = require('path');
+var query = require('../lib/sqlQueries');
 
 var common = require('../static/js/common');
 
@@ -16,7 +17,7 @@ var role = require('../lib/roles').user;
 
 var trueValue;
 var falseValue;
-if (mode.isHeroku()) {
+if (mode.isHeroku() || process.env.DATABASE === 'postgres') {
     trueValue = true;
     falseValue = false;
 } else {
@@ -33,14 +34,15 @@ exports.index = function (req, res) {
 var getQuestionRelevance = function (words, relevantQuestions, question, cb) {
     var word;
     var relevance = 0;
+    question.tags = JSON.parse(question.tags);
     // measure the relevenace of a question to the search text
     // similarities with the tags and locality are more important than text ant title.
     for (var i = 0; i < words.length; i++) {
         word = words[i];
-        if (question.post.title.toLowerCase().indexOf(word) !== -1) relevance++;
-        if (question.post.text.toLowerCase().indexOf(word) !== -1) relevance++;
-        if (question.post.tags.indexOf(word) !== -1) relevance += 3;
-        if (question.post.targetLocality.toLowerCase().indexOf(word) !== -1) relevance += 3;
+        if (question.title.toLowerCase().indexOf(word) !== -1) relevance++;
+        if (question.text.toLowerCase().indexOf(word) !== -1) relevance++;
+        if (question.tags.indexOf(word) !== -1) relevance += 3;
+        if (question.targetLocality.toLowerCase().indexOf(word) !== -1) relevance += 3;
     }
     if (relevance > 0) {
         question.relevance = relevance;
@@ -61,7 +63,7 @@ var renderSearchResults = function(req, res, questions) {
 };
 
 var searchQuestionsByWords = function (req, res, words, relevantQuestions) {
-    req.models.Question.find({show: trueValue}, function (err, questions) {
+    query.findAllQuestions(req, true, function (err, questions) {
         if (err) {
             console.log(err);
             generic.genericErrorHandler(req, res, err);
@@ -69,29 +71,22 @@ var searchQuestionsByWords = function (req, res, words, relevantQuestions) {
             if (questions.length > 0) {
                 async.each(questions, getQuestionRelevance.bind(null, words, relevantQuestions), function (err) {
                     if (relevantQuestions.length > 0) {
-                        async.each(relevantQuestions, generic.load_question_extra_fields, function (err) {
+                        async.each(relevantQuestions, query.load_question_extra_fields.bind(null, req), function (err) {
                             if (err) {
                                 generic.genericErrorHandler(req, res, err);  
                             } else {
-                                relevantQuestions.forEach(function(question) {
-                                    var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
-                                    question.relativeCreatedDate = relativeCreatedDate;
-                                });
-                                var questionsTmp = relevantQuestions;
-                                relevantQuestions = [];
-
-                                renderSearchResults(req, res, questionsTmp);
+                                renderSearchResults(req, res, relevantQuestions);
                             }
                         });
                     } else {
-                        req.flash('info', 'No results for "' + query + '"');
+                        req.flash('info', 'No results for "' + words.join(' ') + '"');
                         renderSearchResults(req, res, null);
                     }    
                 });
 
                     
             } else {
-                req.flash('info', 'No results for "' + query + '"');
+                req.flash('info', 'No results for "' + words.join(' ') + '"');
                 renderSearchResults(req, res, null);
             }
         }
@@ -145,7 +140,7 @@ exports.all = function (req, res) {
 var createQuestion = function (req, res) {
     res.status(200);
     if (req.user){var user = req.user; }
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         res.render('question/create', {
             page: {
@@ -164,7 +159,7 @@ exports.create = [checkRole, createQuestion];
 // View to add multiple questions
 var create_multiple_questions = function (req, res) {
     if (req.user){var user = req.user; }
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         res.status(200);
         res.render('question/createMultiple', {
@@ -185,7 +180,7 @@ exports.createQuestions = [checkRole, create_multiple_questions];
 var new_questions = function (req, res) {
     res.status(200);
     if (req.user){var user = req.user; }
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
 
         var fs = require('fs');
@@ -271,7 +266,7 @@ function createBulkQuestions(res, req, json, crisis){
                 if (!err && question) {
                     question.setCrisis(crisis, function (err) {
                         if (err) throw err;
-                        generic.get(req.models.Question, question.id, undefined, function (err, question2) {
+                        generic.get(req, req.models.Question, question.id, undefined, function (err, question2) {
                             if (!err && question2) {
                                 callback();
                             } else {
@@ -301,7 +296,7 @@ exports.newQuestions = [checkRole, new_questions];
 
 // View to edit a question
 var editQuestion = function (req, res) {
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         getQuestion(req, false, function(err, question) {
             if (err) {
@@ -343,86 +338,58 @@ var getQuestion = function (req, addView, callback) {
     // Works for pretty question URLs
     var questionId = parseInt(req.params.question_id);
 
-    generic.get(req.models.Question, questionId, reqIfNoneMatch, function (err, question) {
+    generic.get(req, req.models.Question, questionId, reqIfNoneMatch, function (err, question) {
         if (!err && question) {
-
-            var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
-            
-            var relativeTargetDateTimeOccurred = generic.relativeTime(question.post.targetDateTimeOccurred);
-    
             
             if(addView){
                 question.post.addViewCount();
             }
-
             question.getAnswers(function(err,answers){
                if (!err && answers) {
-                   req.models.Post.findByAnswers({question_id: question.id}, function(err, posts){
-                        //console.log(posts);
-                   });
+
                    async.each(question.answers,
-                       function(answer, callback2){
-                           answer.getPost(function(err){
-                               if(err) callback2(err);
-                                   answer.getComments(function(err){
-                                       if(err) callback2(err);
-                                       callback2();
-                                   });
-                           });},
-                       function(err){
-                           if(err){callback(err)}
-                           question.answers = answers.filter(function(answer){
-                               answer.comments = answer.comments.filter(function(answerComment){
-                                   return common.isUserContentShow(answerComment.comment.user)
-                                       && answerComment.comment.show;
+                        function(answer, callback2){
+                            answer.getPost(function(err, post){
+                                if(err) callback2(err);
+                                answer.post = post;
+                                query.getUserOfPost(req, post, function (err, user) {
+                                    answer.post.user = user;
+                                    answer.getComments(function(err, comments){
+                                        if(err) callback2(err);
+                                        if (comments.length !== 0) {
+                                            async.each(comments, function (comment, callback3) {
+                                                comment.getUser(function (err) {
+                                                    callback3(err);
+                                                });
+                                            }, function (err) {
+                                                callback2(err);
+                                            });   
+                                        } else {
+                                            callback2();
+                                        }   
+                                    });
+                                });       
+                            });},
+                        function(err){
+                            if(err){callback(err)}
+                            question.answers = answers.filter(function(answer){
+                                answer.comments = answer.comments.filter(function(comment){
+                                    return common.isUserContentShow(comment.user)
+                                        && comment.show;
                                });
                                return answer.show && common.isUserContentShow(answer.post.user);
                            });
 
-                           generic.load_question_extra_fields(question, function(err){
+                            query.load_question_extra_fields(req, question, function(err){
                                if (!err) {
-
-                                   // Canonicalise the path to the pretty format
-                                   // that works well for bookmarks.
-                                   var canonicalPath = common.prettyPath({
-                                       req: req,
-                                       id: question.id,
-                                       string: question.post.title
-                                   });
-
-                                   var questionTmp = {
-                                       title: question.post.title,
-                                       id: question.id,
-                                       text: question.post.text,
-                                       targetLocality: question.post.targetLocality,
-                                       targetLat: question.post.targetLat,
-                                       targetLong: question.post.targetLong,
-                                       targetImage: question.post.targetImage,
-                                       targetYoutubeVideoId: question.post.targetYoutubeVideoId,
-                                       targetYoutubeVideoUrl: question.post.targetYoutubeVideoUrl,
-                                       targetDateTimeOccurred: question.post.targetDateTimeOccurred,
-                                       relativeTargetDateTimeOccurred: relativeTargetDateTimeOccurred,
-                                       date: question.post.date,
-                                       relativeCreatedDate: relativeCreatedDate,
-                                       author: question.post.author,
-                                       tags: question.post.tags,
-                                       viewCount: question.post.viewCount,
-                                       rejectedAnswerCount: question.rejectedAnswerCount,
-                                       supportedAnswerCount: question.supportedAnswerCount,
-                                       updated: question.post.updated,
-                                       importanceCount: question.importanceCount,
-                                       canonicalPath: canonicalPath,
-                                       post: question.post
-                                   }, wrapper = {
-                                       question: questionTmp
-                                   };
                                    // Answers present.
-                                   async.each(question.answers, generic.load_answers_extra_fields, function (err) {
+                                   async.each(question.answers, generic.load_answers_extra_fields.bind(null, req), function (err) {
                                        if (err) {
                                            callback(err);
                                        } else {
-                                           questionTmp.answers = question.answers;
-                                           callback(err, questionTmp);
+                                           //question.answers = question.answers;
+                                           
+                                           callback(err, question);
                                        }
                                    });
                                } else {
@@ -448,7 +415,6 @@ var getQuestion = function (req, addView, callback) {
 
 function oneQuestionResponse(req, res, crisis, question, user, refcodes){
     res.status(200);
-
     res.render('question/one', {
         crisis: crisis,
         question: question,
@@ -484,7 +450,7 @@ var applyUserAndRespond = function(req, res, crisis, question, refcodes) {
 var getOne = function (req, res) {
     //get(req.models.Question, req.params.question_id, res, 200);
 
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         getQuestion(req, true, function(err, question) {
             if (err) {
@@ -502,7 +468,7 @@ var getOne = function (req, res) {
                 // Set the ETag header.
                 //res.set(enums.eTag, question.updated);
                 
-                if (req.path !== question.canonicalPath) {
+                if (req.path !== question.canonicalPath && !process.env.TEST) {
                     // Redirect the user to the canonical path
                     res.redirect(question.canonicalPath);
                     res.end();
@@ -554,13 +520,13 @@ var newOne = function (req, res) {
 
     };
     var crisis_id = req.params.crisis_id;
-    generic.get(req.models.Crisis, crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         generic.create(req.models.Question, data, req, function (err, question) {
             if (!err && question) {
                 question.setCrisis(crisis, function (err) {
                     if (err) throw err;
-                    generic.get(req.models.Question, question.id, undefined, function (err, question2) {
+                    generic.get(req, req.models.Question, question.id, undefined, function (err, question2) {
                         if (!err && question2) {
                             var wrapper = {
                                 question: question2
@@ -592,7 +558,7 @@ exports.new = [role.can('create a question'), newOne];
 // Update question
 var update = function (req, res) {
     var crisis_id = req.params.crisis_id;
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+    generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             generic.update(req.models.Question, req.params.question_id, req, function (err) {
                 if (!err) {
@@ -622,7 +588,7 @@ exports.update = [checkRole, update];
 // Mark question as Importante
 exports.markImportant = function (req, res) {
 
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+    generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
                 require('./ratings').importance(req, question.post, function(err, rating){
                     generic.load_crisis_extra_fields(question, function(){
@@ -665,7 +631,7 @@ var remove = function (req, res) {
                 throw err;
             }
         };
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+    generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             question.getAnswers(function (err, answers) {
                 if (!err && answers) {
@@ -719,7 +685,7 @@ exports.remove = [role.can('edit a question'), remove];
 
 var exportQuestionsView = function(req, res){
     if (req.user){var user = req.user; }
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         var export_files_prefix = s3.QUESTION_EXPORT_FILE_PREFIX + crisis.id;
         if (mode.isHeroku()) {
@@ -756,7 +722,7 @@ function renderExportView(res, req, crisis, files, user){
 
 var exportQuestions = function(req, res){
     if (req.user){var user = req.user; }
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;
         var file_name = getExportsFileName(s3.QUESTION_EXPORT_FILE_PREFIX, crisis.id);
         getQuestionsJson(crisis, function(err, questions_json){

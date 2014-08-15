@@ -11,6 +11,8 @@ var common = require('../static/js/common');
 var role = require('../lib/roles').user;
 var mode = require('../mode');
 var s3 = require('../s3');
+var orm = require('orm');
+var query = require('../lib/sqlQueries');
 
 var urlSafeBase64 = require('urlsafe-base64');
 
@@ -52,6 +54,7 @@ exports.genericErrorHandler = function (req, res, err) {
     if (!err) {
         err = {};
     }
+    console.log(err);
     if (err.code === 2) {
         // res.redirect('/400');
         // res.end();
@@ -108,13 +111,13 @@ var join = exports.join;
 // to the created post.
 // Calls back with the created instance of model.
 exports.create = function (model, data, req, cb) {
-    
     common.validateDateTimeOccurred(req.body.targetDateTimeOccurred, null, null, function(error, targetDateTimeOccurred) {
+        
         if (!error) {
-            
             // Create the model item.
             model.create([data], function (err, items) {
                 if (err) {
+                    console.log(err);
                     cb(err, null);
                 }
                 // items = array of inserted items 
@@ -127,7 +130,6 @@ exports.create = function (model, data, req, cb) {
                 if (req.body.hasOwnProperty('tags')) {
                     tags = common.tagize(req.body.tags);
                 }
-        
                 // We want to store the created and updated date
                 // in UTC -- Date.now() returns current time in milliseconds since 1970 in UTC.
                 var now = new Date(Date.now());
@@ -275,42 +277,43 @@ function cutQuotes(str) {
 
 
 // reqIfNoneMatch can be undefined, if so: it will return the model instance.
-exports.get = function (model, id, reqIfNoneMatch, cb) {
+exports.get = function (req, model, id, reqIfNoneMatch, cb) {
     model.get(id, function (err, item) {
         // Get the item and data from the post.
         if (!err) {
             // Add the post fields to the output.
             item.getPost(function (err, post) {
                 //Check if the item is not hidden
-                    if(common.isUserContentShow(item.post.user) && common.isItemShow(item)){
-
-                    if (!err && post) {
-//                    Used for caching
-                        // If reqIfNoneMatch is present, compare with it.
-//                    if (reqIfNoneMatch && post.updated === cutQuotes(reqIfNoneMatch)) {
-//                        // Client has latest version:
-//                        // resource has NOT changed
-//                        cb(enums.NOT_MODIFIED);
-//                    } else {
-                        // Client does not have latest version:
-                        // resource has changed.
-                        exports.load_post_ratings_count(item, function(err){
-                            if(err){
-                                cb(err, null);
-                            }
-                            else{
-                                cb(null, item);
-                            }
-                        });
-//                    }
+                query.getUserOfPost(req, post, function (err, user) {
+                    if (err) {
+                        cb(err, null);
                     } else {
-                        cb({}, null);
+                        item.post.user = user;
+                        if(common.isUserContentShow(item.post.user) && common.isItemShow(item)){
+
+                            if (!err && post) {
+        //                    Used for caching
+                                // If reqIfNoneMatch is present, compare with it.
+        //                    if (reqIfNoneMatch && post.updated === cutQuotes(reqIfNoneMatch)) {
+        //                        // Client has latest version:
+        //                        // resource has NOT changed
+        //                        cb(enums.NOT_MODIFIED);
+        //                    } else {
+                                // Client does not have latest version:
+                                // resource has changed.
+                                cb(null, item);
+                                   
+        //                    }
+                            } else {
+                                cb({}, null);
+                            }
+                        }
+                        else{
+                            var err = {code:2};
+                            cb(err, null);
+                        }
                     }
-                }
-                else{
-                    var err = {code:2};
-                    cb(err, null);
-                }
+                });     
             });
         } else {
             cb(err, null);
@@ -443,6 +446,8 @@ exports.update = function (model, id, req, cb) {
     });
 };
 
+
+
 // only remove one item and its post
 exports.removeOne = function (item, req, cb) {
     req.models.Post.get(item.post_id, function (err, post) {
@@ -494,7 +499,7 @@ exports.load_crisis_extra_fields = function(crisis, callback){
 
     crisis.getPost(function(err, post){
         if (!err && post) {
-            crisis.importanceCount = crisis.post.getImportanceCount();
+            //crisis.importanceCount = crisis.post.getImportanceCount();
             callback();
         }
         else{
@@ -502,7 +507,8 @@ exports.load_crisis_extra_fields = function(crisis, callback){
         }
     });
 }
-exports.load_question_extra_fields = function(question, callback){
+
+/*exports.load_question_extra_fields = function(question, callback){
     if(question.answers == undefined){
         question.getAnswers(function(err, answers){
             if (!err && answers) {
@@ -547,7 +553,8 @@ exports.load_question_extra_fields = function(question, callback){
         question.popularityCoefficient = getQuestionPopularityCoefficient(question);
         callback();
     }
-}
+}*/
+
 var load_post_ratings_count_function = function(item, callback){
 
     //item.post.getUser(function(a,d){});
@@ -564,9 +571,9 @@ var load_post_ratings_count_function = function(item, callback){
     });
 }
 exports.load_post_ratings_count = load_post_ratings_count_function;
-exports.load_answers_extra_fields = function(answer, callback){
+exports.load_answers_extra_fields = function(req, answer, callback){
     //item.post.getUser(function(a,d){});
-    load_post_ratings_count_function(answer, function(err){
+    query.getAnswerRatings(req, answer.post, function(err){
         if(!err){
             answer.popularityCoefficient = getAnswerPopularityCoefficient(answer);
             callback();
@@ -587,7 +594,7 @@ function getAnswerPopularityCoefficient(answer){
 	if (answer.comments) {
 		n_comments = answer.comments.length;
 	}
-    var popularityCoefficient = answer.post.upvoteCount + answer.post.downvoteCount + answer.post.importanceCount + n_comments;
+    var popularityCoefficient = answer.post.upvoteCount + answer.post.downvoteCount + n_comments;
     return popularityCoefficient;
 }
 

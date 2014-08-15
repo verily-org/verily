@@ -179,6 +179,9 @@ if (window.location.search.indexOf('action=comment') !== -1) {
 	$(document).ready(function(){
 		$(".description-text").html(urlify($(".description-text").text()));
 		$(".question-title").html(urlify($(".question-title").text()));
+		$(".comment-text").each(function (index) {
+			$(this).html(urlify($(this).text()));
+		});
 	});
 
 </script>

@@ -19,8 +19,8 @@
                     <tr {% if thisUser.active == false %}class="danger"{% endif %}>
                         <td>{{ thisUser.name }}</td>
                         <td style="text-align: center">{{ thisUser.active }}</td>
-                        <td style="text-align: center">{{ thisUser.posts | length }}</td>
-                        <td style="text-align: center">{{ thisUser.comments | length }}</td>
+                        <td style="text-align: center">{{ thisUser.postCount }}</td>
+                        <td style="text-align: center">{{ thisUser.commentCount }}</td>
                         <td style="text-align: right">
                             <form method="post" action="/banUser" class="single-button-form">
                                 <input type="hidden" name="_csrf" value="{{csrf_token}}" />

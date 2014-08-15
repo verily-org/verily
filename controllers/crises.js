@@ -4,15 +4,17 @@ var swig = require('swig');
 var async = require('async');
 var utils = require('utilities');
 var mode = require('../mode');
+var memwatch = require('memwatch');
+var query = require('../lib/sqlQueries');
 
 var common = require('../static/js/common');
 var userController = require('./users');
 
 var role = require('../lib/roles').user;
-
+var hd;
 var trueValue;
 var falseValue;
-if (mode.isHeroku()) {
+if (mode.isHeroku() || process.env.DATABASE === 'postgres') {
     trueValue = true;
     falseValue = false;
 } else {
@@ -50,6 +52,7 @@ var newCrisis = function (req, res) {
             res.redirect('/crisis/' + crisis.id);
             res.end();
         } else {
+            console.log('ERROR: '+err);
             generic.genericErrorHandler(req, res, err);
         }
     });
@@ -152,93 +155,75 @@ var getOne = function (req, res) {
     }
     var datetime = new Date();
     console.log('-----Entered crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
-        
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (!err){
-            req.models.Question.find({show: trueValue}, function (err, questions) {
-                // Sort questions by created date with latest first.
-                questions.sort(function(a, b) {
-                    return a.post.date.getTime() - b.post.date.getTime();
-                });
-                
-                
-                if (err) {
-                    generic.genericErrorHandler(req, res, err);
-                } else {
+            
+            query.findAllQuestionsOfACrisis(req, crisis.id, function (err, questions) {
+                    
+                    if (err) {
+                        generic.genericErrorHandler(req, res, err);
+                    } else {
+                        var datetime = new Date();
+                        console.log('-----Question Found-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
+                        // Questions with Post data included in each question.
+                        async.each(questions, query.load_question_extra_fields.bind(null, req), function (err) {
+                            if (err) {
+                                generic.genericErrorHandler(req, res, err);
+                            } else {
+                                crisis.post.addViewCount();
+                                generic.load_crisis_extra_fields(crisis, function(err){
+                                    // For each question, add relative created date.
+                                    
+                                    var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
+                                    crisis.relativeCreatedDate = relativeCreatedDate;
 
-                    var datetime = new Date();
-                    console.log('-----Question Found-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
-                    // Questions with Post data included in each question.
-                    async.eachSeries(questions, generic.load_question_extra_fields, function (err) {
-                        if (err) {
-                            generic.genericErrorHandler(req, res, err);
-                        } else {
-                            crisis.post.addViewCount();
-                            generic.load_crisis_extra_fields(crisis, function(err){
+                                    generic.generateRefCodes(4, function(refcodeArray) {
+                                        var refcodes = {
+                                            twitter: refcodeArray[0],
+                                            facebook: refcodeArray[1],
+                                            email: refcodeArray[2],
+                                            link: refcodeArray[3]
+                                        };
+                                        
+                                        var responseData = {
+                                            crisis: crisis,
+                                            questions: questions,
+                                            page: {
+                                                title: crisis.post.title
+                                            },
+                                            path: req.path,
+                                            refcodes: refcodes,
+                                            info: req.flash('info'),
+                                            error: req.flash('error')
+                                        };
+                                        if (req.user) {
 
-                                // For each question, add relative created date.
-                                questions.forEach(function(question) {
-                                    var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
-                                    question.relativeCreatedDate = relativeCreatedDate;
-
-                                    // Canonicalise the path to the pretty format
-                                    // that works well for bookmarks.
-                                    question.canonicalPath = common.prettyPath({
-                                        req: req,
-                                        postPrefix: 'question',
-                                        id: question.id,
-                                        string: question.post.title
+                                            var datetime = new Date();
+                                            console.log('-----Responding crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
+                                            responseData.user = req.user;
+                                            // Respond.
+                                            oneCrisisResponse(req, res, responseData);
+                                        } else {
+                                            // User is not currently logged in --
+                                            // let's make them a provisional account
+                                            // so they can immediately do stuff.
+                                            userController.newProvisionalUser(req, function(err, user) {
+                                                // Provisional user account created.
+                                                // Respond.
+                                                responseData.user = user;
+                                                oneCrisisResponse(req, res, responseData);
+                                            });   
+                                        }
+                                    
                                     });
 
                                 });
-                                
-                                var relativeCreatedDate = utils.date.relativeTime(crisis.post.date, {abbreviated: true});
-                                crisis.relativeCreatedDate = relativeCreatedDate;
-
-                                generic.generateRefCodes(4, function(refcodeArray) {
-                                    var refcodes = {
-                                        twitter: refcodeArray[0],
-                                        facebook: refcodeArray[1],
-                                        email: refcodeArray[2],
-                                        link: refcodeArray[3]
-                                    };
-                                    
-                                    var responseData = {
-                                        crisis: crisis,
-                                        questions: questions,
-                                        page: {
-                                            title: crisis.post.title
-                                        },
-                                        path: req.path,
-                                        refcodes: refcodes,
-                                        info: req.flash('info'),
-                                        error: req.flash('error')
-                                    };
-                                    if (req.user) {
-                                        var datetime = new Date();
-                                        console.log('-----Responding crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
-                                        responseData.user = req.user;
-                                        // Respond.
-                                        oneCrisisResponse(req, res, responseData);
-                                    } else {
-                                        // User is not currently logged in --
-                                        // let's make them a provisional account
-                                        // so they can immediately do stuff.
-                                        userController.newProvisionalUser(req, function(err, user) {
-                                            // Provisional user account created.
-                                            // Respond.
-                                            responseData.user = user;
-                                            oneCrisisResponse(req, res, responseData);
-                                        });   
-                                    }
-                                
-                                });
-
-                            });
-                        }
-                    });
-                }
+                            }
+                        });
+                    }
+                //});
             });
+                
         }
         else{
             generic.genericErrorHandler(req, res, err);
@@ -301,7 +286,7 @@ exports.edit = [checkRole, editCrisis];
 // Update crisis
 var update = function (req, res) {
     var crisis_id = req.params.crisis_id;
-    generic.get(req.models.Crisis, crisis_id, undefined, function (err, question) {
+    generic.get(req, req.models.Crisis, crisis_id, undefined, function (err, question) {
         if (!err && question) {
             generic.update(req.models.Crisis, crisis_id, req, function (err) {
                 if (!err) {

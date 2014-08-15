@@ -44,7 +44,9 @@
     "utilities": "0.0.31",
     "validator": "3.16.0",
     "winston": "0.7.2",
-    "memwatch": "0.2.2"
+    "memwatch": "0.2.2",
+    "cheerio": "0.17.0",
+    "nodetime": "0.8.15"
   },
   "devDependencies": {},
   "scripts": {

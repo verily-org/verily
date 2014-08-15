@@ -4,7 +4,7 @@ exports.DEV_MODE = 'DEVELOPMENT_MODE';
 exports.PROD_MODE = 'PRODUCTION_MODE';
 
 exports.isProduction = exports.isHeroku = function() {
-    return (process.env.HEROKU_POSTGRESQL_COBALT_URL !== undefined);
+    return (process.env.DATABASE_URL !== undefined);
 }
 
 exports.getRunningMode = function() {

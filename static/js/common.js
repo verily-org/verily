@@ -123,8 +123,14 @@ var prettyPath = exports.prettyPath = common.prettyPath = function(data) {
             path += '/' + postPrefix;
         }
     }
-    
-    return path + '/' + common.normalizeString(data.id + '-' + data.string);
+    var returnPath;
+
+    if (process.env.TEST) {
+        returnPath = path + '/' + data.id;
+    } else {
+        returnPath = path + '/' + common.normalizeString(data.id + '-' + data.string);
+    }
+    return returnPath;
 };
 
 

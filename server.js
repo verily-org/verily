@@ -1,6 +1,15 @@
 var ONE_DAY_MSECS = 86400000;
 
+var syncCount = 0;
+
 module.exports = function (suppressLogs, dbTestUrl, callback) {
+    //if (process.env.NODETIME_ACCOUNT_KEY) {
+        require('nodetime').profile({
+            accountKey: process.env.NODETIME_ACCOUNT_KEY || '8756a8e4cf190801375dc1f1655704c031fe1543',
+            appName: 'test-verily' // optional
+        });
+    //}
+
     var //fs = require('fs'),
         connect = require('connect'),
         express = require('express'),
@@ -18,6 +27,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
+        memwatch = require('memwatch'),
         router = require('./routing/router'),
         authConfig = require('./lib/auth'),
         log = require('./log'),
@@ -111,10 +121,27 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     }
     else if (heroku){
         // db_url = process.env.HEROKU_POSTGRESQL_CRIMSON_URL;
-        db_url = process.env.HEROKU_POSTGRESQL_COBALT_URL
+        db_url = process.env.HEROKU_POSTGRESQL_COBALT_URL;
     } else {
-    	db_url = "sqlite://app.db";
+        if (process.env.DATABASE === 'sqlite') {
+            db_url = "sqlite://app.db";
+        } else if (process.env.DATABASE === 'postgres') {
+            db_url = process.env.DB_URL;    
+        }
     }
+
+    console.log(db_url);
+
+    function clearDbIfNeeded(db, cb) {
+        if (dbTestUrl) {
+            db.drop(function () {
+                console.log('Database dropped!');
+                cb();
+            });
+        } else {
+            cb();
+        }
+    };
     
     // Set up the ORM to SQLite.
     app.use(orm.express(db_url, {
@@ -126,6 +153,8 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
             // picked up by the model (all fields successfully save into DB).
             db.settings.set('instance.cache', false);
 
+            
+
             db.load("./models", function (err) {
                 if (err === null || err === undefined) {
                     if (!suppressLogs) {
@@ -136,56 +165,68 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                     console.logger.error(err);
                 }
 
-                models.Crisis = db.models.crisis;
-                models.Post = db.models.post;
-                models.Question = db.models.question;
-                models.Answer = db.models.answer;
-                models.Comment = db.models.comment;
-                models.QuestionComment = db.models.question_comment;
-                models.AnswerComment = db.models.answer_comment;
-                models.Rating = db.models.rating;
-                models.User = db.models.user;
-                models.Local = db.models.local;
-                models.Facebook = db.models.facebook;
-                models.Twitter = db.models.twitter;
-                models.Impression = db.models.impression;
-                models.Referral = db.models.referral;
-                models.Session = db.models.session;
-                models.SocialEvent = db.models.social_event;
-                models.UserHistory = db.models.user_history;
+                clearDbIfNeeded(db, function () {
+                    models.Crisis = db.models.crisis;
+                    models.Post = db.models.post;
+                    models.Question = db.models.question;
+                    models.Answer = db.models.answer;
+                    models.Comment = db.models.comment;
+                    models.QuestionComment = db.models.question_comment;
+                    models.AnswerComment = db.models.answer_comment;
+                    models.Rating = db.models.rating;
+                    models.User = db.models.user;
+                    models.Local = db.models.local;
+                    models.Facebook = db.models.facebook;
+                    models.Twitter = db.models.twitter;
+                    models.Impression = db.models.impression;
+                    models.Referral = db.models.referral;
+                    models.Session = db.models.session;
+                    models.SocialEvent = db.models.social_event;
+                    models.UserHistory = db.models.user_history;
 
-                models.Local.sync(function () {console.log("Local synced")});
-                models.QuestionComment.sync(function () {console.log("QuestionComment synced")});
-                models.AnswerComment.sync(function () {console.log("AnswerComment synced")});
-                models.Crisis.sync(function () {console.log("Crisis synced")});
-                models.Post.sync(function () {console.log("Post synced")});
-                models.User.sync(function () {console.log("User synced")});
-                models.Question.sync(function () {console.log("Question synced")});
-                models.Answer.sync(function () {console.log("Answer synced")});
-                models.Comment.sync(function () {console.log("Comment synced")});
-                models.Rating.sync(function () {console.log("Rating synced")});
-                models.Facebook.sync(function () {console.log("Facebook synced")});
-                models.Twitter.sync(function () {console.log("Twitter synced")});
-                models.Impression.sync(function () {console.log("Impression synced")});
-                models.Referral.sync(function () {console.log("Referral synced")});
-                models.Session.sync(function () {console.log("Session synced")});
-                models.SocialEvent.sync(function () {console.log("SocialEvent synced")});
-                models.UserHistory.sync(function () {console.log("UserHistory synced")});
+                    models.Local.sync(function () {syncCount++; console.log("Local synced")});
+                    models.QuestionComment.sync(function () {syncCount++; console.log("QuestionComment synced")});
+                    models.AnswerComment.sync(function () {syncCount++; console.log("AnswerComment synced")});
+                    models.Crisis.sync(function () {syncCount++; console.log("Crisis synced")});
+                    models.Post.sync(function () {syncCount++; console.log("Post synced")});
+                    models.User.sync(function () {syncCount++; console.log("User synced")});
+                    models.Question.sync(function () {syncCount++; console.log("Question synced")});
+                    models.Answer.sync(function () {syncCount++; console.log("Answer synced")});
+                    models.Comment.sync(function () {syncCount++; console.log("Comment synced")});
+                    models.Rating.sync(function () {syncCount++; console.log("Rating synced")});
+                    models.Facebook.sync(function () {syncCount++; console.log("Facebook synced")});
+                    models.Twitter.sync(function () {syncCount++; console.log("Twitter synced")});
+                    models.Impression.sync(function () {syncCount++; console.log("Impression synced")});
+                    models.Referral.sync(function () {syncCount++; console.log("Referral synced")});
+                    models.Session.sync(function () {syncCount++; console.log("Session synced")});
+                    models.SocialEvent.sync(function () {syncCount++; console.log("SocialEvent synced")});
+                    models.UserHistory.sync(function () {syncCount++; console.log("UserHistory synced")});
 
-                // Post is the base class.
-                // Questions, answers and comments are types of Post.
+                    // Post is the base class.
+                    // Questions, answers and comments are types of Post.
 
-                db.sync(function () {
-                    syncedModels = models;
-                    emitter.emit('model-synced');
-                    if (!suppressLogs) {
-                        console.logger.info("Model synchronised");
-                        
+                    function check_db_sync (done) {
+                        if (syncCount === 17) {
+                            done();
+                        } else {
+                            setTimeout(function () {check_db_sync(done);}, 500);
+                        }   
                     }
-
-                                        
+                        
+                    check_db_sync(function () {
+                        db.sync(function () {
+                            syncedModels = models;
+                            emitter.emit('model-synced');
+                            if (!suppressLogs) {
+                                console.logger.info("Model synchronised");
+                                
+                            }                    
+                        });  
+                        global_db = db; 
+                    });  
                 });
-                global_db = db;
+                    
+                    
             });
             next();
         }
@@ -233,9 +274,6 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                         refCode: refCode
                     };
                 });
-                
-                console.log('formattedRefCodes');
-                console.log(formattedRefCodes);
                 
                 req.models.Referral.find({
                     or: formattedRefCodes
@@ -626,6 +664,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                     user: req.user
                 });
             } else {
+                console.log(err);
                 res.redirect('/');
                 res.end();
             }
@@ -642,6 +681,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                     user: req.user
                 });
             } else {
+                console.log('ERROR:'+err);
                 res.redirect('/');
                 res.end();
             }
@@ -651,9 +691,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         server = http.createServer(app);
         server.listen(app.get('port'), function(){
             console.log('Express server listening on port ' + app.get('port'));
-            if (dbTestUrl) {
-                callback(app, global_db, server);
-            }
+            
         });
 
 
@@ -692,12 +730,27 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                             admin.setLocal(local, function (err) {
                                 if (err) {throw err;}
                                 console.log('Admin user has been created.');
+                                if (dbTestUrl) {
+                                    global_db.models.user.sync(function () {
+                                        global_db.models.local.sync(function () {
+                                            global_db.models.user.find({}, function (err, users) {
+                                                console.log(users.length);
+                                                callback(app, global_db, server);
+                                            });
+                                                    
+                                        });
+                                    });
+                                    
+                                }
                             });
                         });
                     });
                 });
             } else {
                 console.log('Admin user already exists.');
+                if (dbTestUrl) {
+                    callback(app, global_db, server);
+                }
             }
         });
     }

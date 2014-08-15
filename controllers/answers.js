@@ -4,6 +4,7 @@ var enums = require('../enums');
 var oembed = require('oembed');
 var common = require('../static/js/common');
 var raiting_controller = require('./ratings');
+var query = require('../lib/sqlQueries');
 
 var async = require('async');
 
@@ -11,8 +12,6 @@ var userController = require('./users');
 var role = require('../lib/roles').user;
 
 function oneAnswerResponse(res, req, crisis, question, answer, user) {
-    //Sort comments in reverse chronological order
-    answer.comments.sort(function(a,b){return b.comment.date - a.comment.date;});
     res.render('evidence/one', {
         crisis: crisis,
         question: question,
@@ -49,35 +48,45 @@ var getOne = function (req, res) {
     // ETag support.
     var reqIfNoneMatch = req.get(enums.ifNoneMatch);
 
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (!err && crisis) {
-            generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+            generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
                 if (!err && question) {
-                    generic.get(req.models.Answer, req.params.answer_id, reqIfNoneMatch, function (err, answer) {
+                    generic.get(req, req.models.Answer, req.params.answer_id, reqIfNoneMatch, function (err, answer) {
                         if (!err && answer) {
                             if (req.user){var user = req.user; }
-                            answer.getComments(function(err){
-                                //Filter hidden comments
-                                answer.comments = answer.comments.filter(function(answerComment){ return common.isUserContentShow(answerComment.comment.user)&& answerComment.comment.show;});
+                            query.getAnswerRatings(req, answer.post, function (err) {
+                                if (err) {
+                                    generic.genericErrorHandler(req, res, err);   
+                                } else {
+                                    query.getCommentsOfAnswer(req, answer.id, function(err, comments){
+                                        if (err) {
+                                            generic.genericErrorHandler(req, res, err);    
+                                        } else {
+                                            //Filter comments by provisional users
+                                            answer.comments = comments.filter(function(comment){ return common.isUserContentShow({type: comment.type});});
+                                            if(answer.post.targetVideoUrl) {
 
-                                if(answer.post.targetVideoUrl) {
+                                                oembed.fetch(answer.post.targetVideoUrl, {}, function(err, result){
 
-                                    oembed.fetch(answer.post.targetVideoUrl, {}, function(err, result){
+                                                    if(!err){
+                                                        answer.post.targetVideoHtml = result.html;
+                                                    }else{
+                                                        answer.post.VideoUrlNotEmbeddable = answer.post.targetVideoUrl;
+                                                    }
 
-                                        if(!err){
-                                            answer.post.targetVideoHtml = result.html;
-                                        }else{
-                                            answer.post.VideoUrlNotEmbeddable = answer.post.targetVideoUrl;
+                                                    applyUserAndRespond(req, res, crisis, question, answer, user);
+                                                });
+                                            }
+                                            else{
+                                                applyUserAndRespond(req, res, crisis, question, answer, user);
+                                            }
                                         }
-
-                                        applyUserAndRespond(req, res, crisis, question, answer, user);
+                                            
                                     });
                                 }
-                                else{
-                                    applyUserAndRespond(req, res, crisis, question, answer, user);
-                                }
-                            });
-                        }else {
+                            });    
+                        } else {
                             generic.genericErrorHandler(req, res, err);
                         }
                     });
@@ -126,7 +135,7 @@ exports.allEver = [role.can('assign roles'), allEver];
 
 // Get all answers for a specific question.
 var all = function (req, res) { // this function finds all answers of an specific question.
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+    generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             //question exists
             question.getAnswers(function (err, answers) {
@@ -160,7 +169,7 @@ exports.all = [role.can('assign roles'), all];
 // Create an answer and add it to a question.
 var createAnswer = function (req, res) {
     var crisis_id = req.params.crisis_id;
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+    generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
             //question exists
             generic.create(req.models.Answer, {
@@ -209,9 +218,9 @@ exports.create = [checkRole, createAnswer];
 
 // Update answer
 var update = function (req, res) {
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+    generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+            generic.get(req, req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
                 if (!err && answer) {
                     generic.update(req.models.Answer, req.params.answer_id, req, function (err) {
                         if (!err) {
@@ -233,9 +242,9 @@ exports.update = [role.can('edit an answer'), update];
 
 // Remove an answer
 var remove = function (req, res) {
-    generic.get(req.models.Question, req.params.question_id, undefined, function (err, question) {
+    generic.get(req, req.models.Question, req.params.question_id, undefined, function (err, question) {
         if (!err && question) {
-            generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+            generic.get(req, req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
                 if (!err && answer) {
                     answer.getComments(function (err, acomments) {
                         var j,
@@ -277,19 +286,27 @@ var remove = function (req, res) {
 exports.remove = [role.can('edit an answer'), remove];
 
 var upvote = function (req, res) {
-    generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+    generic.get(req, req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
         if (!err && answer) {
-            raiting_controller.upvote(req, answer.post, function(err, rating){
-                generic.load_answers_extra_fields(answer, function(){
-                    if(!err){
-                        res.status(200);
-                        //Return answer for ajax update
-                        res.json(answer);
-                    } else {
-                        generic.genericErrorHandler(req, res, err);
-                    }
-                });
+            answer.getPost(function (err, post) {
+                if (err) {
+                    generic.genericErrorHandler(req, res, err);
+                } else {
+                    answer.post = post;
+                    raiting_controller.upvote(req, answer.post, function(err, rating){
+                        generic.load_answers_extra_fields(req, answer, function(){
+                            if(!err){
+                                res.status(200);
+                                //Return answer for ajax update
+                                res.json(answer);
+                            } else {
+                                generic.genericErrorHandler(req, res, err);
+                            }
+                        });
+                    });   
+                }
             });
+                    
         } else {
             generic.genericErrorHandler(req, res, err);
         }
@@ -299,11 +316,11 @@ var upvote = function (req, res) {
 exports.upvote = [role.can('upvote downvote'), upvote];
 
 var downvote = function (req, res) {
-    generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+    generic.get(req, req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
         if (!err && answer) {
             answer.getPost(function(err, post){
-                require('./ratings').downvote(req, post, function(err, rating){
-                    generic.load_answers_extra_fields(answer, function(){
+                raiting_controller.downvote(req, answer.post, function(err, rating){
+                    generic.load_answers_extra_fields(req, answer, function(){
                         if(!err){
                             res.status(200);
                             //Return answer for ajax update

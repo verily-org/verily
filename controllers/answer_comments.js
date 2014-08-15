@@ -28,20 +28,11 @@ exports.all = function (req, res) {
 var create = function (req, res) {
     var crisis_id = req.params.crisis_id;
 
-    generic.get(req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
+    generic.get(req, req.models.Answer, req.params.answer_id, undefined, function (err, answer) {
         if (!err && answer) {
             //answer exists
-            create_answer_comment(req, answer, function (err, comment2) {
-               if (!err && comment2) {
-                    var answercomment = {
-                        id: comment2.id,
-                        text: comment2.text,
-                        date: comment2.date,
-                        author: comment2.author,
-                        updated: comment2.updated
-                    }, wrapper = {
-                        answer_comment: answercomment
-                    };
+            create_comment(req, answer, function (err, comment) {
+               if (!err && comment) {
                     res.redirect('/crisis/'+ crisis_id +'/question/' + answer.question_id + '/answer/' + answer.id);
                     res.end();
                 } else {
@@ -92,7 +83,7 @@ function create_answer_comment(req, answer, cb){
     }
 }
 
-function create_comment(req, cb){
+function create_comment(req, answer, cb){
     var now = new Date(Date.now());
     var commentData = {
         text: req.body.text,
@@ -113,13 +104,19 @@ function create_comment(req, cb){
                 cb(err, null);
             }
 
-            comment.save(function (err) {
+            comment.setAnswer(answer, function (err) {
                 if (err) {
-                    cb(err, null);
-                }
-                cb(err, comment);
-            });
 
+                    cb(err, null)
+                } else {
+                    comment.save(function (err) {
+                        if (err) {
+                            cb(err, null);
+                        }
+                        cb(err, comment);
+                    });  
+                }
+            });
         });
 
     });

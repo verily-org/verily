@@ -402,25 +402,22 @@ module.exports = function (db, cb) {
         reverse: 'answers'
     });
 
-    Question.hasOne('post', Post, {reverse: 'questions', autoFetch: true});
+    Question.hasOne('post', Post, {reverse: 'questions'});
 
     Answer.hasOne('post', Post, {reverse: 'answers'});
 
-    Rating.hasOne('post', Post, {reverse: 'ratings', autoFetch: true});
+    Rating.hasOne('post', Post, {reverse: 'ratings'});
 
-    Rating.hasOne('user', User, {reverse: 'ratings', autoFetch: true});
+    Rating.hasOne('user', User, {reverse: 'ratings'});
 
-    Comment.hasOne('user', User, {reverse: 'comments'}, {
-        autoFetch: true
-    });
+    Comment.hasOne('user', User, {reverse: 'comments'});
 
     QuestionComment.hasOne('question', Question, {
-        reverse: 'comments',
-        autoFetch: true
+        reverse: 'comments'
     });
     QuestionComment.hasOne('comment', Comment);
 
-    AnswerComment.hasOne('answer', Answer, {
+    Comment.hasOne('answer', Answer, {
         reverse: 'comments'
     });
 
@@ -428,37 +425,35 @@ module.exports = function (db, cb) {
         reverse: 'answerComment'
     });
 
-    Crisis.hasOne('post', Post, {reverse: 'crisis', autoFetch: true});
+    Crisis.hasOne('post', Post, {reverse: 'crisis'});
     Question.hasOne('crisis', Crisis, {
         reverse: 'questions'
     });
 
-    Post.hasOne('user', User, {
-        reverse: 'posts', autoFetch: true, autoFetchLimit:2
-    });
+    Post.hasOne('user', User, { reverse: 'posts'});
     
     // Referrals and impressions keep their existing users
     // if the user logs in and transfers to a chosen-username account.
     // A link from a provisional user to a chosen-username user
     // is tracked in the UserHistory model.
     Referral.hasOne('user', User, {
-        reverse: 'authoredReferrals', autoFetch: true
+        reverse: 'authoredReferrals'
     });
     
     Impression.hasOne('user', User, {
-        reverse: 'impressions', autoFetch: true
+        reverse: 'impressions'
     });
     
     Impression.hasMany('referrals', Referral, {}, {
-        key: true, reverse: 'impressions', autoFetch: true
+        key: true, reverse: 'impressions'
     });
     
     UserHistory.hasOne('fromUser', User, {
-        reverse: 'withinFroms', autoFetch: true
+        reverse: 'withinFroms'
     });
     
     UserHistory.hasOne('toUser', User, {
-        reverse: 'withinTos', autoFetch: true
+        reverse: 'withinTos'
     });
     
 
@@ -466,10 +461,10 @@ module.exports = function (db, cb) {
         reverse: 'users'
     });
     User.hasOne('facebook', Facebook, {
-        reverse: 'users', autoFetch: true
+        reverse: 'users'
     });
     User.hasOne('twitter', Twitter, {
-        reverse: 'users', autoFetch: true
+        reverse: 'users'
     });
 
     if (cb) {

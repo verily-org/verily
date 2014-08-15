@@ -10,13 +10,14 @@ config = require('../lib/auth'),
 mode = require('../mode'),
 utils = require('utilities'),
 common = require('../static/js/common'),
-assignedPoints = require('../points.json');
+assignedPoints = require('../points.json'),
+query = require('../lib/sqlQueries');
 require('../lib/passport')(passport);
 
 var smtpTransport = config.mailer;
 var trueValue;
 var falseValue;
-if (mode.isHeroku()) {
+if (mode.isHeroku() || process.env.DATABASE === 'postgres') {
     trueValue = true;
     falseValue = false;
 } else {
@@ -33,22 +34,14 @@ exports.profile = function (req, res) {
     if (req.user) {
         res.status(200);
         var user = req.user;
-        req.models.Rating.findByPost({user_id:user.id}, function(err, ratingsArr){
+        query.getRatingsOfUser(req, user, function(err){
 
             if(err)throw err;
-//            var datetime = new Date();
-//            console.log('Posts gotten: ' + datetime.getMinutes() +":"+datetime.getSeconds());
-
-            var upvotes = 0;
-            var downvotes = 0;
-            var postAnswers = 0;
-            upvotes = ratingsArr.filter(function(rating){return rating.isUpvote() && rating.show && common.isUserContentShow(rating.user);}).length;
-            downvotes = ratingsArr.filter(function(rating){return rating.isDownvote() && rating.show && common.isUserContentShow(rating.user);}).length;
             req.models.Answer.findByPost({user_id:user.id}, function(err, answersArr){
                 if(err)throw err;
                 postAnswers = answersArr.length;
                 user.postPoints = postAnswers * assignedPoints.postEvidence;
-                user.votingPoints = upvotes * assignedPoints.voteUp;
+                user.votingPoints = user.upvotes * assignedPoints.voteUp;
                 user.save(function (err) {
                     if (err) {
                         generic.genericErrorHandler(req, res, err);
@@ -60,8 +53,6 @@ exports.profile = function (req, res) {
                         user: user,
                         points: user.getTotalPoints(),
                         posts: postAnswers,
-                        upvotes: upvotes,
-                        downvotes: downvotes,
                         error: req.flash('error'),
                         info: req.flash('info')
                     })
@@ -598,11 +589,11 @@ var setRoles = function (req, res) {
 exports.changeRoles = [isAdmin, setRoles];
 
 var getBanUsers = function (req, res) {
-    req.models.User.find({role: 'simple'}, function (err, users) {
+    req.models.User.find({role: 'simple'}, 200, function (err, users) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {
-            async.each(users, load_user_extra_fields, function(err){
+            async.each(users, query.getPostsCommentsOfUser.bind(null, req), function(err){
                 if(err)throw err;
                 res.render('user/banUsers', {
                     page: {
@@ -657,9 +648,9 @@ var getUserContentList = function (req, res) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
         } else {
-            req.models.Answer.findByPost({user_id: user.id},function(err, answers){
+            query.getAnswersOfUser(req, user.id, function(err, answers){
                 if(err)generic.genericErrorHandler(req, res, err);
-                req.models.Comment.find({user_id: user.id},function(err, comments){
+                query.getCommentsOfUser(req, user.id, function(err, comments){
                     if(err)generic.genericErrorHandler(req, res, err);
                     res.render('user/contentList', {
                         page: {
@@ -1144,18 +1135,14 @@ exports.postAdminAnswers = [isAdmin, postAllAnswers];
 
 
 var getAllQuestions = function (req, res) {
-    req.models.Question.find({}, function (err, questions) {
+    query.findAllQuestions(req, false, function (err, questions) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
         }
-        async.each(questions, generic.load_question_extra_fields, function (err) {
+        async.each(questions, query.load_question_extra_fields.bind(null, req), function (err) {
             if (err) {
                 generic.genericErrorHandler(req, res, err);  
             } else {
-                questions.forEach(function(question) {
-                    var relativeCreatedDate = utils.date.relativeTime(question.post.date, {abbreviated: true});
-                    question.relativeCreatedDate = relativeCreatedDate;
-                });
                 res.render('user/hideQuestions', {
                     page: {
                         title: 'Questions'
