@@ -2,6 +2,7 @@
 var generic = require('./generic');
 var enums = require('../enums');
 var oembed = require('oembed');
+var memwatch = require('memwatch');
 var common = require('../static/js/common');
 var raiting_controller = require('./ratings');
 var query = require('../lib/sqlQueries');
@@ -44,7 +45,7 @@ var applyUserAndRespond = function(req, res, crisis, question, answer) {
 
 // Get a specific answer
 var getOne = function (req, res) {
-
+    memwatch.gc();
     // ETag support.
     var reqIfNoneMatch = req.get(enums.ifNoneMatch);
 

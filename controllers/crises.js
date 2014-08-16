@@ -148,9 +148,9 @@ var oneCrisisResponse = function(req, res, responseData) {
 
 //get a specific crisis
 var getOne = function (req, res) {
-    
-    var datetime = new Date();
-    console.log('-----Entered crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
+    memwatch.gc();
+    /*var datetime = new Date();
+    console.log('-----Entered crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );*/
     generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (!err){
             
@@ -159,8 +159,8 @@ var getOne = function (req, res) {
                     if (err) {
                         generic.genericErrorHandler(req, res, err);
                     } else {
-                        var datetime = new Date();
-                        console.log('-----Question Found-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
+                        /*var datetime = new Date();
+                        console.log('-----Question Found-----' + datetime.getMinutes()+":"+datetime.getSeconds() );*/
                         // Questions with Post data included in each question.
                         async.each(questions, query.load_question_extra_fields.bind(null, req), function (err) {
                             if (err) {
@@ -194,8 +194,8 @@ var getOne = function (req, res) {
                                         };
                                         if (req.user) {
 
-                                            var datetime = new Date();
-                                            console.log('-----Responding crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );
+                                            /*var datetime = new Date();
+                                            console.log('-----Responding crisis-----' + datetime.getMinutes()+":"+datetime.getSeconds() );*/
                                             responseData.user = req.user;
                                             // Respond.
                                             oneCrisisResponse(req, res, responseData);

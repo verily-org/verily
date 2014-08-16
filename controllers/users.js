@@ -9,6 +9,7 @@ crypto = require('crypto'),
 config = require('../lib/auth'),
 mode = require('../mode'),
 utils = require('utilities'),
+memwatch = require('memwatch'),
 common = require('../static/js/common'),
 assignedPoints = require('../points.json'),
 query = require('../lib/sqlQueries');
@@ -427,12 +428,14 @@ exports.changeUsername = [role.can('change username'), changeUsernamef];
 var isAdmin = generic.isAdmin();
 
 var getRoles = function (model, cb) {
+    memwatch.gc();
+
     var basics = [];
     var editors = [];
     var admins = [];
     var role;
 
-    model.find({type: 'chosen-username'}, 'name', function (err, users) {
+    model.find({}, 'name', function (err, users) {
         if (err) {
             cb(err, null, null, null);
         } else {
@@ -589,6 +592,7 @@ var setRoles = function (req, res) {
 exports.changeRoles = [isAdmin, setRoles];
 
 var getBanUsers = function (req, res) {
+    memwatch.gc();
     req.models.User.find({role: 'simple'}, 200, function (err, users) {
         if (err) {
             generic.genericErrorHandler(req, res, err);
@@ -642,6 +646,7 @@ var postBanUser = function (req, res) {
 exports.postBanUser = [isAdmin, postBanUser];
 
 var getUserContentList = function (req, res) {
+    memwatch.gc();
 //    var datetime = new Date();
 //    console.log('entered: ' + datetime.getMinutes() +":"+datetime.getSeconds());
     req.models.User.get(req.params.user_id, function (err, user) {

@@ -9,6 +9,7 @@ var s3 = require('../s3');
 var mode = require('../mode');
 var path = require('path');
 var query = require('../lib/sqlQueries');
+var memwatch = require('memwatch');
 
 var common = require('../static/js/common');
 
@@ -448,7 +449,7 @@ var applyUserAndRespond = function(req, res, crisis, question, refcodes) {
 
 // Get a specific question.
 var getOne = function (req, res) {
-    //get(req.models.Question, req.params.question_id, res, 200);
+    memwatch.gc();
 
     generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
         if (err) throw err;

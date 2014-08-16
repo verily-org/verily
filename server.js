@@ -3,12 +3,13 @@ var ONE_DAY_MSECS = 86400000;
 var syncCount = 0;
 
 module.exports = function (suppressLogs, dbTestUrl, callback) {
-    //if (process.env.NODETIME_ACCOUNT_KEY) {
+    //Nodetime creates graph of the application performance. Do not use in production.
+    /*if (process.env.NODETIME_ACCOUNT_KEY) {
         require('nodetime').profile({
             accountKey: process.env.NODETIME_ACCOUNT_KEY || '8756a8e4cf190801375dc1f1655704c031fe1543',
             appName: 'test-verily' // optional
         });
-    //}
+    }*/
 
     var //fs = require('fs'),
         connect = require('connect'),
