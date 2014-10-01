@@ -1,0 +1,1035 @@
+
+body {
+    text-rendering: optimizeLegibility;
+    font-weight: 300;
+}
+
+.fa,
+.logo {
+  text-rendering: auto;
+}
+
+body.hero-cover {
+    background-color: #003030;
+    background: url(https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-hero-splash-1920px.jpg) no-repeat left center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.hidden-xxs {
+    display: none;
+}
+
+@media (min-width: 500px) {
+    .hidden-xxs {
+        display: block;
+    }
+}
+
+body.hero-cover footer {
+    color: #dddddd;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+}
+
+#content {
+    margin-bottom: 1em;
+}
+
+footer {
+    margin-top: 3em;
+}
+
+footer a {
+    color: #777777 !important;
+}
+
+body.hero-cover footer a {
+    color: #dddddd !important;
+}
+
+main.hero-cover {
+/*    background-color: rgba(255, 255, 255, .5);*/
+}
+
+#fb-root {
+    display: none;
+}
+
+a {
+    color: #009c9c !important;
+}
+
+.btn-primary {
+    background-color: #009c9c;
+    border-color: #008a8a;
+    color: #ffffff !important;
+}
+
+.tag.label-primary {
+    background-color: #009c9c;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #008a8a;
+    border-color: #008a8a;
+}
+
+.btn-default {
+    background-color: transparent;
+}
+
+div.welcome .challenge-info-box .btn-default {
+    background-color: #f5f5f5;
+}
+
+div.welcome #eventEnd {
+/*    display: inline-block;*/
+}
+
+.button-switch-timezone.active {
+    background-color: #dbdbdb !important;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.225);
+}
+
+.logo {
+    font-family: 'Abril Fatface', cursive;
+/*    color: #009c9c !important;*/
+    font-size: 35px;
+}
+
+.logo .first-char {
+    font-family: 'Cinzel Decorative', cursive;
+    letter-spacing: -0.13em;
+}
+
+.logo.welcome {
+    font-size: 60px;
+    line-height: 60px;
+}
+
+.transparent {
+    background-color: transparent;
+}
+
+ul.no-bullets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.no-bullets li {
+    padding-bottom: 0.5em;
+}
+
+.flash-msgs-ctr {
+    padding-top: 1.5em;
+}
+
+div.welcome {
+/*    margin-top: 3em;*/
+
+}
+
+div.welcome .challenge-info-box {
+/*    background-color: rgba(245, 245, 245, 0.7);*/
+    color: #dddddd;
+}
+
+div.welcome .cookie-message {
+    border: none;
+    color: #dddddd;
+}
+
+div.welcome .signup-form-for-updates {
+    color: #dddddd;
+}
+
+div.welcome p.challenge-description {
+    color: #dddddd;
+}
+
+div.welcome ul.challenge-description {
+    color: #dddddd;
+}
+
+
+
+.well.challenge-description {
+/*        background-color: rgba(255, 255, 255, .5);*/
+}
+
+
+.label-verily-invert {
+    background-color: #ffffff;
+    color: #009c9c;
+}
+
+.label-verily-invert-muted {
+    background-color: #eeeeee;
+    color: #009c9c;
+}
+
+.navbar .label-verily-invert-muted {
+    background-color: #53cfcf;
+    color: #007f80;
+}
+
+.navbar-form.nav-search {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav-search .input-group {
+    width: 100%;
+}
+
+#modal-share-question-link .modal-body {
+    padding: 15px;
+}
+
+#modal-share-question-link .modal-body input {
+    text-align: center;
+} 
+
+
+@media (min-width: 768px) {    
+    .nav-search .input-group {
+        width: 10vw;
+        transition: all 0.25s ease;
+    }
+    
+    #modal-share-question-link .modal-body {
+        padding: 0;
+    }
+    
+}
+
+@media (min-width: 992px) {
+    .navbar-form.nav-search {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+/* If username wraps it has some margin, rather than -15px */
+.hero-cover .navbar-nav {
+    margin: 7.5px 0;
+}
+
+.hero-cover .navbar-default .nav-search {
+    margin-top: 28px;
+}
+
+a.username {
+    padding-left: 15px !important;
+}
+
+
+.nav-search input {
+    background-color: #71c7c7;
+    color: #000000;
+    border-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding-left: 6px;
+    padding-right: 3px;
+    border-right: none;
+}
+
+.nav-search button {
+    background-color: #71c7c7;
+    color: #009c9c;
+    border-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 6px;
+    border-left: none;
+    margin-left: 0 !important;
+}
+
+.nav-search button:hover,
+.nav-search button:focus {
+    background-color: #71c7c7;
+    border-color: transparent;
+}
+
+.nav-search input:focus,
+.hero-cover .nav-search input:focus {
+    background-color: #ffffff;
+    border-color: transparent;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.nav-search button.focused,
+.hero-cover .nav-search button.focused {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+
+.hero-cover .nav-search input,
+.hero-cover .nav-search button {
+    border-color: #ffffff;
+    background-color: transparent;
+}
+
+.hero-cover .nav-search input {
+    color: #ffffff;
+    border-right: none;
+}
+
+.hero-cover .nav-search input:focus {
+    color: #000000;
+}
+
+.hero-cover .nav-search button {
+    border-left: none;
+}
+
+
+
+div.welcome .well {
+    padding-top: 0;
+}
+
+div.welcome .well-sm {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+div.welcome p.lead {
+    margin-bottom: 0.5em;
+}
+
+div.welcome p.lead.stay-large {
+    font-size: 21px !important;
+}
+
+div.welcome ul.lead.stay-large {
+    font-size: 21px !important;
+}
+
+
+div.welcome p.event-date {
+    display: inline-block;
+    margin-right: 0.5em;
+}
+
+div.welcome .button-switch-timezone {
+    font-weight: normal;
+}
+
+div.welcome .share-buttons {
+}
+
+div.welcome .enter-challenge-ctr {
+    margin-top: 0.5em;
+}
+
+div.welcome .share-buttons .btn-group {
+    margin-top: 0.5em;
+    margin-right: 0.5em;
+}
+
+div.welcome .add-to-calendar-button {
+/*    margin-left: 0.5em;*/
+}
+
+div.welcome .signup-form-for-updates input {
+    margin-bottom: 0.5em;
+}
+
+
+
+.navbar-default {
+    background-color: #009c9c;
+    border-color: transparent;
+    border-radius: 0 !important;
+}
+
+.hero-cover .navbar-default {
+    background-color: transparent;
+}
+
+.navbar-default a {
+    color: #ffffff !important;
+}
+
+.navbar-default .open a {
+    color: #009c9c !important;
+}
+
+/* TODO: Use LESS variables */
+.text-muted a {
+    color: #999;
+}
+
+.fa-fw {
+    width: 1em;
+}
+
+.col-trim-padding {
+
+}
+
+.freesize-row div.pull-left {
+    padding-left: 15px;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding-left: 0;
+}
+
+p.metadata {
+    margin-bottom: 7px;
+}
+
+.small-caps {
+    font-variant: small-caps;
+}
+
+fa.breadcrumb {
+    margin-right: 0.5em;
+}
+
+.navbar-default .navbar-toggle {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
+}
+
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.hero-cover .navbar-default .navbar-toggle {
+    margin-top: 2em;
+}
+
+.hero-cover .navbar-default .navbar-collapse {
+    border-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.hero-cover .navbar-default ul.navbar-nav li a {
+    line-height: 60px;
+}
+
+
+
+.hero-cover .navbar-default {
+    margin-bottom: 3.85em;
+}
+
+@media (min-width: 768px) {
+    .hero-cover .navbar-default {
+        margin-bottom: 3em;
+    }
+}
+
+
+
+.calendar-day {
+    top: 3px;
+}
+
+.date-adj-calendar {
+    top: 3px;
+    line-height: 2em;
+    width: 18em;
+    text-align: left;
+    margin-left: 2.5em;
+}
+
+.question.page-header {
+/*    border-left-width: 0.75em;
+    border-left-style: solid;
+    padding-left: 1em;
+    border-bottom-style: none;*/
+}
+
+.action-buttons {
+    margin-top: 1em;
+}
+
+.action-buttons .row {
+    margin-right: 0;
+}
+.answer-buttons{
+
+}
+.action-button-ctr {
+    margin-top: 1em;
+}
+
+.mini.action-button-ctr {
+    margin-left: 12px;
+    float: none;
+}
+
+.mini.action-button-ctr:first-child {
+
+}
+
+.mini.action-button-ctr:last-child {
+
+}
+
+.additional-button-ctr {
+    margin-top: 1em;
+}
+
+.btn-danger {
+    color: #ffffff !important;
+}
+
+
+.text-action-button {
+/*    width: 7em;*/
+
+    min-width: 4em;
+    font-weight: 800;
+
+}
+
+.text-action-button.share-button {
+    height: 28px;
+    padding: 3px 12px;
+/*    background-color: transparent;*/
+}
+
+.text-action-button * {
+}
+
+.text-action-button.btn-success {
+    border-color: #398439;
+}
+
+.text-action-button.btn-danger {
+    border-color: #ac2925;
+}
+
+/* TODO Use LESS variables for 768px and margins (15px) */
+
+    
+    .action-buttons {
+        margin-top: 0;
+/*        padding-left: 15px;*/
+    }
+    
+    .action-button-ctr {
+    }
+    
+/*    
+    @media (max-width: 768px) {
+        .text-action-button {
+            width: 3em;
+        }
+    }*/
+    
+    .form-control.collapse-with-margin {
+        margin-top: 5px;
+    }
+
+
+
+
+.mini-action-button {
+    width: 3em;
+}
+
+#facebook-share-button > span {
+    width: 80px !important;
+    height: 16px !important;
+}
+
+.facebook-button {
+    background-color: #3b5998;
+    border-color: transparent;
+    color: #ffffff !important;
+}
+
+.facebook-button:hover,
+.facebook-button:focus {
+    border-color: transparent;
+    background-color: #344f88;
+}
+
+.facebook-blue {
+    color: #3b5998 !important;
+}
+
+#facebook-share-button iframe {
+    transform: scale(1.3);
+    -ms-transform: scale(1.3); 
+    -webkit-transform: scale(1.3); 
+    -o-transform: scale(1.3); 
+    -moz-transform: scale(1.3); 
+    transform-origin: top left;
+    -ms-transform-origin: top left;
+    -webkit-transform-origin: top left;
+    -moz-transform-origin: top left;
+    -webkit-transform-origin: top left;
+}
+
+.twitter-button {
+    background-color: #55acee;
+    border-color: transparent;
+    color: #ffffff !important; 
+}
+
+.twitter-button:hover,
+.twitter-button:focus {
+    background-color: #55acee;
+    border-color: transparent;
+}
+
+.signup-form .twitter-button {
+    margin-top: 0.5em;
+}
+
+@media (min-width: 992px) {
+    .signup-form .twitter-button {
+        margin-top: 0;
+    }
+}
+
+.modal .vertically-centred {
+
+}
+
+#modal-share-question-link .modal-body {
+/*    padding: 0;*/
+    text-align: center;
+}
+
+#field-share-link {
+    border: none;
+}
+
+
+.question-answer .action-button-ctr {
+    padding-top: 1em;
+    margin-top: 0;
+}
+
+
+@media (max-width: 768px) {
+    .question-image-and-map-ctr .col {
+        margin-top: 1em !important;
+    }
+    
+    .nav.navbar-nav.pull-right {
+        float: left !important;
+    }
+    
+    .centre-when-viewport-narrowed {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        float: none !important;
+    }
+    
+    .login-aside-button {
+        margin-top: 2em !important;
+    }
+    
+    .login-aside-button:first-child {
+        margin-top: 3em !important;
+    }
+    .video{
+        widows: 100% !important;;
+    }
+}
+
+.login-aside-button {
+    margin-top: 1em;
+}
+
+.login-aside-button:first-child {
+    margin-top: 0;
+}
+
+.auth-modal .login-aside-button {
+    margin-top: 0 !important;
+    margin-bottom: 1em;
+}
+
+.evidence-content {
+    margin-bottom:30px;
+}
+
+.crisis-question-metrics {
+    font-size: 1.5em;
+}
+
+.crisis-question-metrics span {
+    font-weight: lighter;
+}
+
+.crisis-question-metric {
+    padding-left: 0;
+    padding-right: 5px;
+
+}
+.crisis-question-metric .success{
+    color:grey !important;
+}
+.crisis-question-metric .danger{
+    color:grey !important;
+}
+.success {
+    color: #5cb85c;
+}
+
+.danger {
+    color: #d2322d;
+}
+
+.crisis-question-metric.important {
+    background-color: transparent;
+    color: #000000;
+/*    border: 1px solid #ededed;*/
+
+}
+
+.metric.false i {
+    color: #803230;
+}
+
+
+
+/* TODO Use LESS variables */
+.action-button-count {
+    background-color: #ffffff !important;
+    color: #428bca;
+/*    min-width: 4.25em;*/
+}
+
+.action-button-count.disabled {
+    opacity: 1;
+}
+
+/* Buttons with a background colour need better borders */
+.action-button-count.back-coloured {
+    margin-left: 0 !important;
+    border-left: none;
+}
+
+.mini .action-button-count {
+    min-width: 2em;
+}
+
+.metadata.tags .tag-ctr {
+    display: inline-block;
+    margin-top: 0.5em;
+}
+
+.tag {
+    font-weight: normal;
+    font-size: 100%;
+}
+
+.question-image-and-map-ctr {
+    margin-top: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.question-image-and-map > div {
+/*    padding-top: 1em;*/
+/*    margin-top: 0;*/
+}
+
+.question-answers {
+    margin-top: 1em;
+}
+
+.text-muted code {
+    color: #999999;
+}
+
+#map {
+/*    visibility: hidden;*/
+}
+
+
+.well.form {
+    padding-top: 0;
+}
+
+.form-control.plain {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    webkit-box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.has-feedback .form-control-feedback.with-input-lg {
+    top: 31px;
+}
+
+#form-image-upload-ctr {
+/*    background-color: #ffffff;*/
+    
+}
+
+.video {
+    margin-top: 1em;
+    width:50%;
+}
+
+.video-wrapper {
+    text-align: center;
+}
+.video-spinner{
+    text-align: center;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    height: 0;
+}
+.video-container {
+    text-align: center;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    height: 0;
+}
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.btn-video-validate{
+    margin-top:5px;
+}
+.question-answer {
+/*    border-left: 5px solid transparent;*/
+}
+
+.verily-panel .panel-heading {
+    border-bottom: none;
+}
+
+.verily-panel .panel-heading {
+    background-color: #ffffff;
+}
+
+.crisis-question-metrics-answer-button {
+    margin-top: 0.5em;
+}
+
+.row.card-image {
+    height: 200px;
+    background-repeat: no-repeat;
+    background-position: center, center;
+    background-attachment: local;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.question-answer-bar {
+    margin: 0;
+    padding: 0;
+}
+
+.question-answer-bar .metric {
+
+}
+
+.question-answer-bar > span {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.verily-panel .panel-title {
+    font-size: 1.35em;
+}
+
+/* TODO Change to use LESS variables */
+.border-true {
+    border-left-color: #5cb85c;
+}
+
+.border-false {
+    border-left-color: #d9534f;  
+}
+
+.border-not-available {
+    border-left-color: #ededed;
+}
+
+.crisis-ask-question {
+/*    margin-top: 1em;*/
+}
+
+.crisis-question-border {
+    border-left-width: 0.75em;
+    border-left-style: solid;
+}
+
+
+
+.metadata .inline-metadata {
+    margin-left: 1em;
+}
+
+.metadata .inline-metadata:first-child {
+    margin-left: 0 !important;
+}
+
+
+.breadcrumb {
+    margin-top: -20px;
+    padding-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.question-title {
+    margin-top: 0;
+}
+
+#form-title-chars-left {
+    font-weight: bold;
+}
+
+.form-group a.tag {
+    margin-left: 0.5em;
+}
+
+.form-group a.tag .label {
+    display: inline-block;
+/*    font-size: 100%*/
+}
+
+.team {
+    font-size: 1.2em;
+}
+
+.team div {
+    padding-bottom: 1em;
+}
+
+
+
+.olControlAttribution {
+    bottom: 0 !important;
+}
+.item-top-margin {
+    margin-top: 1.0em;
+}
+.btn-group-left-margin {
+    margin-left: 3.0em;
+}
+#alert-window{
+    position:absolute;
+    min-height:100px;
+    width:400px;
+    top:5px;
+    right:50px;
+    z-index:10000;
+}
+.crisis .twitter-share-button,
+.question .twitter-share-button {
+    margin-top: 11px;
+/*    height:31px;*/
+}
+
+.comments-content{
+    margin-top:20px;
+}
+
+#widget{
+    padding-bottom: 20px !important;
+}
+.disabled.well{
+    opacity: .5;
+}
+
+.page-header {
+    margin-top: 0;
+}
+
+.crisis-questions-header {
+    margin-bottom: 1em;
+}
+
+.verily-panel .posted{
+    padding-top:9px;
+}
+
+.verily-panel.question-answer {
+    word-wrap: break-word;
+}
+
+.panel-body{
+    padding-bottom: 6px;
+}
+@media (max-width: 768px)  {
+    .verily-panel img{
+        max-height:200px;
+    }
+}
+@media (min-width: 768px) and  (max-width: 991px) {
+    .verily-panel img{
+        max-height:120px;
+    }
+    .verily-panel .posted{
+        font-size:0.9em;
+    }
+    .crisis-question-metrics{
+        font-size:1.2em;
+    }
+    .panel-title{
+        margin-bottom:10px;
+    }
+}
+@media (min-width: 991px) and  (max-width: 1200px) {
+    .verily-panel img{
+
+        max-height:120px;
+    }
+}
+
+@media (min-width: 1200px)  {
+    .verily-panel img{
+
+        max-height:120px;
+    }
+}
+
+/* this is for the group of social media buttons */
+.sharing-buttons {
+    padding-top: 1em;
+}
+
+.single-button-form {
+    display: inline;
+}

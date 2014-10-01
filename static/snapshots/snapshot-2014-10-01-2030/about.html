@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+    <head>
+        <meta charset="utf-8">
+        <title>Verily</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		
+		
+		
+		
+		
+		<!-- FB open graph tags -->
+		<meta property="og:site_name" content="Verily"/>
+		<meta property="og:url" content="https://veri.ly/about" /> 
+		<meta property="og:image" content="https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-v-logo.png"/>
+		<meta property="og:title" content="Verily"/>
+		<meta property="og:description" content="We live in the Information Age... or the Disinformation Age. Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult for everyone. Join the Verily Challenge to search for the truth."/>
+
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        
+        <!-- TODO Use bower and modify Bootstrap to our needs -->
+        
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        
+        <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
+        
+        <link rel="shortcut icon" href="static/images/favicon.png">
+        <link rel="apple-touch-icon-precomposed" href="static/images/favicon.png" >
+        
+        <link href="static/css/style.css" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.css">
+        
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+          <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <![endif]-->
+        
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+        <!-- Jquery Datatable -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.0/js/jquery.dataTables.min.js"></script>
+
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
+        <!-- Common JS -->
+        <script type="text/javascript" src="static/js/common.js"></script>
+
+        <!-- Latest compiled and minified Bootstrap JavaScript -->
+        <script src="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+        <!-- Load general functions JS -->
+        <script type="text/javascript" src="static/js/load.js"></script>
+
+        
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-52527080-1', 'auto');
+            ga('require', 'displayfeatures');
+            ga('send', 'pageview');
+        </script>
+        <script type="text/javascript">
+            var sc_project=9897798;
+            var sc_invisible=1;
+            var sc_security="741aa466";
+            var scJsHost = (("https:" == document.location.protocol) ?
+                    "https://secure." : "http://www.");
+            document.write("<sc"+"ript type='text/javascript' src='" +
+                    scJsHost+
+                    "statcounter.com/counter/counter.js'></"+"script>");
+        </script>
+        
+    </head>
+    <body class="">
+        
+        <!-- provisional user confirm login modal -->
+        <div class="modal fade" id="provisionalUserConfirmLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to withdraw from <strong>user-185179dc</strong>?</h4>
+              </div>
+              <div class="modal-body">
+                  Submissions made under your provisional username, <strong>user-185179dc</strong>, will be lost if you log in now. To transfer your content, <a href="register/index.html">sign up</a>.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a href="login%3Fvia=%252Flogout.html" type="button" class="btn btn-danger">Withdraw and log in</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / provisional user confirm login modal -->
+        
+        
+        <div id="login-register" class="modal auth-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+						<div class="login-aside-button text-center">
+							<a href="auth/facebook.html" class="btn btn-default btn-lg facebook-button"><i class="fa fa-facebook"></i> Login with Facebook</a>
+						</div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Login
+                                </p>
+                                
+                                <form class="login-form" role="form" action="user.html" method="POST" novalidate>
+    <input type="hidden" name="_csrf" value="mVokOjzKuJlnCDH/1L7JaSpQEa5VkaFqwnH+U=" />
+    <!-- <input type="hidden" name="_method" value="POST">
+    <input type="hidden" id="form-question-type" name="type"> -->
+
+    <div class="form-group" >
+        <input type="email" class="form-control input-lg form-email" name="email" placeholder="Email" tabindex="1">
+    </div>
+
+    <div class="form-group">
+		<input type="password" class="form-control input-lg form-password" name="password" placeholder="Password" tabindex="2">
+    </div>
+    
+    
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Associate content posted as a guest user under user-185179dc with this account.
+        </label>
+    </div>
+    
+	
+	<div>
+		<a href="forgot.html">Forgot Password</a>
+	</div>
+
+    <button type="submit" class="btn btn-primary btn-lg pull-right centre-when-viewport-narrowed" id="login-button">Login</button>
+</form>
+
+<script type="text/javascript">
+
+var loginForm = $('.login-form');
+
+loginForm.on('submit', function(e) {    
+    var valid = true;
+    var message;
+    
+    var formSubmitted = $(e.currentTarget);
+    
+    var loginAlert = formSubmitted.find('.login-alert')
+    
+    if (formSubmitted.find('.form-email').val() === '' || formSubmitted.find('.form-password').val() === '') {
+        valid = false;
+        message = 'Enter your login details.';
+    }
+    
+    if (valid) {
+        // Whole form is valid, submit form to endpoint
+        return;
+    } else {
+        // The form is not valid, don't submit form.
+        e.preventDefault();
+        loginAlert.text(message);
+        loginAlert.css('display', 'block');
+        
+    }
+})
+
+</script>
+                                
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Signup
+                                </p>
+                                
+                                
+<form id="signup" role="form" action="user.html" method="POST">
+    <input type="hidden" name="_csrf" value="mVokOjzKuJlnCDH/1L7JaSpQEa5VkaFqwnH+U=" />
+    <!-- <input type="hidden" name="_method" value="POST">
+    <input type="hidden" id="form-question-type" name="type"> -->
+
+	<div class="form-group">
+        <input type="email" class="form-control input-lg" id="form-email" name="email" placeholder="Email">
+    </div>
+	<div class="form-group">
+    	<input type="text" class="form-control input-lg" id="form-name" name="name" placeholder="Choose a username">
+    </div>
+    
+    <div class="form-group">
+    	<input type="password" class="form-control input-lg" id="form-password" name="password" placeholder="Create a password">
+    </div>
+    <div class="form-group">
+    	<input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="Enter password again">
+    </div>
+	
+	<div class="form-group">
+		<label>
+            <input type="checkbox" id="terms-agreement" name="termsAgreement">
+			I agree with the <a href="terms.html" target="_blank">Terms and Conditions</a>.
+		</label>
+	</div>
+
+    <button type="submit" class="btn btn-primary btn-lg pull-right" id="submit-button">Signup with Email</button>
+	
+
+    
+    
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Associate content posted as a guest user under user-185179dc with the new account.
+        </label>
+    </div>
+    
+	
+    <b>IMPORTANT :</b> This website is part of an academic research project at the University of Southampton (Ethics reference number: ERGO/FPSE/10709).
+	Your data will be used only for academic research purposes and it will be treated in accordance to the UK Data Protection Act 1998.
+	Full details in our <a href="terms.html" target="_blank">Terms and Conditions</a>.
+</form>
+
+
+
+
+
+                                
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="alert-window" style="display:none; position:fixed;" class="alert alert-warning alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4 class="alert-title"></h4>
+            <span class="alert-message"></span>
+        </div>
+        <a href="about.html#content" class="sr-only">Skip to main content</a>
+
+        
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    
+
+
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <a class="navbar-brand active logo " href="index.html" title="Home">
+                        <span class="first-char">V</span>erily
+                    </a>
+                    
+                    <ul class="nav navbar-nav pull-right">
+                        <li>
+                            <a href="user.html" class="username" title="provisional username">
+                                
+                                <i class="fa fa-ticket"></i>
+                                
+                                user-185179dc
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        
+                        
+                    
+                        
+                        
+                        
+						
+
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
+                        
+
+
+                            
+                            <li>
+                                <a href="register/index.html">
+                                    Signup
+                                </a>
+                            </li>
+                            <li><a href="user.html">Login</a></li>
+                            
+							
+                            
+                        
+                    </ul>
+
+                </div>
+				
+				
+
+            </div>
+			
+			
+
+        </nav>
+        
+        
+        
+
+        
+		
+            <main role="main" id="content" class="container">
+                <!-- <ol class="breadcrumb"> -->
+                    <!-- <li>
+                        <a href="/" title="Home">Home</a>
+                    </li> -->
+                    <!--  -->
+                <!-- </ol> -->
+                
+
+<div class="team row">
+
+    <div class="col-md-8">
+	    <h2>About</h2>
+	    <div>
+		Verily is an experimental web application designed to rapidly crowdsource the verification of information during humanitarian disasters. 
+		It has been featured in <a href="http://ideas.foreignpolicy.com/posts/2013/05/01/can_critical_thinking_be_crowdsourced">Foreign Policy</a>, <a href="http://www.newscientist.com/article/dn23427-nowhere-to-hide-the-next-manhunt-will-be-crowdsourced.html">New Scientist</a> and <a href="http://www.technologyreview.com/news/514056/preventing-misinformation-from-spreading-through-social-media/">MIT Technology Review</a>, as well as in a 
+		<a href="https://www.youtube.com/watch?v=7eKkquHiFE4&t=10m42s">TedX talk on Digital Humanitarians</a>.
+		</div>
+		
+		<h3>Credits</h3>
+		<div>
+		Verily was introduced in 2013 in a <a href="http://www2013.org/companion/p1029.pdf">paper</a> by <a href="http://chato.cl/research/">Carlos Castillo</a> (<a href="http://www.qcri.qa/page?a=103&lang=en-CA">QCRI</a>),  <a href="http://irevolution.net/bio/">Patrick Meier</a> (<a href="http://www.qcri.qa/page?a=103&lang=en-CA">QCRI</a>), <a href="http://users.ecs.soton.ac.uk/vn/">Victor Naroditskiy</a> (<a href="http://www.aic.ecs.soton.ac.uk/">Southampton</a>) and <a href="http://www.mit.edu/~irahwan/">Iyad Rahwan</a> (<a href="http://www.masdar.ae/en/">Masdar</a>).
+		A proof-of-concept was developed that year by Dmytro Krasnoshtan, Attila-Peter Toth, and Abdulfatai Popoola.
+	    </div>
+	    
+	    <div>
+		Design and development of the actual platform started in 2014 spearheaded by <a href="http://users.ecs.soton.ac.uk/ec/">Enrico Costanza</a> and <a href="http://users.ecs.soton.ac.uk/vn/">Victor Naroditskiy</a> at the University of Southampton, thanks to the enthusiasm, technical expertise and relentless work of <a href="http://uk.linkedin.com/pub/luis-arenal/46/778/684/de">Luis Arenal Mijares</a>, <a href="http://alexgreenland.com/">Alex Greenland</a> and <a href="http://gr.linkedin.com/pub/dimitrios-papamilios/70/510/33b">Dimitrios Papamilios</a>, who are students of the <a href="http://www.ecs.soton.ac.uk/programmes/msc-web-technology">Web Technology MSc programme</a>.
+	    </div>
+	    
+	    <div>
+		In July 2014 we ran the first public trial of Verily, thanks to the effort of <a href="http://www.juscomms.com/">Justine Mackinnon</a> (<a href="http://www.qcri.qa/page?a=103&lang=en-CA">QCRI</a>).
+	    </div>
+	    
+	    <div>
+		Verily is supported, in part, by the <a href="http://www.orchid.ac.uk">ORCHID</a> project.
+	    </div>
+	    
+        <h3>Contact</h3>
+	    <div>
+		For more information about Verily please contact us at <a href="index.html">contact@veri.ly</a> 
+		<br/>
+		Follow us <a href="https://twitter.com/intent/user?screen_name=veridotly">@VeriDotLy</a>
+	    </div>
+	    
+        <h3>Source Code &amp; License</h3>
+        <div>
+        The Verily software is developed under the MIT license. The <a href="https://github.com/verily-org/verily">source code</a> is available on GitHub.
+        Content submitted to the website at http://veri.ly/ is licensed under a <a href="https://creativecommons.org/licenses/by/3.0/">CC-BY-3.0 license</a>.
+        </div>
+	    
+	</div>
+	
+	<div class="col-md-4">
+		<h2>Team</h2>
+		<ul class="no-bullets">
+            <li><a href="http://uk.linkedin.com/pub/luis-arenal/46/778/684/de">Luis Arenal Mijares</a></li>
+		    <li><a href="http://chato.cl/research/">Carlos Castillo</a></li>
+            <li><a href="http://users.ecs.soton.ac.uk/ec/">Enrico Costanza</a></li>
+            <li><a href="http://alexgreenland.com/">Alex Greenland</a></li>
+		    <li><a href="http://www.juscomms.com/">Justine Mackinnon</a></li>
+		    <li><a href="http://irevolution.net/bio/">Patrick Meier</a></li>
+		    <li><a href="http://users.ecs.soton.ac.uk/vn/">Victor Naroditskiy</a></li>
+            <li><a href="http://gr.linkedin.com/pub/dimitrios-papamilios/70/510/33b">Dimitrios Papamilios</a></li>
+            <li><a href="http://www.mit.edu/~irahwan/">Iyad Rahwan</a></li>
+		</ul>
+    </div>
+    
+</div>
+
+
+                <footer>
+                    
+                    <div class="pull-left">
+                        <div class="text-muted">
+                            <a href="terms.html#copyright">&copy; 2014 Verily</a>
+                        </div>
+                        <div class="text-muted">
+                            <a href="about.html">About</a>
+                            &middot;
+                            <a href="terms.html">Terms &amp; Privacy</a>
+							&middot;
+                            <a href="help.html">Contact</a>
+                        </div>
+                    </div>
+
+                    
+                    
+                </footer>
+            </main>
+        
+    </body>
+</html>
+
+        
+        
+        

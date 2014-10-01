@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+    <head>
+        <meta charset="utf-8">
+        <title>Search Questions &middot; Verily</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		
+		
+		
+		
+		
+		<!-- FB open graph tags -->
+		<meta property="og:site_name" content="Verily"/>
+		<meta property="og:url" content="https://veri.ly" /> 
+		<meta property="og:image" content="https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-v-logo.png"/>
+		<meta property="og:title" content="Verily"/>
+		<meta property="og:description" content="We live in the Information Age... or the Disinformation Age. Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult for everyone. Join the Verily Challenge to search for the truth."/>
+
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        
+        <!-- TODO Use bower and modify Bootstrap to our needs -->
+        
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        
+        <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
+        
+        <link rel="shortcut icon" href="../static/images/favicon.png">
+        <link rel="apple-touch-icon-precomposed" href="../static/images/favicon.png" >
+        
+        <link href="../static/css/style.css" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.css">
+        
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+          <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <![endif]-->
+        
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+        <!-- Jquery Datatable -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.0/js/jquery.dataTables.min.js"></script>
+
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
+        <!-- Common JS -->
+        <script type="text/javascript" src="../static/js/common.js"></script>
+
+        <!-- Latest compiled and minified Bootstrap JavaScript -->
+        <script src="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+        <!-- Load general functions JS -->
+        <script type="text/javascript" src="../static/js/load.js"></script>
+
+        
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-52527080-1', 'auto');
+            ga('require', 'displayfeatures');
+            ga('send', 'pageview');
+        </script>
+        <script type="text/javascript">
+            var sc_project=9897798;
+            var sc_invisible=1;
+            var sc_security="741aa466";
+            var scJsHost = (("https:" == document.location.protocol) ?
+                    "https://secure." : "http://www.");
+            document.write("<sc"+"ript type='text/javascript' src='" +
+                    scJsHost+
+                    "statcounter.com/counter/counter.js'></"+"script>");
+        </script>
+        
+    </head>
+    <body class="">
+        
+        <!-- provisional user confirm login modal -->
+        <div class="modal fade" id="provisionalUserConfirmLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to withdraw from <strong>user-185179dc</strong>?</h4>
+              </div>
+              <div class="modal-body">
+                  Submissions made under your provisional username, <strong>user-185179dc</strong>, will be lost if you log in now. To transfer your content, <a href="../register/index.html">sign up</a>.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a href="../login%3Fvia=%252Flogout.html" type="button" class="btn btn-danger">Withdraw and log in</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / provisional user confirm login modal -->
+        
+        
+        <div id="login-register" class="modal auth-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+						<div class="login-aside-button text-center">
+							<a href="../auth/facebook.html" class="btn btn-default btn-lg facebook-button"><i class="fa fa-facebook"></i> Login with Facebook</a>
+						</div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Login
+                                </p>
+                                
+                                <form class="login-form" role="form" action="../user.html" method="POST" novalidate>
+    <input type="hidden" name="_csrf" value="UEkN469T9WJlnhXbwteXY6f+2nK2q9tkU7wvc=" />
+    <!-- <input type="hidden" name="_method" value="POST">
+    <input type="hidden" id="form-question-type" name="type"> -->
+
+    <div class="form-group" >
+        <input type="email" class="form-control input-lg form-email" name="email" placeholder="Email" tabindex="1">
+    </div>
+
+    <div class="form-group">
+		<input type="password" class="form-control input-lg form-password" name="password" placeholder="Password" tabindex="2">
+    </div>
+    
+    
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Associate content posted as a guest user under user-185179dc with this account.
+        </label>
+    </div>
+    
+	
+	<div>
+		<a href="../forgot.html">Forgot Password</a>
+	</div>
+
+    <button type="submit" class="btn btn-primary btn-lg pull-right centre-when-viewport-narrowed" id="login-button">Login</button>
+</form>
+
+<script type="text/javascript">
+
+var loginForm = $('.login-form');
+
+loginForm.on('submit', function(e) {    
+    var valid = true;
+    var message;
+    
+    var formSubmitted = $(e.currentTarget);
+    
+    var loginAlert = formSubmitted.find('.login-alert')
+    
+    if (formSubmitted.find('.form-email').val() === '' || formSubmitted.find('.form-password').val() === '') {
+        valid = false;
+        message = 'Enter your login details.';
+    }
+    
+    if (valid) {
+        // Whole form is valid, submit form to endpoint
+        return;
+    } else {
+        // The form is not valid, don't submit form.
+        e.preventDefault();
+        loginAlert.text(message);
+        loginAlert.css('display', 'block');
+        
+    }
+})
+
+</script>
+                                
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Signup
+                                </p>
+                                
+                                
+<form id="signup" role="form" action="../user.html" method="POST">
+    <input type="hidden" name="_csrf" value="UEkN469T9WJlnhXbwteXY6f+2nK2q9tkU7wvc=" />
+    <!-- <input type="hidden" name="_method" value="POST">
+    <input type="hidden" id="form-question-type" name="type"> -->
+
+	<div class="form-group">
+        <input type="email" class="form-control input-lg" id="form-email" name="email" placeholder="Email">
+    </div>
+	<div class="form-group">
+    	<input type="text" class="form-control input-lg" id="form-name" name="name" placeholder="Choose a username">
+    </div>
+    
+    <div class="form-group">
+    	<input type="password" class="form-control input-lg" id="form-password" name="password" placeholder="Create a password">
+    </div>
+    <div class="form-group">
+    	<input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="Enter password again">
+    </div>
+	
+	<div class="form-group">
+		<label>
+            <input type="checkbox" id="terms-agreement" name="termsAgreement">
+			I agree with the <a href="../terms.html" target="_blank">Terms and Conditions</a>.
+		</label>
+	</div>
+
+    <button type="submit" class="btn btn-primary btn-lg pull-right" id="submit-button">Signup with Email</button>
+	
+
+    
+    
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Associate content posted as a guest user under user-185179dc with the new account.
+        </label>
+    </div>
+    
+	
+    <b>IMPORTANT :</b> This website is part of an academic research project at the University of Southampton (Ethics reference number: ERGO/FPSE/10709).
+	Your data will be used only for academic research purposes and it will be treated in accordance to the UK Data Protection Act 1998.
+	Full details in our <a href="../terms.html" target="_blank">Terms and Conditions</a>.
+</form>
+
+
+
+
+
+                                
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="alert-window" style="display:none; position:fixed;" class="alert alert-warning alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4 class="alert-title"></h4>
+            <span class="alert-message"></span>
+        </div>
+        <a href="portswood.html#content" class="sr-only">Skip to main content</a>
+
+        
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    
+
+
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <a class="navbar-brand active logo " href="../index.html" title="Home">
+                        <span class="first-char">V</span>erily
+                    </a>
+                    
+                    <ul class="nav navbar-nav pull-right">
+                        <li>
+                            <a href="../user.html" class="username" title="provisional username">
+                                
+                                <i class="fa fa-ticket"></i>
+                                
+                                user-185179dc
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        
+                        
+                            <li><a href="../crisis/1.html">All questions</a></li>
+                        
+                    
+                        
+                        
+                        
+						
+							<li>
+								<form action="https://veri.ly/search" method="POST" class="navbar-form nav-search">
+								<input type="hidden" name="_csrf" value="UEkN469T9WJlnhXbwteXY6f+2nK2q9tkU7wvc=" />
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" name="search" id="search" data-placeholder="Search Questions">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div>
+								</form>
+							</li>
+                            <script>
+                            
+                            $('#search').focus(function(e) {
+                                var headerWidth = $('.navbar-header').css('width');
+                                var searchBoxWidth = $('.nav-search .input-group').css('width');
+                                
+                                $('#search').attr('placeholder', $('#search').data('placeholder'));
+                                $('.nav-search button').toggleClass('focused');
+                                if (headerWidth !== searchBoxWidth) {
+                                    // search box is not full viewport width,
+                                    // so not on mobile or xs devices.
+                                    $('.nav-search .input-group').width('20vw');
+                                }
+
+                            });
+                            $('#search').blur(function(e) {
+                                $('#search').attr('placeholder', '');
+                                $('.nav-search button').toggleClass('focused');
+                                if (!e.relatedTarget || e.relatedTarget.nodeName != 'BUTTON') {
+                                    $('.nav-search .input-group').removeAttr('style');
+                                }
+                            });
+                            </script>
+						
+
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
+                        
+
+
+                            
+                            <li>
+                                <a href="../register/index.html">
+                                    Signup
+                                </a>
+                            </li>
+                            <li><a href="../user.html">Login</a></li>
+                            
+							
+                            
+                        
+                    </ul>
+
+                </div>
+				
+				
+
+            </div>
+			
+			
+
+        </nav>
+        
+        
+        
+
+        
+		
+            <main role="main" id="content" class="container">
+                <!-- <ol class="breadcrumb"> -->
+                    <!-- <li>
+                        <a href="/" title="Home">Home</a>
+                    </li> -->
+                    <!--  -->
+                <!-- </ol> -->
+                
+
+
+<h2 class="title">
+	Search Results
+</h2>
+
+<div class="row">
+    <div class="pull-right">
+        <label for="select_filter_questions">View questions:</label>
+        <select id="select_filter_questions">
+			<option value="Relevant">Relevance (most relevant first)</option>
+            <option value="Recent">Recent (most recent first)</option>
+            <option value="Popular">Popular (most popular first)</option>
+        </select>
+    </div>
+</div>
+
+
+<div class="row question-answers crisis-questions">
+    
+        <div class="col-sm-4 crisis-question-wrapper" data-date="Sun, 13 Jul 2014 11:59:56" data-popularity="0" data-relevance="7">
+            <div class="panel panel-default question-answer crisis-question-border border-not-available">
+                    <div class="panel-heading">
+                            
+                                <div class="">
+                                   <i class="fa fa-map-marker"></i>
+                                   <span class="sr-only">Locality:</span>
+                                   <span id="question-locality">Portswood, UK</span>
+                                </div>
+                            
+
+                        <h3 class="panel-title">
+                            <a href="../crisis/1/question/58.html">
+                                Does the sign for Portswood Shopping Centre on Portswood Road have a brown wood background?
+                            </a>
+                        </h3>
+                        <div class="crisis-question-metrics">
+                            <!-- <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> </span>-->
+
+                            <span class="label metric crisis-question-metric" title="Answers that state this is true"><i class="fa fa-check success"></i> <span class="success">0</span></span>
+
+                            <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">0</span></span>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+
+
+                        
+
+
+
+                        
+                    
+                            <div class="">
+                                <i class="fa fa-bullhorn"></i>
+                                <span class=""><abbr title="Sun, 13 Jul 2014 11:59:56 GMT">2014-07-13 11:59:56</abbr></span>
+                                by verily
+                            </div>
+
+                    </div>
+                </div>
+
+            
+            
+            
+        </div>
+        <!-- / .col-sm-4 -->
+    
+        <div class="col-sm-4 crisis-question-wrapper" data-date="Sun, 13 Jul 2014 01:11:52" data-popularity="2" data-relevance="1">
+            <div class="panel panel-default question-answer crisis-question-border border-false">
+                    <div class="panel-heading">
+                            
+
+                        <h3 class="panel-title">
+                            <a href="../crisis/1/question/45.1.html">
+                                Does Waitrose Portswood car park in Southampton UK close at 10pm?
+                            </a>
+                        </h3>
+                        <div class="crisis-question-metrics">
+                            <!-- <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> </span>-->
+
+                            <span class="label metric crisis-question-metric" title="Answers that state this is true"><i class="fa fa-check success"></i> <span class="success">0</span></span>
+
+                            <span class="label metric crisis-question-metric danger" title="Answers that state this is false"><i class="fa fa-times danger"></i> <span class="danger">2</span></span>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+
+
+                        
+
+
+
+                        
+                    
+                            <div class="">
+                                <i class="fa fa-bullhorn"></i>
+                                <span class=""><abbr title="Sun, 13 Jul 2014 01:11:52 GMT">2014-07-13 01:11:52</abbr></span>
+                                by verily
+                            </div>
+
+                    </div>
+                </div>
+
+            
+            
+            
+        </div>
+        <!-- / .col-sm-4 -->
+    
+</div>
+
+
+
+    <script type="text/javascript">
+        //This script will get each video-wrapper class in the DOM and using its data-video-url attribute
+        //will try to retrieve the html of the video and display it
+        $(function(){
+            $('.video-wrapper-ajax').each(function(){
+                getVideoAjax($(this).data('video-url'), this);
+            });
+        });
+
+    </script>
+    
+
+    <script type="text/javascript">
+        //Using ajax, this functions are used to retrieve the html needed to display a video from a URL
+        //The video_wrapper must be parent of divs with classes fa-spin, video-container and video-error-message
+        function getVideoAjax(target_url, video_wrapper){
+            $(video_wrapper).show();
+            $(video_wrapper).find('.video-spinner').show();
+            $(video_wrapper).find('.video-container').hide();
+            $(video_wrapper).find('.video-error-message').hide();
+            $.post('/getVideoHtml', 
+            		{
+                videoUrl: target_url,
+                _csrf: "UEkN469T9WJlnhXbwteXY6f+2nK2q9tkU7wvc="
+                     },
+                    function(result){
+                        if(result.html){
+                            var video_html = result.html;
+                            video_html = video_html.replace('http:', 'https:');
+                            update_container(video_html, $(video_wrapper));
+                        }
+                        else{
+                            video_error_message(target_url, $(video_wrapper));
+                        }
+                    }).fail(function(){
+                        video_error_message( target_url, $(video_wrapper));
+                    });
+        }
+        var update_container = function(video_html, video_wrapper){
+            video_wrapper.find('.video-spinner').hide();
+            video_wrapper.find('.video-container').show();
+            video_wrapper.find('.video-container').html(video_html);
+        }
+        var video_error_message = function( target_url, video_wrapper){
+            video_wrapper.find('.video-spinner').hide();
+            video_wrapper.find('.video-container').hide();
+            video_wrapper.find('.video-error-message a').html(target_url).attr('href', target_url);
+            video_wrapper.find('.video-error-message').show();
+        }
+    </script>
+
+
+
+
+<script type="text/javascript">
+    var rearrange_children = function(parent, sort_function){
+//        parent.fadeOut('fast', function(){
+        var children = [];
+        parent.children('div.row').each(function(){
+            $(this).children('div').each(function(){
+                children.push(this);
+                $(this).remove();
+            });
+        });
+        children.sort(sort_function);
+
+        for (var i in children) {
+            var parent_row_index = Math.floor(i/3);
+            var parent_row = parent.children('div.row')[parent_row_index];
+            $(parent_row).append(children[i]);
+        }
+//            parent.fadeIn('slow');
+//        });
+    }
+</script>
+
+
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+    <script src="../static/js/maps.js"></script>
+<script type="text/javascript">
+var map, layer;
+
+map = map_init('map');
+    $(function(){
+        $(".mark-important-crisis-btn").click(function(){
+            var button = $(this);
+            $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',
+                    {_csrf: "UEkN469T9WJlnhXbwteXY6f+2nK2q9tkU7wvc=" },
+                    function(data){
+                        var crisis = data;
+                        update_markedImportant(crisis, button);
+                    }).fail(function(){
+                        var error_message = 'There was an unknown error, please try again later.';
+                        if (!common.challengePublished()) {
+                            error_message = 'The Verily Challenge has now closed. Thank you for taking part!';
+                        }
+                        show_alert_message('danger', 5000, "Error", error_message);
+                    });
+        });
+        $('#select_filter_questions').change(function(){
+            if($('#select_filter_questions').val() == "Recent"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return new Date($(b).data('date')) - new Date($(a).data('date'));
+                });
+
+            }
+            else if($('#select_filter_questions').val() == "Popular"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return $(b).data('popularity') - $(a).data('popularity') ;
+                });
+
+            }
+			else if($('#select_filter_questions').val() == "Relevant"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return $(b).data('relevance') - $(a).data('relevance') ;
+                });
+
+            }
+
+        });
+        if($('#select_filter_questions').prop("selectedIndex") != 0){
+            //trigger change if the initial selected index is not 0
+            $('#select_filter_questions').change();
+        }
+        
+
+    });
+
+    var update_markedImportant = function(crisis, element){
+        element.next('a.action-button-count').text(crisis.importanceCount);
+        element.addClass('active').addClass('disabled');
+    }
+</script>
+
+
+                <footer>
+                    
+                    <div class="pull-left">
+                        <div class="text-muted">
+                            <a href="../terms.html#copyright">&copy; 2014 Verily</a>
+                        </div>
+                        <div class="text-muted">
+                            <a href="../about.html">About</a>
+                            &middot;
+                            <a href="../terms.html">Terms &amp; Privacy</a>
+							&middot;
+                            <a href="../help.html">Contact</a>
+                        </div>
+                    </div>
+
+                    
+                    
+                </footer>
+            </main>
+        
+    </body>
+</html>
+
+        
+        
+        

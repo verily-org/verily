@@ -1,0 +1,11 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+URL:https://veri.ly/
+DTSTART:20140712T090000Z
+DTEND:20140713T160000Z
+SUMMARY:#VerilyLive
+DESCRIPTION:The global crowdsourcing challenge for evidence collection and verification
+LOCATION:Global
+END:VEVENT
+END:VCALENDAR

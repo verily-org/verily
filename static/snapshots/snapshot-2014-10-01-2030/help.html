@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+    <head>
+        <meta charset="utf-8">
+        <title>Verily</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		
+		
+		
+		
+		
+		<!-- FB open graph tags -->
+		<meta property="og:site_name" content="Verily"/>
+		<meta property="og:url" content="https://veri.ly/help" /> 
+		<meta property="og:image" content="https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-v-logo.png"/>
+		<meta property="og:title" content="Verily"/>
+		<meta property="og:description" content="We live in the Information Age... or the Disinformation Age. Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult for everyone. Join the Verily Challenge to search for the truth."/>
+
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        
+        <!-- TODO Use bower and modify Bootstrap to our needs -->
+        
+        <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        
+        <link href="https://fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
+        
+        <link rel="shortcut icon" href="static/images/favicon.png">
+        <link rel="apple-touch-icon-precomposed" href="static/images/favicon.png" >
+        
+        <link href="static/css/style.css" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.css">
+        
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+          <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <![endif]-->
+        
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+        <!-- Jquery Datatable -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.0/js/jquery.dataTables.min.js"></script>
+
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+
+        <!-- Common JS -->
+        <script type="text/javascript" src="static/js/common.js"></script>
+
+        <!-- Latest compiled and minified Bootstrap JavaScript -->
+        <script src="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+        <!-- Load general functions JS -->
+        <script type="text/javascript" src="static/js/load.js"></script>
+
+        
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-52527080-1', 'auto');
+            ga('require', 'displayfeatures');
+            ga('send', 'pageview');
+        </script>
+        <script type="text/javascript">
+            var sc_project=9897798;
+            var sc_invisible=1;
+            var sc_security="741aa466";
+            var scJsHost = (("https:" == document.location.protocol) ?
+                    "https://secure." : "http://www.");
+            document.write("<sc"+"ript type='text/javascript' src='" +
+                    scJsHost+
+                    "statcounter.com/counter/counter.js'></"+"script>");
+        </script>
+        
+    </head>
+    <body class="">
+        
+        <!-- provisional user confirm login modal -->
+        <div class="modal fade" id="provisionalUserConfirmLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to withdraw from <strong>user-185179dc</strong>?</h4>
+              </div>
+              <div class="modal-body">
+                  Submissions made under your provisional username, <strong>user-185179dc</strong>, will be lost if you log in now. To transfer your content, <a href="register/index.html">sign up</a>.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a href="login%3Fvia=%252Flogout.html" type="button" class="btn btn-danger">Withdraw and log in</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / provisional user confirm login modal -->
+        
+        
+        <div id="login-register" class="modal auth-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+						<div class="login-aside-button text-center">
+							<a href="auth/facebook.html" class="btn btn-default btn-lg facebook-button"><i class="fa fa-facebook"></i> Login with Facebook</a>
+						</div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Login
+                                </p>
+                                
+                                <form class="login-form" role="form" action="user.html" method="POST" novalidate>
+    <input type="hidden" name="_csrf" value="of4U7nIYOuu8TO14OFs/Bycs/XRbl+/nbI9PM=" />
+    <!-- <input type="hidden" name="_method" value="POST">
+    <input type="hidden" id="form-question-type" name="type"> -->
+
+    <div class="form-group" >
+        <input type="email" class="form-control input-lg form-email" name="email" placeholder="Email" tabindex="1">
+    </div>
+
+    <div class="form-group">
+		<input type="password" class="form-control input-lg form-password" name="password" placeholder="Password" tabindex="2">
+    </div>
+    
+    
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Associate content posted as a guest user under user-185179dc with this account.
+        </label>
+    </div>
+    
+	
+	<div>
+		<a href="forgot.html">Forgot Password</a>
+	</div>
+
+    <button type="submit" class="btn btn-primary btn-lg pull-right centre-when-viewport-narrowed" id="login-button">Login</button>
+</form>
+
+<script type="text/javascript">
+
+var loginForm = $('.login-form');
+
+loginForm.on('submit', function(e) {    
+    var valid = true;
+    var message;
+    
+    var formSubmitted = $(e.currentTarget);
+    
+    var loginAlert = formSubmitted.find('.login-alert')
+    
+    if (formSubmitted.find('.form-email').val() === '' || formSubmitted.find('.form-password').val() === '') {
+        valid = false;
+        message = 'Enter your login details.';
+    }
+    
+    if (valid) {
+        // Whole form is valid, submit form to endpoint
+        return;
+    } else {
+        // The form is not valid, don't submit form.
+        e.preventDefault();
+        loginAlert.text(message);
+        loginAlert.css('display', 'block');
+        
+    }
+})
+
+</script>
+                                
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="lead">
+                                    Signup
+                                </p>
+                                
+                                
+<form id="signup" role="form" action="user.html" method="POST">
+    <input type="hidden" name="_csrf" value="of4U7nIYOuu8TO14OFs/Bycs/XRbl+/nbI9PM=" />
+    <!-- <input type="hidden" name="_method" value="POST">
+    <input type="hidden" id="form-question-type" name="type"> -->
+
+	<div class="form-group">
+        <input type="email" class="form-control input-lg" id="form-email" name="email" placeholder="Email">
+    </div>
+	<div class="form-group">
+    	<input type="text" class="form-control input-lg" id="form-name" name="name" placeholder="Choose a username">
+    </div>
+    
+    <div class="form-group">
+    	<input type="password" class="form-control input-lg" id="form-password" name="password" placeholder="Create a password">
+    </div>
+    <div class="form-group">
+    	<input type="password" class="form-control input-lg" id="form-verifyPassword" name="verifyPassword" placeholder="Enter password again">
+    </div>
+	
+	<div class="form-group">
+		<label>
+            <input type="checkbox" id="terms-agreement" name="termsAgreement">
+			I agree with the <a href="terms.html" target="_blank">Terms and Conditions</a>.
+		</label>
+	</div>
+
+    <button type="submit" class="btn btn-primary btn-lg pull-right" id="submit-button">Signup with Email</button>
+	
+
+    
+    
+	<div class="form-group">
+        <label>
+            <input type="checkbox" id="form-transfer-from-provisional" name="transferFromProvisional" checked value="true">
+            Associate content posted as a guest user under user-185179dc with the new account.
+        </label>
+    </div>
+    
+	
+    <b>IMPORTANT :</b> This website is part of an academic research project at the University of Southampton (Ethics reference number: ERGO/FPSE/10709).
+	Your data will be used only for academic research purposes and it will be treated in accordance to the UK Data Protection Act 1998.
+	Full details in our <a href="terms.html" target="_blank">Terms and Conditions</a>.
+</form>
+
+
+
+
+
+                                
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="alert-window" style="display:none; position:fixed;" class="alert alert-warning alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4 class="alert-title"></h4>
+            <span class="alert-message"></span>
+        </div>
+        <a href="help.html#content" class="sr-only">Skip to main content</a>
+
+        
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    
+
+
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#vly-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <a class="navbar-brand active logo " href="index.html" title="Home">
+                        <span class="first-char">V</span>erily
+                    </a>
+                    
+                    <ul class="nav navbar-nav pull-right">
+                        <li>
+                            <a href="user.html" class="username" title="provisional username">
+                                
+                                <i class="fa fa-ticket"></i>
+                                
+                                user-185179dc
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse" id="vly-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        
+                        
+                            <li><a href="crisis/1.html">All questions</a></li>
+                        
+                    
+                        
+                        
+                        
+						
+							<li>
+								<form action="https://veri.ly/search" method="POST" class="navbar-form nav-search">
+								<input type="hidden" name="_csrf" value="of4U7nIYOuu8TO14OFs/Bycs/XRbl+/nbI9PM=" />
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" name="search" id="search" data-placeholder="Search Questions">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div>
+								</form>
+							</li>
+                            <script>
+                            
+                            $('#search').focus(function(e) {
+                                var headerWidth = $('.navbar-header').css('width');
+                                var searchBoxWidth = $('.nav-search .input-group').css('width');
+                                
+                                $('#search').attr('placeholder', $('#search').data('placeholder'));
+                                $('.nav-search button').toggleClass('focused');
+                                if (headerWidth !== searchBoxWidth) {
+                                    // search box is not full viewport width,
+                                    // so not on mobile or xs devices.
+                                    $('.nav-search .input-group').width('20vw');
+                                }
+
+                            });
+                            $('#search').blur(function(e) {
+                                $('#search').attr('placeholder', '');
+                                $('.nav-search button').toggleClass('focused');
+                                if (!e.relatedTarget || e.relatedTarget.nodeName != 'BUTTON') {
+                                    $('.nav-search .input-group').removeAttr('style');
+                                }
+                            });
+                            </script>
+						
+
+                    </ul>
+                    <ul class="nav navbar-nav pull-right">
+                        
+
+
+                            
+                            <li>
+                                <a href="register/index.html">
+                                    Signup
+                                </a>
+                            </li>
+                            <li><a href="user.html">Login</a></li>
+                            
+							
+                            
+                        
+                    </ul>
+
+                </div>
+				
+				
+
+            </div>
+			
+			
+
+        </nav>
+        
+        
+        
+
+        
+		
+            <main role="main" id="content" class="container">
+                <!-- <ol class="breadcrumb"> -->
+                    <!-- <li>
+                        <a href="/" title="Home">Home</a>
+                    </li> -->
+                    <!--  -->
+                <!-- </ol> -->
+                
+
+<div class="row">
+	<div class="container">
+		<h2>
+			Need Help? 
+		</h2>
+		<h2>
+			Got feedback? 
+		</h2>
+		<h2>
+			Found a bug? 
+		</h2>
+		<h3>Please let us know!</h3>
+		<div class="row">
+			<div class="container">
+				<div class="action-button-ctr btn-group">
+					<a class="btn btn-default btn-large text-action-button share-button facebook-button" href="https://www.facebook.com/VeriDotLy"><i class="fa fa-facebook"></i> Verily Facebook Page</a>
+				</div>
+				
+				<div class="action-button-ctr btn-group">
+					<a class="btn btn-default btn-large text-action-button share-button twitter-button" href="https://twitter.com/VeriDotLy"><i class="fa fa-twitter"></i> Verily Twitter Account</a>
+				</div>
+				
+				<div class="action-button-ctr btn-group">
+					<a class="btn btn-default btn-large text-action-button share-button" href="mailto:contact@veri.ly">Email us at contact@veri.ly</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="container">
+								<h3>Tips for verifying information</h4>
+
+				<p>	When a journalist or humanitarian professional finds a piece of information or content via social media, 
+					or has it sent to her, there are four elements to check and confirm:
+				</p>
+				
+				<ul>
+					<li>Provenance: Is this the original piece of content?</li>
+					<li>Source: Who uploaded the content?</li>
+					<li>Date: When was the content created?</li>
+					<li>Location: Where was the content created?</li>
+				</ul>
+				<h4>Provenance:</h4>
+				
+				<p>
+					If you’re looking at a piece of rich content, such as a photo or video, one of the first questions is whether this is the original piece of footage or picture.
+					Using reverse image search tools such as TinEye or Google Images3, you can find out whether it has been posted online previously.
+				</p>
+				
+				<h4>	Confirming the Source: </h4>
+
+				<p>	But first you have to find the person responsible for the content. Researching the history of an uploader can mimic the characteristics 
+					of an old-fashioned police investigation, and perhaps also make you feel more like a stalker rather than a journalist or researcher.
+				</p>
+				<p>	Some people list a great deal of information on their social profiles, and a real name (especially one that is not too common) can provide
+					a wealth of information. As people live more of their lives on different social networks, they are often unaware how clues can be combined
+					to build up a substantial dossier of information. A YouTube profile with little personal information listed but that includes a website URL
+					can lead a journalist to a person’s address, email and personal telephone number, via the website who.is.3
+				</p>
+				<h4>	Confirming the date of an event: </h4>
+
+				<p>	Be aware that YouTube date stamps its video using Pacific Standard Time. This can sometimes mean that video appears to have been uploaded
+					before an event took place.
+				</p>
+				<p>	Another way to help ascertain date is by using weather information. Wolfram Alpha is a computational knowledge engine that, among other 
+					things, allows you to check weather from a particular date. (Simply type in a phrase such as “What was the weather in Caracas on 
+					September 24, 2013” to get a result.) This can be combined with tweets and data from local weather forecasters, as well as other uploads 
+					from the same location on the same day, to cross-reference weather.
+				</p>
+
+				<h4>	Confirming the location:  </h4>
+
+				<p>	Only a small percentage of content is automatically geolocated, but mapping platforms — Google Maps, Google Earth, Wikimapia — allow
+					you to position yourself where the camera would have been located. This is one of the first checks that need to be performed for video
+					and photos, and it is quite incredible what can be located.4 Geolocation is always more difficult, however, when the imaging is out of date,
+					for example in Syria, subject to damage from bombs or shelling, or on Long Island after Hurricane Sandy.
+				</p>
+				<p>	Activists who are aware of the challenges of verification often pan upward before or after filming some footage to identify a building that
+					could be located on a map, whether that’s a tall tower, a minaret or cathedral, or signpost. This is partly a result of news organizations’
+					asking activist groups to do this5, as well as activists themselves sharing advice about best practice when uploading UGC.
+				</p>
+				<h4>	Verifying Images: </h4>
+
+				<p>	Since that day in 2005, the UGC team has developed a number of approaches to help in this process. While the technology will continue
+					to change — as will the tools we use — the basic principles of image verification remain the same:
+				</p>
+				<ul>
+					<li>Establish the author/originator of the image.</li>
+					<li>Corroborate the location, date and approximate time the image was taken.</li>
+					<li>Confirm the image is what it is labeled/suggested to be showing.</li>
+					<li>Obtain permission from the author/originator to use the image.</li>
+				</ul>
+
+				<p>	Usually, the image with the highest resolution/size should take you to the original source. (On Google Images, the resolution for each 
+					image result is listed just next to the image itself.) You can then check it against the image you have and see if the source appears 
+					authentic.
+					Corroborate the location, date and approximate time the image was taken
+					There are some useful journalistic and technical ways of establishing information such as date, location and other important details. 
+					One core way of gathering this information is when you speak to the creator/uploader of the image. These five questions continue to stand 
+					the test of time:
+				</p>
+				<p>	Second, cross-reference the image with other sources. Awaken your inner investigator by examining the image closely. Quite 
+					often there will be clues that can help you verify the location and time it was taken:
+				</p>
+				<ul>
+					<li>License/number plates on vehicles</li>
+					<li>Weather conditions</li>
+					<li>Landmarks</li>
+					<li>Type of clothing</li>
+					<li>Signage/lettering</li>
+					<li>Is there an identifiable shop or building?</li>
+					<li>What is the type of terrain/environment in the shot</li>
+				</ul>
+
+				<ul>
+					<li>Who are they?</li>
+					<li>Where are they?</li>
+					<li>When did they get there?</li>
+					<li>What can they see (and what does their photo show)?</li>
+					<li>Why are they there?</li>
+				</ul>
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+    
+
+                <footer>
+                    
+                    <div class="pull-left">
+                        <div class="text-muted">
+                            <a href="terms.html#copyright">&copy; 2014 Verily</a>
+                        </div>
+                        <div class="text-muted">
+                            <a href="about.html">About</a>
+                            &middot;
+                            <a href="terms.html">Terms &amp; Privacy</a>
+							&middot;
+                            <a href="help.html">Contact</a>
+                        </div>
+                    </div>
+
+                    
+                    
+                </footer>
+            </main>
+        
+    </body>
+</html>
+
+        
+        
+        
