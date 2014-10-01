@@ -75,13 +75,7 @@
     </div>
 
 
-<div class="signup-form-for-updates">
-    <form role="form" action="/subscriber" method="POST">
-        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
-        <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
-        <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
-    </form>
-</div>
+
 
 
 <p class="lead stay-large challenge-description">
@@ -95,6 +89,14 @@ Can a coordinated collective effort be effective in quickly discerning true answ
 <p class="lead stay-large challenge-description">
 Accurate information is life-saving in extreme situations such as natural disasters. This fun challenge is a pilot to prove feasibility of timely verification. The same platform will soon be used to gather evidence during natural disasters, which will enable more effective disaster response. Your participation will help design the best platform.
 </p>
+
+<div class="signup-form-for-updates">
+    <form role="form" action="/subscriber" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
+        <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
+    </form>
+</div>
 
 
     

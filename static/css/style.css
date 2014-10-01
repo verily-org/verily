@@ -148,10 +148,15 @@ div.welcome .cookie-message {
 
 div.welcome .signup-form-for-updates {
     color: #dddddd;
+    margin-bottom: 1em;
 }
 
 div.welcome p.challenge-description {
     color: #dddddd;
+}
+
+div.welcome p.challenge-description:first-child {
+
 }
 
 div.welcome ul.challenge-description {
