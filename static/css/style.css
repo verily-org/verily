@@ -1,7 +1,17 @@
 
 body {
     text-rendering: optimizeLegibility;
+    font-family: "Oxygen", "Helvetica Neue", sans-serif;
     font-weight: 300;
+/*    -webkit-font-smoothing: antialiased;*/
+}
+
+.container.full-width, nav .container, footer .container {
+    width: 100% !important;
+}
+
+.container {
+/*    width: 100% !important;*/
 }
 
 .fa,
@@ -10,12 +20,12 @@ body {
 }
 
 body.hero-cover {
-    background-color: #003030;
-    background: url(https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-hero-splash-1920px.jpg) no-repeat left center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+/*    background-color: #003030;*/
+/*    background: url(https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-hero-splash-1920px.jpg) no-repeat left center fixed;*/
+/*    -webkit-background-size: cover;*/
+/*    -moz-background-size: cover;*/
+/*    -o-background-size: cover;*/
+/*    background-size: cover;*/
 }
 
 .hidden-xxs {
@@ -29,7 +39,7 @@ body.hero-cover {
 }
 
 body.hero-cover footer {
-    color: #dddddd;
+/*    color: #dddddd;*/
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -42,6 +52,7 @@ h1, h2, h3, h4, h5, h6 {
 
 footer {
     margin-top: 3em;
+    margin-bottom: 3em;
 }
 
 footer a {
@@ -49,7 +60,7 @@ footer a {
 }
 
 body.hero-cover footer a {
-    color: #dddddd !important;
+/*    color: #dddddd !important;*/
 }
 
 main.hero-cover {
@@ -61,12 +72,16 @@ main.hero-cover {
 }
 
 a {
-    color: #009c9c !important;
+/*    color: #009c9c;*/
+/*    color: #00c0c0;*/
+    color: #00aaaa;
+/*    font-weight: 400;*/
 }
 
 .btn-primary {
-    background-color: #009c9c;
-    border-color: #008a8a;
+/*    background-color: #009c9c;*/
+    background-color: #00aaaa;
+    border-color: #00b4b4;
     color: #ffffff !important;
 }
 
@@ -76,8 +91,8 @@ a {
 
 .btn-primary:hover,
 .btn-primary:focus {
-    background-color: #008a8a;
-    border-color: #008a8a;
+    background-color: #009c9c;
+    border-color: #009c9c;
 }
 
 .btn-default {
@@ -138,21 +153,21 @@ div.welcome {
 
 div.welcome .challenge-info-box {
 /*    background-color: rgba(245, 245, 245, 0.7);*/
-    color: #dddddd;
+/*    color: #dddddd;*/
 }
 
 div.welcome .cookie-message {
     border: none;
-    color: #dddddd;
+/*    color: #dddddd;*/
 }
 
 div.welcome .signup-form-for-updates {
-    color: #dddddd;
+/*    color: #dddddd;*/
     margin-bottom: 1em;
 }
 
 div.welcome p.challenge-description {
-    color: #dddddd;
+/*    color: #dddddd;*/
 }
 
 div.welcome p.challenge-description:first-child {
@@ -160,7 +175,7 @@ div.welcome p.challenge-description:first-child {
 }
 
 div.welcome ul.challenge-description {
-    color: #dddddd;
+/*    color: #dddddd;*/
 }
 
 
@@ -230,7 +245,7 @@ div.welcome ul.challenge-description {
 }
 
 .hero-cover .navbar-default .nav-search {
-    margin-top: 28px;
+    margin-top: 24px;
 }
 
 a.username {
@@ -239,9 +254,9 @@ a.username {
 
 
 .nav-search input {
-    background-color: #71c7c7;
+/*    background-color: #71c7c7;*/
     color: #000000;
-    border-color: transparent;
+    border-color: #ddd;
     -webkit-box-shadow: none;
     box-shadow: none;
     padding-left: 6px;
@@ -250,9 +265,9 @@ a.username {
 }
 
 .nav-search button {
-    background-color: #71c7c7;
-    color: #009c9c;
-    border-color: transparent;
+/*    background-color: #71c7c7;*/
+    color: #999;
+    border-color: #ddd;
     -webkit-box-shadow: none;
     box-shadow: none;
     padding-left: 0;
@@ -263,14 +278,14 @@ a.username {
 
 .nav-search button:hover,
 .nav-search button:focus {
-    background-color: #71c7c7;
-    border-color: transparent;
+/*    background-color: #71c7c7;*/
+    border-color: #ddd;
 }
 
 .nav-search input:focus,
 .hero-cover .nav-search input:focus {
     background-color: #ffffff;
-    border-color: transparent;
+    border-color: #ddd;
     outline: none;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -285,7 +300,7 @@ a.username {
 
 .hero-cover .nav-search input,
 .hero-cover .nav-search button {
-    border-color: #ffffff;
+    border-color: #ddd;
     background-color: transparent;
 }
 
@@ -358,7 +373,9 @@ div.welcome .signup-form-for-updates input {
 
 
 .navbar-default {
-    background-color: #009c9c;
+    background-color: #ffffff;
+/*    background-color: #009c9c;*/
+/*    border-color: #ddd;*/
     border-color: transparent;
     border-radius: 0 !important;
 }
@@ -368,7 +385,15 @@ div.welcome .signup-form-for-updates input {
 }
 
 .navbar-default a {
-    color: #ffffff !important;
+    font-weight: 400;
+}
+
+
+.navbar-default a.logo {
+/*    color: #ffffff !important;*/
+/*    color: #009c9c !important;*/
+/*    color: #00c0c0 !important;*/
+    color: #00aaaa !important;
 }
 
 .navbar-default .open a {
@@ -448,6 +473,10 @@ fa.breadcrumb {
     .hero-cover .navbar-default {
         margin-bottom: 3em;
     }
+}
+
+.navbar-collapse {
+    padding: 0;
 }
 
 
@@ -636,6 +665,23 @@ fa.breadcrumb {
     margin-top: 0;
 }
 
+.navbar-nav {
+    margin-top: 7.5px;
+    margin-bottom: 7.5px;
+}
+
+.navbar-nav > li > a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.navbar-form {
+    margin-top: 2px;
+}
+
+.navbar-nav li:last-child a {
+    padding-right: 0;
+}
 
 @media (max-width: 768px) {
     .question-image-and-map-ctr .col {
@@ -684,24 +730,60 @@ fa.breadcrumb {
 }
 
 .crisis-question-metrics {
-    font-size: 1.5em;
+
 }
 
-.crisis-question-metrics span {
-    font-weight: lighter;
+.crisis-question-metrics .value {
+    font-weight: 300;
 }
 
 .crisis-question-metric {
-    padding-left: 0;
-    padding-right: 5px;
+    margin-top: 5px;
+    font-size: 1.1em !important;
+}
+
+.crisis-question-metric.yes {
+    background-color: #5cb85c !important;
+}
+
+.crisis-question-metric.no {
+    background-color: #d2322d !important;
+}
+
+.crisis-question-metrics .progress {
+    height: 30px;
+}
+
+.crisis-question-metrics .progress-bar {
+    line-height: 30px;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.progress-bar-success {
+    background-color: rgba(92, 184, 92, 0.3);
+/*    color: #5cb85c;*/
+    color: #3c763d;
+}
+
+.progress-bar-danger {
+    background-color: rgba(217, 83, 79, 0.3);
+/*    color: #d9534f;*/
+    color: #a94442;
+}
+
+
+.progress-bar-transparent {
+    background-color: transparent;
+    color: #333;
+}
+
+
+.text-yes, .text-no {
+    font-weight: 300;
 
 }
-.crisis-question-metric .success{
-    color:grey !important;
-}
-.crisis-question-metric .danger{
-    color:grey !important;
-}
+
 .success {
     color: #5cb85c;
 }
@@ -877,6 +959,10 @@ fa.breadcrumb {
     font-size: 1.35em;
 }
 
+.verily-panel .panel-title a {
+    color: #333;
+}
+
 /* TODO Change to use LESS variables */
 .border-true {
     border-left-color: #5cb85c;
@@ -896,6 +982,7 @@ fa.breadcrumb {
 
 .crisis-question-border {
     border-left-width: 0.75em;
+    border-left-color: #ededed;
     border-left-style: solid;
 }
 

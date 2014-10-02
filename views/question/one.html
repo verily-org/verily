@@ -159,14 +159,14 @@ var refUrlLink = refUrlPrefix + refCodeLink;
         
         <!-- button-mark-true -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-success btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-check" id="icon-support"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
+            <button class="btn btn-primary btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-reply"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-true -->
     
         <!-- button-mark-false -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-danger btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-times" id="icon-reject"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No because&hellip;</span></button>
+            <button class="btn btn-primary btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-reply"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-false -->
@@ -346,8 +346,9 @@ function initActionButtons() {
 
         resetElement(labelQuestionType);
         labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
-        labelQuestionType.insertBefore(supportIcon, content);
-        labelQuestionType.className = questionTypeClassName + ' label-success';
+        // labelQuestionType.insertBefore(supportIcon, content);
+        // labelQuestionType.className = questionTypeClassName + ' label-success';
+        labelQuestionType.className = questionTypeClassName + 'label-default';
         displayForm();
     }
     
@@ -365,9 +366,10 @@ function initActionButtons() {
 
         resetElement(labelQuestionType);
         labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
-        labelQuestionType.insertBefore(rejectIcon, content);
+        // labelQuestionType.insertBefore(rejectIcon, content);
 
-        labelQuestionType.className = questionTypeClassName + ' label-danger';
+        // labelQuestionType.className = questionTypeClassName + ' label-danger';
+        labelQuestionType.className = questionTypeClassName + 'label-default';
         displayForm();
     }
     

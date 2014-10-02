@@ -8,10 +8,7 @@ module.exports = function() {
     
     // Recursive cleaning function.
     var cleanValue = function(value) {
-        if (validator.isNull(value) || validator.isNumeric(value) || validator.isDate(value)) {
-            // Null string, valid numeric value or valid date value.
-            return value;
-        } else if (Array.isArray(value)) {
+        if (Array.isArray(value)) {
             // The value is an array. Clean each array element individually.
             var cleanedArray = value.map(function(elem) {
                 // Recursive call.
@@ -20,31 +17,34 @@ module.exports = function() {
             return cleanedArray;
         } else {
             // String (this is the base case), so sanitize then escape.
-            return validator.escape(sanitizer.sanitize(value));
+            var cleaned = validator.escape(sanitizer.sanitize(value));
+            return cleaned;
         }
     };
     
     // Cleans a key and the key's value within an object.
     var cleanObjectProperty = function(oldObject, newObject, key) {
-        newObject[cleanValue(key)] = cleanValue(oldObject[key]);
+        var cleanedKey = cleanValue(key);
+        
+        newObject[cleanedKey] = cleanValue(oldObject[key]);
+        return newObject;
     }
     
     // The cleaner must be called as soon as possible,
     // and ensure before the router and impression/analytics handling.
-    return function(req, res, next) {
-        //console.log('Cleaner request: ' + req.path)
-        
+    return function(req, res, next) {    
         var newReqQuery = {};
         var newReqBody = {};
         
         // Clean the querystring.
         if (req.query) {            
             Object.keys(req.query).forEach(function(item) {
-                cleanObjectProperty(req.query, newReqQuery, item);
+                newReqQuery = cleanObjectProperty(req.query, newReqQuery, item);
             });
             
             // Set the req.query object to the cleaned object
             // so that it is passed on appropriately to next layer.
+            delete req.query;
             req.query = newReqQuery;
         }
 
@@ -52,16 +52,20 @@ module.exports = function() {
         req.path = cleanValue(req.path);
         
         // Clean the body.
-        if (req.body) {            
+        if (req.body) {
             Object.keys(req.body).forEach(function(item) {
-                cleanObjectProperty(req.body, newReqBody, item);
+                newReqBody = cleanObjectProperty(req.body, newReqBody, item);
             });
                         
             // Set the req.body object to the cleaned object 
             // so that it is passed on appropriately to next layer.
+            delete req.body;
             req.body = newReqBody;
+        
             
         }
+        
+        
         next();
     };
 };

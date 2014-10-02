@@ -38,7 +38,7 @@
         
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         
-        <link href="//fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900" rel="stylesheet" type="text/css">
+        <link href="//fonts.googleapis.com/css?family=Abril+Fatface|Cinzel+Decorative:900|Oxygen:300,400,700" rel="stylesheet" type="text/css">
         
         <link rel="shortcut icon" href="/static/images/favicon.png">
         <link rel="apple-touch-icon-precomposed" href="/static/images/favicon.png" >
@@ -192,7 +192,7 @@
                     <ul class="nav navbar-nav">
                         
                         {% if challengePublished or (path !== '/' and path !== '/about') %}
-                            <li><a href="/crisis/2">All questions</a></li>
+                            <li><a href="/crisis/2">Crisis</a></li>
                         {% endif %}
                     
                         {% if userCan('create a crisis') %}
@@ -219,7 +219,7 @@
                         
 						{% if challengePublished or (path !== '/' and path !== '/about')%}
 							<li>
-								<form action="/search" method="POST" class="navbar-form nav-search">
+								{#<form action="/search" method="POST" class="navbar-form nav-search">
 								<input type="hidden" name="_csrf" value="{{csrf_token}}" />
                                     <div class="input-group">
                                         <input type="search" class="form-control" name="search" id="search" data-placeholder="Search Questions">
@@ -227,7 +227,7 @@
                                             <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                                         </span>
                                     </div>
-								</form>
+								</form>#}
 							</li>
                             <script>
                             
@@ -327,7 +327,7 @@
 
         {% block main %}
 		
-            <main role="main" id="content" class="container">
+            <main role="main" id="content" class="container{% if (path.indexOf('/crisis') === 0) %} full-width{% endif %}">
                 <!-- <ol class="breadcrumb"> -->
                     <!-- <li>
                         <a href="/" title="Home">Home</a>
@@ -335,30 +335,29 @@
                     <!-- {% block breadcrumb %}{% endblock %} -->
                 <!-- </ol> -->
                 {% block content %}{% endblock %}
-                <footer>
-                    {% if path === '/' %}
-                    <div class="pull-right text-right about-hero-cover hidden-xxs">
-                        Is cloud obscuring the Oriental Pearl Tower in Shanghai?
-                    </div>
-                    {% endif %}
-                    <div class="pull-left">
-                        <div class="text-muted">
-                            <a href="/terms#copyright">&copy; 2014 Verily</a>
-                        </div>
-                        <div class="text-muted">
-                            <a href="/about">About</a>
-                            &middot;
-                            <a href="/terms">Terms &amp; Privacy</a>
-							&middot;
-                            <a href="/help">Contact</a>
-                        </div>
-                    </div>
-
-                    
-                    
-                </footer>
             </main>
         {% endblock %}
+        <footer>
+            <div class="container">
+                {% if path === '/' %}
+                <div class="pull-right text-right about-hero-cover hidden-xxs">
+                    <!-- Is cloud obscuring the Oriental Pearl Tower in Shanghai? -->
+                </div>
+                {% endif %}
+                <div class="pull-left">
+                    <div class="text-muted">
+                        <a href="/terms#copyright">&copy; 2014 Verily</a>
+                    </div>
+                    <div class="text-muted">
+                        <a href="/about">About</a>
+                        &middot;
+                        <a href="/terms">Terms &amp; Privacy</a>
+        				&middot;
+                        <a href="/help">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </body>
 </html>
 

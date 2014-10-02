@@ -12,7 +12,7 @@ exports.route = function (app, controllers, doc) {
     // View to create question
     route('get', specificCrisis + '/question/create', 'create', 'Create View; View to create question');
 
-    route('post', '/search', 'searchQuestions', 'Search questions');
+    // route('post', '/search', 'searchQuestions', 'Search questions');
     
     // Create question API endpoint
     route('post', specificCrisis + '/question', 'new', 'New; New question');

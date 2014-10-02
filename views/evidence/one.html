@@ -21,11 +21,11 @@
                 </a>
                 <span class="text-muted">/</span>
                     {% if answer.isSupport() %}
-                        <i class="fa fa-check success"></i>
-                        <span class="success">True because</span>
+                        <i class="fa fa-reply success"></i>
+                        <span class="success">Yes because</span>
                     {% else %}
-                        <i class="fa fa-times danger"></i>
-                        <span class="danger">False because</span>
+                        <i class="fa fa-reply danger"></i>
+                        <span class="danger">No because</span>
                     {% endif %}
             </div>
             <h2 class="question-title">{{ answer.post.title }}</h2>

@@ -86,6 +86,65 @@ module.exports = function(swig) {
     swig.setFilter('length', function(array) {
         return array.length;
     });
+    
+    swig.setFilter('styleYesesNoes', function(yeses, noes, target, element) {
+        var total = yeses + noes;
+        // console.log('values:', yeses + ';' + noes);
+        // console.log('total:', total);
+        
+        var returner;
+        
+        if (target === 'yes') {
+            returner = yeses;
+        } else {
+            returner = noes;
+        }
+        
+        var percentage  = (returner / total) * 100;
+        percentage = percentage.toFixed(0);
+        
+        if (total === 0) {
+            returner = '0';
+            
+            if (element === 'progress-bar-width') {
+                returner = '50%';
+            } else if (element === 'progress-bar-class') {
+                returner = 'progress-bar-transparent';
+            }
+            
+        } else {
+            // Do clipping and minimums.
+            if (percentage > 80) {
+                // All responses of one type,
+                // clip to 90% to show other type.
+                percentage = '80';
+            } else if (percentage < 20) {
+                // The other type: no responses,
+                // make a minimum of 10%.
+                percentage = '20';
+            }
+            
+                
+            if (element === 'progress-bar-width') {
+                returner = percentage + '%';
+                
+            } else if (element === 'progress-bar-class') {
+                if (returner === 0) {
+                    returner = 'progress-bar-transparent';
+                } else {
+                    if (target === 'yes') {
+                        returner = 'progress-bar-success';
+                    } else {
+                        returner = 'progress-bar-danger';
+                    }
+                
+                }
+            }
+        }
+        
+        
+        return returner;
+    });
 
     swig.setFilter('cropString', function(string, limit) {
         if(string != null){
