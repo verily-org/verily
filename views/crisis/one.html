@@ -209,7 +209,7 @@ $.ajax({
             <div class="row">
         {% endif %}
         <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
-            <div data-href="{{ question.canonicalPath }}" style="cursor:pointer"
+            <div data-link="{{ question.canonicalPath }}" style="cursor:pointer"
                  class="panel panel-default verily-panel crisis-question-border">
                 <div class="panel-heading">
                         {% if question.targetLocality %}
@@ -220,7 +220,7 @@ $.ajax({
                             </div>
                         {% endif %}
 
-                    <h3 class="panel-title" >
+                    <h3 class="panel-title">
                         <a href="{{ question.canonicalPath }}">
                             {{ question.title }}
                         </a>
@@ -312,19 +312,33 @@ $.ajax({
 {#<script src="/static/js/maps.js"></script>#}
 <script type="text/javascript">
     $(function(){
+        
+		rearrange_children($('.crisis-questions'), function(a,b){
+			return $(b).data('popularity') - $(a).data('popularity') ;
+		});
+        
         var cntrlIsPressed = false;
-        $(document).keydown(function(event){
-            if(event.which=="17")
-                cntrlIsPressed = true;
+        $(document).keydown(function(e){
+            if(e.ctrlKey || e.metaKey) {
+                cntrlIsPressed = true;   
+            }
         });
 
         $(document).keyup(function(){
             cntrlIsPressed = false;
         });
-        $('.verily-panel').click(function(e){
+                
+        
+        $('.verily-panel').on('click', function(e){
             if(!cntrlIsPressed && e.which !== 2) {
-                // Not middle click.
-                location.href=$(this).data('href');
+                // Not middle click or ctrl key.
+                console.log('.verily-panel clicked');
+                location.href = $(this).data('link');
+            } else {
+                var win = window.open($(this).data('link'));
+                if (win) {
+                    e.preventDefault();
+                }
             }
         });
         $(".mark-important-crisis-btn").click(function(){
@@ -343,9 +357,7 @@ $.ajax({
                     });
         });
 		
-		rearrange_children($('.crisis-questions'), function(a,b){
-			return $(b).data('popularity') - $(a).data('popularity') ;
-		});
+
 		
         $('#select_filter_questions').change(function(){
             if($('#select_filter_questions').val() == "Recent"){
