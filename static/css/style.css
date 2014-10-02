@@ -752,6 +752,7 @@ fa.breadcrumb {
 
 .crisis-question-metrics .progress {
     height: 30px;
+    width: 100%;
 }
 
 .crisis-question-metrics .progress-bar {

@@ -225,8 +225,8 @@ $.ajax({
                             {{ question.title }}
                         </a>
                     </h3>
-                    <div class="crisis-question-metrics-answer-button row">
-                        <div class="crisis-question-metrics pull-left col-sm-8">
+                    <div class="crisis-question-metrics-answer-button">
+                        <div class="crisis-question-metrics">
                             {#
                             <!-- Comment for Challenge!
                             <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> {{ question.importanceCount }}</span>
@@ -246,7 +246,9 @@ $.ajax({
                             </div>
                                 
                         </div>
-                        <div class="col-sm-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 pull-right">
                             <a title="help answer this question" class="btn btn-sm btn-default pull-right" href="{{ question.canonicalPath }}">
                                 Answer
                             </a>
