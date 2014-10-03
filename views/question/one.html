@@ -133,7 +133,8 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <img src="{{ question.post.targetImage }}" class="img-responsive">
                         {% if question.post.targetImageData.decimalLat %}
-                            {{ question.post.targetImageData.decimalLat }}
+                            {{ question.post.targetImageData.decimalLat }},
+                            {{ question.post.targetImageData.decimalLong }}
                         {% endif %}
                         
                     </div>
