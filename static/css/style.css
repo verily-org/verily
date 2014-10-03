@@ -921,6 +921,7 @@ fa.breadcrumb {
 
 .verily-panel .panel-heading {
     border-bottom: none;
+    padding-bottom: 0;
 }
 
 .verily-panel .panel-heading {
@@ -1088,6 +1089,7 @@ fa.breadcrumb {
 
 .panel-body{
     padding-bottom: 6px;
+    padding-top: 0;
 }
 @media (max-width: 768px)  {
     .verily-panel img{
