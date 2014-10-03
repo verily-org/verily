@@ -133,7 +133,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <img src="{{ question.post.targetImage }}" class="img-responsive">
                         {% if question.post.targetImageData %}
-                        <div class="panel panel-default panel-exif img-responsive">
+                        <div class="panel panel-default panel-exif">
                             <div class="panel-heading">
                                 Image metadata (EXIF)
                             </div>
@@ -355,9 +355,9 @@ var adjustExifPanelSize = function() {
 $(function() {
     adjustExifPanelSize();
     
-    // $(window).resize(function() {
-    //     adjustExifPanelSize();
-    // });
+    $(window).resize(function() {
+        adjustExifPanelSize();
+    });
 });
 
 
