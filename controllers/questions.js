@@ -503,9 +503,9 @@ var getOne = function (req, res) {
                             link: refcodeArray[3]
                         };
                         
-                        question.post.targetImageData = {};
-            
                         if (question.post.targetImage) {
+                            question.post.targetImageData = {};
+                            
                             exifHelper.extract(question.post.targetImage, function(exifData) {
                                 question.post.targetImageData = exifData;
                 

@@ -132,7 +132,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                     {% if question.post.targetImage %}
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <img src="{{ question.post.targetImage }}" class="img-responsive">
-                        {% if question.post.targetImageData %}
+                        {% if question.post.targetImageData and Object.keys(question.post.targetImageData).length !== 0 %}
                         <div class="panel panel-default panel-exif">
                             <div class="panel-heading">
                                 Image metadata (EXIF)
