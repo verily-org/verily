@@ -315,15 +315,15 @@ $.ajax({
 			return $(b).data('popularity') - $(a).data('popularity') ;
 		});
         
+        
         // Lazy loading of images.
         $('div.lazy').lazyload({
             effect : "fadeIn",
-            threshold: 200
+            threshold: 2000
         });
         
         $('div.lazy').lazyload({
             effect : "fadeIn",
-            threshold: 200,
             event: 'load-now'
         });
         
