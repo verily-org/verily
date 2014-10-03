@@ -349,7 +349,7 @@ function resetElement(target) {
 }
 
 var adjustExifPanelSize = function() {
-    $('.panel-exif').css('width',($('.question-image-and-map-ctr > img').width()));
+    $('.panel-exif').width($('.question-image-and-map-ctr img:first').width());
 };
 
 $(function() {
