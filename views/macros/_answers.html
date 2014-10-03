@@ -59,18 +59,7 @@
 			<div class="col-sm-4 answer-wrapper" data-date="{{ answer.post.date | date('D, d M Y H:i:s') }}" data-popularity="{{ answer.popularityCoefficient }}" data-upvotes="{{ answer.post.upvoteCount }}">
 				<div class="panel panel-default verily-panel crisis-question-border question-answer">
 					<div class="question-answer-bar">
-						{% if answer.type === 'support' %}
-							<span class="metric">
-								<i class="fa fa-reply success"></i>
-								<span class="">Yes because
-							</span>
-						{% else %}
-							<span class="metric">
-								<i class="fa fa-reply danger"></i>
-								<span class="">No because</span>
-							</span>
 
-						{% endif %}
 					</div>
 					<div class="panel-heading">
 							{% if answer.post.targetLocality %}
@@ -82,6 +71,18 @@
 							{% endif %}
 
 							<h3 class="panel-title">
+    						{% if answer.type === 'support' %}
+    							<span class="metric">
+    								<i class="fa fa-reply success"></i>
+    								<span class="">Yes because
+    							</span>
+    						{% else %}
+    							<span class="metric">
+    								<i class="fa fa-reply danger"></i>
+    								<span class="">No because</span>
+    							</span>
+    						{% endif %}
+                            <br>
 								<a href="/crisis/{{ crisis_id }}/question/{{ answer.question_id }}/answer/{{ answer.id }}">
 							{{ answer.post.title }}
 								</a>
