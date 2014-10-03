@@ -282,6 +282,7 @@
                                 </li>
 							{% endif %}
                             {% if !userIs('provisional user') %}
+                            <li><a href="/help">Help</a></li>
                             <li><a href="/logout">Logout </a></li>
                             {% endif %}
                         {% elseif challengePublished or (path !== '/' and path !== '/about') %}
