@@ -34,38 +34,40 @@ var extract = exports.extract = function(input, callback) {
                 new ExifImage({
                     image: body
                 }, function (error, exifData) {
-                    if (error) {
+                    var data = {};
+                    
+                    if (error || !exifData) {
                         console.log('Error: ' + error.message);
                     } else {
                         console.log(exifData.gps);
             
-        
+                        if (exifData.gps && exifData.gps.GPSLatitudeRef && exifData.gps.GPSLongitudeRef) {
+                            var lat = exifData.gps.GPSLatitude;
+                            var long = exifData.gps.GPSLongitude;
             
-                        var lat = exifData.gps.GPSLatitude;
-                        var long = exifData.gps.GPSLongitude;
-            
-                        var latHemisphere = exifData.gps.GPSLatitudeRef;
-                        var longHemisphere = exifData.gps.GPSLongitudeRef;
+                            var latHemisphere = exifData.gps.GPSLatitudeRef;
+                            var longHemisphere = exifData.gps.GPSLongitudeRef;
                         
-                        var decimalLat = toDecimal(lat[0], lat[1], lat[2], latHemisphere);
+                            var decimalLat = toDecimal(lat[0], lat[1], lat[2], latHemisphere);
             
-                        var decimalLong = toDecimal(long[0], long[1], long[2], longHemisphere);
+                            var decimalLong = toDecimal(long[0], long[1], long[2], longHemisphere);
             
-                        console.log();
+                            console.log();
             
-                        console.log('decimalLat:');
-                        console.log(decimalLat + '\n');
+                            console.log('decimalLat:');
+                            console.log(decimalLat + '\n');
 
-                        console.log('decimalLong:');
-                        console.log(decimalLong + '\n');
+                            console.log('decimalLong:');
+                            console.log(decimalLong + '\n');
             
-                        // Write coords to directory of input.
-                        // var dirname = path.dirname(input);
+                            // Write coords to directory of input.
+                            // var dirname = path.dirname(input);
             
-                        var data = {
-                            decimalLat: decimalLat,
-                            decimalLong: decimalLong
+                            data.decimalLat = decimalLat;
+                            data.decimalLong = decimalLong;
                         }
+            
+
             
                         // fs.writeFile(path.join(dirname, 'coords.json'), JSON.stringify(json, null, 4), function(err) {
                         //     if (err) {
@@ -73,12 +75,13 @@ var extract = exports.extract = function(input, callback) {
                         //     }
                         //     console.log('Saved to coords.json');
                         // });
-                    
-                        callback(data);
+                
                   
                 
             
                     }
+                    
+                    callback(data);
             
             
                 });
