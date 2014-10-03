@@ -138,8 +138,13 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                                 Image metadata (EXIF)
                             </div>
                             <div class="panel-body">
+                                {% if question.post.targetImageData.makeModel %}
+                                <i class="fa fa-camera fa-lg fa-fw"></i> Camera:
+                                {{ question.post.targetImageData.makeModel }}
+                                {% endif %}
+                                
                                 {% if question.post.targetImageData.decimalLat %}
-                                <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetImageData.decimalLat }},{{ question.post.targetImageData.decimalLong }}"><span id="question-target-lat">{{ question.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
+                                <i class="fa fa-crosshairs fa-lg fa-fw"></i> Location:<span class="sr-only">(Lat Long):</span> <a href="geo:{{ question.post.targetImageData.decimalLat }},{{ question.post.targetImageData.decimalLong }}"><span id="question-target-lat">{{ question.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
                                 {% endif %}
                             </div>
                         </div>

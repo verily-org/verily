@@ -36,11 +36,29 @@ var extract = exports.extract = function(input, callback) {
                 new ExifImage({
                     image: body
                 }, function (error, exifData) {
+                    
 
                     
                     if (error || !exifData) {
                         // console.log('Error: ' + error.message);
                     } else {
+                        
+                        if (exifData.image) {
+                            
+                            data.makeModel = [];
+                            
+                            if (exifData.image.Make) {
+                                data.makeModel.push(exifData.image.Make);
+                            }
+                            
+                            if (exifData.image.Model) {
+                                data.makeModel.push(exifData.image.Model);
+                            }
+                            
+                            data.makeModel = data.makeModel.join(' ');
+                        }
+                        
+                        
                         console.log(exifData.gps);
             
                         if (exifData.gps && exifData.gps.GPSLatitudeRef && exifData.gps.GPSLongitudeRef) {
