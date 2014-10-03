@@ -64,6 +64,10 @@ var extract = exports.extract = function(input, callback) {
                             if (exifData.exif.CreateDate) {
                                 data.dateTimeDigitized = exifData.exif.CreateDate;
                             }
+                            
+                            if (exifData.exif.FNumber) {
+                                data.fNumber = exifData.exif.FNumber;
+                            }
                         }
                         
                         

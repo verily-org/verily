@@ -145,6 +145,12 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                                 </p>
                                 {% endif %}
                                 
+                                {% if question.post.targetImageData.fNumber %}
+                                <p>
+                                    <i class="fa fa-camera fa-lg fa-fw"></i> ƒ/{{ question.post.targetImageData.fNumber }}
+                                </p>
+                                {% endif %}
+                                
                                 {% if question.post.targetImageData.dateTimeOriginal %}
                                 <p>
                                     <i class="fa fa-clock-o fa-lg fa-fw"></i> Date and Time &ndash; Original:
@@ -161,7 +167,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                                 
                                 {% if question.post.targetImageData.decimalLat %}
                                 <p>
-                                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> Location:<span class="sr-only">(Lat Long):</span> <a href="geo:{{ question.post.targetImageData.decimalLat }},{{ question.post.targetImageData.decimalLong }}"><span id="question-target-lat">{{ question.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
+                                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> Location:<span class="sr-only">(Lat Long):</span> <a href="geo:{{ question.post.targetImageData.decimalLat.toFixed(4) }},{{ question.post.targetImageData.decimalLong.toFixed(4) }}"><span id="question-target-lat">{{ question.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
                                 </p>
                                 {% endif %}
                             </div>
