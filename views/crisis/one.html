@@ -317,7 +317,8 @@ $.ajax({
         
         // Lazy loading of images.
         $('div.lazy').lazyload({
-            effect : "fadeIn"
+            effect : "fadeIn",
+            threshold: 200
         });
         
         var cntrlIsPressed = false;
