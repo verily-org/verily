@@ -8,6 +8,8 @@ var fs = require('fs');
 var s3 = require('../s3');
 var mode = require('../mode');
 var path = require('path');
+var exifHelper = require('../helpers/exif');
+
 var query = require('../lib/sqlQueries');
 var memwatch = require('memwatch');
 
