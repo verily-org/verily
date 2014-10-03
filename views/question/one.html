@@ -133,7 +133,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <img src="{{ question.post.targetImage }}" class="img-responsive">
                         {% if question.post.targetImageData %}
-                        <div class="panel panel-default">
+                        <div class="panel panel-default panel-exif img-responsive">
                             <div class="panel-heading">
                                 Image metadata (EXIF)
                             </div>
@@ -348,6 +348,17 @@ function resetElement(target) {
     }
 }
 
+var adjustExifPanelSize = function() {
+    $('.panel-exif').width($('.question-image-and-map-ctr > img').width())
+};
+
+$(function() {
+    adjustExifPanelSize();
+    
+    // $(window).resize(function() {
+    //     adjustExifPanelSize();
+    // });
+});
 
 
 function initActionButtons() {

@@ -932,6 +932,10 @@ fa.breadcrumb {
     margin-top: 0.5em;
 }
 
+.panel-exif {
+    margin-top: 1em;
+}
+
 .row.card-image {
     height: 200px;
     background-repeat: no-repeat;

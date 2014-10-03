@@ -23,6 +23,8 @@ function toDecimal(deg, min, sec, hem) {
 }
 
 var extract = exports.extract = function(input, callback) {
+    var data = {};
+
     if (input) {
         
         request({
@@ -34,10 +36,10 @@ var extract = exports.extract = function(input, callback) {
                 new ExifImage({
                     image: body
                 }, function (error, exifData) {
-                    var data = {};
+
                     
                     if (error || !exifData) {
-                        console.log('Error: ' + error.message);
+                        // console.log('Error: ' + error.message);
                     } else {
                         console.log(exifData.gps);
             
@@ -86,9 +88,12 @@ var extract = exports.extract = function(input, callback) {
             
                 });
             } catch (error) {
-                console.log('Error: ' + error.message);
+                // console.log('Error: ' + error.message);
+                callback(data);
             }
         
         });
+    } else {
+        callback(data);
     }
 };
