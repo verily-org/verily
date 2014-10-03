@@ -1017,6 +1017,20 @@ fa.breadcrumb {
 #form-title {
 }
 
+.because-title {
+    padding: 3px;
+    border-radius: 4px;
+    margin-right: 3px;
+}
+
+.yes.because-title {
+    background-color: rgba(92, 184, 92, 0.3);
+}
+
+.no.because-title {
+    background-color: rgba(217, 83, 79, 0.3);
+}
+
 #form-title-chars-left {
     font-weight: bold;
 }
