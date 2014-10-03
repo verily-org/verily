@@ -76,15 +76,11 @@
             							<span class="yes because-title">
                                             <!-- <i class="fa fa-reply text-success"></i> -->
             								<span class="text-success">Yes, because</span>
-            							</span>
-            						{% else %}
+            							</span>{% else %}
             							<span class="no because-title">
                                             <!-- <i class="fa fa-reply text-danger"></i> -->
             								<span class="text-danger">No, because</span>
-            							</span>
-            						{% endif %}
-								
-    							    {{ answer.post.title }}
+            							</span>{% endif %}{{ answer.post.title }}
 								</a>
 								
 							{% if adminFlag %}	
