@@ -2,11 +2,12 @@
     {% if type != 'evidence' %}
     <label for="form-title" class="control-label">Title</label>
     {% else %}
-    <label for="form-title" class="control-label"></label>
+    <label for="form-title" class="control-label hidden"></label>
     {% endif %}
-    <div id="form-title-chars-left" class="pull-right"><span class="sr-only">Characters remaining:</span><span class="value"></span>
-    </div>
     <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short {{ type }} description" value="{{ post.title }}">
+    <div id="form-title-chars-left" class="pull-right">
+        <span class="sr-only">Characters remaining:</span><span class="value"></span>
+    </div>
 </div>
 
 {% include 'title-js.html' %}

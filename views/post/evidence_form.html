@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                     elemsParent.className = defaultFormGroupClassName + ' has-error has-feedback';
             
                     // Add the error message.
+                    $(label).removeClass('hidden');
                     label.innerHTML = label.dataset.initial + ' &ndash; ' + error;
             
                     // Add the icon.
@@ -124,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
                 } else {
                     // Valid
+                    
+                    $(label).addClass('hidden');
                     
                     // There may not be a callback if this is called from an individual
                     // field rather than the validation harness.
