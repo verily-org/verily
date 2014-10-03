@@ -1018,6 +1018,7 @@ fa.breadcrumb {
 }
 
 .because-title {
+    display: inline-block;
     padding: 3px;
     border-radius: 4px;
     margin-right: 3px;
