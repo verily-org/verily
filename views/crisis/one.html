@@ -259,7 +259,7 @@ $.ajax({
                             </div>
                         </div>
                     {% elseif question.targetImage %}
-                        <div class="row card-image" style="background-image: url({{ question.targetImage }});">
+                        <div class="row card-image lazy" data-original="{{ question.targetImage }}">
                         </div>
                     {% endif %}
                     <div class="posted pull-left">
@@ -310,6 +310,11 @@ $.ajax({
 {#<script src="/static/js/maps.js"></script>#}
 <script type="text/javascript">
     $(function(){
+        
+        // Lazy loading of images.
+        $("div.lazy").lazyload({
+            effect : "fadeIn"
+        });
         
 		rearrange_children($('.crisis-questions'), function(a,b){
 			return $(b).data('popularity') - $(a).data('popularity') ;
