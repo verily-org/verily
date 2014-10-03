@@ -68,6 +68,19 @@ var extract = exports.extract = function(input, callback) {
                             if (exifData.exif.FNumber) {
                                 data.fNumber = exifData.exif.FNumber;
                             }
+                            
+                            if (exifData.exif.ExposureProgram) {
+                                data.exposureTime = exifData.exif.ExposureProgram;
+                            }
+                            
+                            
+                            if (exifData.exif.FocalLength) {
+                                data.focalLength = exifData.exif.FocalLength;
+                            }
+                            
+                            if (exifData.exif.ISO) {
+                                data.iso = exifData.exif.ISO;
+                            }
                         }
                         
                         

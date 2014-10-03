@@ -147,7 +147,28 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                                 
                                 {% if question.post.targetImageData.fNumber %}
                                 <p>
-                                    <i class="fa fa-camera fa-lg fa-fw"></i> ƒ/{{ question.post.targetImageData.fNumber }}
+                                    ƒ/{{ question.post.targetImageData.fNumber }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.exposureTime %}
+                                <p>
+                                    Exposure Time:
+                                    {{ question.post.targetImageData.exposureTime }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.focalLength %}
+                                <p>
+                                    Focal Length:
+                                    {{ question.post.targetImageData.focalLength }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.iso %}
+                                <p>
+                                    ISO:
+                                    {{ question.post.targetImageData.iso }}
                                 </p>
                                 {% endif %}
                                 
