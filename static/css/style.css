@@ -1099,6 +1099,7 @@ fa.breadcrumb {
 .iso-box {
     border: 1px solid #ddd;
     padding: 2px;
+    font-weight: 600;
 }
 
 .panel-body{
