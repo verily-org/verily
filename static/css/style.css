@@ -1074,8 +1074,12 @@ fa.breadcrumb {
     margin-bottom: 1em;
 }
 
-.verily-panel .posted{
-    padding-top:9px;
+.verily-panel .posted {
+    padding-top: 1em;
+}
+
+.verily-panel .answer-question-btn-ctr {
+    padding-top: 0.7em;
 }
 
 .verily-panel.question-answer {

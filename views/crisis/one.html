@@ -247,13 +247,6 @@ $.ajax({
                                 
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-4 pull-right">
-                            <a title="help answer this question" class="btn btn-sm btn-default pull-right" href="{{ question.canonicalPath }}">
-                                Answer
-                            </a>
-                        </div>
-                    </div>
                 </div>
                 <div class="panel-body">
                     {% if question.targetVideoUrl %}
@@ -269,10 +262,15 @@ $.ajax({
                         <div class="row card-image" style="background-image: url({{ question.targetImage }});">
                         </div>
                     {% endif %}
-                    <div class="posted">
+                    <div class="posted pull-left">
                         Posted
                         <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> ago </span>
                         by {{ question.author }}
+                    </div>
+                    <div class="pull-right answer-question-btn-ctr">
+                        <a title="help answer this question" class="btn btn-sm btn-default pull-right" href="{{ question.canonicalPath }}">
+                            Answer
+                        </a>
                     </div>
                 </div>
 
