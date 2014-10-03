@@ -132,9 +132,18 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                     {% if question.post.targetImage %}
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
                         <img src="{{ question.post.targetImage }}" class="img-responsive">
-                        {% if question.post.targetImageData.decimalLat %}
-                            {{ question.post.targetImageData.decimalLat }},
-                            {{ question.post.targetImageData.decimalLong }}
+                        {% if question.post.targetImageData %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Image metadata (EXIF)
+                            </div>
+                            <div class="panel-body">
+                                {% if question.post.targetImageData.decimalLat %}
+                                <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetImageData.decimalLat }},{{ question.post.targetImageData.decimalLong }}"><span id="question-target-lat">{{ question.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
+                                {% endif %}
+                            </div>
+                        </div>
+
                         {% endif %}
                         
                     </div>
