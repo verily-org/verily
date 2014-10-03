@@ -43,6 +43,24 @@ var applyUserAndRespond = function(req, res, crisis, question, answer) {
     }
 };
 
+var addVideo = function(req, res, crisis, question, answer) {
+    if(answer.post.targetVideoUrl) {
+
+        oembed.fetch(answer.post.targetVideoUrl, {}, function(err, result) {
+
+            if (!err) {
+                answer.post.targetVideoHtml = result.html;
+            } else{
+                answer.post.VideoUrlNotEmbeddable = answer.post.targetVideoUrl;
+            }
+
+            applyUserAndRespond(req, res, crisis, question, answer);
+        });
+    } else {
+        applyUserAndRespond(req, res, crisis, question, answer);
+    }
+};
+
 // Get a specific answer
 var getOne = function (req, res) {
     memwatch.gc();
@@ -66,22 +84,19 @@ var getOne = function (req, res) {
                                         } else {
                                             //Filter comments by provisional users
                                             answer.comments = comments.filter(function(comment){ return common.isUserContentShow({type: comment.type});});
-                                            if(answer.post.targetVideoUrl) {
-
-                                                oembed.fetch(answer.post.targetVideoUrl, {}, function(err, result){
-
-                                                    if(!err){
-                                                        answer.post.targetVideoHtml = result.html;
-                                                    }else{
-                                                        answer.post.VideoUrlNotEmbeddable = answer.post.targetVideoUrl;
-                                                    }
-
-                                                    applyUserAndRespond(req, res, crisis, question, answer, user);
+                                            
+                                            if (answer.post.targetImage) {
+                                                answer.post.targetImageData = {};
+                            
+                                                exifHelper.extract(answer.post.targetImage, function(exifData) {
+                                                    answer.post.targetImageData = exifData;
+                
+                                                    addVideo(req, res, crisis, question, answer);
                                                 });
+                                            } else {
+                                                addVideo(req, res, crisis, question, answer);
                                             }
-                                            else{
-                                                applyUserAndRespond(req, res, crisis, question, answer, user);
-                                            }
+                                            
                                         }
                                             
                                     });

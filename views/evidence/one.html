@@ -103,6 +103,71 @@
     {% if answer.post.targetImage %}
         <div class="row">
             <img src="{{ answer.post.targetImage }}" class="img-responsive center-block answer-image">
+            
+            {% if answer.post.targetImageData and Object.keys(answer.post.targetImageData).length !== 0 %}
+            <div class="panel panel-default panel-exif">
+                <div class="panel-heading">
+                    Image metadata (EXIF)
+                </div>
+                <div class="panel-body">
+                    {% if answer.post.targetImageData.makeModel %}
+                    <p>
+                        <i class="fa fa-camera fa-lg fa-fw"></i> Camera:
+                        {{ answer.post.targetImageData.makeModel }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if answer.post.targetImageData.fNumber %}
+                    <p>
+                        ƒ/{{ answer.post.targetImageData.fNumber }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if answer.post.targetImageData.exposureTime %}
+                    <p>
+                        Exposure Time:
+                        {{ answer.post.targetImageData.exposureTime }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if answer.post.targetImageData.focalLength %}
+                    <p>
+                        Focal Length:
+                        {{ answer.post.targetImageData.focalLength }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if answer.post.targetImageData.iso %}
+                    <p>
+                        <span class="iso-box">ISO</span>
+                        {{ answer.post.targetImageData.iso }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if answer.post.targetImageData.dateTimeOriginal %}
+                    <p>
+                        <i class="fa fa-clock-o fa-lg fa-fw"></i> Date and Time &ndash; Original:
+                        {{ answer.post.targetImageData.dateTimeOriginal }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if answer.post.targetImageData.dateTimeOriginal %}
+                    <p>
+                        <i class="fa fa-clock-o fa-lg fa-fw"></i> Date and Time &ndash; Digitized:
+                        {{ answer.post.targetImageData.dateTimeDigitized }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if answer.post.targetImageData.decimalLat %}
+                    <p>
+                        <i class="fa fa-crosshairs fa-lg fa-fw"></i> Location:<span class="sr-only">(Lat Long):</span> <a href="geo:{{ answer.post.targetImageData.decimalLat.toFixed(4) }},{{ answer.post.targetImageData.decimalLong.toFixed(4) }}"><span id="question-target-lat">{{ answer.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ answer.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% endif %}
+            
         </div>
     {% endif %}
     {% if answer.post.targetYoutubeVideoId %}
@@ -146,10 +211,23 @@ function resetElement(target) {
         labelQuestionType.removeChild(target.firstChild);
     }
 }
+
+var adjustExifPanelSize = function() {
+    $('.panel-exif').width($('img.answer-image').width());
+};
+
 $(function(){
     $('.btn_comment').click(function(){
         focusForm();
     });
+    
+    adjustExifPanelSize();
+
+    $(window).resize(function() {
+        adjustExifPanelSize();
+    });
+    
+    
 })
 
 function focusForm() {
