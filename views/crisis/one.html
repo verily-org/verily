@@ -321,6 +321,12 @@ $.ajax({
             threshold: 200
         });
         
+        $('div.lazy').lazyload({
+            effect : "fadeIn",
+            threshold: 200,
+            event: 'load-now'
+        });
+        
         var cntrlIsPressed = false;
         $(document).keydown(function(e){
             if(e.ctrlKey || e.metaKey) {
@@ -364,6 +370,8 @@ $.ajax({
 
 		
         $('#select_filter_questions').change(function(){
+            $('div.lazy').trigger('load-now');
+            
             if($('#select_filter_questions').val() == "Recent"){
                 rearrange_children($('.crisis-questions'), function(a,b){
                     return new Date($(b).data('date')) - new Date($(a).data('date'));
