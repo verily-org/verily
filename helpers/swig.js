@@ -2,6 +2,7 @@ var generic = require('../controllers/generic');
 var utils = require('utilities');
 var mode = require('../mode');
 var common = require('../static/js/common');
+var exifHelper = require('./exif');
 
 module.exports = function(swig) {
     
@@ -86,6 +87,10 @@ module.exports = function(swig) {
     swig.setFilter('length', function(array) {
         return array.length;
     });
+    
+    // swig.setFilter('getExif', function(input) {
+    //     exifHelper(input);
+    // });
     
     swig.setFilter('styleYesesNoes', function(yeses, noes, target, element) {
         var total = yeses + noes;

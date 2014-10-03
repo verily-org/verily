@@ -447,6 +447,24 @@ var applyUserAndRespond = function(req, res, crisis, question, refcodes) {
     }
 };
 
+var addVideo = function(req, res, crisis, question, refcodes) {
+    if (question.post.targetVideoUrl) {
+        oembed.fetch(question.post.targetVideoUrl,{}, function(err, result) {
+
+            if (!err) {
+                question.post.targetVideoHtml = result.html.replace('http:', 'https:');
+            } else {
+                question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
+            }
+
+
+            applyUserAndRespond(req, res, crisis, question, refcodes);
+        });
+    } else {
+        applyUserAndRespond(req, res, crisis, question, refcodes);
+    }
+}; 
+
 // Get a specific question.
 var getOne = function (req, res) {
     memwatch.gc();
@@ -482,22 +500,20 @@ var getOne = function (req, res) {
                             email: refcodeArray[2],
                             link: refcodeArray[3]
                         };
-                    
-                        if(question.post.targetVideoUrl){
-                            oembed.fetch(question.post.targetVideoUrl,{}, function(err, result){
-
-                                if (!err){
-                                    question.post.targetVideoHtml = result.html.replace('http:', 'https:');
-                                } else {
-                                    question.post.VideoUrlNotEmbeddable = question.post.targetVideoUrl;
-                                }
-
-
-                                applyUserAndRespond(req, res, crisis, question, refcodes);
+                        
+                        question.post.targetImageData = {};
+            
+                        if (question.post.targetImage) {
+                            exifHelper.extract(question.post.targetImage, function(exifData) {
+                                question.post.targetImageData = exifData;
+                
+                                addVideo(req, res, crisis, question, refcodes);
                             });
-                        } else{
-                            applyUserAndRespond(req, res, crisis, question, refcodes);
+                        } else {
+                            addVideo(req, res, crisis, question, refcodes);
                         }
+                    
+
                     });
                 }
             }
