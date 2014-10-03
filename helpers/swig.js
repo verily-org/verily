@@ -92,6 +92,9 @@ module.exports = function(swig) {
         // console.log('values:', yeses + ';' + noes);
         // console.log('total:', total);
         
+        var minimum = 18.5;
+        var maximum = 81.5;
+        
         var returner;
         
         if (target === 'yes') {
@@ -114,14 +117,14 @@ module.exports = function(swig) {
             
         } else {
             // Do clipping and minimums.
-            if (percentage > 80) {
+            if (percentage > maximum) {
                 // All responses of one type,
                 // clip to 90% to show other type.
-                percentage = '80';
-            } else if (percentage < 20) {
+                percentage = maximum;
+            } else if (percentage < minimum) {
                 // The other type: no responses,
                 // make a minimum of 10%.
-                percentage = '20';
+                percentage = minimum;
             }
             
                 
