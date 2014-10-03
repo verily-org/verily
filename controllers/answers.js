@@ -4,6 +4,8 @@ var enums = require('../enums');
 var oembed = require('oembed');
 var memwatch = require('memwatch');
 var common = require('../static/js/common');
+var exifHelper = require('../helpers/exif');
+
 var raiting_controller = require('./ratings');
 var query = require('../lib/sqlQueries');
 
