@@ -22,7 +22,7 @@ function toDecimal(deg, min, sec, hem) {
     return returner;    
 }
 
-var extract = function(input, callback) {
+var extract = exports.extract function(input, callback) {
     if (input) {
         
         request({
