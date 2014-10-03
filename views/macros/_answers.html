@@ -74,12 +74,12 @@
     						{% if answer.type === 'support' %}
     							<span class="metric">
     								<i class="fa fa-reply success"></i>
-    								<span class="success">Yes, because
+    								<span class="text-success">Yes, because
     							</span>
     						{% else %}
     							<span class="metric">
     								<i class="fa fa-reply danger"></i>
-    								<span class="danger">No, because</span>
+    								<span class="text-danger">No, because</span>
     							</span>
     						{% endif %}
 								<a href="/crisis/{{ crisis_id }}/question/{{ answer.question_id }}/answer/{{ answer.id }}">
