@@ -223,14 +223,14 @@ var refUrlLink = refUrlPrefix + refCodeLink;
         
         <!-- button-mark-true -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-primary btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-reply"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes because&hellip;</span></button>
+            <button class="btn btn-primary btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-support" data-fragment="true"><i class="fa fa-reply"></i> Yes <span class="hidden-xs">because&hellip;</span> <span class="sr-only">Yes, because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.supportedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-true -->
     
         <!-- button-mark-false -->
         <div class="action-button-ctr btn-group">
-            <button class="btn btn-primary btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-reply"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No because&hellip;</span></button>
+            <button class="btn btn-primary btn-large text-action-button {% if !properUser %} user-required-action{% endif %}" id="question-reject" data-fragment="false"><i class="fa fa-reply"></i> No <span class="hidden-xs"> because&hellip;</span> <span class="sr-only">No, because&hellip;</span></button>
             {# <a href="#" class="btn btn-default action-button-count back-coloured">{{ question.rejectedAnswerCount }}</a> #}
         </div>
         <!-- / button-mark-false -->
@@ -417,7 +417,7 @@ function initActionButtons() {
 
         var supportIcon = document.createElement('i');
         supportIcon.className = 'fa fa-check';
-        var content = document.createTextNode(' Yes because...');
+        var content = document.createTextNode(' Yes, because...');
 
         resetElement(labelQuestionType);
         labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
@@ -437,7 +437,7 @@ function initActionButtons() {
 
         var rejectIcon = document.createElement('i');
         rejectIcon.className = 'fa fa-times';
-        var content = document.createTextNode(' No because...');
+        var content = document.createTextNode(' No, because...');
 
         resetElement(labelQuestionType);
         labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
