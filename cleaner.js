@@ -18,6 +18,11 @@ module.exports = function() {
         } else {
             // String (this is the base case), so sanitize then escape.
             var cleaned = validator.escape(sanitizer.sanitize(value));
+            
+            // Convert hex-encoded apostrophe to decimal-encoded apostrophe;
+            // convert escaped ampersand to name-encoded ampersand.
+            cleaned = cleaned.replace(/&#x27;/g, '&#39;').replace(/&amp;amp;/g, '&amp;');
+            
             return cleaned;
         }
     };
