@@ -1014,6 +1014,10 @@ fa.breadcrumb {
     margin-top: 0;
 }
 
+#form-title {
+    padding-top: 0;
+}
+
 #form-title-chars-left {
     font-weight: bold;
 }
