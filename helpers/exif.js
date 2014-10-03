@@ -44,18 +44,26 @@ var extract = exports.extract = function(input, callback) {
                     } else {
                         
                         if (exifData.image) {
-                            
                             data.makeModel = [];
                             
                             if (exifData.image.Make) {
                                 data.makeModel.push(exifData.image.Make);
                             }
-                            
                             if (exifData.image.Model) {
                                 data.makeModel.push(exifData.image.Model);
                             }
                             
                             data.makeModel = data.makeModel.join(' ');
+                        }
+                        
+                        if (exifData.exif) {
+                            if (exifData.exif.DateTimeOriginal) {
+                                data.dateTimeOriginal = exifData.exif.DateTimeOriginal;
+                            }
+                            
+                            if (exifData.exif.CreateDate) {
+                                data.dateTimeDigitized = exifData.exif.CreateDate;
+                            }
                         }
                         
                         
