@@ -287,7 +287,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
 <h3>{{ numResponses }} response{% if numResponses !== 1 %}s{% endif %}</h3>
 
 
-<div class="row">
+<div>
     <div class="pull-right">
         <label for="select_filter_evidence">Order by:</label>
         <select id="select_filter_evidence">
@@ -296,8 +296,8 @@ var refUrlLink = refUrlPrefix + refCodeLink;
             <option value="Upvote">Upvotes</option>
         </select>
     </div>
-
 </div>
+
 <div class="question-answers">
     {{ answers_macro.answers_embeded(question.answers, crisis.id, null) }}
 </div>
