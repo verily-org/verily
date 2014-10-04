@@ -809,7 +809,7 @@ fa.breadcrumb {
 /* TODO Use LESS variables */
 .action-button-count {
     background-color: #ffffff !important;
-    color: #428bca;
+/*    color: #428bca;*/
 /*    min-width: 4.25em;*/
 }
 
