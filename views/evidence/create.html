@@ -1,7 +1,7 @@
 {% set type = 'evidence' %}
 
 <div id="form-ctr" class="well form" style="display: none;">
-    <h3><span class="fa fa-reply"></span> <span id="form-label-question-type" class="label"></span></h3>
+    <h3><span class="fa fa-reply"></span> {{ question.post.title }}<span id="form-label-question-type" class="label"></span></h3>
 
     <form id="create-evidence" class="post-form" role="form" action="/crisis/{{ crisis.id }}/question/{{ question.id }}/answers" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="{{csrf_token}}" />
