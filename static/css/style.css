@@ -936,6 +936,13 @@ fa.breadcrumb {
     margin-top: 1em;
 }
 
+@media (min-width: 768px) {
+    .panel-exif {
+        margin-top: 0;
+    }
+}
+
+
 .panel-exif .panel-heading {
     background-color: transparent;
 }
