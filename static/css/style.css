@@ -936,6 +936,10 @@ fa.breadcrumb {
     margin-top: 1em;
 }
 
+.panel-exif .panel-heading {
+    background-color: transparent;
+}
+
 .row.card-image {
     height: 200px;
     background-repeat: no-repeat;
