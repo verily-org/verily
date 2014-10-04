@@ -1,6 +1,9 @@
 {% include '../generic/form-title.html' %}
 <div id="form-video-image-parent">
-    <label class="control-label">Submit a video or an image</label> (optional)
+    <label class="control-label">
+        Submit an image or a video  
+    </label>
+    <span class="text-muted">(optional)</span>
     <div class="well">
 
         {% include '../generic/form-image.html' %}
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                         }
 
                         // Only add icon if elems is one element.
-                        elemsParent.insertBefore(icon, elems.nextSibling);
+                        // elemsParent.insertBefore(icon, elems.nextSibling);
                     }
                 
                     // There may not be a callback if this is called from an individual
@@ -160,19 +163,19 @@ document.addEventListener('DOMContentLoaded', function(event) {
     function validateAll(e) {
         var valid = true;
         
-        // stop acts as `break` but continues validation to
+        // stopNow acts as `break` but continues validation to
         // show all errors to the user.
-        var stop = false;
+        var stopNow = false;
         
         for (var i = 0; i < validateFunctions.length; i++) {
             if (validateFunctions[i](function(currentValid) {
-                if (!currentValid && !stop) {
+                if (!currentValid && !stopNow) {
                     // Validation for this field returned errors
                     // and we have not found a previous error
-                    // -- we have not stopped setting the valid variable yet.
+                    // -- we have not stopNowped setting the valid variable yet.
                     valid = false;
-                    stop = true;
-                    console.log('valid: ' + valid, 'stop: ' + stop);
+                    stopNow = true;
+                    console.log('valid: ' + valid, 'stopNow: ' + stopNow);
                 };
             }));            
         }
