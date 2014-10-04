@@ -1,0 +1,63 @@
+                        {% if question.post.targetImageData and Object.keys(question.post.targetImageData).length !== 0 %}
+                        <div class="panel panel-default panel-exif">
+                            <div class="panel-heading">
+                                Image metadata (EXIF)
+                            </div>
+                            <div class="panel-body">
+                                {% if question.post.targetImageData.makeModel %}
+                                <p>
+                                    <i class="fa fa-camera fa-lg fa-fw"></i> Camera:
+                                    {{ question.post.targetImageData.makeModel }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.fNumber %}
+                                <p>
+                                    ƒ/{{ question.post.targetImageData.fNumber }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.exposureTime %}
+                                <p>
+                                    Exposure Time:
+                                    {{ question.post.targetImageData.exposureTime }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.focalLength %}
+                                <p>
+                                    Focal Length:
+                                    {{ question.post.targetImageData.focalLength }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.iso %}
+                                <p>
+                                    <span class="iso-box">ISO</span>
+                                    {{ question.post.targetImageData.iso }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.dateTimeOriginal %}
+                                <p>
+                                    <i class="fa fa-clock-o fa-lg fa-fw"></i> Date and Time &ndash; Original:
+                                    {{ question.post.targetImageData.dateTimeOriginal }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.dateTimeOriginal %}
+                                <p>
+                                    <i class="fa fa-clock-o fa-lg fa-fw"></i> Date and Time &ndash; Digitized:
+                                    {{ question.post.targetImageData.dateTimeDigitized }}
+                                </p>
+                                {% endif %}
+                                
+                                {% if question.post.targetImageData.decimalLat %}
+                                <p>
+                                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> Location:<span class="sr-only">(Lat Long):</span> <a href="geo:{{ question.post.targetImageData.decimalLat.toFixed(4) }},{{ question.post.targetImageData.decimalLong.toFixed(4) }}"><span id="question-target-lat">{{ question.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% endif %}
