@@ -934,11 +934,13 @@ fa.breadcrumb {
 
 .panel-exif {
     margin-top: 1em;
+    min-width: 200px;
 }
 
 @media (min-width: 768px) {
     .panel-exif {
         margin-top: 0;
+        min-width: 375px;
     }
 }
 
