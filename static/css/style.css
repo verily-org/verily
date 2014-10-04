@@ -1141,6 +1141,10 @@ fa.breadcrumb {
     padding-top: 0;
 }
 
+.verily-panel .panel-body .description-text {
+    padding-top: 1em;
+}
+
 .iso-box {
     border: 1px solid #ddd;
     padding: 1px;
