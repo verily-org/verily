@@ -1,10 +1,16 @@
 <div class="form-group">
-    {% if type != 'evidence' %}
-    <label for="form-title" class="control-label">Title</label>
+    {% if type !== 'evidence' %}
+        <label for="form-title" class="control-label">Title</label>
     {% else %}
-    <label for="form-title" class="control-label hidden"></label>
+        <label for="form-title" class="control-label hidden"></label>
+        <div class="input-group">
+            <span class="input-group-addon title-prefix input-lg"></span>
     {% endif %}
-    <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short {{ type }} description" value="{{ post.title }}">
+        <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short {{ type }} description" value="{{ post.title }}">
+    
+    {% if type == 'evidence' %}
+        </div>
+    {% endif %}
     <div id="form-title-chars-left" class="pull-right">
         <span class="sr-only">Characters remaining:</span><span class="value"></span>
     </div>

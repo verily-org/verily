@@ -417,10 +417,16 @@ function initActionButtons() {
 
         var supportIcon = document.createElement('i');
         supportIcon.className = 'fa fa-check';
-        var content = document.createTextNode(' Yes, because...');
+        var yesText = 'Yes, because';
+        var titlePrefix = yesText + ' ';
+        var content = document.createTextNode(' ' + yesText + '...');
+        $('.title-prefix').text(titlePrefix);
+        $('.title-prefix').removeClass('no');
+        $('.title-prefix').addClass('yes');
+        
 
         resetElement(labelQuestionType);
-        labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+        // labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
         // labelQuestionType.insertBefore(supportIcon, content);
         // labelQuestionType.className = questionTypeClassName + ' label-success';
         labelQuestionType.className = questionTypeClassName + 'label-default';
@@ -437,10 +443,16 @@ function initActionButtons() {
 
         var rejectIcon = document.createElement('i');
         rejectIcon.className = 'fa fa-times';
-        var content = document.createTextNode(' No, because...');
+        var noText = 'No, because';
+        var titlePrefix = noText + ' ';
+        var content = document.createTextNode(' ' + noText + '...');
+        $('.title-prefix').text(titlePrefix);
+        $('.title-prefix').removeClass('yes');
+        $('.title-prefix').addClass('no');
+
 
         resetElement(labelQuestionType);
-        labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
+        // labelQuestionType.insertBefore(content, labelQuestionType.nextSibling);
         // labelQuestionType.insertBefore(rejectIcon, content);
 
         // labelQuestionType.className = questionTypeClassName + ' label-danger';

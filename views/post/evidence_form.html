@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     // Initialise the individual validation functions (each return a function with a callback).
     var validateFunctions = [
         validate_video_image,
-        validate(formTitle, null, common.validateFormTitle),
+        validate(formTitle, formTitle.parentNode.parentNode, common.validateFormTitle),
         validate(document.getElementsByClassName('form-occurred'), dateTimeOccurredFieldGroup, common.validateDateTimeOccurred),
 
     ]
@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     });
     
     document.getElementById('form-title').addEventListener('keyup', function(e) {
-        validate(formTitle, null, validateFormTitle)();
+        validate(formTitle, formTitle.parentNode.parentNode, validateFormTitle)();
     });
     
     

@@ -18,8 +18,15 @@
             titleCharsLeft.className = titleCharsLeftInitialClassName + ' text-danger';
         }
     }
+    
+    $('.title-prefix:first').click(function(e) {
+        title.focus();
+    })
 
     title.addEventListener('keyup', function(e) {
         displayCharsLeft();
+        
+        $(title).val(common.trimPrefix($(this).val()));
+        
     });
 </script>

@@ -175,6 +175,17 @@ var getAllFromRange = exports.getAllFromRange = common.getAllFromRange = functio
     return returner;
 };
 
+var trimPrefix = exports.trimPrefix = common.trimPrefix = function(input) {
+    var regex = /^((?:yes|no)?,? ?because )/g;
+    var result = regex.exec(input.toLowerCase());
+    var returner = input;
+
+    if (result && result[0]) {
+        returner = input.substring(result[0].length);
+    }
+    return returner;  
+};
+
 // maxTitleLength defined in generic/title-chars-left.html
 // @return boolean: true for valid
 var validateVideoImage = exports.validateVideoImage = common.validateVideoImage = function(values, elemsParent, elemsIsArray, callback) {
@@ -191,6 +202,8 @@ var validateVideoImage = exports.validateVideoImage = common.validateVideoImage 
 
     callback(error, values);
 };
+
+
 // maxTitleLength defined in generic/title-chars-left.html
 // @return boolean: true for valid
 var validateFormTitle = exports.validateFormTitle = common.validateFormTitle = function(value, elemsParent, elemsIsArray, callback) {

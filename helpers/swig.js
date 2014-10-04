@@ -88,9 +88,9 @@ module.exports = function(swig) {
         return array.length;
     });
     
-    // swig.setFilter('getExif', function(input) {
-    //     exifHelper(input);
-    // });
+    swig.setFilter('trimPrefix', function(input) {
+        return common.trimPrefix(input);
+    });
     
     swig.setFilter('styleYesesNoes', function(yeses, noes, target, element) {
         var total = yeses + noes;

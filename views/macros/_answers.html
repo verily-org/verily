@@ -80,7 +80,7 @@
             							<span class="no because-title">
                                             <!-- <i class="fa fa-reply text-danger"></i> -->
             								<span class="text-danger">No, because</span>
-            							</span>{% endif %}{{ answer.post.title }}
+            							</span>{% endif %}{{ answer.post.title|trimPrefix }}
 								</a>
 								
 							{% if adminFlag %}	

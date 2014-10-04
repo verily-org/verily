@@ -1017,6 +1017,21 @@ fa.breadcrumb {
 #form-title {
 }
 
+.input-group-addon.title-prefix {
+    font-weight: 300;
+    background-color: #ffffff;
+}
+
+.yes.title-prefix {
+    background-color: rgba(92, 184, 92, 0.3);
+    color: #3c763d;
+}
+
+.no.title-prefix {
+    background-color: rgba(217, 83, 79, 0.3);
+    color: #a94442;
+}
+
 .because-title {
     display: inline-block;
     padding: 3px;
