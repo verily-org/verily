@@ -1159,6 +1159,30 @@ fa.breadcrumb {
     .verily-panel img{
         max-height:200px;
     }
+    
+    .title-input-group {
+        position: static;
+        display: block;
+    }
+    
+    .title-input-group .input-group-addon:first-child {
+        border-right: 1px solid #ccc;
+    }
+    
+    .title-input-group .input-group-addon.input-lg {
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    
+    .title-input-group .form-control:last-child {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+    
 }
 @media (min-width: 768px) and  (max-width: 991px) {
     .verily-panel img{
@@ -1187,6 +1211,8 @@ fa.breadcrumb {
         max-height:120px;
     }
 }
+
+
 
 /* this is for the group of social media buttons */
 .sharing-buttons {
