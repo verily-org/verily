@@ -422,7 +422,7 @@ function oneQuestionResponse(req, res, crisis, question, user, refcodes){
         crisis: crisis,
         question: question,
         page: {
-            title: question.title
+            title: question.post.title
         },
         user: user,
         properUser: common.properUser(req),
