@@ -1168,12 +1168,16 @@ fa.breadcrumb {
     }
     
     .title-input-group {
-        position: static;
+/*        position: static;*/
         display: block;
     }
     
     #form-title {
-        margin-bottom: 15px;
+
+    }
+    
+    .title-input-group > * {
+        float: none !important;
     }
     
     .title-input-group .input-group-addon:first-child {
@@ -1225,6 +1229,10 @@ fa.breadcrumb {
 
         max-height:120px;
     }
+}
+
+#form-video-image-parent {
+    padding-top: 15px;
 }
 
 
