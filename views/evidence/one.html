@@ -4,6 +4,8 @@
 
 {% set path = "/crisis/" + crisis.id + "/question/" + question.id + "/answer/" + answer.id %}
 
+{% set numComments = answer.comments | length %}
+
 {% block content %}
 <!-- question -->
 
@@ -192,13 +194,16 @@
 
     <!-- create comment -->
     {% include 'comment.html' %}
+    <h3>{{ numComments }} Comment{% if numComments !== 1 %}s{% endif %}</h3>
+    {% if numComments !== 0 %}
     <div class="comments-content">
-        <h3>{{ answer.comments | length }} comments</h3>
+
 
         <div class="answer-comments">
             {{ comments_macro.comments_embeded(answer.comments) }}
         </div>
     </div>
+    {% endif %}
 
     {{ answers_macro.vote_script() }}
 
