@@ -113,13 +113,13 @@ div.welcome #eventEnd {
 }
 
 .logo {
-    font-family: 'Abril Fatface', cursive;
+    font-family: 'Abril Fatface', "Helvetica Neue", sans-serif;
 /*    color: #009c9c !important;*/
     font-size: 35px;
 }
 
 .logo .first-char {
-    font-family: 'Cinzel Decorative', cursive;
+    font-family: 'Cinzel Decorative', "Helvetica Neue", sans-serif;
     letter-spacing: -0.13em;
 }
 
