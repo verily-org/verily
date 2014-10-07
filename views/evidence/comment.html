@@ -7,7 +7,7 @@
         <input type="hidden" name="_csrf" value="{{csrf_token}}" />
         {% include '../post/comment_form.html' %}
     
-        <button id="submit" type="submit" class="btn btn-sm btn-primary {% if !properUser %} user-required-action{% endif %}">Submit Comment</button>
+        <button id="submit" type="submit" class="btn btn-primary {% if !properUser %} user-required-action{% endif %}">Submit Comment</button>
     </form>
 </div>
 

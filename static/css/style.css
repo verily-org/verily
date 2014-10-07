@@ -85,6 +85,12 @@ a {
     color: #ffffff !important;
 }
 
+.btn-primary.disabled,
+.btn-primary[disabled] {
+    background-color: #00aaaa;
+    border-color: #00b4b4;
+}
+
 .tag.label-primary {
     background-color: #009c9c;
 }
@@ -1028,6 +1034,7 @@ fa.breadcrumb {
 }
 
 #form-title {
+/*    padding-bottom: 15px;*/
 }
 
 .input-group-addon.title-prefix {
@@ -1163,6 +1170,10 @@ fa.breadcrumb {
     .title-input-group {
         position: static;
         display: block;
+    }
+    
+    #form-title {
+        margin-bottom: 15px;
     }
     
     .title-input-group .input-group-addon:first-child {

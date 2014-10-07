@@ -142,7 +142,7 @@
     <!-- button-vote-up -->
     <div class="mini action-button-ctr btn-group">
         {% set answer_upvoted = answer.post.isUpvotedByUser %}
-        <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_upvote {% if !properUser %} user-required-action{% endif %} {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
+        <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-primary btn-large mini-action-button btn_upvote {% if !properUser %} user-required-action{% endif %} {% if answer_upvoted %}disabled{% endif %}"  title="Upvote"><i class="fa fa-arrow-up"></i></button>
         <a href="#" class="btn btn-default action-button-count disabled upvote_count">{{ answer.post.upvoteCount }}</a>
     </div>
     <!-- / button-vote-up -->
@@ -150,14 +150,14 @@
     <!-- button-vote-down -->
     <div class="mini action-button-ctr btn-group">
         {% set answer_downvoted = answer.post.isDownvotedByUser %}
-        <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-default btn-large mini-action-button btn_downvote {% if !properUser %} user-required-action{% endif %} {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
+        <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" class="btn btn-primary btn-large mini-action-button btn_downvote {% if !properUser %} user-required-action{% endif %} {% if answer_downvoted %}disabled{% endif %}" title="Downvote"><i class="fa fa-arrow-down"></i></button>
         <a href="#" class="btn btn-default action-button-count disabled downvote_count answer_number_{{ answer.id }}">{{ answer.post.downvoteCount }}</a>
     </div>
     <!-- / button-vote-down -->
 
     <!-- button-comment -->
     <div class="mini action-button-ctr btn-group">
-        <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" data-fragment="comment" class="btn btn-default btn-large mini-action-button btn_comment {% if !properUser %} user-required-action{% endif %}" title="Comment"><i class="fa fa-comment"></i></button>
+        <button data-crisis-id="{{ crisis_id }}" data-question-id="{{ question_id }}" data-answer-id="{{ answer.id }}" data-fragment="comment" class="btn btn-primary btn-large mini-action-button btn_comment {% if !properUser %} user-required-action{% endif %}" title="Comment"><i class="fa fa-comment"></i></button>
         <a href="#" class="btn btn-default action-button-count disabled">{{ answer.comments | length }}</a>
     </div>
     <!-- / button-comment -->
