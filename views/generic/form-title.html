@@ -6,7 +6,7 @@
         <div class="input-group">
             <span class="input-group-addon title-prefix input-lg"></span>
     {% endif %}
-        <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="Short {{ type }} description" value="{{ post.title }}">
+        <input type="text" class="form-control input-lg" id="form-title" name="title" placeholder="{% if type !== 'evidence' %} Short {{ type }} description {% endif %}" value="{{ post.title }}">
     
     {% if type == 'evidence' %}
         </div>
