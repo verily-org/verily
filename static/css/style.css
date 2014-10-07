@@ -1169,6 +1169,10 @@ fa.breadcrumb {
         border-right: 1px solid #ccc;
     }
     
+    .well.form {
+        padding: 5px;
+    }
+    
     .title-input-group .input-group-addon.input-lg {
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
