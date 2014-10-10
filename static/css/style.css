@@ -124,14 +124,19 @@ div.welcome #eventEnd {
     font-size: 35px;
 }
 
+.navbar-header .logo {
+    margin-right: 15px;
+}
+
 .logo .first-char {
     font-family: 'Cinzel Decorative', "Helvetica Neue", sans-serif;
     letter-spacing: -0.13em;
 }
 
 .logo.welcome {
-    font-size: 40px;
+    font-size: 38px;
     line-height: 60px;
+    margin-right: 0;
 }
 
 @media (min-width: 768px) {
