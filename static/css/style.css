@@ -479,8 +479,16 @@ fa.breadcrumb {
     box-shadow: none;
 }
 
-.hero-cover .navbar-default ul.navbar-nav li a {
+
+.hero-cover .navbar-nav li:last-child a {
     line-height: 60px;
+}
+
+@media (min-width: 768px) {
+    .hero-cover .navbar-default ul.navbar-nav li a {
+        line-height: 60px;
+    }
+    
 }
 
 
