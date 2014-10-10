@@ -472,14 +472,9 @@ fa.breadcrumb {
 
 
 .hero-cover .navbar-default {
-    margin-bottom: 3.85em;
+    margin-bottom: 0;
 }
 
-@media (min-width: 768px) {
-    .hero-cover .navbar-default {
-        margin-bottom: 3em;
-    }
-}
 
 .navbar-collapse {
     padding: 0;
