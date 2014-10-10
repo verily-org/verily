@@ -160,6 +160,7 @@ div.welcome {
 div.welcome .challenge-info-box {
 /*    background-color: rgba(245, 245, 245, 0.7);*/
 /*    color: #dddddd;*/
+    margin-top: 5em;
 }
 
 div.welcome .cookie-message {
@@ -169,6 +170,7 @@ div.welcome .cookie-message {
 
 div.welcome .signup-form-for-updates {
 /*    color: #dddddd;*/
+    margin-top: 3em;
     margin-bottom: 1em;
 }
 

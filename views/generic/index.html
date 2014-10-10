@@ -35,6 +35,13 @@
     Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult for everyone. 
     </p>
 
+    <div class="signup-form-for-updates">
+        <form role="form" action="/subscriber" method="POST">
+            <input type="hidden" name="_csrf" value="{{csrf_token}}" />
+            <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
+        </form>
+    </div>
 
 
     
@@ -96,13 +103,7 @@
         </div>        
     </div>
 
-<div class="signup-form-for-updates">
-    <form role="form" action="/subscriber" method="POST">
-        <input type="hidden" name="_csrf" value="{{csrf_token}}" />
-        <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
-        <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
-    </form>
-</div>
+
 
 
     
