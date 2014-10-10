@@ -399,7 +399,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     var robotstxt = function(req, res, next) {
         if (req.url === '/robots.txt') {
             res.type('text/plain');
-            res.end('User-agent: *\nDisallow: /crisis/\nDisallow: /images/');
+            res.end('User-agent: *\nDisallow: /static/\nDisallow: /images/');
         } else {
             next();
         }
