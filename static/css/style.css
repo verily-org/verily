@@ -130,8 +130,14 @@ div.welcome #eventEnd {
 }
 
 .logo.welcome {
-    font-size: 60px;
     line-height: 60px;
+}
+
+@media (min-width: 768px) {
+    .logo.welcome {
+        font-size: 60px;
+        line-height: 60px;
+    }
 }
 
 .transparent {
