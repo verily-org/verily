@@ -690,6 +690,7 @@ fa.breadcrumb {
 }
 
 .navbar-nav li:last-child a {
+    padding-left: 0 !important;
     padding-right: 0;
 }
 
