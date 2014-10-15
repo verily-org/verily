@@ -8,7 +8,7 @@
         <title>#VerilyLive Challenge &middot; Verily</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
-		
+		<meta name="robots" content="noindex,nofollow">
 		
 		
 			
@@ -382,50 +382,6 @@ loginForm.on('submit', function(e) {
  -->
                 <!-- </ol> -->
                 
-
-<script>
-var postTitle = '#VerilyLive Challenge';
-var imageUrl = 'https://efe8ea3fb0a1c1b.s3.amazonaws.com/images/verily-v-logo.png';
-var description = 'We live in the Information Age... or the Disinformation Age. Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult for everyone. Join the Verily Challenge to search for the truth.';
-
-var path = '/crisis/1';
-var csrf_token = 'U1tvt3fOAYBaz6WYM7+TBTbhqCy3Y+7uwv5w0=';
-var refPathPrefix = '/r/';
-var refUrlPrefix = window.location.origin + refPathPrefix;
-
-var refCodeTwitter = 'uQctVnKf59';
-var refCodeFacebook = 'pmh0BQRN59';
-var refCodeEmail  = 'gGQHaGVW59';
-var refCodeLink = 'YyHMRSMs59';
-
-var refUrlTwitter = refUrlPrefix + refCodeTwitter;
-var refUrlFacebook = refUrlPrefix + refCodeFacebook;
-var refUrlEmail = refUrlPrefix + refCodeEmail;
-var refUrlLink = refUrlPrefix + refCodeLink;
-
-var timezoneOffset = new Date().getTimezoneOffset();
-
-$.ajax({
-    type: 'POST',
-    url: '/timezone-offset',
-    data: {
-        _csrf: csrf_token,
-        timezoneOffset: timezoneOffset
-    }
-});
-
-</script>
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&appId=1430472757228218&version=v2.0";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
-
 <div class="crisis page-header">
     <div class="row">
         <div class="col-sm-12">
