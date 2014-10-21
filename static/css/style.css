@@ -689,8 +689,7 @@ fa.breadcrumb {
 }
 
 .navbar-nav {
-    margin-top: 7.5px;
-    margin-bottom: 7.5px;
+    margin: 7.5px 0;
 }
 
 .navbar-nav > li > a {
@@ -702,8 +701,12 @@ fa.breadcrumb {
     margin-top: 2px;
 }
 
-.navbar-nav li:last-child a {
+.navbar-default .navbar-nav > li > a {
+}
+
+.user-nav li:last-child a {
     padding-left: 0 !important;
+    margin-left: 0;
     padding-right: 0;
 }
 
