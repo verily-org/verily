@@ -1266,3 +1266,7 @@ fa.breadcrumb {
 .single-button-form {
     display: inline;
 }
+
+abbr[title], abbr[data-original-title] {
+    cursor: pointer;
+}
