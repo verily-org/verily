@@ -255,8 +255,10 @@ exports.markImportant = [checkRole, markImportant];
 
 // View to edit a crisis
 var editCrisis = function (req, res) {
-    generic.get(req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
-        if (err) throw err;
+    generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
+        if (err) {
+            throw err;
+        }
             // No errors.
             res.status(200);
 

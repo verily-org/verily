@@ -9,7 +9,6 @@ exports.route = function (app, controllers, doc) {
     // Create crisis API endpoint
     route('post', '/crisis', 'new', 'New; New crisis');
 
-    // View to edit crisis
     route('post', specific + '/markImportant', 'markImportant', 'Mark as Important');
 
     route('get', '/crisis', 'all', 'Get All; Get all crisis');
