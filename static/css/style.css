@@ -1268,5 +1268,5 @@ fa.breadcrumb {
 }
 
 abbr[title], abbr[data-original-title] {
-    cursor: default;
+    cursor: auto;
 }
