@@ -4,6 +4,7 @@
 {% set challengePublished = null|challengePublished %}
 {% set isProduction = null|isProduction %}
     <head>
+        {% block head %}{% endblock %}
         <meta charset="utf-8">
         <title>{% if page.title %}{{ page.title }} &middot; {% endif %}Verily</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
