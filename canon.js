@@ -67,10 +67,11 @@ module.exports = function() {
 
         }
         
-
         if (workingUrl !== req.url) {
             res.redirect(workingUrl);
             res.end();
+        } else if (workingUrl === '/') {
+            res.redirect('/crisis/3');
         } else {
             next();
         }
