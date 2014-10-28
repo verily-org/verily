@@ -1,6 +1,7 @@
 *.log
 *.log~
 node_modules
+components
 *.db
 /*.md~
 

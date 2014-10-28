@@ -16,7 +16,6 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         express = require('express'),
         session = require('express-session'),
         cleaner = require('./cleaner')(),
-        canon = require('./canon')(),
         orm = require('orm'),
         app = express(),
         emitter = require('./event-emitter')(),
@@ -28,6 +27,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
+        urlCanon = require('./components/alexgreenland/url-canon/0.2.1/canon'),
         memwatch = require('memwatch'),
         router = require('./routing/router'),
         authConfig = require('./lib/auth'),
@@ -428,7 +428,11 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         }));
         
         // Redirect www URLs to the canonical non-www (apex) URLs.
-        app.use(canon);
+        var hostUrlObject
+        app.use(urlCanon(enums.production, {
+            isProduction: mode.isProduction(),
+            proxy: true
+        }));
         
         app.use(robotstxt);
         

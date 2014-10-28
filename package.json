@@ -19,6 +19,7 @@
     "aws-sdk": "2.0.4",
     "base62": "0.1.1",
     "bcrypt-nodejs": "0.0.3",
+    "component": "1.0.0-rc7",
     "connect": "2.11.0",
     "connect-flash": "0.1.1",
     "connect-roles": "3.0.2",
@@ -54,7 +55,8 @@
   "devDependencies": {},
   "scripts": {
     "start": "node index",
-    "test": "node test-runner"
+    "test": "node test-runner",
+    "postinstall": "./node_modules/component/bin/component install"
   },
   "engines": {
     "node": "0.10.x"
