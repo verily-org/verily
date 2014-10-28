@@ -428,11 +428,20 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         }));
         
         // Redirect www URLs to the canonical non-www (apex) URLs.
-        var hostUrlObject
         app.use(urlCanon(enums.production, {
             isProduction: mode.isProduction(),
             proxy: true
         }));
+        
+        // Redirect to crisis 3.
+        app.use(function (req, res, next) {
+            if (req.url === '/') {
+                res.redirect('/crisis/3');
+                res.end();
+            } else {
+                next();
+            }
+        });
         
         app.use(robotstxt);
         
