@@ -1,6 +1,6 @@
 {
   "name": "verily",
   "dependencies": {
-    "alexgreenland/url-canon": "0.2.1"
+    "alexgreenland/url-canon": "0.2.2"
   }
 }
