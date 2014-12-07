@@ -436,7 +436,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         // Redirect to crisis 3.
         app.use(function (req, res, next) {
             if (req.url === '/') {
-                res.redirect('/crisis/3');
+                res.redirect('/crisis/9');
                 res.end();
             } else {
                 next();
