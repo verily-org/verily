@@ -104,8 +104,9 @@
 <div class="evidence-content">
     {% if answer.post.targetImage %}
         <div>
-            <img src="{{ answer.post.targetImage }}" class="img-responsive answer-image">
-            
+            <a href="{{ answer.post.targetImage }}" target="_blank">
+                <img src="{{ answer.post.targetImage }}" class="img-responsive answer-image">
+            </a>
             {% if answer.post.targetImageData and Object.keys(answer.post.targetImageData).length !== 0 %}
             <div class="panel panel-default panel-exif">
                 <div class="panel-heading">

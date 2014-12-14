@@ -131,7 +131,9 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                 <div class="row">
                     {% if question.post.targetImage %}
                     <div class="col col-sm-{{ questionRightSideIndiv }}">
-                        <img src="{{ question.post.targetImage }}" class="img-responsive">
+                        <a href="{{ question.post.targetImage }}" target="_blank">
+                            <img src="{{ question.post.targetImage }}" class="img-responsive">
+                        </a>
                         
                         {% if question.post.targetLat %}
                             {% include '../generic/exif.html' %}
