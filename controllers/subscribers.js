@@ -99,7 +99,7 @@ var submitToMailchimp = function(req, res) {
                     res.redirect('/');
                     res.end();
                 } else {
-                    req.flash('info', 'Thanks for subscribing. You should receive an email requesting confirmation of your subscription.');
+                    req.flash('info', 'Thanks. You should receive an email requesting confirmation of your subscription.');
                     res.redirect('/');
                     res.end();
                 }
