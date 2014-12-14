@@ -28,6 +28,7 @@
     "express": "3.4.4",
     "express-session": "1.6.3",
     "gm": "^1.16.0",
+    "mailchimp": "1.1.0",
     "moment": "^2.7.0",
     "nodemailer": "0.6.5",
     "nodeunit": "0.8.2",
