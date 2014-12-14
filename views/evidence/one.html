@@ -104,7 +104,7 @@
 <div class="evidence-content">
     {% if answer.post.targetImage %}
         <div>
-            <a href="{{ answer.post.targetImage }}?response-content-disposition=inline" target="_blank">
+            <a href="{{ answer.post.targetImage }}" target="_blank">
                 <img src="{{ answer.post.targetImage }}" class="img-responsive answer-image">
             </a>
             {% if answer.post.targetImageData and Object.keys(answer.post.targetImageData).length !== 0 %}
