@@ -75,6 +75,8 @@ var submitToS3 = function(req, res) {
 
 var submitToMailchimp = function(req, res) {
     var email = req.body.email;
+    var listId = '43ced0f8e5';
+    
     if (mode.isHeroku()) {
         if (email && email.length !== 0) {
         
@@ -85,7 +87,7 @@ var submitToMailchimp = function(req, res) {
             });
         
             mailchimp.call('lists', 'subscribe', {
-                id: '43ced0f8e5',
+                id: listId,
                 email: {
                     email: email
                 }
