@@ -433,15 +433,16 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
             proxy: true
         }));
         
-        // Redirect to crisis 3.
-        app.use(function (req, res, next) {
-            if (req.url === '/') {
-                res.redirect('/crisis/9');
-                res.end();
-            } else {
-                next();
-            }
-        });
+
+        // app.use(function (req, res, next) {
+        //     if (req.url === '/') {
+        //         // Redirect homepage to crisis 9.
+        //         res.redirect('/crisis/9');
+        //         res.end();
+        //     } else {
+        //         next();
+        //     }
+        // });
         
         app.use(robotstxt);
         
