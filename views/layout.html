@@ -259,11 +259,11 @@
 
                     </ul>
                     <ul class="nav navbar-nav pull-right">
+                        <li><a href="/help" >Help</a></li>
+                        <li><a href="/about">About</a></li>
                         {% if user %}
 
 
-                            <li><a href="/help">Help</a></li>
-                            <li><a href="/about">About</a></li>
                             {% if userIs('provisional user') %}
                             <li>
                                 <a href="/register">
@@ -289,7 +289,6 @@
                         {% elseif challengePublished or (path !== '/' and path !== '/about') %}
                             <li><a href="/register">Signup</a></li>
                             <li><a href="/login">Login</a></li>
-                            <li><a href="/help" >Help</a></li>
                         {% endif %}
                     </ul>
 
