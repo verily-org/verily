@@ -262,6 +262,8 @@
                         {% if user %}
 
 
+                            <li><a href="/help">Help</a></li>
+                            <li><a href="/about">About</a></li>
                             {% if userIs('provisional user') %}
                             <li>
                                 <a href="/register">
@@ -269,8 +271,6 @@
                                 </a>
                             </li>
                             <li><a href="/login">Login</a></li>
-                            <li><a href="/help">Help</a></li>
-                            <li><a href="/about">About</a></li>
                             {% endif %}
 							{% if userCan('assign roles') %}
                                 <li class="dropdown">
