@@ -16,35 +16,46 @@
 
 <div class="welcome">
     
-    <div class="well well-sm transparent cookie-message {% if cookieMessageSeen === true %}hidden{% endif %}">
+    <!-- <div class="well well-sm transparent cookie-message {% if cookieMessageSeen === true %}hidden{% endif %}">
         This website is part of an academic research project at the University of Southampton (Ethics 
 		reference number: ERGO/FPSE/10709) and we use cookies to collect information about your activity 
 		on the website (e.g. which pages you visit). If you continue without changing your settings, we'll assume 
 		that you are happy to receive all cookies on the website and you accept the <a href="/terms" target="_blank">Terms and Conditions</a>. 
 		However, if you would like to, you can change your cookie 
 		settings at any time. <a href="http://www.southampton.ac.uk/inf/cookies.html">More information about cookies</a>.
-    </div>
+    </div> -->
     
     <h2 class="text-center text-bold">
         <strong>Crowdsourced evidence collection and verification for crisis response</strong>
     </h2>
 
     <p class="lead stay-large challenge-description text-center">
-    We live in the Information Age... or the Disinformation Age.
-    <br>
-    Finding out the truth in the vast amount of contradictory information is becoming increasingly difficult for everyone. 
+        We live in the Information Age... or the Disinformation Age.
+        <br>
+        Finding out the truth in the vast amount of contradictory information is becoming increasingly
+        difficult for everyone. Verily uses time-critical crowdsourcing to verify information
+        during major disasters on behalf of humanitarian organizations and media groups worldwide.
+        <br><br>
+        Learn more about how Verily works <a href="/about">here</a>.
     </p>
 
+    <img style=" border-radius: 80px;" src="/static/images/world-connections.jpg"class="img-responsive center-block" />
+
+    <h3 class="text-center text-bold"><strong>Please <a target="_blank" href="https://docs.google.com/forms/d/1pJ50nJ4mSi2QU-d_kOhHPk42uJsV32H3uUoA_4DCQSQ/viewform">Click Here</a> to Activate Verily</strong></h3>
     <div class="signup-form-for-updates">
         <form role="form" action="/subscriber" method="POST">
             <input type="hidden" name="_csrf" value="{{csrf_token}}" />
-            <input type="email" class="form-control input-lg" name="email" placeholder="Email" required>
+            <!--
+                The id email_get_updates is used to get focus on it on page load.
+                 To use it, add #email_get_updates at the end of the URL.
+             -->
+            <input id="email_get_updates" type="email" class="form-control input-lg" name="email" placeholder="Email" required>
             <button type="submit" class="btn btn-primary btn-lg btn-block">Get updates</button>
         </form>
     </div>
 
 
-    
+    <!--
     <div class="well transparent challenge-info-box">
         <h2>
             #VerilyLive <span id="challenge-countdown"></span>
@@ -102,11 +113,8 @@
             
         </div>        
     </div>
+-->
 
-
-
-
-    
 </div>
 
 <script src="/static/js/moment.js"></script>

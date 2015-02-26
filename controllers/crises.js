@@ -140,6 +140,17 @@ exports.help = function (req, res) {
         info: req.flash('info'),
         error: req.flash('error')
     });
+};exports.getInvolved = function (req, res) {
+    res.status(200);
+    if (req.user){var user = req.user; }
+    res.render('generic/getInvolved', {
+        page: {
+        },
+        path: '/getInvolved',
+        user: user,
+        info: req.flash('info'),
+        error: req.flash('error')
+    });
 };
 
 var oneCrisisResponse = function(req, res, responseData) {

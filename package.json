@@ -57,7 +57,7 @@
   "scripts": {
     "start": "node index",
     "test": "node test-runner",
-    "postinstall": "./node_modules/component/bin/component install"
+    "postinstall": "node ./node_modules/component/bin/component install"
   },
   "engines": {
     "node": "0.10.x"

@@ -32,4 +32,7 @@ exports.route = function (app, controllers, doc) {
     route('get', '/challenge', 'challenge', 'Welcome page to the challenge');
 
     route('get', '/help', 'help', 'Get help View');
+
+    // Use if it is decided to separate the help link into getInvolved and Guide
+    //route('get', '/getInvolved', 'getInvolved', 'Get Involved view');
 };
