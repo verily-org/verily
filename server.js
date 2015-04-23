@@ -28,7 +28,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
         urlCanon = require('./components/alexgreenland/url-canon/0.2.8/canon'),
-        //memwatch = require('memwatch'),
+        memwatch = require('memwatch'),
         router = require('./routing/router'),
         authConfig = require('./lib/auth'),
         log = require('./log'),
@@ -61,7 +61,10 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         secureCookies = true;
     }
 
-
+    app.use(function(err, req, res, next) {
+        console.log('hello debug');
+    });
+    
     app.use(connect.urlencoded());
     app.use(connect.json());
 
@@ -130,8 +133,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
             db_url = process.env.DB_URL;    
         }
     }
-    // forcing sqlite for quick debugging
-    db_url = "sqlite://app.db";
+
     console.log(db_url);
 
     function clearDbIfNeeded(db, cb) {
