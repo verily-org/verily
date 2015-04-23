@@ -61,7 +61,10 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         secureCookies = true;
     }
 
-
+    app.use(function(err, req, res, next) {
+        console.log('hello debug');
+    });
+    
     app.use(connect.urlencoded());
     app.use(connect.json());
 
