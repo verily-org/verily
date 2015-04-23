@@ -14,8 +14,7 @@
   "license": "MIT",
   "description": "<!DOCTYPE html>",
   "main": "index.js",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "start": "node index",
