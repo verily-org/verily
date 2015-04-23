@@ -130,7 +130,8 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
             db_url = process.env.DB_URL;    
         }
     }
-
+    // forcing sqlite for quick debugging
+    db_url = "sqlite://app.db";
     console.log(db_url);
 
     function clearDbIfNeeded(db, cb) {
