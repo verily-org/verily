@@ -1,7 +1,7 @@
 var fs = require('fs'),
     http = require('http');
 
-
+/*
 var on_http_request = function (req, res) {
     console.log('on_http_request');
     console.log('req.url', req.url);
@@ -14,8 +14,8 @@ var on_http_request = function (req, res) {
 server = http.createServer(on_http_request);
 
 server.listen(process.env.PORT || 3000);
+*/
 
-/*
 function start() {
     require('./server')(false, null);
 }
@@ -47,5 +47,4 @@ if (process.argv[3] && (process.argv[3] === '-r' || process.argv[3] === '-reset'
 } else {
     start();
 }
-*/
 
