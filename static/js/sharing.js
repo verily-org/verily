@@ -13,7 +13,7 @@ var twitterCampaigner = common.campaigner('twitter');
 tweetButton.dataset.url = refUrlTwitter;
 tweetButton.dataset.counturl = window.location.origin + path;
 tweetButton.dataset.text = postTitle;
-tweetButton.dataset.hashtags = twitterCampaigner.hashtags;
+tweetButton.dataset.hashtags = [twitterCampaigner.hashtags, 'NepalEarthquake', 'PrayforNepal'];
 
 var facebookShareButton = document.getElementById('facebook-share-button');
 
