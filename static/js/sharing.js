@@ -13,7 +13,17 @@ var twitterCampaigner = common.campaigner('twitter');
 tweetButton.dataset.url = refUrlTwitter;
 tweetButton.dataset.counturl = window.location.origin + path;
 tweetButton.dataset.text = postTitle;
-tweetButton.dataset.hashtags = [twitterCampaigner.hashtags, 'NepalEarthquake', 'PrayforNepal'];
+// 
+if (postTitle.length < 70) {
+    tweetButton.dataset.hashtags = [twitterCampaigner.hashtags, 'NepalEarthquake', 'PrayforNepal'];
+} else if (postTitle.length < 82) {
+    tweetButton.dataset.hashtags = [twitterCampaigner.hashtags, 'NepalEarthquake'];
+} else if (postTitle.length < 95) {
+    tweetButton.dataset.hashtags = ['NepalEarthquake', ];
+} else {
+    tweetButton.dataset.hashtags = ['Nepal', ];
+}
+
 
 var facebookShareButton = document.getElementById('facebook-share-button');
 
