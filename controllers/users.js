@@ -10,6 +10,7 @@ config = require('../lib/auth'),
 mode = require('../mode'),
 utils = require('utilities'),
 memwatch = require('memwatch'),
+orm = require('orm'),
 common = require('../static/js/common'),
 assignedPoints = require('../points.json'),
 query = require('../lib/sqlQueries');
