@@ -193,8 +193,8 @@ $.ajax({
     <div class="col-sm-3 text-right">
         <label for="select_filter_questions">Order by</label>
         <select id="select_filter_questions">
-			<option value="Popular">Popularity</option>
             <option value="Recent">Time</option>
+			<option value="Popular">Popularity</option>
         </select>
 
     </div>
@@ -312,7 +312,7 @@ $.ajax({
     $(function(){
         
 		rearrange_children($('.crisis-questions'), function(a,b){
-			return $(b).data('popularity') - $(a).data('popularity') ;
+			return $(b).data('date') - $(a).data('date') ;
 		});
         
         
