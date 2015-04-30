@@ -59,7 +59,7 @@
                     {% endif %}
 
                     {% if answer.post.targetLat and answer.post.targetLong %}
-                        <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ answer.post.targetLat }},{{ answer.post.targetLong }}"><span id="question-target-lat">{{ answer.post.targetLat }}</span>, <span id="question-target-long">{{ answer.targetLong}}</span></a>
+                        <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="http://maps.google.com/maps?z=8&t=m&q=loc:{{ answer.post.targetLat }}+{{ answer.post.targetLong }}"><span id="question-target-lat">{{ answer.post.targetLat }}</span>, <span id="question-target-long">{{ answer.targetLong}}</span></a>
                     {% endif %}
                 </p>
             {% endif %}
@@ -163,7 +163,7 @@
                     
                     {% if answer.post.targetImageData.decimalLat %}
                     <p>
-                        <i class="fa fa-crosshairs fa-lg fa-fw"></i> Location:<span class="sr-only">(Lat Long):</span> <a href="geo:{{ answer.post.targetImageData.decimalLat.toFixed(4) }},{{ answer.post.targetImageData.decimalLong.toFixed(4) }}"><span id="question-target-lat">{{ answer.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ answer.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
+                        <i class="fa fa-crosshairs fa-lg fa-fw"></i> Location:<span class="sr-only">(Lat Long):</span> <a href="http://maps.google.com/maps?z=8&t=m&q=loc:{{ answer.post.targetImageData.decimalLat.toFixed(4) }}+{{ answer.post.targetImageData.decimalLong.toFixed(4) }}"><span id="question-target-lat">{{ answer.post.targetImageData.decimalLat.toFixed(4) }}</span>, <span id="question-target-long">{{ answer.post.targetImageData.decimalLong.toFixed(4) }}</span></a>
                     </p>
                     {% endif %}
                 </div>

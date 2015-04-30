@@ -89,7 +89,7 @@ var refUrlLink = refUrlPrefix + refCodeLink;
                     {% endif %}
                     
                     {% if question.post.targetLat and question.post.targetLong %}
-                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="geo:{{ question.post.targetLat }},{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetLong.toFixed(4) }}</span></a>
+                    <i class="fa fa-crosshairs fa-lg fa-fw"></i> <span class="sr-only">Lat Long:</span> <a href="http://maps.google.com/maps?z=8&t=m&q=loc:{{ question.post.targetLat }}+{{ question.post.targetLong }}"><span id="question-target-lat">{{ question.post.targetLat.toFixed(4) }}</span>, <span id="question-target-long">{{ question.post.targetLong.toFixed(4) }}</span></a>
                     <span class="text-muted">&middot;</span>
                     <a href="" id="view-map">Show map</a>
                     {% endif %}
@@ -510,7 +510,7 @@ function displayForm() {
 <script type="text/javascript">
 var map, layer;
 
-map = map_init('map');
+map = map_init('map', {{ question.post.targetLat }}, {{ question.post.targetLong }});
 </script>
 
 <script type="text/javascript">
