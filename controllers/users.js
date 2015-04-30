@@ -435,7 +435,7 @@ var getRoles = function (model, cb) {
     var admins = [];
     var role;
 
-    model.find({}, 'name', function (err, users) {
+    model.find({name: orm.not_like('user-%')}, 'name', function (err, users) {
         if (err) {
             cb(err, null, null, null);
         } else {
