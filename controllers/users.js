@@ -1,4 +1,5 @@
 var generic = require('./generic'),
+orm = require('orm'),
 enums = require('../enums'),
 swig = require('swig'),
 async = require('async'),
@@ -10,7 +11,6 @@ config = require('../lib/auth'),
 mode = require('../mode'),
 utils = require('utilities'),
 memwatch = require('memwatch'),
-orm = require('orm'),
 common = require('../static/js/common'),
 assignedPoints = require('../points.json'),
 query = require('../lib/sqlQueries');
@@ -435,9 +435,11 @@ var getRoles = function (model, cb) {
     var editors = [];
     var admins = [];
     var role;
-
-    model.find({name: orm.not_like('user-%')}, 'name', function (err, users) {
+    
+    console.log('hello');
+    model.find({}).where('name NOT LIKE ?', ['user-%',]).order('name').run(function (err, users) {
         if (err) {
+            console.log(err);
             cb(err, null, null, null);
         } else {
             for (var i = 0; i < users.length; i++) {
