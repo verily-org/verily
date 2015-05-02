@@ -376,6 +376,7 @@ $.ajax({
         var filter_content = function () {
             $('div.lazy').trigger('load-now');
             var needle = $('#filter_text_input').val();
+            needle = needle.toLowerCase();
             
             //if (needle.length == 0) {
             //    return;
@@ -390,6 +391,7 @@ $.ajax({
 
             filter_children($('.crisis-questions'), function(item){
                 var content = $('h3', item).text() + ' ' + $(item).data('locality');
+                content = content.toLowerCase();
                 //console.log(content);
                 return content.indexOf(needle) > -1;
             });
