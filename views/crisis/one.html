@@ -381,7 +381,7 @@ $.ajax({
                 });
             } else if($('#select_filter_questions').val() == "Location"){
                 rearrange_children($('.crisis-questions'), function(a,b){
-                    return $(b).data('locality') - $(a).data('locality') ;
+                    return $(b).data('locality') < $(a).data('locality') ;
                 });
             }
 
