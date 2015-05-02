@@ -195,6 +195,7 @@ $.ajax({
         <select id="select_filter_questions">
             <option value="Recent">Time</option>
 			<option value="Popular">Popularity</option>
+            <option value="Location">Location</option>
         </select>
 
     </div>
@@ -208,7 +209,7 @@ $.ajax({
         {% if loop.index % numColumns == 1 %}
             <div class="row">
         {% endif %}
-        <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}">
+        <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}" data-locality="{{ question.targetLocality }}">
             <div data-link="{{ question.canonicalPath }}" style="cursor:pointer"
                  class="panel panel-default verily-panel crisis-question-border">
                 <div class="panel-heading">
@@ -374,15 +375,18 @@ $.ajax({
                 rearrange_children($('.crisis-questions'), function(a,b){
                     return new Date($(b).data('date')) - new Date($(a).data('date'));
                 });
-
-            }
-            else if($('#select_filter_questions').val() == "Popular"){
+            } else if($('#select_filter_questions').val() == "Popular"){
                 rearrange_children($('.crisis-questions'), function(a,b){
                     return $(b).data('popularity') - $(a).data('popularity') ;
                 });
-
+            } else if($('#select_filter_questions').val() == "Location"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return $(b).data('locality') - $(a).data('locality') ;
+                });
             }
 
+            
+            
         });
         if($('#select_filter_questions').prop("selectedIndex") != 0){
             //trigger change if the initial selected index is not 0
