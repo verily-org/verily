@@ -79,3 +79,39 @@
     }
 </script>
 {% endmacro %}
+
+{% macro filter_children_script() %}
+
+<script type="text/javascript">
+    var filter_children = function(parent, filter_function){
+//        parent.fadeOut('fast', function(){
+        var visible_children = [],
+            invisible_children = [];
+        parent.children('div.row').each(function(){
+            $(this).children('div').each(function(){
+                if (filter_function(this)) {
+                    visible_children.push(this);
+                } else {
+                    invisible_children.push(this);
+                }
+                $(this).remove();
+            });
+        });
+        
+        for (var i in visible_children) {
+            var parent_row_index = Math.floor(i/3);
+            var parent_row = parent.children('div.row')[parent_row_index];
+            $(parent_row).append(visible_children[i]);
+            $(visible_children[i]).show();
+        }
+        for (var i in invisible_children) {
+            var parent_row_index = Math.floor(i/3);
+            var parent_row = parent.children('div.row')[parent_row_index];
+            $(parent_row).append(invisible_children[i]);
+            $(invisible_children[i]).hide();
+        }
+//            parent.fadeIn('slow');
+//        });
+    }
+</script>
+{% endmacro %}

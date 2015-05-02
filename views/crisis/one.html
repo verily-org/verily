@@ -191,6 +191,11 @@ $.ajax({
 
     
     <div class="col-sm-3 text-right">
+         <div class="input-group">
+           <span class="input-group-addon" id="filter_text_label">Filter:</span>
+           <input type="text" class="form-control" id="filter_text_input" placeholder="Type 3 or more characters" aria-describedby="basic-addon1">
+         </div>
+
         <label for="select_filter_questions">Order by</label>
         <select id="select_filter_questions">
             <option value="Recent">Time</option>
@@ -306,6 +311,7 @@ $.ajax({
 
 {{ generic_macro.video_html_script() }}
 {{ generic_macro.rearrange_children_script() }}
+{{ generic_macro.filter_children_script() }}
 
 {#<script src="/static/js/openlayers/OpenLayers-https.js"></script>#}
 {#<script src="/static/js/maps.js"></script>#}
@@ -366,7 +372,34 @@ $.ajax({
                     });
         });
 		
+        // based on http://stackoverflow.com/questions/2410937/delaying-actions-between-keypress-in-jquery
+        var filter_content = function () {
+            $('div.lazy').trigger('load-now');
+            var needle = $('#filter_text_input').val();
+            
+            //if (needle.length == 0) {
+            //    return;
+            //}
+            
+            if (needle.length < 4) {
+                filter_children($('.crisis-questions'), function(item){
+                    return true;
+                });
+                return;
+            }
 
+            filter_children($('.crisis-questions'), function(item){
+                var content = $('h3', item).text() + ' ' + $(item).data('locality');
+                //console.log(content);
+                return content.indexOf(needle) > -1;
+            });
+        };
+
+        $('#filter_text_input').keyup(function() {
+            clearTimeout($.data(this, 'timer'));
+            var wait = setTimeout(filter_content, 500);
+            $(this).data('timer', wait);
+          });
 		
         $('#select_filter_questions').change(function(){
             $('div.lazy').trigger('load-now');
@@ -385,10 +418,9 @@ $.ajax({
                     return $(a).data('locality').localeCompare($(b).data('locality')) ;
                 });
             }
-
-            
             
         });
+        
         if($('#select_filter_questions').prop("selectedIndex") != 0){
             //trigger change if the initial selected index is not 0
             $('#select_filter_questions').change();
