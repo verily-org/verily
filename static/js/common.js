@@ -128,7 +128,8 @@ var prettyPath = exports.prettyPath = common.prettyPath = function(data) {
     if (process.env.TEST) {
         returnPath = path + '/' + data.id;
     } else {
-        returnPath = path + '/' + common.normalizeString(data.id + '-' + data.string);
+    	returnPath = path + '/' + data.id;
+        //returnPath = path + '/' + common.normalizeString(data.id + '-' + data.string);
     }
     return returnPath;
 };
