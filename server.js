@@ -125,7 +125,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     }
     else if (heroku){
         // db_url = process.env.HEROKU_POSTGRESQL_CRIMSON_URL;
-        db_url = process.env.HEROKU_POSTGRESQL_COBALT_URL;
+        db_url = process.env.DATABASE_URL; // URL To current active database on Heroku
     } else {
         if (process.env.DATABASE === 'sqlite') {
             db_url = "sqlite://app.db";
