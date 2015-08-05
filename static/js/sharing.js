@@ -14,6 +14,7 @@ tweetButton.dataset.url = refUrlTwitter;
 tweetButton.dataset.counturl = window.location.origin + path;
 tweetButton.dataset.text = postTitle;
 // 
+/*
 if (postTitle.length < 70) {
     tweetButton.dataset.hashtags = [twitterCampaigner.hashtags, 'NepalEarthquake', 'PrayforNepal'];
 } else if (postTitle.length < 82) {
@@ -23,6 +24,7 @@ if (postTitle.length < 70) {
 } else {
     tweetButton.dataset.hashtags = ['Nepal', ];
 }
+*/
 
 
 var facebookShareButton = document.getElementById('facebook-share-button');
