@@ -23,6 +23,11 @@
 			{% set imageurl = answer.post.targetImage || imageurl %}
 			{% set description = answer.post.text || description %}
 		{% endif %}
+		{% if r1 %}
+			{% set title = "1" %}
+			{% set imageurl = answer.post.targetImage || imageurl %}
+			{% set description = answer.post.text || description %}
+		{% endif %}
 		<!-- FB open graph tags -->
 		<meta property="og:site_name" content="Verily"/>
 		<meta property="og:url" content="https://veri.ly{{ path }}" /> 
