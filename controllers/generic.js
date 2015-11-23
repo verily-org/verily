@@ -184,7 +184,10 @@ exports.create = function (model, data, req, cb) {
                 // After image handling completed.
                 function imageHandled(targetImagePath) {
                     // Do the Post stuff.
-                
+                    if(!req.body.title) {
+                        cb("ERROR: title", null);
+                        return;
+                    }
                     var postData = {
                         title: req.body.title,
                         text: req.body.text,
@@ -199,6 +202,8 @@ exports.create = function (model, data, req, cb) {
                         tags: tags,
                         updated: now
                     }
+                    
+                    //postData.text = postData.text.replace("\n", "<br />");
         
                     postData.targetDateTimeOccurred = targetDateTimeOccurred;
 

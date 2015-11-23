@@ -54,6 +54,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     controllers.ratings = require('./controllers/ratings');
     controllers.crises = require('./controllers/crises');
     controllers.subscribers = require('./controllers/subscribers');
+    controllers.api = require('./controllers/api');
     
     if (mode.isProduction()) {
         // Enable reverse proxy support
@@ -187,6 +188,8 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                     models.Session = db.models.session;
                     models.SocialEvent = db.models.social_event;
                     models.UserHistory = db.models.user_history;
+                    models.Tags = db.models.tag;
+                    models.Config = db.models.config;
 
                     models.Local.sync(function () {syncCount++; console.log("Local synced")});
                     models.QuestionComment.sync(function () {syncCount++; console.log("QuestionComment synced")});
@@ -205,12 +208,14 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                     models.Session.sync(function () {syncCount++; console.log("Session synced")});
                     models.SocialEvent.sync(function () {syncCount++; console.log("SocialEvent synced")});
                     models.UserHistory.sync(function () {syncCount++; console.log("UserHistory synced")});
+                    models.Tags.sync(function () {syncCount++; console.log("Tags synced")});
+                    models.Config.sync(function () {syncCount++; console.log("Config synced")});
 
                     // Post is the base class.
                     // Questions, answers and comments are types of Post.
 
                     function check_db_sync (done) {
-                        if (syncCount === 17) {
+                        if (syncCount === 19) {
                             done();
                         } else {
                             setTimeout(function () {check_db_sync(done);}, 500);

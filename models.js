@@ -373,6 +373,10 @@ module.exports = function (db, cb) {
             active: {
                 type: 'boolean',
                 defaultValue: '1'
+            },
+            lastVisit: {
+                type: 'date',
+                time: true
             }
     },
         {
@@ -397,6 +401,19 @@ module.exports = function (db, cb) {
             defaultValue: '1'
         }
     });
+    
+    var Tag = db.define('tag', {
+        tag_name: {type: "text"}
+    },{ validations: {
+            tag_name: [orm.enforce.unique("tag exists")]
+    }});
+
+    var Config = db.define('config', {attr: {type: 'text', key: true}, val: {type: 'text'} }, {});
+
+    Post.hasMany('externTags', Tag, {}, {});
+    User.hasMany('tags', Tag, {}, {reverse: 'user', key:true});
+    User.hasMany('subscribedCrises', Crisis, {}, {reverse: 'subscribedUsers', key:true});
+    
 
     Answer.hasOne('question', Question, {
         reverse: 'answers'
