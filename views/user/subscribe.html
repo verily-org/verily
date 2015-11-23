@@ -1,0 +1,170 @@
+{% set type = 'user' %}
+
+{% extends '../layout.html' %}
+
+{% block content %}
+
+<script type="text/javascript" src="/static/js/setUsers.js"></script>
+<script type="text/javascript" src="/static/js/search.js"></script>
+<script type="text/javascript">
+    function onSubscribeSubmit()
+    {
+        for(var i = 0; i<document.getElementById('sub_tags').options.length; ++i)
+        {
+            document.getElementById('sub_tags').options[i].selected = true;
+        }
+        for(var i = 0; i<document.getElementById('sub_crisis').options.length; ++i)
+        {
+            document.getElementById('sub_crisis').options[i].selected = true;
+        }
+    }
+</script>
+
+<form action="/subscribe" method="POST" onsubmit="onSubscribeSubmit()">
+    <input type="hidden" name="_csrf" value="{{csrf_token}}" />
+
+
+<div class="container" style="padding-bottom:10px;">
+	<div class="row" style="padding-bottom:10px;">
+		<div class="col-sm-4">
+			<span class="label label-info">Crises</span>
+		</div>
+		<div class="col-sm-3">
+			
+		</div>
+		<div class="col-sm-4">
+			<span class="label label-info">(Subscribed)</span>
+		</div>
+            </div>
+
+
+	<div class="row" style="padding-bottom:10px;">
+		<div class="col-sm-4">
+			<input type="text" id="searchBasic" class="form-control" placeholder="Search crisis" onkeyup="search(this.value, 'crises')">
+		</div>
+		<div class="col-sm-3">
+			
+		</div>
+		<div class="col-sm-4">
+			<input type="text" id="searchEditor" class="form-control" placeholder="Search subscribed crisis" onkeyup="search(this.value, 'sub_crises')">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-4">
+			<select multiple class="form-control" name="crisis" size="10" multiple="multiple" id='crisis' style="width: 165px">
+				{% for crisis in crises %}
+					<option value="{{ crisis.id }}">{{ crisis.title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-sm-3">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-3">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.crisis, this.form.sub_crisis);" >
+							<span class="glyphicon glyphicon-arrow-right"></span>
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-3">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.sub_crisis, this.form.crisis);" >
+							<span class="glyphicon glyphicon-arrow-left"></span>
+						</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<select multiple class="form-control" name="sub_crisis" size="10" multiple="multiple" id='sub_crisis' style="width: 165px">
+				{% for crisis in user.subscriptions.crises %}
+					<option value="{{ crisis.id }}">{{ crisis.title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+	</div>	
+</div>
+
+
+
+<div class="container" style="padding-bottom:10px;">
+	<div class="row" style="padding-bottom:10px;">
+		<div class="col-sm-4">
+			<span class="label label-info">Tags</span>
+		</div>
+                <div class="col-sm-3">
+			
+		</div>
+		<div class="col-sm-4">
+			<span class="label label-info">(Subscribed)</span>
+		</div>
+            </div>
+
+	<div class="row" style="padding-bottom:10px;">
+            
+		<div class="col-sm-4">
+			<input type="text" id="searchAdmin" class="form-control" placeholder="Start type tag" onkeyup="server_search(this.value, '/api/tags?q=$1', 'tags')">
+		</div>	
+                <div class="col-sm-3">
+			
+		</div>
+		<div class="col-sm-4">
+			<input type="text" id="searchAdmin" class="form-control" placeholder="Search tag" onkeyup="search(this.value, 'sub_tags')">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-4">
+			<select multiple class="form-control" name="tags" size="10" multiple="multiple" id='tags' style="width: 165px">
+				{% for tag in tags %}
+						<option value="{{ tag }}" >{{tag}}</option>
+				{% endfor %}
+			</select>
+		</div>
+                <div class="col-sm-3">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-3">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.tags, this.form.sub_tags);" >
+							<span class="glyphicon glyphicon-arrow-right"></span>
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-3">
+						<button type="button" class="btn btn-default" onclick="moveOptions(this.form.sub_tags, this.form.tags);" >
+							<span class="glyphicon glyphicon-arrow-left"></span>
+						</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<select multiple class="form-control" name="sub_tags" size="10" multiple="multiple" id='sub_tags' style="width: 165px">
+				{% for tag in user.subscriptions.tags %}
+					<option value="{{ tag.id }}" >{{tag.tag_name}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>	
+</div>
+
+    
+    
+<div class="row">
+	<div class="col-sm-2">
+		<div class="container">
+			<button type="submit" class="btn btn-primary btn-lg centre-when-viewport-narrowed">Submit</button>
+		</div>
+	</div>
+	{% if submitMessage %}
+		<div class="col-sm-4">
+				<div class="alert alert-success">{{ submitMessage }}</div>
+		</div>
+	{% endif %}
+</div>
+</form>
+
+{% endblock %}

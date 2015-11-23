@@ -1,0 +1,329 @@
+{% extends '../layout.html' %}
+{% import '../macros/_generic.html' as generic_macro %}
+
+{% set path = "/crisis/" + crisis.id %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="/" title="Home">Home</a>
+    </li>
+    <li>
+        News
+    </li>
+{% endblock %}
+{% block content %}
+
+<script>
+var postTitle = '{{ crisis.post.title }}';
+var imageUrl = '{{ imageurl }}';
+var description = '{{ description }}';
+
+var path = '{{ path }}';
+var csrf_token = '{{ csrf_token }}';
+var refPathPrefix = '/r/';
+var refUrlPrefix = window.location.origin + refPathPrefix;
+
+var refCodeTwitter = '{{ refcodes.twitter }}';
+var refCodeFacebook = '{{ refcodes.facebook }}';
+var refCodeEmail  = '{{ refcodes.email }}';
+var refCodeLink = '{{ refcodes.link }}';
+
+var refUrlTwitter = refUrlPrefix + refCodeTwitter;
+var refUrlFacebook = refUrlPrefix + refCodeFacebook;
+var refUrlEmail = refUrlPrefix + refCodeEmail;
+var refUrlLink = refUrlPrefix + refCodeLink;
+
+var timezoneOffset = new Date().getTimezoneOffset();
+
+$.ajax({
+    type: 'POST',
+    url: '/timezone-offset',
+    data: {
+        _csrf: csrf_token,
+        timezoneOffset: timezoneOffset
+    }
+});
+
+</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&appId=1430472757228218&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<div class="crisis page-header">
+    <div class="row">
+        <div class="col-sm-8">
+            <h2 class="question-title">
+                News
+            </h2>
+        </div>
+    </div>
+    
+</div>
+<!-- / .page-header -->
+
+
+
+
+
+
+<div class="row crisis-questions-header">
+    <div class="col-sm-9">
+        
+    </div>
+
+    
+    <div class="col-sm-3 text-right">
+         <div class="input-group">
+           <span class="input-group-addon" id="filter_text_label">Filter:</span>
+           <input type="text" class="form-control" id="filter_text_input" placeholder="Type 3 or more characters" aria-describedby="basic-addon1">
+         </div>
+
+        <label for="select_filter_questions">Order by</label>
+        <select id="select_filter_questions">
+            <option value="Recent">Time</option>
+			<option value="Popular">Popularity</option>
+            <option value="Location">Location</option>
+        </select>
+
+    </div>
+    
+</div>
+
+<div class="crisis-questions display-table">
+    {% for question in questions | reverse %}
+        {% set numColumns = 3 %}
+        {% set colWidth = 12 / numColumns %}
+        {% if loop.index % numColumns == 1 %}
+            <div class="row">
+        {% endif %}
+        <div class="col-sm-{{ colWidth }} crisis-question-wrapper" data-date="{{ question.date | date('D, d M Y H:i:s') }}" data-popularity="{{ question.popularityCoefficient }}" data-locality="{{ question.targetLocality }}">
+            <div data-link="/crisis/{{ question.crisis_id }}/question/{{question.id}}" style="cursor:pointer"
+                 class="panel panel-default verily-panel crisis-question-border">
+                <div class="panel-heading">
+                        {% if question.targetLocality %}
+                            <div class="">
+                               <i class="fa fa-map-marker"></i>
+                               <span class="sr-only">Locality:</span>
+                               <span id="question-locality">{{ question.targetLocality }}</span>
+                            </div>
+                        {% endif %}
+
+                    <h3 class="panel-title">
+                        <a href="/crisis/{{ question.crisis_id }}/question/{{question.id}}">
+                            {{ question.title }}
+                        </a>
+                    </h3>
+                    <div class="crisis-question-metrics-answer-button">
+                        <div class="crisis-question-metrics">
+                            {#
+                            <!-- Comment for Challenge!
+                            <span class="label metric crisis-question-metric important success" title="Marked as important"><i class="fa fa-star"></i> {{ question.importanceCount }}</span>
+                            -->
+                            #}
+                            <!-- <i class="fa fa-reply"></i> -->
+                            <!-- <span class="badge yes metric crisis-question-metric" title="Answers that state this is true"><span class="text-yes">YES</span> <span class="value">{{ question.supportedAnswerCount }}</span></span>
+
+                            <span class="badge no metric crisis-question-metric" title="Answers that state this is false"><span class="text-no">NO</span> <span class="value">{{ question.rejectedAnswerCount }}</span></span> -->
+                            <div class="progress">
+                              <div class="progress-bar {{ question.supportedAnswerCount|styleYesesNoes(question.rejectedAnswerCount, 'yes', 'progress-bar-class') }}" style="width:{{ question.supportedAnswerCount|styleYesesNoes(question.rejectedAnswerCount, 'yes', 'progress-bar-width') }}">
+                                <span>Yes: {{ question.supportedAnswerCount|styleYesesNoes(question.rejectedAnswerCount, 'yes', null) }}</span>
+                              </div>
+                              <div class="progress-bar {{ question.supportedAnswerCount|styleYesesNoes(question.rejectedAnswerCount, 'no', 'progress-bar-class') }}" style="width:{{ question.supportedAnswerCount|styleYesesNoes(question.rejectedAnswerCount, 'no', 'progress-bar-width') }}">
+                                <span>No: {{ question.supportedAnswerCount|styleYesesNoes(question.rejectedAnswerCount, 'no', null) }}</span>
+                              </div>
+                            </div>
+                                
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    {% if question.targetVideoUrl %}
+                        <div id="video-wrapper-{{ question.post_id }}" class="video-wrapper video-wrapper-ajax"
+                             data-video-url="{{ question.targetVideoUrl }}">
+                            <div class="video-spinner"><div class="fa fa-spinner fa-spin fa-3x"></div></div>
+                            <div class="video-container" style="display: none"></div>
+                            <div class="video-error-message alert alert-warning" style="display: none">
+                                Video link: <a href="{{ question.targetVideoUrl }}" class="video-error-message" target="_blank">{{ question.targetVideoUrl }}</a>.
+                            </div>
+                        </div>
+                    {% elseif question.targetImage %}
+                        <div class="row card-image lazy" data-original="{{ question.targetImage }}" style="background-image: url('/static/images/grey.gif')">
+                        </div>
+                    {% endif %}
+                    <div class="posted pull-left">
+                        Posted
+                        <span class=""><abbr title="{{ question.date.toUTCString() }}">{{ question.relativeCreatedDate }}</abbr> </span>
+                        by {{ question.author }}
+                    </div>
+                    <div class="pull-right answer-question-btn-ctr">
+                        <a title="help answer this question" class="btn btn-sm btn-default pull-right" href="/crisis/{{ question.crisis_id }}/question/{{question.id}}">
+                            Answer
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+            {% if loop.index % numColumns == 0 %}
+        </div>
+        {% endif %}
+        <!-- / .col-sm-4 -->
+    {% endfor %}
+</div>
+
+<div class="modal fade" id="modal-share-question-link" role="dialog">
+  <div class="modal-dialog vertically-centred">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Share link</h4>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control hidden-xs" id="field-share-link">
+        <div class="visible-xs text-center">
+            On a mobile device, long-press the link and select a sharing option or press <strong>Copy</strong> to save it to your clipboard.
+            <br>
+            <a id="link-share-link"></a>
+        </div>
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{{ generic_macro.video_html_script() }}
+{{ generic_macro.rearrange_children_script() }}
+{{ generic_macro.filter_children_script() }}
+
+{#<script src="/static/js/openlayers/OpenLayers-https.js"></script>#}
+{#<script src="/static/js/maps.js"></script>#}
+<script type="text/javascript">
+    $(function(){
+        
+		rearrange_children($('.crisis-questions'), function(a,b){
+			return new Date($(b).data('date')) - new Date($(a).data('date')) ;
+		});
+        
+        
+        // Lazy loading of images.
+        $('div.lazy').lazyload({
+            threshold: 400
+        });
+        
+        $('div.lazy').lazyload({
+            event: 'load-now'
+        });
+        
+        var cntrlIsPressed = false;
+        $(document).keydown(function(e){
+            if(e.ctrlKey || e.metaKey) {
+                cntrlIsPressed = true;   
+            }
+        });
+
+        $(document).keyup(function(){
+            cntrlIsPressed = false;
+        });
+                
+        
+        $('.verily-panel').on('click', function(e){
+            if(!cntrlIsPressed && e.which !== 2) {
+                // Not middle click or ctrl key.
+                console.log('.verily-panel clicked');
+                location.href = $(this).data('link');
+            } else {
+                var win = window.open($(this).data('link'));
+                if (win) {
+                    e.preventDefault();
+                }
+            }
+        });
+        $(".mark-important-crisis-btn").click(function(){
+            var button = $(this);
+            $.post('/crisis/'+button.attr('data-crisis-id')+'/markImportant',
+                    {_csrf: "{{csrf_token}}" },
+                    function(data){
+                        var crisis = data;
+                        update_markedImportant(crisis, button);
+                    }).fail(function(){
+                        var error_message = 'There was an unknown error, please try again later.';
+                        if (!common.challengePublished()) {
+                            error_message = 'The Verily Challenge has now closed. Thank you for taking part!';
+                        }
+                        show_alert_message('danger', 5000, "Error", error_message);
+                    });
+        });
+		
+        // based on http://stackoverflow.com/questions/2410937/delaying-actions-between-keypress-in-jquery
+        var filter_content = function () {
+            $('div.lazy').trigger('load-now');
+            var needle = $('#filter_text_input').val();
+            needle = needle.toLowerCase();
+            
+            //if (needle.length == 0) {
+            //    return;
+            //}
+            
+            if (needle.length < 4) {
+                filter_children($('.crisis-questions'), function(item){
+                    return true;
+                });
+                return;
+            }
+
+            filter_children($('.crisis-questions'), function(item){
+                var content = $('h3', item).text() + ' ' + $(item).data('locality');
+                content = content.toLowerCase();
+                //console.log(content);
+                return content.indexOf(needle) > -1;
+            });
+        };
+
+        $('#filter_text_input').keyup(function() {
+            clearTimeout($.data(this, 'timer'));
+            var wait = setTimeout(filter_content, 500);
+            $(this).data('timer', wait);
+          });
+		
+        $('#select_filter_questions').change(function(){
+            $('div.lazy').trigger('load-now');
+            
+            if($('#select_filter_questions').val() == "Recent"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return new Date($(b).data('date')) - new Date($(a).data('date'));
+                });
+            } else if($('#select_filter_questions').val() == "Popular"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    return $(b).data('popularity') - $(a).data('popularity') ;
+                });
+            } else if($('#select_filter_questions').val() == "Location"){
+                rearrange_children($('.crisis-questions'), function(a,b){
+                    //return $(b).data('locality') < $(a).data('locality') ;
+                    return $(a).data('locality').localeCompare($(b).data('locality')) ;
+                });
+            }
+            
+        });
+        
+        if($('#select_filter_questions').prop("selectedIndex") != 0){
+            //trigger change if the initial selected index is not 0
+            $('#select_filter_questions').change();
+        }
+
+    });
+
+    var update_markedImportant = function(crisis, element){
+        element.next('a.action-button-count').text(crisis.importanceCount);
+        element.addClass('active').addClass('disabled');
+    }
+</script>
+
+<script src="/static/js/sharing.js"></script>
+
+{% endblock %}
