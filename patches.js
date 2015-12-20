@@ -40,7 +40,15 @@ var patches = [
                 } else {
                     if(!exists) {
                         console.log("Haven't found. Adding column");
-                        db.driver.execQuery("ALTER TABLE user ADD COLUMN lastVisit DATETIME", function(err, res)
+                        var query = "";
+                        try {
+                        switch (db.driver_name)
+                        {
+                            case "sqlite": query = "ALTER TABLE \"user\" ADD COLUMN \"lastVisit\" DATETIME"; break;
+                            case "postgres" : query = "ALTER TABLE \"user\" ADD COLUMN \"lastVisit\" timestamp without time zone"; break;
+                            default: throw "Unhandled db driver";
+                        }
+                        db.driver.execQuery(query, function(err, res)
                         {
                             if(err) {
                                 console.log("Errors while adding user.lastVisit column: "+err);
@@ -50,6 +58,10 @@ var patches = [
                             }
                             callback();
                         });
+                        } catch (e) {
+                            console.log("Errors while adding user.lastVisit column: ");
+                            console.log(e);
+                        }
                     } else {
                         console.log("Column already exists");
                         callback();
@@ -128,6 +140,8 @@ var onePatch = function(patch, patchFunc, db, cb)
             currVersion = patch.id;
             cb();
         });
+    } else {
+        cb();
     }
 }
 
