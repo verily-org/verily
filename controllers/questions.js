@@ -37,15 +37,21 @@ exports.index = function (req, res) {
 var getQuestionRelevance = function (words, relevantQuestions, question, cb) {
     var word;
     var relevance = 0;
-    question.tags = JSON.parse(question.tags);
+    try {
+        var tags = JSON.parse(question.tags);
+        question.tags = tags;
+    } catch (e)
+    {
+        
+    }
     // measure the relevenace of a question to the search text
     // similarities with the tags and locality are more important than text ant title.
     for (var i = 0; i < words.length; i++) {
         word = words[i];
         if (question.title.toLowerCase().indexOf(word) !== -1) relevance++;
-        if (question.text.toLowerCase().indexOf(word) !== -1) relevance++;
-        if (question.tags.indexOf(word) !== -1) relevance += 3;
-        if (question.targetLocality.toLowerCase().indexOf(word) !== -1) relevance += 3;
+        if (question.text != null && question.text.toLowerCase().indexOf(word) !== -1) relevance++;
+        if (question.tags != null && question.tags.indexOf(word) !== -1) relevance += 3;
+        if (question.targetLocality != null && question.targetLocality.toLowerCase().indexOf(word) !== -1) relevance += 3;
     }
     if (relevance > 0) {
         question.relevance = relevance;
@@ -141,6 +147,7 @@ exports.all = function (req, res) {
 
 // View to add question
 var createQuestion = function (req, res) {
+res.setHeader("Access-Control-Allow-Origin", "*");
     res.status(200);
     if (req.user){var user = req.user; }
     generic.get(req, req.models.Crisis, req.params.crisis_id, undefined, function (err, crisis) {
@@ -255,6 +262,8 @@ function createBulkQuestions(res, req, json, crisis){
                 callback("Title needed on question: " + question.key);
                 return;
             }
+            if(!question.title)
+                throw "ERROR: question without title";
             req.body.title = question.title;
             req.body.text = question.text;
             req.body.targetImageUrl = question.targetImage;
@@ -564,7 +573,25 @@ var newOne = function (req, res) {
                             console.r.error(req, 500, err);
                         }
                     });                    
-                });    
+                });
+                var quest_tags = [];
+                async.eachSeries(question.post.tags || [], function(tag, cb){
+                        req.models.Tags.exists({tag_name: tag}, function(err, exists) {
+                            if(exists) {
+                                req.models.Tags.find({tag_name: tag}, function(err,tag){
+                                    quest_tags.push(tag[0]);
+                                    cb();
+                                });
+                            } else {
+                                req.models.Tags.create({tag_name: tag}, function(err, tag) {
+                                    quest_tags.push(tag[0]);
+                                    cb();
+                                });
+                            }
+                        });
+                    }, function(err) {
+                        question.post.setExternTags(quest_tags, function(err) {cb();});
+                });
             } else {
                 generic.genericErrorHandler(req, res, err);
             }
@@ -583,6 +610,24 @@ var update = function (req, res) {
                 if (!err) {
                     //204 no content
                     // res.status(204);
+                    var quest_tags = [];
+                    async.eachSeries(question.post.tags || [], function(tag, cb){
+                            req.models.Tags.exists({tag_name: tag}, function(err, exists) {
+                                if(exists) {
+                                    req.models.Tags.find({tag_name: tag}, function(err,tag){
+                                        quest_tags.push(tag[0]);
+                                        cb();
+                                    });
+                                } else {
+                                    req.models.Tags.create({tag_name: tag}, function(err, tag) {
+                                        quest_tags.push(tag[0]);
+                                        cb();
+                                    });
+                                }
+                            });
+                        }, function(err) {
+                            question.post.setExternTags(quest_tags, function(err) {cb();});
+                    });
                     
                     res.redirect('/crisis/' + crisis_id + '/question/' + req.params.question_id);
                     

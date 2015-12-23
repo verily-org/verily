@@ -14,6 +14,9 @@ exports.route = function (app, controllers, doc) {
     route('post', '/user', 'register', 'New; New user');
 
     route('get', '/user', 'profile', 'Get the profile of the user');
+    
+    route('post', '/subscribe', 'subscribe', 'Subscribe user');
+    route('get', '/subscribe', 'subscriptions', 'Get the subscriptions of user');
 
     route('get', '/auth/facebook', 'facebookRedirect', 'Authenticate Facebook user');
     route('get', '/auth/facebook/callback', 'facebookAuthenticate', 'Authenticate Facebook user');

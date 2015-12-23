@@ -63,7 +63,9 @@ var refUrlLink = refUrlPrefix + refCodeLink;
             <h2 class="question-title">{{ question.post.title }}</h2>
 
                 <p class="lead">
-                    {{ question.post.text }}
+                    {% autoescape false %}
+                    {{ question.post.text | escape | replace('\r\n', '<br />', 'gm') | replace('\r', '<br />', 'gm') | replace('\n', '<br />', 'gm') }}
+                    {% endautoescape %}
                 </p>
                 
                 <!-- {% if question.date %}

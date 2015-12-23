@@ -27,7 +27,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         roles = require('./lib/roles'),
         swigHelpers = require('./helpers/swig'),
         enums = require('./enums'),
-        urlCanon = require('./components/alexgreenland/url-canon/0.2.8/canon'),
+        urlCanon = require('./components/alexgreenland/url-canon/'),
         memwatch = require('memwatch'),
         router = require('./routing/router'),
         authConfig = require('./lib/auth'),
@@ -35,6 +35,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
         ORMSessionStore = require('./orm-session-store')(express),
         mode = require('./mode'),
         common = require('./static/js/common'),
+        patches = require('./patches.js'),
         controllers = {},
         heroku,
         syncedModels,
@@ -54,6 +55,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     controllers.ratings = require('./controllers/ratings');
     controllers.crises = require('./controllers/crises');
     controllers.subscribers = require('./controllers/subscribers');
+    controllers.api = require('./controllers/api');
     
     if (mode.isProduction()) {
         // Enable reverse proxy support
@@ -187,30 +189,59 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
                     models.Session = db.models.session;
                     models.SocialEvent = db.models.social_event;
                     models.UserHistory = db.models.user_history;
+                    models.Tags = db.models.tag;
+                    models.Config = db.models.config;
+                    
+                    models.Config.sync(function () {syncCount++; console.log("Config synced")});
+                    var getVersion = function(cb) {
+                        models.Config.get( "version", function(err, version) {
+                            if(!version) {
+                                models.Config.create({attr: "version", val: "0"}, function(err, version) {
+                                    cb(version);
+                                });
+                            } else {
+                                cb(version);
+                            }
+                        });
+                    };
+                    
+                    getVersion(function(version) {
+                        patches.patch(db, version.val, function(resVersion) {
+                            version.val = resVersion;
+                            version.save(function(err) {
+                                models.Local.sync(function () {syncCount++; console.log("Local synced")});
+                                models.QuestionComment.sync(function () {syncCount++; console.log("QuestionComment synced")});
+                                models.AnswerComment.sync(function () {syncCount++; console.log("AnswerComment synced")});
+                                models.Crisis.sync(function () {syncCount++; console.log("Crisis synced")});
+                                models.Post.sync(function () {syncCount++; console.log("Post synced")});
+                                models.User.sync(function () {syncCount++; console.log("User synced")});
+                                models.Question.sync(function () {syncCount++; console.log("Question synced")});
+                                models.Answer.sync(function () {syncCount++; console.log("Answer synced")});
+                                models.Comment.sync(function () {syncCount++; console.log("Comment synced")});
+                                models.Rating.sync(function () {syncCount++; console.log("Rating synced")});
+                                models.Facebook.sync(function () {syncCount++; console.log("Facebook synced")});
+                                models.Twitter.sync(function () {syncCount++; console.log("Twitter synced")});
+                                models.Impression.sync(function () {syncCount++; console.log("Impression synced")});
+                                models.Referral.sync(function () {syncCount++; console.log("Referral synced")});
+                                models.Session.sync(function () {syncCount++; console.log("Session synced")});
+                                models.SocialEvent.sync(function () {syncCount++; console.log("SocialEvent synced")});
+                                models.UserHistory.sync(function () {syncCount++; console.log("UserHistory synced")});
+                                models.Tags.sync(function () {syncCount++; console.log("Tags synced")});
+                            });
+                        });
+                    });
+                    
+                            
+                    
 
-                    models.Local.sync(function () {syncCount++; console.log("Local synced")});
-                    models.QuestionComment.sync(function () {syncCount++; console.log("QuestionComment synced")});
-                    models.AnswerComment.sync(function () {syncCount++; console.log("AnswerComment synced")});
-                    models.Crisis.sync(function () {syncCount++; console.log("Crisis synced")});
-                    models.Post.sync(function () {syncCount++; console.log("Post synced")});
-                    models.User.sync(function () {syncCount++; console.log("User synced")});
-                    models.Question.sync(function () {syncCount++; console.log("Question synced")});
-                    models.Answer.sync(function () {syncCount++; console.log("Answer synced")});
-                    models.Comment.sync(function () {syncCount++; console.log("Comment synced")});
-                    models.Rating.sync(function () {syncCount++; console.log("Rating synced")});
-                    models.Facebook.sync(function () {syncCount++; console.log("Facebook synced")});
-                    models.Twitter.sync(function () {syncCount++; console.log("Twitter synced")});
-                    models.Impression.sync(function () {syncCount++; console.log("Impression synced")});
-                    models.Referral.sync(function () {syncCount++; console.log("Referral synced")});
-                    models.Session.sync(function () {syncCount++; console.log("Session synced")});
-                    models.SocialEvent.sync(function () {syncCount++; console.log("SocialEvent synced")});
-                    models.UserHistory.sync(function () {syncCount++; console.log("UserHistory synced")});
+                    
+                    
 
                     // Post is the base class.
                     // Questions, answers and comments are types of Post.
 
                     function check_db_sync (done) {
-                        if (syncCount === 17) {
+                        if (syncCount === 19) {
                             done();
                         } else {
                             setTimeout(function () {check_db_sync(done);}, 500);

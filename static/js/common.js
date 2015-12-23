@@ -108,13 +108,14 @@ var prettyPath = exports.prettyPath = common.prettyPath = function(data) {
     var path = data.path;
     var prefix = data.prefix;
     var postPrefix = data.postPrefix;
+    var injectPath = data.hasOwnProperty('injectPath') ? data.injectPath : true;
     if (isNodeJS && pathHelper && data.hasOwnProperty('req')) {
         if (data.sameLevel || !postPrefix) {
             path = pathHelper.dirname(data.req.path);
         } else {
             path = data.req.path;
         }
-        
+        if(!injectPath) path = "";
         if (prefix) {
             path = prefix + '/' + path;
         }

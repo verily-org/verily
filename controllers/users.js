@@ -67,6 +67,89 @@ exports.profile = function (req, res) {
         res.redirect('/login/');
     }
 };
+var subscriptions = function(req, res) {
+    if (req.user) {
+        res.status(200);
+        var user = req.user;
+        user.subscriptions = { tags : [],
+        crises : [] };
+        user.getTags(function(err, tags) {
+            console.log(tags);
+            async.eachSeries(tags, function(tag, cb) {
+                user.subscriptions.tags.push(tag);
+                cb();
+            }, function(err) {
+                user.getSubscribedCrises(function(err, crises){
+                    console.log(crises);
+                    async.eachSeries(crises, function(crisis, cb) {
+                        crisis.getPost(function(err,post) {
+                            user.subscriptions.crises.push({ id: crisis.id, title: post.title });
+                            cb();
+                        });
+                    }, function(err) {
+                        console.log("called back");
+                        query.findAllCrisisNames(req, function(err, crises) {
+                        if(err)throw err;
+                        res.render('user/subscribe', {
+                                    page: {
+                                        title: 'Subscriptions'
+                                    },
+                                    user: user,
+                                    crises: crises,
+                                    tags: [],
+                                    error: req.flash('error'),
+                                    info: req.flash('info')
+                                });
+                        });     
+                
+                    });
+                });
+            });
+        });
+    } else {
+        // Not logged in.
+        res.redirect('/login/');
+    }
+}
+
+exports.subscriptions = function (req, res) {
+    subscriptions(req, res);
+};
+exports.subscribe = function(req, res) {
+    var sub_crises = [];
+    var sub_tags = [];
+    req.body.sub_crisis = req.body.sub_crisis || [];
+    req.body.sub_tags = req.body.sub_tags || [];
+    async.eachSeries(req.body.sub_crisis, function(crisis, cb) {
+        console.log("setting crisis");
+        
+        req.models.Crisis.get(crisis, function(err, crisis) {
+            sub_crises[crisis.id] = crisis;
+            cb();
+        });
+    }, function(err) {
+        console.log("saving crisis");
+        console.log(sub_crises.filter(function(val) {return val;}));
+        req.user.setSubscribedCrises(sub_crises.filter(function(val) {return val;}), function(err) {
+            console.log("setting tags");
+            async.eachSeries(req.body.sub_tags, function(tag, cb) {
+                req.models.Tags.get(tag, function(err, _tag) {
+                    if(err) return;
+                    sub_tags[_tag.id] = _tag;
+                    cb();
+                });
+            }, function(err) { 
+                console.log("saving tags");
+                console.log(sub_tags.filter(function(val) {return val;}));
+                req.user.setTags(sub_tags.filter(function(val) {return val;}), function(err) {
+                    subscriptions(req,res);
+                });
+
+            });
+        });
+    });
+    
+}
 
 //Posts a new user
 exports.register = function (req, res) {
@@ -123,6 +206,7 @@ exports.registerView = function (req, res) {
 };
 
 exports.loginView = function (req, res) {
+res.setHeader("Access-Control-Allow-Origin", "*");
     if (!req.user || req.user.type === 'provisional') {
         // No user currently logged in, or a provisional user is logged in.
         res.status(200);
@@ -187,6 +271,8 @@ exports.newProvisionalUser = function(req, callback) {
 };
 
 exports.login = function (req, res) {
+console.log("logging.in");
+res.setHeader("Access-Control-Allow-Origin", "*");
     passport.authenticate('local-login', function (err, user, info) {
         if (err || !user) {
             res.redirect('/login');
