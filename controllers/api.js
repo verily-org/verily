@@ -20,60 +20,45 @@ exports.allCrisises = function(req,res) {
     });
 }
 
-exports.analytics = function(req, res) {
-    var _collectNewTags = function(req, since, cb) {
-        req.models.Post.find( {updated: orm.gt(since)}, function(err, posts) {
-            async.eachSeries(posts, function(post, _cb) {
-                var externTags = [];
-                try{
-                        async.eachSeries(post.tags, function(tag, __cb) {
-                            req.models.Tags.exists( {tag_name: tag}, function(err, exists) {
-                                if(!exists) {
-                                    req.models.Tags.create([{ tag_name: tag }], function(err, tag) {
-                                        externTags.push(tag[0]); 
-                                        __cb();
-                                    });
-                                } else {
-                                    req.models.Tags.find({tag_name: tag}, function(err, tag) {
-                                        externTags.push(tag[0]); 
-                                        __cb();
-                                    });
-                                }
-                            } );   
-                        }, function() {post.setExternTags(externTags).save(); _cb();});
-                            
-                    } catch(e) {
-                        _cb();
-                    };
-            }, cb);       
-                
-        } );
-        
-    };
-    var last_analytics_time = "0";
-    req.models.Config.exists( {attr: "analytics_time"}, function(err, exists) {
-        if(exists)
-        {
-            req.models.Config.get("analytics_time", function(err, conf) {
-                last_analytics_time = conf.val;
-                _collectNewTags(req, last_analytics_time, function(tags, err){
-                        if(err) res.send(err); else 
-                        res.send("ok");
-                    });
-                conf.val = new Date().toISOString();
-                conf.save(function(err) {});
-                
+var checkColumn = function(db, table, column, cb)
+{
+    switch(db.driver_name)
+    {
+        case 'sqlite':
+            db.driver.execQuery("PRAGMA table_info("+table+")", function(err, res) {
+                if(err) {
+                    cb(err, res); 
+                    return;
+                }
+                var exists = res.filter(function(i) { return i.name == column; })
+                cb(err, exists.length > 0);
             });
-            
-        }
-         else 
-         {
-             _collectNewTags(req, last_analytics_time, function(tags, err){
-                        res.send(JSON.stringify(tags));
-                    });
-             req.models.Config.create([ {attr: "analytics_time", val: new Date().toISOString()} ], function(err, items) {});
-         }
-    } );
+            break;
+        case 'postgres':
+            db.driver.execQuery("SELECT COUNT(*) as col_exists FROM information_schema.columns \n\
+WHERE table_name=? and column_name=?", [table, column], function(err, res) {
+            if(err) {
+                cb(err, res);
+                return;
+            }
+            cb(err, res[0].col_exists);
+        });
+            break;
+        default:
+            throw "Unhandled db driver";
+    }
+}
+
+exports.analytics = function(req, res) {
+    try {
+        req.db.models.config.get("time", function(err, analytics_time) {
+            res.send(JSON.stringify({ time: analytics_time}));
+        });
+        
+    } catch(e)
+    {
+        res.send(JSON.stringify({err: e}));
+    }
 }
 
 exports.tags = function(req, res) {

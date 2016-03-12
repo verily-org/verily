@@ -3,6 +3,7 @@ var utils = require('utilities');
 var mode = require('../mode');
 var common = require('../static/js/common');
 var exifHelper = require('./exif');
+var localize = require("../localize/localize.js");
 
 module.exports = function(swig) {
     
@@ -168,5 +169,9 @@ module.exports = function(swig) {
             }
         }
         return string;
+    });
+    
+    swig.setFilter('translate', function(input) {
+        return localize.translate(input);
     });
 };
