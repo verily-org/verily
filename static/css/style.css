@@ -535,6 +535,7 @@ fa.breadcrumb {
 }
 .action-button-ctr {
     margin-top: 1em;
+    vertical-align: baseline;
 }
 
 .mini.action-button-ctr {
