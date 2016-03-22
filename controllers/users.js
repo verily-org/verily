@@ -134,6 +134,7 @@ exports.subscribe = function(req, res) {
             console.log("setting tags");
             async.eachSeries(req.body.sub_tags, function(tag, cb) {
                 req.models.Tags.get(tag, function(err, _tag) {
+			console.log("setting "+tag);
                     if(err) { console.log(err);  }
                     else { sub_tags[_tag.id] = _tag; }
                     cb();
