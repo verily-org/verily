@@ -590,7 +590,7 @@ var newOne = function (req, res) {
                             }
                         });
                     }, function(err) {
-                        question.post.setExternTags(quest_tags, function(err) {cb();});
+                        question.post.setExternTags(quest_tags, function(err) {console.log(err);});
                 });
             } else {
                 generic.genericErrorHandler(req, res, err);
