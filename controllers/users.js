@@ -132,8 +132,8 @@ exports.subscribe = function(req, res) {
         console.log(sub_crises.filter(function(val) {return val;}));
         req.user.setSubscribedCrises(sub_crises.filter(function(val) {return val;}), function(err) {
             console.log("setting tags");
-            var sub_tags = Array.isArray(req.body.sub_tags) ? req.body.sub_tags : [ req.body.sub_tags ]; 
-            async.eachSeries(req.body.sub_tags, function(tag, cb) {
+            var array_sub_tags = Array.isArray(req.body.sub_tags) ? req.body.sub_tags : [ req.body.sub_tags ]; 
+            async.eachSeries(array_sub_tags, function(tag, cb) {
                 req.models.Tags.get(tag, function(err, _tag) {
 			console.log("setting "+tag);
                     if(err) { console.log(err);  }
