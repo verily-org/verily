@@ -15,7 +15,7 @@ exports.route = function (app, controllers, doc) {
 
     route('get', specific, 'get', 'Get; Get crisis with specific ID');
     
-    route('get', '/news', 'news', 'Get news');
+    //route('get', '/news', 'news', 'Get news');
     
     // View to edit crisis
     route('get', specific + '/edit', 'edit', 'Edit View; View to edit crisis');

@@ -57,6 +57,7 @@ module.exports = function (suppressLogs, dbTestUrl, callback) {
     controllers.crises = require('./controllers/crises');
     controllers.subscribers = require('./controllers/subscribers');
     controllers.api = require('./controllers/api');
+    controllers.news = require('./controllers/news');
     
     if (mode.isProduction()) {
         // Enable reverse proxy support
