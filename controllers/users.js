@@ -120,7 +120,8 @@ exports.subscribe = function(req, res) {
     var sub_tags = [];
     req.body.sub_crisis = req.body.sub_crisis || [];
     req.body.sub_tags = req.body.sub_tags || [];
-    async.eachSeries(req.body.sub_crisis, function(crisis, cb) {
+    var array_sub_crises = Array.isArray(req.body.sub_crisis) ? req.body.sub_crisis : [req.body.sub_crisis]; 
+    async.eachSeries(array_sub_crises, function(crisis, cb) {
         console.log("setting crisis");
         
         req.models.Crisis.get(crisis, function(err, crisis) {
